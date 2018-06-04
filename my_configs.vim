@@ -4,10 +4,11 @@ set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
 
+let g:ale_set_highlights = 0
 
 set number
 
@@ -21,7 +22,7 @@ au! Syntax kframework source kframework.vim
 syn on
 
 
-set rtp^="/home/jhjerry/.opam/4.06.1/share/ocp-indent/vim"
+set rtp^="~/.opam/4.06.1/share/ocp-indent/vim"
 
 let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
 execute "set rtp+=" . g:opamshare . "/merlin/vim"
@@ -49,4 +50,4 @@ endif
 
 let g:haskellmode_completion_ghc = 1
 autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
-
+let g:haskell_indent_let_no_in = 0
