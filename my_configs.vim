@@ -38,6 +38,11 @@ map <silent> ts :GhcModSplitFunCase<CR>
 map <silent> tq :GhcModType<CR>
 map <silent> te :GhcModTypeClear<CR>
 
+let g:haskell_tabular = 1
+vmap a= :Tabularize /=<CR>
+vmap a; :Tabularize /::<CR>
+vmap a- :Tabularize /-><CR>
+
 let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
 
 if has("gui_running")
@@ -51,3 +56,7 @@ endif
 let g:haskellmode_completion_ghc = 1
 autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
 let g:haskell_indent_let_no_in = 0
+let g:haskell_indent_if = 0
+
+" delete ghc.vim in ale_linters to avoid module import errors
+""""""""""""""""""""""""""""""""
