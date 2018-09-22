@@ -13,13 +13,27 @@ let g:ale_set_highlights = 0
 set number
 
 syntax on
-"set background=dark
-color dracula
+"color dracula
+
+colors zenburn
+
+"let g:solarized_termcolors=256
+"set background=light
+"colorscheme solarized
+
+"colorscheme gruvbox
+
+"autocmd ColorScheme janah highlight Normal ctermbg=235
+"colorscheme janah
+"
 filetype plugin indent on
 
 au BufRead,BufNewFile *.k set filetype=kframework
 au! Syntax kframework source kframework.vim
+au BufRead,BufNewFile *.maude set filetype=maude
+au! Syntax kframework source maude.vim
 syn on
+au BufRead,BufNewFile *.v set filetype=coq
 
 
 set rtp^="~/.opam/4.06.1/share/ocp-indent/vim"
@@ -60,3 +74,12 @@ let g:haskell_indent_if = 0
 
 " delete ghc.vim in ale_linters to avoid module import errors
 """"""""""""""""""""""""""""""""
+
+" wrap
+map <S-j> gj
+map <S-k> gk
+
+let g:pandoc#spell#enabled = 0
+let g:pandoc#syntax#codeblocks#embeds#langs = ["k"]
+
+
