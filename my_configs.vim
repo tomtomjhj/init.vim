@@ -13,9 +13,9 @@ let g:ale_set_highlights = 0
 set number
 
 syntax on
-"color dracula
+color dracula
 
-colors zenburn
+"colors zenburn
 
 "let g:solarized_termcolors=256
 "set background=light
@@ -26,6 +26,7 @@ colors zenburn
 "autocmd ColorScheme janah highlight Normal ctermbg=235
 "colorscheme janah
 "
+
 filetype plugin indent on
 
 au BufRead,BufNewFile *.k set filetype=kframework
