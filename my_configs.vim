@@ -24,6 +24,7 @@ au BufRead,BufNewFile *.maude set filetype=maude
 au! Syntax kframework source maude.vim
 syn on
 au BufRead,BufNewFile *.v set filetype=coq
+au BufRead,BufNewFile *.ll set filetype=llvm
 
 "" general completion
 let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
