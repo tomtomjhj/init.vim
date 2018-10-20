@@ -37,3 +37,6 @@
 [submodule "my_plugins/vim-hug-neovim-rpc"]
 	path = my_plugins/vim-hug-neovim-rpc
 	url = https://github.com/roxma/vim-hug-neovim-rpc
+[submodule "my_plugins/editorconfig-vim"]
+	path = my_plugins/editorconfig-vim
+	url = https://github.com/editorconfig/editorconfig-vim
