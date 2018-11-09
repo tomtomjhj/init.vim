@@ -2,6 +2,7 @@ set runtimepath+=~/.vim_runtime
 let g:ale_emit_conflict_warnings = 0
 let g:ale_set_highlights = 0
 
+set mouse=a
 set number
 syntax on
 color dracula
@@ -18,8 +19,7 @@ set shiftwidth=2
 
 filetype plugin indent on
 
-au BufRead,BufNewFile *.k set filetype=kframework
-au! Syntax kframework source kframework.vim
+au BufRead,BufNewFile *.k set filetype=k
 au BufRead,BufNewFile *.maude set filetype=maude
 au! Syntax kframework source maude.vim
 syn on
@@ -52,6 +52,7 @@ autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
 let g:haskell_indent_let_no_in = 0
 let g:haskell_indent_if = 0
 
+let g:intero_start_immediately = 0
 if has('nvim')
   augroup interoMaps
     au!
@@ -93,8 +94,6 @@ if has('nvim')
     " focus out
     tnoremap <Esc> <C-\><C-n>
   augroup END
-else
-  let g:intero_start_immediately = 0
 endif
 
 
@@ -105,7 +104,21 @@ endif
 map <S-j> gj
 map <S-k> gk
 
+" clipboard
+if has('nvim')
+  inoremap <C-v> <ESC>"+pa
+  vnoremap <C-c> "+y
+  vnoremap <C-d> "+d
+endif
+
+ca tt tabedit
+
+" //_
+let g:NERDSpaceDelims = 1
+
 let g:pandoc#spell#enabled = 0
-let g:pandoc#syntax#codeblocks#embeds#langs = ["k", "haskell", "python"]
+let g:pandoc#syntax#codeblocks#embeds#langs = ["k", "haskell", "python", "c++"]
+au FileType pandoc syntax spell toplevel
+" set to notoplevel in haskell.vim
 
 
