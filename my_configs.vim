@@ -51,6 +51,7 @@ let g:haskellmode_completion_ghc = 1
 autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
 let g:haskell_indent_let_no_in = 0
 let g:haskell_indent_if = 0
+let g:haskell_indent_case_alternative = 1
 
 let g:intero_start_immediately = 0
 if has('nvim')
@@ -99,6 +100,9 @@ endif
 
 " delete ghc.vim in ale_linters to avoid module import errors
 """"""""""""""""""""""""""""""""
+let g:ale_linters = {
+\   'haskell': ['hlint'],
+\}
 
 " wrap
 map <S-j> gj
@@ -113,11 +117,21 @@ endif
 
 ca tt tabedit
 
+map <F1> <Esc>
+imap <F1> <Esc>
+
+" duplicate tab
+map <leader>td :tab split<CR>
+
+" open ctag in a new tab/vertical split
+map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
+map <leader><C-\> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
+
 " //_
 let g:NERDSpaceDelims = 1
 
 let g:pandoc#spell#enabled = 0
-let g:pandoc#syntax#codeblocks#embeds#langs = ["k", "haskell", "python", "c++"]
+let g:pandoc#syntax#codeblocks#embeds#langs = ["k", "haskell", "python", "llvm"]
 au FileType pandoc syntax spell toplevel
 " set to notoplevel in haskell.vim
 

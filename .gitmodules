@@ -40,3 +40,6 @@
 [submodule "my_plugins/editorconfig-vim"]
 	path = my_plugins/editorconfig-vim
 	url = https://github.com/editorconfig/editorconfig-vim
+[submodule "my_plugins/vim-solidity"]
+	path = my_plugins/vim-solidity
+	url = https://github.com/tomlion/vim-solidity
