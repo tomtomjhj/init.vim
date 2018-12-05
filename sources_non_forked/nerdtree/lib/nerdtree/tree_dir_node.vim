@@ -99,7 +99,8 @@ function! s:TreeDirNode.displayString()
     let l:label = ''
     let l:cascade = self.getCascade()
     for l:dirNode in l:cascade
-        let l:label .= l:dirNode.path.displayString()
+        let l:next = l:dirNode.path.displayString()
+        let l:label .= l:label == '' ? l:next : substitute(l:next,'^.','','')
     endfor
 
     " Select the appropriate open/closed status indicator symbol.
@@ -304,9 +305,11 @@ function! s:TreeDirNode._glob(pattern, all)
         for l:file in l:globList
             let l:tail = fnamemodify(l:file, ':t')
 
-            " Double the modifier if only a separator was stripped.
+            " If l:file has a trailing slash, then its :tail will be ''. Use
+            " :h to drop the slash and the empty string after it; then use :t
+            " to get the directory name.
             if l:tail == ''
-                let l:tail = fnamemodify(l:file, ':t:t')
+                let l:tail = fnamemodify(l:file, ':h:t')
             endif
 
             if l:tail == '.' || l:tail == '..'
@@ -367,11 +370,25 @@ function! s:TreeDirNode.hasVisibleChildren()
 endfunction
 
 " FUNCTION: TreeDirNode.isCascadable() {{{1
-" true if this dir has only one visible child - which is also a dir
+" true if this dir has only one visible child that is also a dir
+" false if this dir is bookmarked or symlinked. Why? Two reasons:
+"  1. If cascaded, we don't know which dir is bookmarked or is a symlink.
+"  2. If the parent is a symlink or is bookmarked, you end up with unparsable
+"     text, and NERDTree cannot get the path of any child node.
 function! s:TreeDirNode.isCascadable()
     if g:NERDTreeCascadeSingleChildDir == 0
         return 0
     endif
+
+    if self.path.isSymLink
+        return 0
+    endif
+
+    for i in g:NERDTreeBookmark.Bookmarks()
+        if i.path.equals(self.path)
+            return 0
+        endif
+    endfor
 
     let c = self.getVisibleChildren()
     return len(c) == 1 && c[0].path.isDirectory

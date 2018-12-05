@@ -5,9 +5,12 @@ let g:ale_set_highlights = 0
 set mouse=a
 set number
 syntax on
-color dracula
+"colorscheme dracula
+colorscheme zen
 set tabstop=2
 set shiftwidth=2
+syn sync minlines=200
+
 
 "let g:zenburn_high_Contrast = 1
 "colors zenburn
@@ -20,6 +23,7 @@ set shiftwidth=2
 filetype plugin indent on
 
 au BufRead,BufNewFile *.k set filetype=k
+au BufRead,BufNewFile *.kore set filetype=kore
 au BufRead,BufNewFile *.maude set filetype=maude
 au! Syntax kframework source maude.vim
 syn on
@@ -71,7 +75,7 @@ if has('nvim')
 
     " Reloading (pick one)
     " Automatically reload on save
-    au BufWritePost *.hs InteroReload
+    " au BufWritePost *.hs InteroReload
     " Manually save and reload
     au FileType haskell nnoremap <silent> <leader>wr :w \| :InteroReload<CR>
 
@@ -103,6 +107,8 @@ endif
 let g:ale_linters = {
 \   'haskell': ['hlint'],
 \}
+
+let g:ale_fixers = {'haskell': ['stylish-haskell'], '*': ['trim_whitespace']}
 
 " wrap
 map <S-j> gj

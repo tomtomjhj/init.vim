@@ -26,7 +26,20 @@ function! ale#cursor#TruncatedEcho(original_message) abort
 
         " The message is truncated and saved to the history.
         setlocal shortmess+=T
-        exec "norm! :echomsg l:message\n"
+
+        try
+            exec "norm! :echomsg l:message\n"
+        catch /^Vim\%((\a\+)\)\=:E523/
+            " Fallback into manual truncate (#1987)
+            let l:winwidth = winwidth(0)
+
+            if l:winwidth < strdisplaywidth(l:message)
+                " Truncate message longer than window width with trailing '...'
+                let l:message = l:message[:l:winwidth - 4] . '...'
+            endif
+
+            exec 'echomsg l:message'
+        endtry
 
         " Reset the cursor position if we moved off the end of the line.
         " Using :norm and :echomsg can move the cursor off the end of the
@@ -37,16 +50,6 @@ function! ale#cursor#TruncatedEcho(original_message) abort
     finally
         let &l:shortmess = l:shortmess_options
     endtry
-endfunction
-
-function! s:FindItemAtCursor(buffer) abort
-    let l:info = get(g:ale_buffer_info, a:buffer, {})
-    let l:loclist = get(l:info, 'loclist', [])
-    let l:pos = getcurpos()
-    let l:index = ale#util#BinarySearch(l:loclist, a:buffer, l:pos[1], l:pos[2])
-    let l:loc = l:index >= 0 ? l:loclist[l:index] : {}
-
-    return [l:info, l:loc]
 endfunction
 
 function! s:StopCursorTimer() abort
@@ -72,7 +75,7 @@ function! ale#cursor#EchoCursorWarning(...) abort
         return
     endif
 
-    let [l:info, l:loc] = s:FindItemAtCursor(l:buffer)
+    let [l:info, l:loc] = ale#util#FindItemAtCursor(l:buffer)
 
     if g:ale_echo_cursor
         if !empty(l:loc)
@@ -156,7 +159,7 @@ function! ale#cursor#ShowCursorDetail() abort
 
     call s:StopCursorTimer()
 
-    let [l:info, l:loc] = s:FindItemAtCursor(l:buffer)
+    let [l:info, l:loc] = ale#util#FindItemAtCursor(l:buffer)
 
     if !empty(l:loc)
         call s:ShowCursorDetailForItem(l:loc, {'stay_here': 0})

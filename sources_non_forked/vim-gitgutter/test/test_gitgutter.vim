@@ -117,6 +117,16 @@ function Test_remove_first_lines()
 endfunction
 
 
+function Test_overlapping_hunks()
+  execute '3d'
+  execute '1d'
+  call s:trigger_gitgutter()
+
+  let expected = ["line=1  id=3000  name=GitGutterLineRemovedAboveAndBelow"]
+  call assert_equal(expected, s:signs('fixture.txt'))
+endfunction
+
+
 function Test_edit_file_with_same_name_as_a_branch()
   normal 5Gi*
   call system('git checkout -b fixture.txt')
@@ -178,6 +188,20 @@ function Test_filename_leading_dash()
         \ 'line=2  id=3001  name=GitGutterLineAdded'
         \ ]
   call assert_equal(expected, s:signs('-fixture.txt'))
+endfunction
+
+
+function Test_filename_umlaut()
+  call system('touch -- fixtüre.txt && git add -- fixtüre.txt')
+  edit fixtüre.txt
+  normal ggo*
+  call s:trigger_gitgutter()
+
+  let expected = [
+        \ 'line=1  id=3000  name=GitGutterLineAdded',
+        \ 'line=2  id=3001  name=GitGutterLineAdded'
+        \ ]
+  call assert_equal(expected, s:signs('fixtüre.txt'))
 endfunction
 
 
@@ -263,6 +287,7 @@ function Test_untracked_file_within_repo()
   call s:trigger_gitgutter()
 
   call assert_equal([], s:signs(tmp))
+  call assert_equal(-2, b:gitgutter.path)
 
   call system('rm '.tmp)
 endfunction
@@ -442,6 +467,42 @@ function Test_undo_nearby_hunk()
         \ ]
   call assert_equal(expected, s:git_diff())
 
+endfunction
+
+
+function Test_overlapping_hunk_op()
+  func Answer(char)
+    call feedkeys(a:char."\<CR>")
+  endfunc
+
+  " Undo upper
+
+  execute '3d'
+  execute '1d'
+  call s:trigger_gitgutter()
+  normal gg
+  call timer_start(100, {-> Answer('u')} )
+  GitGutterUndoHunk
+  call s:trigger_gitgutter()
+
+  let expected = [
+        \ 'line=2  id=3000  name=GitGutterLineRemoved',
+        \ ]
+  call assert_equal(expected, s:signs('fixture.txt'))
+
+  " Undo lower
+
+  execute '1d'
+  call s:trigger_gitgutter()
+  normal gg
+  call timer_start(100, {-> Answer('l')} )
+  GitGutterUndoHunk
+  call s:trigger_gitgutter()
+
+  let expected = [
+        \ 'line=1  id=3000  name=GitGutterLineRemovedFirstLine',
+        \ ]
+  call assert_equal(expected, s:signs('fixture.txt'))
 endfunction
 
 
