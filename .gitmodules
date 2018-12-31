@@ -43,3 +43,6 @@
 [submodule "my_plugins/vim-solidity"]
 	path = my_plugins/vim-solidity
 	url = https://github.com/tomlion/vim-solidity
+[submodule "my_plugins/vim-ocaml"]
+	path = my_plugins/vim-ocaml
+	url = https://github.com/rgrinberg/vim-ocaml

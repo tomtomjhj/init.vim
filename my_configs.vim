@@ -4,17 +4,13 @@ let g:ale_set_highlights = 0
 
 set mouse=a
 set number
-syntax on
 "colorscheme dracula
 colorscheme zen
 set tabstop=2
 set shiftwidth=2
-syn sync minlines=200
-
 
 "let g:zenburn_high_Contrast = 1
 "colors zenburn
-
 
 "let g:solarized_termcolors=256
 "set background=light
@@ -26,7 +22,6 @@ au BufRead,BufNewFile *.k set filetype=k
 au BufRead,BufNewFile *.kore set filetype=kore
 au BufRead,BufNewFile *.maude set filetype=maude
 au! Syntax kframework source maude.vim
-syn on
 au BufRead,BufNewFile *.v set filetype=coq
 au BufRead,BufNewFile *.ll set filetype=llvm
 
@@ -45,6 +40,11 @@ endif
 
 " haskell
 let g:haskell_classic_highlighting = 1
+let g:haskell_enable_quantification = 1
+let g:haskell_enable_recursivedo = 1
+let g:haskell_enable_pattern_synonyms = 1
+let g:haskell_enable_typeroles = 1
+let g:haskell_enable_static_pointers = 1
 
 let g:haskell_tabular = 1
 vmap a= :Tabularize /=<CR>
@@ -87,6 +87,7 @@ if has('nvim')
     " Heads up! These next two differ from the rest.
     au FileType haskell map <silent> <leader>t <Plug>InteroGenericType
     au FileType haskell map <silent> <leader>T <Plug>InteroType
+    au FileType haskell nnoremap <silent> <leader>ii :InteroInfo<CR>
     au FileType haskell nnoremap <silent> <leader>it :InteroTypeInsert<CR>
 
     " Navigation
@@ -128,6 +129,9 @@ imap <F1> <Esc>
 
 " duplicate tab
 map <leader>td :tab split<CR>
+
+" edit from the dir of cur buf
+map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
 
 " open ctag in a new tab/vertical split
 map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
