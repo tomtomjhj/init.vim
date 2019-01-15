@@ -103,8 +103,7 @@ if has('nvim')
 endif
 
 
-" delete ghc.vim in ale_linters to avoid module import errors
-""""""""""""""""""""""""""""""""
+" ale
 let g:ale_linters = {
 \   'haskell': ['hlint'],
 \}
@@ -114,6 +113,16 @@ let g:ale_fixers = {'haskell': ['stylish-haskell'], '*': ['trim_whitespace']}
 " wrap
 map <S-j> gj
 map <S-k> gk
+map <S-h> h
+map <S-l> l
+map <leader>sw :set wrap<CR>
+map <leader>snw :set nowrap<CR>
+
+" space to navigate
+map <space> <C-d>
+map <c-space> <C-u>
+" <s-space> does not work
+" map <s-space> <C-u>
 
 " clipboard
 if has('nvim')
@@ -132,6 +141,12 @@ map <leader>td :tab split<CR>
 
 " edit from the dir of cur buf
 map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
+" map <leader>te ...
+
+" :%s/pat/\r&/g
+
+" refresh
+map <leader>ef :e!<CR>
 
 " open ctag in a new tab/vertical split
 map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
@@ -142,6 +157,7 @@ let g:NERDSpaceDelims = 1
 
 let g:pandoc#spell#enabled = 0
 let g:pandoc#syntax#codeblocks#embeds#langs = ["k", "haskell", "python", "llvm"]
+let g:pandoc#modules#disabled = ["folding"]
 au FileType pandoc syntax spell toplevel
 " set to notoplevel in haskell.vim
 
