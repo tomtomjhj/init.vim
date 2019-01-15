@@ -20,7 +20,7 @@ auto-pairs https://github.com/jiangmiao/auto-pairs
 ale https://github.com/w0rp/ale
 vim-yankstack https://github.com/maxbrunsfeld/vim-yankstack
 ack.vim https://github.com/mileszs/ack.vim
-bufexplorer https://github.com/corntrace/bufexplorer
+bufexplorer https://github.com/jlanzarotta/bufexplorer
 ctrlp.vim https://github.com/ctrlpvim/ctrlp.vim
 nerdtree https://github.com/scrooloose/nerdtree
 open_file_under_cursor.vim https://github.com/amix/open_file_under_cursor.vim
