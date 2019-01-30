@@ -29,7 +29,10 @@ Features
         input: {|} (press <CR> at |)
         output: {
             |
-        }
+        }          (press } to close the pair)
+        output: {
+        }|         (the inserted blank line will be deleted)
+
 
 *   Insert spaces before closing characters, only for [], (), {}
 
@@ -156,7 +159,7 @@ Options
 -------
 *   g:AutoPairs
 
-        Default: {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
+        Default: {'(':')', '[':']', '{':'}',"'":"'",'"':'"', "`":"`", '```':'```', '"""':'"""', "'''":"'''"}
 
 *   b:AutoPairs
 
@@ -307,7 +310,17 @@ Multibyte Pairs
 
         The text after //  in close pair is modifiers
 
-        n - do not map the first charactor of closed pair
+        n - do not map the first charactor of closed pair to close key
+        m - close key jumps through multi line
+        s - close key jumps only in the same line
+
+            by default if open key equals close key the multi line is turn off
+
+            "<?": "?>"      ? jumps only in the same line
+            "<?": "?>//m"   force ? jumping through multi line
+            "<?php":"?>"    ? will jump through multi line
+            "<?php":"?>//s" force ? only jumping in the same line
+            "<?": "?>//n"   do not jump totally
 
         for 'begin' 'end' pair, e is a charactor, if map e to jump will be annoy, so use modifier 'n' to skip key map
 
@@ -349,7 +362,7 @@ Multibyte Pairs
 
         the 'begin' 'end' pair write in
 
-        au FileType ruby     let b:AutoPairs = AutoPairsDefine({'\v(^|[^\w])\zsbegin': 'end//n'})
+        au FileType ruby     let b:AutoPairs = AutoPairsDefine({'\v(^|\W)\zsbegin': 'end//n'})
 
         will be better, only auto pair when at start of line or follow non-word text
 
@@ -378,7 +391,7 @@ TroubleShooting
     To fix the issue, you need remap or disable the related shortcut.
 
 Known Issues
------------------------
+------------
 Breaks '.' - [issue #3](https://github.com/jiangmiao/auto-pairs/issues/3)
 
     Description: After entering insert mode and inputing `[hello` then leave insert

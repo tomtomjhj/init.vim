@@ -13,7 +13,7 @@ end
 let g:AutoPairsLoaded = 1
 
 if !exists('g:AutoPairs')
-  let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
+  let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '```':'```', '"""':'"""', "'''":"'''", "`":"`"}
 end
 
 if !exists('g:AutoPairsMapBS')
@@ -120,7 +120,7 @@ func! s:getline()
   let before = strpart(line, 0, pos)
   let after = strpart(line, pos)
   let afterline = after
-  if a:0 == 0 && g:AutoPairsMultilineClose
+  if g:AutoPairsMultilineClose
     let n = line('$')
     let i = line('.')+1
     while i <= n
@@ -136,6 +136,7 @@ func! s:getline()
 endf
 
 " split text to two part
+" returns [orig, text_before_open, open]
 func! s:matchend(text, open)
     let m = matchstr(a:text, '\V'.a:open.'\v$')
     if m == ""
@@ -143,6 +144,8 @@ func! s:matchend(text, open)
     end
     return [a:text, strpart(a:text, 0, len(a:text)-len(m)), m]
 endf
+
+" returns [orig, close, text_after_close]
 func! s:matchbegin(text, close)
     let m = matchstr(a:text, '^\V'.a:close)
     if m == ""
@@ -159,14 +162,14 @@ endf
 "   add <!-- --> pair and remove '{' for html file
 func! AutoPairsDefine(pairs, ...)
   let r = copy(g:AutoPairs)
-  for [open, close] in items(a:pairs)
-    let r[open] = close
-  endfor
-  if a:0 > 1
+  if a:0 > 0
     for open in a:1
       unlet r[open]
     endfor
   end
+  for [open, close] in items(a:pairs)
+    let r[open] = close
+  endfor
   return r
 endf
 
@@ -184,9 +187,61 @@ func! AutoPairsInsert(key)
     return a:key
   end
 
+  " check open pairs
+  for [open, close, opt] in b:AutoPairsList
+    let ms = s:matchend(before.a:key, open)
+    let m = matchstr(afterline, '^\v\s*\zs\V'.close)
+    if len(ms) > 0
+      " process the open pair
+      
+      " remove inserted pair
+      " eg: if the pairs include < > and  <!-- --> 
+      " when <!-- is detected the inserted pair < > should be clean up 
+      let target = ms[1]
+      let openPair = ms[2]
+      if len(openPair) == 1 && m == openPair
+        break
+      end
+      let bs = ''
+      let del = ''
+      while len(before) > len(target)
+        let found = 0
+        " delete pair
+        for [o, c, opt] in b:AutoPairsList
+          let os = s:matchend(before, o)
+          if len(os) && len(os[1]) < len(target)
+            " any text before openPair should not be deleted
+            continue
+          end
+          let cs = s:matchbegin(afterline, c)
+          if len(os) && len(cs)
+            let found = 1
+            let before = os[1]
+            let afterline = cs[2]
+            let bs = bs.s:backspace(os[2])
+            let del = del.s:delete(cs[1])
+            break
+          end
+        endfor
+        if !found
+          " delete charactor
+          let ms = s:matchend(before, '\v.')
+          if len(ms)
+            let before = ms[1]
+            let bs = bs.s:backspace(ms[2])
+          end
+        end
+      endwhile
+      return bs.del.openPair.close.s:left(close)
+    end
+  endfor
+
   " check close pairs
-  for [open, close] in b:AutoPairsList
-    if a:key == g:AutoPairsWildClosedPair || close[0] == a:key
+  for [open, close, opt] in b:AutoPairsList
+    if close == ''
+      continue
+    end
+    if a:key == g:AutoPairsWildClosedPair || opt['mapclose'] && close[0] == a:key
       " the close pair is in the same line
       let m = matchstr(afterline, '^\v\s*\V'.close)
       if m != ''
@@ -197,63 +252,21 @@ func! AutoPairsInsert(key)
           return s:right(m)
         end
       end
-      if open != close
-        let m = matchstr(after, '^\v\s*\zs\V'.close)
-        if m != ''
-          " skip close pair greedy
+      let m = matchstr(after, '^\v\s*\zs\V'.close)
+      if m != ''
+        if a:key == g:AutoPairsWildClosedPair || opt['multiline']
+          if b:autopairs_return_pos == line('.') && getline('.') =~ '\v^\s*$'
+            normal! ddk$
+          end
           call search(m, 'We')
           return "\<Right>"
+        else
+          break
         end
       end
     end
   endfor
 
-  " check open pairs
-  let text=before.a:key
-  for [open, close] in b:AutoPairsList
-    let m = s:matchend(text, open)
-    if len(m) > 0
-      " process the open pair
-      
-      " remove inserted pair
-      " eg: if the pairs include < > and  <!-- --> 
-      " when <!-- is detected the inserted pair < > should be clean up 
-      " <?php ?> should backspace 4 times php and <?
-      let target = m[1]
-      let openPair = m[2]
-      let text = before
-      let i = 0
-      while len(text) >= len(target) && target != text 
-        let found = 0
-        " delete pair
-        for [o, c] in b:AutoPairsList
-          let m = s:matchend(text, o)
-          if len(m) > 0
-            let found = 1
-            let text = m[1]
-            let i = i + 1
-            break
-          end
-        endfor
-        if !found
-          " delete charactor
-          let m = s:matchend(text, '\v.')
-          if len(m) == 0
-            break
-          end
-          let i = i + 1
-          let text = m[1]
-        end
-      endwhile
-      let bs = repeat("\<BS>", i)
-      if bs != ''
-        call feedkeys(bs)
-      end
-      call feedkeys(openPair.close.s:left(close), "n")
-      return ""
-      " return m.close.s:left(close)
-    end
-  endfor
 
   " Fly Mode, and the key is closed-pairs, search closed-pair and jump
   if g:AutoPairsFlyMode &&  a:key =~ '\v[\}\]\)]'
@@ -271,7 +284,7 @@ func! AutoPairsDelete()
   end
 
   let [before, after, ig] = s:getline()
-  for [open, close] in b:AutoPairsList
+  for [open, close, opt] in b:AutoPairsList
     let b = matchstr(before, '\V'.open.'\v\s?$')
     let a = matchstr(after, '^\v\s*\V'.close)
     if b != '' && a != ''
@@ -282,13 +295,13 @@ func! AutoPairsDelete()
           return "\<BS>"
         end
       end
-      return repeat("\<BS>", s:ulen(b)).repeat("\<DELETE>", s:ulen(a))
+      return s:backspace(b).s:delete(a)
     end
   endfor
 
   return "\<BS>"
   " delete the pair foo[]| <BS> to foo
-  for [open, close] in b:AutoPairsList
+  for [open, close, opt] in b:AutoPairsList
     let m = s:matchend(before, '\V'.open.'\v\s*'.'\V'.close.'\v$')
     if len(m) > 0
       return s:backspace(m[2])
@@ -307,7 +320,10 @@ func! AutoPairsFastWrap()
     normal! %
     normal! p
   else
-    for [open, close] in b:AutoPairsList
+    for [open, close, opt] in b:AutoPairsList
+      if close == ''
+        continue
+      end
       if after =~ '^\s*\V'.open
         call search(close, 'We')
         normal! p
@@ -315,7 +331,7 @@ func! AutoPairsFastWrap()
         return ""
       end
     endfor
-    if after[1:1] =~ '\v[a-zA-Z0-9_]'
+    if after[1:1] =~ '\v\w'
       normal! e
       normal! p
     else
@@ -337,25 +353,27 @@ func! AutoPairsMoveCharacter(key)
 endf
 
 func! AutoPairsBackInsert()
-  if exists('b:autopairs_saved_pair')
-    let pair = b:autopairs_saved_pair[0]
-    let pos  = b:autopairs_saved_pair[1]
-    call setpos('.', pos)
-    return pair
-  endif
-  return ''
+  let pair = b:autopairs_saved_pair[0]
+  let pos  = b:autopairs_saved_pair[1]
+  call setpos('.', pos)
+  return pair
 endf
 
 func! AutoPairsReturn()
   if b:autopairs_enabled == 0
     return ''
   end
+  let b:autopairs_return_pos = 0
   let before = getline(line('.')-1)
-  let after = getline('.')
+  let [ig, ig, afterline] = s:getline()
   let cmd = ''
-  for [open, close] in b:AutoPairsList
-    "  before =~ '\V'.open.'\v\s*$' &&
-    if after =~ '^\s*\V'.close
+  for [open, close, opt] in b:AutoPairsList
+    if close == ''
+      continue
+    end
+
+    if before =~ '\V'.open.'\v\s*$' && afterline =~ '^\s*\V'.close
+      let b:autopairs_return_pos = line('.')
       if g:AutoPairsCenterLine && winline() * 3 >= winheight(0) * 2
         " Recenter before adding new line to avoid replacing line content
         let cmd = "zz"
@@ -387,9 +405,16 @@ func! AutoPairsSpace()
 
   let [before, after, ig] = s:getline()
 
-  for [open, close] in b:AutoPairsList
+  for [open, close, opt] in b:AutoPairsList
+    if close == ''
+      continue
+    end
     if before =~ '\V'.open.'\v$' && after =~ '^\V'.close
-      return "\<SPACE>\<SPACE>".s:Left
+      if close =~ '\v^[''"`]$'
+        return "\<SPACE>"
+      else
+        return "\<SPACE>\<SPACE>".s:Left
+      end
     end
   endfor
   return "\<SPACE>"
@@ -404,7 +429,6 @@ func! AutoPairsMap(key)
   let escaped_key = substitute(key, "'", "''", 'g')
   " use expr will cause search() doesn't work
   execute 'inoremap <buffer> <silent> '.key." <C-R>=AutoPairsInsert('".escaped_key."')<CR>"
-
 endf
 
 func! AutoPairsToggle()
@@ -437,29 +461,51 @@ func! AutoPairsInit()
     let b:AutoPairsMoveCharacter = g:AutoPairsMoveCharacter
   end
 
+  let b:autopairs_return_pos = 0
+  let b:autopairs_saved_pair = [0, 0]
   let b:AutoPairsList = []
 
   " buffer level map pairs keys
+  " n - do not map the first charactor of closed pair to close key
+  " m - close key jumps through multi line
+  " s - close key jumps only in the same line
   for [open, close] in items(b:AutoPairs)
-    let o = open[len(open)-1]
+    let o = open[-1:-1]
+    let c = close[0]
+    let opt = {'mapclose': 1, 'multiline':1}
+    if o == c
+      let opt['multiline'] = 0
+    end
     let m = matchlist(close, '\v(.*)//(.*)$')
-    let mapclose = 1
     if len(m) > 0 
-      if m[1] =~ 'n'
-        let mapclose = 0
+      if m[2] =~ 'n'
+        let opt['mapclose'] = 0
+      end
+      if m[2] =~ 'm'
+        let opt['multiline'] = 1
+      end
+      if m[2] =~ 's'
+        let opt['multiline'] = 0
       end
       let close = m[1]
     end
-    let c = close[0]
     call AutoPairsMap(o)
-    if o != c && c != '' && mapclose
+    if o != c && c != '' && opt['mapclose']
       call AutoPairsMap(c)
     end
-    let b:AutoPairsList += [[open, close]]
+    let b:AutoPairsList += [[open, close, opt]]
   endfor
 
   " sort pairs by length, longer pair should have higher priority
   let b:AutoPairsList = sort(b:AutoPairsList, "s:sortByLength")
+
+  for item in b:AutoPairsList
+    let [open, close, opt] = item
+    if open == "'" && open == close
+      let item[0] = '\v(^|\W)\zs'''
+    end
+  endfor
+
 
   for key in split(b:AutoPairsMoveCharacter, '\s*')
     let escaped_key = substitute(key, "'", "''", 'g')
