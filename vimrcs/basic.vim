@@ -52,6 +52,7 @@ nmap <leader>w :w!<cr>
 "command W w !sudo tee % > /dev/null
 command W w
 command Q q 
+command Qa qa
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

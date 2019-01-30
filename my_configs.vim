@@ -26,7 +26,8 @@ au BufRead,BufNewFile *.v set filetype=coq
 au BufRead,BufNewFile *.ll set filetype=llvm
 
 "" general completion
-let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
+" let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
+let g:SuperTabDefaultCompletionType = '<c-n>'
 " SLOW
 let g:deoplete#enable_at_startup = 1
 
@@ -51,8 +52,8 @@ vmap a= :Tabularize /=<CR>
 vmap a; :Tabularize /::<CR>
 vmap a- :Tabularize /-><CR>
 
-let g:haskellmode_completion_ghc = 1
-autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
+" let g:haskellmode_completion_ghc = 1
+" autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
 let g:haskell_indent_let_no_in = 0
 let g:haskell_indent_if = 0
 let g:haskell_indent_case_alternative = 1
@@ -132,6 +133,10 @@ if has('nvim')
 endif
 
 ca tt tabedit
+map <leader>tt :tabedit<CR>
+
+" filename
+map <leader>fn :echo @%<CR>
 
 map <F1> <Esc>
 imap <F1> <Esc>
@@ -154,6 +159,9 @@ map <leader><C-\> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 
 " //_
 let g:NERDSpaceDelims = 1
+
+map <leader>af :ALEFix<CR>
+map <leader>ad :ALEDetail<CR>
 
 let g:pandoc#spell#enabled = 0
 let g:pandoc#syntax#codeblocks#embeds#langs = ["k", "haskell", "python", "llvm"]
