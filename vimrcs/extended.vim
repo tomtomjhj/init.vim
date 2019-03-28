@@ -28,8 +28,8 @@ set guioptions-=l
 set guioptions-=L
 
 " Colorscheme
-set background=dark
-colorscheme peaksea
+" set background=dark
+" colorscheme peaksea
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -72,9 +72,9 @@ cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
 
 " Map ½ to something useful
-map ½ $
-cmap ½ $
-imap ½ $
+" map ½ $
+" cmap ½ $
+" imap ½ $
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -106,7 +106,7 @@ iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Omni complete functions
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+" autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

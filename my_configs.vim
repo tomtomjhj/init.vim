@@ -144,6 +144,9 @@ imap <F1> <Esc>
 " duplicate tab
 map <leader>td :tab split<CR>
 
+"
+map <leader>q :q<CR>
+
 " edit from the dir of cur buf
 map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
 " map <leader>te ...
@@ -157,11 +160,17 @@ map <leader>ef :e!<CR>
 map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 map <leader><C-\> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 
+autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
+autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
+
 " //_
+" TODO just use commentary
 let g:NERDSpaceDelims = 1
 
 map <leader>af :ALEFix<CR>
 map <leader>ad :ALEDetail<CR>
+map <leader>an :ALENext<CR>
+map <leader>av :ALEPrevious<CR>
 
 let g:pandoc#spell#enabled = 0
 let g:pandoc#syntax#codeblocks#embeds#langs = ["k", "haskell", "python", "llvm"]
