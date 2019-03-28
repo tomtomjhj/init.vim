@@ -1,6 +1,6 @@
 [submodule "my_plugins/haskell-vim"]
 	path = my_plugins/haskell-vim
-	url = https://github.com/neovimhaskell/haskell-vim
+	url = https://github.com/tomtomjhj/haskell-vim
 [submodule "my_plugins/supertab"]
 	path = my_plugins/supertab
 	url = https://github.com/ervandew/supertab
@@ -9,7 +9,7 @@
 	url = https://github.com/vim-pandoc/vim-pandoc
 [submodule "my_plugins/vim-pandoc-syntax"]
 	path = my_plugins/vim-pandoc-syntax
-	url = https://github.com/vim-pandoc/vim-pandoc-syntax
+	url = https://github.com/tomtomjhj/vim-pandoc-syntax
 [submodule "my_plugins/vimproc.vim"]
 	path = my_plugins/vimproc.vim
 	url = https://github.com/Shougo/vimproc.vim
@@ -46,3 +46,6 @@
 [submodule "my_plugins/vim-ocaml"]
 	path = my_plugins/vim-ocaml
 	url = https://github.com/rgrinberg/vim-ocaml
+[submodule "my_plugins/rust.vim"]
+	path = my_plugins/rust.vim
+	url = https://github.com/tomtomjhj/rust.vim
