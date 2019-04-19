@@ -60,7 +60,7 @@ command Qa qa
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Set 7 lines to the cursor - when moving vertically using j/k
 " set so=7
-set so=3
+set so=2
 
 " Avoid garbled characters in Chinese language windows OS
 let $LANG='en' 

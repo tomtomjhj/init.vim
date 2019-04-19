@@ -9,17 +9,9 @@ colorscheme zen
 set tabstop=2
 set shiftwidth=2
 
-"let g:zenburn_high_Contrast = 1
-"colors zenburn
-
-"let g:solarized_termcolors=256
-"set background=light
-"colorscheme solarized
-
 filetype plugin indent on
 
 au BufRead,BufNewFile *.k set filetype=k
-au BufRead,BufNewFile *.kore set filetype=kore
 au BufRead,BufNewFile *.maude set filetype=maude
 au! Syntax kframework source maude.vim
 au BufRead,BufNewFile *.v set filetype=coq
@@ -144,8 +136,15 @@ imap <F1> <Esc>
 " duplicate tab
 map <leader>td :tab split<CR>
 
-"
 map <leader>q :q<CR>
+
+" I think it's more natural to return to the 'left' tab
+au TabClosed * if g:lasttab > 1
+  \ | exe "tabn ".(g:lasttab-1)
+  \ | endif
+
+" undo closed tab
+map <silent><leader><C-t> :BufExplorer<CR><Down>t
 
 " edit from the dir of cur buf
 map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
@@ -173,9 +172,7 @@ map <leader>an :ALENext<CR>
 map <leader>av :ALEPrevious<CR>
 
 let g:pandoc#spell#enabled = 0
-let g:pandoc#syntax#codeblocks#embeds#langs = ["k", "haskell", "python", "llvm"]
+let g:pandoc#syntax#codeblocks#embeds#langs = ["k", "haskell", "python", "llvm", "cpp", "rust"]
 let g:pandoc#modules#disabled = ["folding"]
 au FileType pandoc syntax spell toplevel
 " set to notoplevel in haskell.vim
-
-
