@@ -49,3 +49,9 @@
 [submodule "my_plugins/rust.vim"]
 	path = my_plugins/rust.vim
 	url = https://github.com/tomtomjhj/rust.vim
+[submodule "my_plugins/tex-conceal.vim"]
+	path = my_plugins/tex-conceal.vim
+	url = https://github.com/KeitaNakamura/tex-conceal.vim
+[submodule "my_plugins/deoplete-jedi"]
+	path = my_plugins/deoplete-jedi
+	url = https://github.com/deoplete-plugins/deoplete-jedi
