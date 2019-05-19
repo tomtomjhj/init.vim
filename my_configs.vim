@@ -6,21 +6,19 @@ set mouse=a
 set number
 "colorscheme dracula
 colorscheme zen
-set tabstop=2
-set shiftwidth=2
+set tabstop=4
+set shiftwidth=4
 
 filetype plugin indent on
 
 au BufRead,BufNewFile *.k set filetype=k
-au BufRead,BufNewFile *.maude set filetype=maude
-au! Syntax kframework source maude.vim
 au BufRead,BufNewFile *.v set filetype=coq
 au BufRead,BufNewFile *.ll set filetype=llvm
 
 "" general completion
 " let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
 let g:SuperTabDefaultCompletionType = '<c-n>'
-" SLOW
+" S L O W
 let g:deoplete#enable_at_startup = 1
 
 if has("gui_running")
@@ -30,6 +28,9 @@ else " no gui
     inoremap <Nul> <c-r>=SuperTabAlternateCompletion("\<lt>c-x>\<lt>c-o>")<cr>
   endif
 endif
+
+" NO preview window for autocompletion stuff
+set completeopt-=preview
 
 " haskell
 let g:haskell_classic_highlighting = 1
@@ -96,12 +97,26 @@ if has('nvim')
 endif
 
 
-" ale
+" ale general settings
 let g:ale_linters = {
 \   'haskell': ['hlint'],
+\   'python': ['pylint', 'mypy'],
 \}
 
 let g:ale_fixers = {'haskell': ['stylish-haskell'], '*': ['trim_whitespace']}
+
+map <leader>af :ALEFix<CR>
+map <leader>ad :ALEDetail<CR>
+map <leader>an :ALENext<CR>
+map <leader>av :ALEPrevious<CR>
+
+
+" python
+" TODO: this disables any other checks. but works when used from cmd.??????????
+" -> just add `# type: ignore` annotation after the import stmt
+" let g:ale_python_mypy_options = "-ignore-missing-imports"
+
+let g:ale_python_pylint_options = "--disable=R,C"
 
 " wrap
 map <S-j> gj
@@ -121,7 +136,7 @@ map <c-space> <C-u>
 if has('nvim')
   inoremap <C-v> <ESC>"+pa
   vnoremap <C-c> "+y
-  vnoremap <C-d> "+d
+  vnoremap <C-x> "+d
 endif
 
 ca tt tabedit
@@ -143,14 +158,14 @@ au TabClosed * if g:lasttab > 1
   \ | exe "tabn ".(g:lasttab-1)
   \ | endif
 
-" undo closed tab
+" undo closed tab. TODO: broken
 map <silent><leader><C-t> :BufExplorer<CR><Down>t
 
 " edit from the dir of cur buf
 map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
 " map <leader>te ...
 
-" :%s/pat/\r&/g
+" :%s/pat/\r&/g   refer to the matched str to be replaced
 
 " refresh
 map <leader>ef :e!<CR>
@@ -165,11 +180,6 @@ autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . 
 " //_
 " TODO just use commentary
 let g:NERDSpaceDelims = 1
-
-map <leader>af :ALEFix<CR>
-map <leader>ad :ALEDetail<CR>
-map <leader>an :ALENext<CR>
-map <leader>av :ALEPrevious<CR>
 
 let g:pandoc#spell#enabled = 0
 let g:pandoc#syntax#codeblocks#embeds#langs = ["k", "haskell", "python", "llvm", "cpp", "rust"]

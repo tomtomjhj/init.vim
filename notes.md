@@ -1,3 +1,5 @@
+# Tex
+
 ## Tex conceal
 
 ### do not conceal sub/superscript block
@@ -11,14 +13,44 @@ In `sytax/tex.vim`, around line 981, comment out following lines.
    syn region texSubscript	matchgroup=Delimiter start='_{'		skip="\\\\\|\\[{}]" end='}'	contained concealends contains=texSpecialChar,texSubscripts,texStatement,texSubscript,texSuperscript,texMathMatcher
 ```
 
+### do not conceal `$$` of math block
+remvoe concealends
+
+```vim
+syn region texMathZoneY	matchgroup=Delimiter start="\$\$" matchgroup=Delimiter	end="\$\$"	end="%stopzone\>"	keepend concealends contains=@texMathZoneGroup
+```
+
 ### TODO
 
 * correctly conceal things like this: `\sum_n`. Need to ignore `_`. Do this without modifying `s:texMathList=[` if possible.
 
 
-## markdown
+## Tex BeginEnd
 
-### TODO
+```vim
+ syn match texBadMath		"\\end\s*{\s*\(displaymath\|equation\|eqnarray\|math\|align\)\*\=\s*}"
+ ...
+ call TexNewMathZone("E","align",1)
+```
 
-* do not conceal `$$` of math block
 
+## cursor movement on concealed string
+
+```
+setlocal concealcursor=n
+```
+
+This doesn't work as expected.
+
+https://vi.stackexchange.com/questions/4530/moving-over-conceal
+
+
+## conceal for each projects
+
+Conceal commands defined for specific projects.
+Just list up the string-cchar pair in local .vimrc and do some magic.
+
+
+
+
+# Chrome-style restore tab?
