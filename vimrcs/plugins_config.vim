@@ -144,10 +144,6 @@ let g:lightline = {
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Syntastic (syntax checker)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:ale_linters = {
-\   'javascript': ['jshint'],
-\   'python': ['flake8'],
-\}
 
 nmap <silent> <leader>a <Plug>(ale_next_wrap)
 

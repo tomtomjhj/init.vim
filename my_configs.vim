@@ -1,6 +1,4 @@
 set runtimepath+=~/.vim_runtime
-let g:ale_emit_conflict_warnings = 0
-let g:ale_set_highlights = 0
 
 set mouse=a
 set number
@@ -97,7 +95,7 @@ if has('nvim')
 endif
 
 
-" ale general settings
+" ale general settings --------------------------
 let g:ale_linters = {
 \   'haskell': ['hlint'],
 \   'python': ['pylint', 'mypy'],
@@ -105,16 +103,20 @@ let g:ale_linters = {
 
 let g:ale_fixers = {'haskell': ['stylish-haskell'], '*': ['trim_whitespace']}
 
+let g:ale_emit_conflict_warnings = 0
+let g:ale_set_highlights = 0
+
 map <leader>af :ALEFix<CR>
 map <leader>ad :ALEDetail<CR>
 map <leader>an :ALENext<CR>
 map <leader>av :ALEPrevious<CR>
 
 
-" python
+" python ------------------------------------
 " TODO: this disables any other checks. but works when used from cmd.??????????
 " -> just add `# type: ignore` annotation after the import stmt
 " let g:ale_python_mypy_options = "-ignore-missing-imports"
+let g:ale_python_mypy_options = "--check-untyped-defs"
 
 let g:ale_python_pylint_options = "--disable=R,C"
 
@@ -125,6 +127,9 @@ map <S-h> h
 map <S-l> l
 map <leader>sw :set wrap<CR>
 map <leader>snw :set nowrap<CR>
+" indent the wrapped line, w/ `> ` at the start
+set breakindent
+set showbreak=>\ 
 
 " space to navigate
 map <space> <C-d>
@@ -139,21 +144,25 @@ if has('nvim')
   vnoremap <C-x> "+d
 endif
 
-ca tt tabedit
-map <leader>tt :tabedit<CR>
-
 " filename
 map <leader>fn :echo @%<CR>
 
 map <F1> <Esc>
 imap <F1> <Esc>
 
+" tabs and splits ----------------------------
+ca tt tabedit
+map <leader>tt :tabedit<CR>
+
 " duplicate tab
 map <leader>td :tab split<CR>
-
 map <leader>q :q<CR>
 
+set splitright
+set splitbelow
+
 " I think it's more natural to return to the 'left' tab
+" this breaks `:tabonly`.
 au TabClosed * if g:lasttab > 1
   \ | exe "tabn ".(g:lasttab-1)
   \ | endif
@@ -170,9 +179,17 @@ map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
 " refresh
 map <leader>ef :e!<CR>
 
+
+" tags ----------------------------------------
+
 " open ctag in a new tab/vertical split
 map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 map <leader><C-\> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
+map g<Bslash> :tab split<CR>:exec("tselect ".expand("<cword>"))<CR>
+map <leader>g<Bslash> :vsp<CR>:exec("tselect ".expand("<cword>"))<CR>
+
+map <leader>tn :tnext<CR>
+map <leader>tN :tNext<CR>
 
 autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
 autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
@@ -181,6 +198,7 @@ autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . 
 " TODO just use commentary
 let g:NERDSpaceDelims = 1
 
+" pandoc
 let g:pandoc#spell#enabled = 0
 let g:pandoc#syntax#codeblocks#embeds#langs = ["k", "haskell", "python", "llvm", "cpp", "rust"]
 let g:pandoc#modules#disabled = ["folding"]

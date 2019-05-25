@@ -51,6 +51,7 @@ Conceal commands defined for specific projects.
 Just list up the string-cchar pair in local .vimrc and do some magic.
 
 
-
+# TODO:
+make patch files for above changes
 
 # Chrome-style restore tab?
