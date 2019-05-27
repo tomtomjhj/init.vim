@@ -55,3 +55,6 @@
 [submodule "my_plugins/deoplete-jedi"]
 	path = my_plugins/deoplete-jedi
 	url = https://github.com/deoplete-plugins/deoplete-jedi
+[submodule "my_plugins/vim-one"]
+	path = my_plugins/vim-one
+	url = https://github.com/rakr/vim-one

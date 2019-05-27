@@ -55,3 +55,12 @@ Just list up the string-cchar pair in local .vimrc and do some magic.
 make patch files for above changes
 
 # Chrome-style restore tab?
+
+# motions
+`:help motion`
+
+* `[(`
+* `v_iw`
+* `v_ab`, `v_aB`, `v_ib`, `v_iB`
+* `v_O`, `v_o`
+* `gn`, `gN`

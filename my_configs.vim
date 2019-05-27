@@ -3,7 +3,17 @@ set runtimepath+=~/.vim_runtime
 set mouse=a
 set number
 "colorscheme dracula
-colorscheme zen
+" colorscheme zen
+colorscheme one
+set background=light
+
+" in lightline/colorscheme/one.vim,
+" let s:p.tabline.tabsel = [[['#494b53',23], ['#fafafa',255], 'bold']]
+" TODO: how to customize light this
+" let g:lightline#colorscheme#one#palette.tabline.tabsel =[['#494b53', '#fafafa', 23, 255, 'bold']]
+" call lightline#colorscheme()
+
+"
 set tabstop=4
 set shiftwidth=4
 
@@ -174,7 +184,7 @@ map <silent><leader><C-t> :BufExplorer<CR><Down>t
 map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
 " map <leader>te ...
 
-" :%s/pat/\r&/g   refer to the matched str to be replaced
+" :%s/pat/\r&/g. & matched str, \r newline
 
 " refresh
 map <leader>ef :e!<CR>
