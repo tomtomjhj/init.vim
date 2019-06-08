@@ -19,7 +19,7 @@ let s:p = {'normal': {}, 'inactive': {}, 'insert': {}, 'replace': {}, 'visual': 
 if lightline#colorscheme#background() ==# 'light'
   " Light variant
   let s:bg     = [ '#fafafa', 255 ]
-  let s:fg1    = ['#494b53',  238 ]
+  let s:fg1    = ['#1c1c1c',  234 ]
   let s:gray1  = [ '#494b53', 238 ]
   let s:gray2  = [ '#f0f0f0', 255 ]
   let s:gray3  = [ '#d0d0d0', 250 ]

@@ -58,3 +58,6 @@
 [submodule "my_plugins/vim-one"]
 	path = my_plugins/vim-one
 	url = https://github.com/rakr/vim-one
+[submodule "my_plugins/vim-racer"]
+	path = my_plugins/vim-racer
+	url = https://github.com/racer-rust/vim-racer
