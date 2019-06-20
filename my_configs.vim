@@ -1,19 +1,35 @@
 set runtimepath+=~/.vim_runtime
 
-set mouse=a
-set number
-"colorscheme dracula
-" colorscheme zen
-colorscheme one
-set background=light
-
-" in lightline/colorscheme/one.vim,
-" let s:p.tabline.tabsel = [[['#494b53',23], ['#fafafa',255], 'bold']]
-" TODO: how to customize light this
-" let g:lightline#colorscheme#one#palette.tabline.tabsel =[['#494b53', '#fafafa', 23, 255, 'bold']]
-" call lightline#colorscheme()
+" themes ---------------------------------------------
+" colorscheme dracula
+colorscheme zen
+" colorscheme one
+" set background=light
+" call one#highlight('Normal', '1c1c1c', '', '')
+" call one#highlight('Comment', '767676', '', '')
+" call one#highlight('SpecialComment', '767676', '', '')
+" call one#highlight('Conceal', '767676', '', '')
+" call one#highlight('rustCommentLine',         '767676', '', '')
+" call one#highlight('rustCommentLineDoc',      '767676', '', '')
+" call one#highlight('rustCommentLineDocError', '767676', '', '')
+" call one#highlight('rustCommentBlock',        '767676', '', '')
+" call one#highlight('rustCommentBlockDoc',     '767676', '', '')
+" call one#highlight('rustCommentBlockDocError','767676', '', '')
+" call one#highlight('gitcommitComment','767676', '', '')
+" call one#highlight('vimCommentTitle','767676', '', '')
+" call one#highlight('vimLineComment','767676', '', '')
+" call one#highlight('Todo', 'fafafa', 'ffafd7', 'bold')
+" call one#highlight('SpellBad'  , 'FF5555', 'fafafa', 'underline')
+" call one#highlight('SpellLocal', 'FFB86C', 'fafafa', 'underline')
+" call one#highlight('SpellCap'  , 'FFB86C', 'fafafa', 'underline')
+" call one#highlight('SpellRare' , 'FFB86C', 'fafafa', 'underline')
+" TODO: clean way to customize palette? just fork?
+" let g:lightline.colorscheme = 'one1'
+" TODO: how to change colorscheme including lightline without restarting: remove all syntax links...
 
 "
+set mouse=a
+set number
 set tabstop=4
 set shiftwidth=4
 
@@ -24,8 +40,9 @@ au BufRead,BufNewFile *.v set filetype=coq
 au BufRead,BufNewFile *.ll set filetype=llvm
 
 "" general completion
-" let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
-let g:SuperTabDefaultCompletionType = '<c-n>'
+" TODO: what's the difference
+let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
+" let g:SuperTabDefaultCompletionType = '<c-n>'
 " S L O W
 let g:deoplete#enable_at_startup = 1
 
@@ -38,6 +55,7 @@ else " no gui
 endif
 
 " NO preview window for autocompletion stuff
+" TODO: how to check preview info manually?
 set completeopt-=preview
 
 " haskell
@@ -104,6 +122,15 @@ if has('nvim')
   augroup END
 endif
 
+" rust stuff
+let g:racer_cmd = "~/.cargo/bin/racer"
+augroup rustMaps
+    au FileType rust nmap gd <Plug>(rust-def)
+    au FileType rust nmap gs <Plug>(rust-def-split)
+    au FileType rust nmap gx <Plug>(rust-def-vertical)
+    au FileType rust nmap <leader>gd <Plug>(rust-doc)
+augroup END
+
 
 " ale general settings --------------------------
 let g:ale_linters = {
@@ -127,7 +154,6 @@ map <leader>av :ALEPrevious<CR>
 " -> just add `# type: ignore` annotation after the import stmt
 " let g:ale_python_mypy_options = "-ignore-missing-imports"
 let g:ale_python_mypy_options = "--check-untyped-defs"
-
 let g:ale_python_pylint_options = "--disable=R,C"
 
 " wrap
@@ -193,22 +219,28 @@ map <leader>ef :e!<CR>
 " tags ----------------------------------------
 
 " open ctag in a new tab/vertical split
-map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
-map <leader><C-\> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
-map g<Bslash> :tab split<CR>:exec("tselect ".expand("<cword>"))<CR>
-map <leader>g<Bslash> :vsp<CR>:exec("tselect ".expand("<cword>"))<CR>
+map <silent><C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
+map <silent><leader><C-\> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
+map <silent>g<Bslash> :tab split<CR>:exec("tselect ".expand("<cword>"))<CR>
+map <silent><leader>g<Bslash> :vsp<CR>:exec("tselect ".expand("<cword>"))<CR>
+
+" open in preview window: <C-w>} and <C-w>g}
+" close with :pclose
 
 map <leader>tn :tnext<CR>
 map <leader>tN :tNext<CR>
 
 autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
-autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
+" autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
 
-" //_
-" TODO just use commentary
+
+" Comments ------------------------
 let g:NERDSpaceDelims = 1
+let g:NERDCustomDelimiters = { 'python' : { 'left': '#', 'leftAlt': '', 'rightAlt': '' }}
+let g:NERDDefaultAlign = 'both'
 
-" pandoc
+
+" pandoc ------------------------------------
 let g:pandoc#spell#enabled = 0
 let g:pandoc#syntax#codeblocks#embeds#langs = ["k", "haskell", "python", "llvm", "cpp", "rust"]
 let g:pandoc#modules#disabled = ["folding"]
