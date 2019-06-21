@@ -239,6 +239,7 @@ let g:NERDSpaceDelims = 1
 let g:NERDCustomDelimiters = { 'python' : { 'left': '#', 'leftAlt': '', 'rightAlt': '' }}
 let g:NERDDefaultAlign = 'both'
 
+map <leader>sf :syn sync fromstart<CR>
 
 " pandoc ------------------------------------
 let g:pandoc#spell#enabled = 0
