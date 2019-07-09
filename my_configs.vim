@@ -40,9 +40,12 @@ au BufRead,BufNewFile *.v set filetype=coq
 au BufRead,BufNewFile *.ll set filetype=llvm
 
 "" general completion
-" TODO: what's the difference
 let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
+let g:SuperTabClosePreviewOnPopupClose = 1
 " let g:SuperTabDefaultCompletionType = '<c-n>'
+
+" TODO: deoplete snippets integration??
+
 " S L O W
 let g:deoplete#enable_at_startup = 1
 
@@ -55,27 +58,69 @@ else " no gui
 endif
 
 " NO preview window for autocompletion stuff
+" set completeopt-=preview
 " TODO: how to check preview info manually?
-set completeopt-=preview
 
-" haskell
+
+" ale general settings --------------------------
+" TODO
+" hi link ALEError Error
+" hi Warning term=underline cterm=underline ctermfg=Yellow gui=undercurl guisp=Gold
+" hi link ALEWarning Warning
+" hi link ALEInfo SpellCap
+
+" \   'haskell': ['hlint'],
+let g:ale_linters = {
+\   'python': ['pylint', 'mypy'],
+\   'rust': ['rls'],
+\}
+
+let g:ale_fixers = {'haskell': ['stylish-haskell'], 'rust': ['rustfmt'], '*': ['trim_whitespace']}
+
+let g:ale_emit_conflict_warnings = 0
+let g:ale_set_highlights = 0
+
+map <leader>af :ALEFix<CR>
+map <leader>ad :ALEDetail<CR>
+map <leader>an :ALENext<CR>
+map <leader>av :ALEPrevious<CR>
+
+" Language Client -----------------------------
+
+" TODO: fzf?
+" :LanguageClientStart to start
+let g:LanguageClient_autoStart = 0
+let g:LanguageClient_useVirtualText = 0
+let g:LanguageClient_serverCommands = { 'haskell': ['hie-wrapper'] }
+let g:LanguageClient_rootMarkers = ['*.cabal', 'stack.yaml']
+nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+map <Leader>lk :call LanguageClient#textDocument_hover()<CR>
+map <Leader>lg :call LanguageClient#textDocument_definition()<CR>
+map <Leader>lr :call LanguageClient#textDocument_rename()<CR>
+map <Leader>lf :call LanguageClient#textDocument_formatting()<CR>
+map <Leader>lb :call LanguageClient#textDocument_references()<CR>
+map <Leader>la :call LanguageClient#textDocument_codeAction()<CR>
+map <Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
+
+
+" haskell ------------------------------------------
 let g:haskell_classic_highlighting = 1
 let g:haskell_enable_quantification = 1
 let g:haskell_enable_recursivedo = 1
 let g:haskell_enable_pattern_synonyms = 1
 let g:haskell_enable_typeroles = 1
 let g:haskell_enable_static_pointers = 1
+let g:haskell_indent_let_no_in = 0
+let g:haskell_indent_if = 0
+let g:haskell_indent_case_alternative = 1
 
 let g:haskell_tabular = 1
 vmap a= :Tabularize /=<CR>
 vmap a; :Tabularize /::<CR>
 vmap a- :Tabularize /-><CR>
 
-" let g:haskellmode_completion_ghc = 1
-" autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
-let g:haskell_indent_let_no_in = 0
-let g:haskell_indent_if = 0
-let g:haskell_indent_case_alternative = 1
+au FileType haskell setlocal shiftwidth=2 tabstop=2
+au FileType yaml setlocal shiftwidth=2 tabstop=2
 
 let g:intero_start_immediately = 0
 if has('nvim')
@@ -122,7 +167,8 @@ if has('nvim')
   augroup END
 endif
 
-" rust stuff
+" rust --------------------------------------------
+" TODO: use language client?
 let g:racer_cmd = "~/.cargo/bin/racer"
 augroup rustMaps
     au FileType rust nmap gd <Plug>(rust-def)
@@ -132,23 +178,6 @@ augroup rustMaps
 augroup END
 
 
-" ale general settings --------------------------
-let g:ale_linters = {
-\   'haskell': ['hlint'],
-\   'python': ['pylint', 'mypy'],
-\}
-
-let g:ale_fixers = {'haskell': ['stylish-haskell'], '*': ['trim_whitespace']}
-
-let g:ale_emit_conflict_warnings = 0
-let g:ale_set_highlights = 0
-
-map <leader>af :ALEFix<CR>
-map <leader>ad :ALEDetail<CR>
-map <leader>an :ALENext<CR>
-map <leader>av :ALEPrevious<CR>
-
-
 " python ------------------------------------
 " TODO: this disables any other checks. but works when used from cmd.??????????
 " -> just add `# type: ignore` annotation after the import stmt
@@ -156,6 +185,8 @@ map <leader>av :ALEPrevious<CR>
 let g:ale_python_mypy_options = "--check-untyped-defs"
 let g:ale_python_pylint_options = "--disable=R,C"
 
+
+" etc ---------------------------------------
 " wrap
 map <S-j> gj
 map <S-k> gk
@@ -173,6 +204,10 @@ map <c-space> <C-u>
 " <s-space> does not work
 " map <s-space> <C-u>
 
+" star without moving the cursor. Actually, move the cursor to cword's first letter
+nmap <silent>* :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<C-M>b
+" TODO: do this for vmap
+
 " clipboard
 if has('nvim')
   inoremap <C-v> <ESC>"+pa
@@ -185,6 +220,10 @@ map <leader>fn :echo @%<CR>
 
 map <F1> <Esc>
 imap <F1> <Esc>
+
+" <C-BS> doesn't work
+" imap <C-BS> <C-W>
+" imap <C-S-BS> <C-U>
 
 " tabs and splits ----------------------------
 ca tt tabedit
@@ -203,8 +242,13 @@ au TabClosed * if g:lasttab > 1
   \ | exe "tabn ".(g:lasttab-1)
   \ | endif
 
-" undo closed tab. TODO: broken
-map <silent><leader><C-t> :BufExplorer<CR><Down>t
+
+" open last closed buf
+" TODO: lastbuf_stack. remove from stack when BufEnter?
+" TODO: more options. cur window, new split, ....
+let g:lastbuf = 0
+au BufLeave * let g:lastbuf = bufnr("%")
+map <silent><leader><C-t> :exec("if g:lastbuf>0 \| tabnew +".(g:lastbuf)."buf \| endif")<CR>
 
 " edit from the dir of cur buf
 map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
@@ -217,6 +261,7 @@ map <leader>ef :e!<CR>
 
 
 " tags ----------------------------------------
+" TODO: CTRL-W commands
 
 " open ctag in a new tab/vertical split
 map <silent><C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
@@ -225,7 +270,9 @@ map <silent>g<Bslash> :tab split<CR>:exec("tselect ".expand("<cword>"))<CR>
 map <silent><leader>g<Bslash> :vsp<CR>:exec("tselect ".expand("<cword>"))<CR>
 
 " open in preview window: <C-w>} and <C-w>g}
-" close with :pclose
+" close preview with :pclose, <C-w>z
+map <silent><leader>x :pc<CR>
+" use <leader>tc  (tabclose)
 
 map <leader>tn :tnext<CR>
 map <leader>tN :tNext<CR>
@@ -243,7 +290,7 @@ map <leader>sf :syn sync fromstart<CR>
 
 " pandoc ------------------------------------
 let g:pandoc#spell#enabled = 0
-let g:pandoc#syntax#codeblocks#embeds#langs = ["k", "haskell", "python", "llvm", "cpp", "rust"]
+let g:pandoc#syntax#codeblocks#embeds#langs = ["haskell", "python", "cpp", "rust"]
 let g:pandoc#modules#disabled = ["folding"]
 au FileType pandoc syntax spell toplevel
 " set to notoplevel in haskell.vim

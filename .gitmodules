@@ -45,7 +45,7 @@
 	url = https://github.com/tomlion/vim-solidity
 [submodule "my_plugins/vim-ocaml"]
 	path = my_plugins/vim-ocaml
-	url = https://github.com/rgrinberg/vim-ocaml
+	url = https://github.com/tomtomjhj/vim-ocaml
 [submodule "my_plugins/rust.vim"]
 	path = my_plugins/rust.vim
 	url = https://github.com/tomtomjhj/rust.vim
@@ -61,3 +61,6 @@
 [submodule "my_plugins/vim-racer"]
 	path = my_plugins/vim-racer
 	url = https://github.com/racer-rust/vim-racer
+[submodule "my_plugins/LanguageClient-neovim"]
+	path = my_plugins/LanguageClient-neovim
+	url = https://github.com/autozimu/LanguageClient-neovim

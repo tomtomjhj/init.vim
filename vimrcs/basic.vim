@@ -232,7 +232,7 @@ map <leader>h :bprevious<cr>
 " Useful mappings for managing tabs
 " map <leader>tn :tabnew<cr>
 " map <leader>to :tabonly<cr>
-" map <leader>tc :tabclose<cr>
+map <leader>tc :tabclose<cr>
 " map <leader>tm :tabmove 
 " map <leader>t<leader> :tabnext 
 
@@ -297,10 +297,6 @@ fun! CleanExtraSpaces()
     call setpos('.', save_cursor)
     call setreg('/', old_query)
 endfun
-
-if has("autocmd")
-    autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
-endif
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
