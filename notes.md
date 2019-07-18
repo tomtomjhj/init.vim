@@ -57,6 +57,7 @@ make patch files for above changes
 # Chrome-style restore tab?
 
 # motions
+
 `:help motion`
 
 * `[(`
@@ -64,3 +65,8 @@ make patch files for above changes
 * `v_ab`, `v_aB`, `v_ib`, `v_iB`
 * `v_O`, `v_o`
 * `gn`, `gN`
+
+* `dw`: to remove whitespace from current pos
+
+* TODO: get more used to operator & motion composition
+* TODO: Insert-mode stuff

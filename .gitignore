@@ -8,3 +8,4 @@ sources_non_forked/ctrlp.vim/doc/tags*
 tags
 .DS_Store
 __pycache__
+*.py[cod]

@@ -39,8 +39,9 @@ au BufRead,BufNewFile *.k set filetype=k
 au BufRead,BufNewFile *.v set filetype=coq
 au BufRead,BufNewFile *.ll set filetype=llvm
 
-"" general completion
+" general completion
 let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
+" close preview after completion
 let g:SuperTabClosePreviewOnPopupClose = 1
 " let g:SuperTabDefaultCompletionType = '<c-n>'
 
@@ -64,15 +65,13 @@ endif
 
 " ale general settings --------------------------
 " TODO
-" hi link ALEError Error
-" hi Warning term=underline cterm=underline ctermfg=Yellow gui=undercurl guisp=Gold
-" hi link ALEWarning Warning
-" hi link ALEInfo SpellCap
 
 " \   'haskell': ['hlint'],
 let g:ale_linters = {
 \   'python': ['pylint', 'mypy'],
+\   'haskell': [],
 \   'rust': ['rls'],
+\   'cpp': [],
 \}
 
 let g:ale_fixers = {'haskell': ['stylish-haskell'], 'rust': ['rustfmt'], '*': ['trim_whitespace']}
@@ -80,27 +79,41 @@ let g:ale_fixers = {'haskell': ['stylish-haskell'], 'rust': ['rustfmt'], '*': ['
 let g:ale_emit_conflict_warnings = 0
 let g:ale_set_highlights = 0
 
-map <leader>af :ALEFix<CR>
-map <leader>ad :ALEDetail<CR>
-map <leader>an :ALENext<CR>
-map <leader>av :ALEPrevious<CR>
+map <silent><leader>af :ALEFix<CR>
+map <silent><leader>ad :ALEDetail<CR>
+map <silent><leader>an :ALENext -wrap<CR>
+map <silent><leader>ae :ALENext -wrap -error<CR>
+map <silent><leader>av :ALEPrevious -wrap -error<CR>
 
 " Language Client -----------------------------
 
 " TODO: fzf?
+" run install.sh
 " :LanguageClientStart to start
+"
+map <leader>lcs :LanguageClientStart<CR>
 let g:LanguageClient_autoStart = 0
 let g:LanguageClient_useVirtualText = 0
-let g:LanguageClient_serverCommands = { 'haskell': ['hie-wrapper'] }
-let g:LanguageClient_rootMarkers = ['*.cabal', 'stack.yaml']
+let g:LanguageClient_serverCommands = { 'haskell': ['hie-wrapper'], 'rust':['rls'] }
 nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-map <Leader>lk :call LanguageClient#textDocument_hover()<CR>
-map <Leader>lg :call LanguageClient#textDocument_definition()<CR>
-map <Leader>lr :call LanguageClient#textDocument_rename()<CR>
-map <Leader>lf :call LanguageClient#textDocument_formatting()<CR>
-map <Leader>lb :call LanguageClient#textDocument_references()<CR>
-map <Leader>la :call LanguageClient#textDocument_codeAction()<CR>
-map <Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
+map <silent><Leader>lk :call LanguageClient#textDocument_hover()<CR>
+map <silent><Leader>lg :call LanguageClient#textDocument_definition()<CR>
+map <silent><Leader>lr :call LanguageClient#textDocument_rename()<CR>
+map <silent><Leader>lf :call LanguageClient#textDocument_formatting()<CR>
+map <silent><Leader>lb :call LanguageClient#textDocument_references()<CR>
+map <silent><Leader>la :call LanguageClient#textDocument_codeAction()<CR>
+map <silent><Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
+" hi link ALEError Error
+" hi Warning term=underline cterm=underline ctermfg=Yellow gui=undercurl guisp=Gold
+" hi link ALEWarning Warning
+" hi link ALEInfo SpellCap
+"
+" use ale diagnostics
+let g:LanguageClient_diagnosticsEnable = 0
+" src/language_server_protocol.rs:define_signs overrides ale sign definition highlights lol
+" The default value itself seems to be fine but the highlighting doesn't work
+" TODO: check what ale_set_highlights does
+" let g:LanguageClient_diagnosticsDisplay = ..
 
 
 " haskell ------------------------------------------
@@ -168,14 +181,7 @@ if has('nvim')
 endif
 
 " rust --------------------------------------------
-" TODO: use language client?
-let g:racer_cmd = "~/.cargo/bin/racer"
-augroup rustMaps
-    au FileType rust nmap gd <Plug>(rust-def)
-    au FileType rust nmap gs <Plug>(rust-def-split)
-    au FileType rust nmap gx <Plug>(rust-def-vertical)
-    au FileType rust nmap <leader>gd <Plug>(rust-doc)
-augroup END
+" use language client
 
 
 " python ------------------------------------
@@ -204,8 +210,10 @@ map <c-space> <C-u>
 " <s-space> does not work
 " map <s-space> <C-u>
 
-" star without moving the cursor. Actually, move the cursor to cword's first letter
-nmap <silent>* :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<C-M>b
+" star without moving the cursor. ~Actually, move the cursor to cword's first letter~
+" TODO: idempotent motion?
+" TODO: vim-sneak?
+nmap <silent>* :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<C-M>
 " TODO: do this for vmap
 
 " clipboard
@@ -224,6 +232,8 @@ imap <F1> <Esc>
 " <C-BS> doesn't work
 " imap <C-BS> <C-W>
 " imap <C-S-BS> <C-U>
+
+" TODO: insert mode CTRL-O$ to move to eol
 
 " tabs and splits ----------------------------
 ca tt tabedit
