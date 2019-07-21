@@ -64,7 +64,6 @@ endif
 
 
 " ale general settings --------------------------
-" TODO
 
 " \   'haskell': ['hlint'],
 let g:ale_linters = {
@@ -103,17 +102,19 @@ map <silent><Leader>lf :call LanguageClient#textDocument_formatting()<CR>
 map <silent><Leader>lb :call LanguageClient#textDocument_references()<CR>
 map <silent><Leader>la :call LanguageClient#textDocument_codeAction()<CR>
 map <silent><Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
-" hi link ALEError Error
-" hi Warning term=underline cterm=underline ctermfg=Yellow gui=undercurl guisp=Gold
-" hi link ALEWarning Warning
-" hi link ALEInfo SpellCap
-"
+
 " use ale diagnostics
 let g:LanguageClient_diagnosticsEnable = 0
-" src/language_server_protocol.rs:define_signs overrides ale sign definition highlights lol
-" The default value itself seems to be fine but the highlighting doesn't work
+" src/language_server_protocol.rs:define_signs overrides ale sign definition
+" highlights.  The default value itself seems to be fine but the highlighting
+" doesn't work if LanguageClientStart runs before default ale starts. Below is
+" the default hi link before LC starts.
 " TODO: check what ale_set_highlights does
-" let g:LanguageClient_diagnosticsDisplay = ..
+hi link ALEErrorSign Error
+hi link ALEStyleErrorSign ALEErrorSign
+hi link ALEWarningSign Todo
+hi link ALEStyleWarningSign ALEWarningSign
+hi link ALEInfoSign ALEWarningSign
 
 
 " haskell ------------------------------------------
@@ -233,7 +234,7 @@ imap <F1> <Esc>
 " imap <C-BS> <C-W>
 " imap <C-S-BS> <C-U>
 
-" TODO: insert mode CTRL-O$ to move to eol
+" insert mode CTRL-O$ to move to eol
 
 " tabs and splits ----------------------------
 ca tt tabedit
