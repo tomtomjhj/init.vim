@@ -194,11 +194,12 @@ let g:ale_python_pylint_options = "--disable=R,C"
 
 
 " etc ---------------------------------------
-" wrap
-map <S-j> gj
-map <S-k> gk
-map <S-h> h
-map <S-l> l
+" HJKL navigation for wrapped lines. <leader>J for joins
+noremap <leader>J J
+noremap <S-j> gj
+noremap <S-k> gk
+noremap <S-h> h
+noremap <S-l> l
 map <leader>sw :set wrap<CR>
 map <leader>snw :set nowrap<CR>
 " indent the wrapped line, w/ `> ` at the start
