@@ -103,7 +103,7 @@ map <silent><Leader>lb :call LanguageClient#textDocument_references()<CR>
 map <silent><Leader>la :call LanguageClient#textDocument_codeAction()<CR>
 map <silent><Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
 
-" use ale diagnostics
+" use ale diagnostics: LC diagnostics doesn't seem to have ALENext stuff and has very annoying default settings
 let g:LanguageClient_diagnosticsEnable = 0
 " src/language_server_protocol.rs:define_signs overrides ale sign definition
 " highlights.  The default value itself seems to be fine but the highlighting
@@ -115,6 +115,41 @@ hi link ALEStyleErrorSign ALEErrorSign
 hi link ALEWarningSign Todo
 hi link ALEStyleWarningSign ALEWarningSign
 hi link ALEInfoSign ALEWarningSign
+hi ALEError term=underline cterm=underline gui=undercurl
+hi ALEWarning term=underline cterm=underline gui=undercurl
+hi ALEInfo term=underline cterm=underline gui=undercurl
+let g:LanguageClient_diagnosticsDisplay =
+\   {
+\       1: {
+\           "name": "Error",
+\           "texthl": "ALEError",
+\           "signText": ">>",
+\           "signTexthl": "ALEErrorSign",
+\           "virtualTexthl": "Error",
+\       },
+\       2: {
+\           "name": "Warning",
+\           "texthl": "ALEWarning",
+\           "signText": "--",
+\           "signTexthl": "ALEWarningSign",
+\           "virtualTexthl": "Todo",
+\       },
+\       3: {
+\           "name": "Information",
+\           "texthl": "ALEInfo",
+\           "signText": "--",
+\           "signTexthl": "ALEInfoSign",
+\           "virtualTexthl": "Todo",
+\       },
+\       4: {
+\           "name": "Hint",
+\           "texthl": "ALEInfo",
+\           "signText": "!",
+\           "signTexthl": "ALEInfoSign",
+\           "virtualTexthl": "Todo",
+\       },
+\   }
+
 
 
 " haskell ------------------------------------------
@@ -218,6 +253,7 @@ map <c-space> <C-u>
 nmap <silent>* :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<C-M>
 " TODO: do this for vmap
 
+" TODO: maybe broken
 " clipboard
 if has('nvim')
   inoremap <C-v> <ESC>"+pa
