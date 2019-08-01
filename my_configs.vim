@@ -66,17 +66,24 @@ endif
 " ale general settings --------------------------
 
 " \   'haskell': ['hlint'],
+" TODO: cargo check?
 let g:ale_linters = {
-\   'python': ['pylint', 'mypy'],
-\   'haskell': [],
-\   'rust': ['rls'],
-\   'cpp': [],
-\}
+            \ 'python': ['pylint', 'mypy'],
+            \ 'haskell': [],
+            \ 'rust': ['rls'],
+            \ 'cpp': [],
+            \ }
+let g:ale_fixers = {
+            \ 'python': ['yapf'],
+            \ 'haskell': ['stylish-haskell'],
+            \ 'rust': ['rustfmt'],
+            \ '*': ['trim_whitespace']
+            \ }
 
-let g:ale_fixers = {'haskell': ['stylish-haskell'], 'rust': ['rustfmt'], '*': ['trim_whitespace']}
-
-let g:ale_emit_conflict_warnings = 0
-let g:ale_set_highlights = 0
+let g:ale_set_highlights = 1
+hi ALEError term=underline cterm=underline gui=undercurl
+hi ALEWarning term=underline cterm=underline gui=undercurl
+hi ALEInfo term=underline cterm=underline gui=undercurl
 
 map <silent><leader>af :ALEFix<CR>
 map <silent><leader>ad :ALEDetail<CR>
@@ -104,20 +111,17 @@ map <silent><Leader>la :call LanguageClient#textDocument_codeAction()<CR>
 map <silent><Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
 
 " use ale diagnostics: LC diagnostics doesn't seem to have ALENext stuff and has very annoying default settings
+" TODO full ale functionalities for LC
 let g:LanguageClient_diagnosticsEnable = 0
 " src/language_server_protocol.rs:define_signs overrides ale sign definition
 " highlights.  The default value itself seems to be fine but the highlighting
 " doesn't work if LanguageClientStart runs before default ale starts. Below is
 " the default hi link before LC starts.
-" TODO: check what ale_set_highlights does
 hi link ALEErrorSign Error
 hi link ALEStyleErrorSign ALEErrorSign
 hi link ALEWarningSign Todo
 hi link ALEStyleWarningSign ALEWarningSign
 hi link ALEInfoSign ALEWarningSign
-hi ALEError term=underline cterm=underline gui=undercurl
-hi ALEWarning term=underline cterm=underline gui=undercurl
-hi ALEInfo term=underline cterm=underline gui=undercurl
 let g:LanguageClient_diagnosticsDisplay =
 \   {
 \       1: {

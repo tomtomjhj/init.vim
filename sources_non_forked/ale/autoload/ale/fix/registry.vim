@@ -115,6 +115,11 @@ let s:default_registry = {
 \       'suggested_filetypes': ['scala'],
 \       'description': 'Fix Scala files using scalafmt',
 \   },
+\   'sorbet': {
+\       'function': 'ale#fixers#sorbet#Fix',
+\       'suggested_filetypes': ['ruby'],
+\       'description': 'Fix ruby files with srb tc --autocorrect.',
+\   },
 \   'standard': {
 \       'function': 'ale#fixers#standard#Fix',
 \       'suggested_filetypes': ['javascript'],
@@ -144,6 +149,11 @@ let s:default_registry = {
 \       'function': 'ale#fixers#php_cs_fixer#Fix',
 \       'suggested_filetypes': ['php'],
 \       'description': 'Fix PHP files with php-cs-fixer.',
+\   },
+\   'clangtidy': {
+\       'function': 'ale#fixers#clangtidy#Fix',
+\       'suggested_filetypes': ['c', 'cpp', 'objc'],
+\       'description': 'Fix C/C++ and ObjectiveC files with clang-tidy.',
 \   },
 \   'clang-format': {
 \       'function': 'ale#fixers#clangformat#Fix',

@@ -62,6 +62,7 @@ formatting.
   * [gcc](https://gcc.gnu.org/)
   * [uncrustify](https://github.com/uncrustify/uncrustify)
 * C#
+  * [csc](http://www.mono-project.com/docs/about-mono/languages/csharp/) :floppy_disk: see:`help ale-cs-csc` for details and configuration
   * [mcs](http://www.mono-project.com/docs/about-mono/languages/csharp/) see:`help ale-cs-mcs` for details
   * [mcsc](http://www.mono-project.com/docs/about-mono/languages/csharp/) :floppy_disk: see:`help ale-cs-mcsc` for details and configuration
   * [uncrustify](https://github.com/uncrustify/uncrustify)
@@ -400,6 +401,7 @@ formatting.
   * [ruby](https://www.ruby-lang.org)
   * [rufo](https://github.com/ruby-formatter/rufo)
   * [solargraph](https://solargraph.org)
+  * [sorbet](https://github.com/sorbet/sorbet)
   * [standardrb](https://github.com/testdouble/standard)
 * Rust
   * [cargo](https://github.com/rust-lang/cargo) :floppy_disk: (see `:help ale-integration-rust` for configuration instructions)

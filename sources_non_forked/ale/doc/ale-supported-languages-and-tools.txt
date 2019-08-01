@@ -53,6 +53,7 @@ Notes:
   * `gcc`
   * `uncrustify`
 * C#
+  * `csc`!!
   * `mcs`
   * `mcsc`!!
   * `uncrustify`
@@ -391,6 +392,7 @@ Notes:
   * `ruby`
   * `rufo`
   * `solargraph`
+  * `sorbet`
   * `standardrb`
 * Rust
   * `cargo`!!
