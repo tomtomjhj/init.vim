@@ -61,3 +61,6 @@
 [submodule "my_plugins/LanguageClient-neovim"]
 	path = my_plugins/LanguageClient-neovim
 	url = https://github.com/autozimu/LanguageClient-neovim
+[submodule "my_plugins/ale"]
+	path = my_plugins/ale
+	url = https://github.com/tomtomjhj/ale

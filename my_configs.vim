@@ -81,7 +81,7 @@ let g:ale_fixers = {
             \ }
 
 let g:ale_set_highlights = 1
-" TODO: underlined part isn't properly highlighted when searched
+" use matchaddpos(..,..,-1) in ale highlighting (hlsearch is 0, default is 10)
 hi ALEError term=underline cterm=underline gui=undercurl
 hi ALEWarning term=underline cterm=underline gui=undercurl
 hi ALEInfo term=underline cterm=underline gui=undercurl

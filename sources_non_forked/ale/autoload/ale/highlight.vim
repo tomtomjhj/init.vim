@@ -72,7 +72,7 @@ function! s:highlight_range(bufnr, range, group) abort
     \       a:range.end_lnum,
     \       a:range.end_col
     \   ),
-    \   'matchaddpos(a:group, v:val)'
+    \   'matchaddpos(a:group, v:val, -1)'
     \)
 endfunction
 
