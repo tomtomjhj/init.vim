@@ -60,7 +60,7 @@ endif
 
 " NO preview window for autocompletion stuff
 " set completeopt-=preview
-" TODO: how to check preview info manually?
+" TODO: don't abbreviate the info
 
 
 " ale general settings --------------------------
@@ -81,6 +81,7 @@ let g:ale_fixers = {
             \ }
 
 let g:ale_set_highlights = 1
+" TODO: underlined part isn't properly highlighted when searched
 hi ALEError term=underline cterm=underline gui=undercurl
 hi ALEWarning term=underline cterm=underline gui=undercurl
 hi ALEInfo term=underline cterm=underline gui=undercurl
@@ -95,7 +96,6 @@ map <silent><leader>av :ALEPrevious -wrap -error<CR>
 
 " TODO: fzf?
 " run install.sh
-" :LanguageClientStart to start
 "
 map <leader>lcs :LanguageClientStart<CR>
 let g:LanguageClient_autoStart = 0
@@ -229,7 +229,7 @@ endif
 " -> just add `# type: ignore` annotation after the import stmt
 " let g:ale_python_mypy_options = "-ignore-missing-imports"
 let g:ale_python_mypy_options = "--check-untyped-defs"
-let g:ale_python_pylint_options = "--disable=R,C"
+let g:ale_python_pylint_options = "--disable=R,C,W0614,W0621"
 
 
 " etc ---------------------------------------
