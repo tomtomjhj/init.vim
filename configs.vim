@@ -285,6 +285,8 @@ map <leader>tt :tabedit<CR>
 map <leader>td :tab split<CR>
 map <leader>q :q<CR>
 
+" TODO: rotation https://stackoverflow.com/questions/1269603
+
 set splitright
 set splitbelow
 

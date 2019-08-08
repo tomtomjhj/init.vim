@@ -12,7 +12,7 @@ source $1/vimrcs/plugins_config.vim
 source $1/vimrcs/extended.vim
 
 try
-source $1/my_configs.vim
+source $1/configs.vim
 catch
 endtry"
 

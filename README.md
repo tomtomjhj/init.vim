@@ -128,9 +128,9 @@ I recommend reading the docs of these plugins to understand them better. Each pl
 
 ## How to include your own stuff?
 
-After you have installed the setup, you can create **~/.vim_runtime/my_configs.vim** to fill in any configurations that are important for you. For instance, my **my_configs.vim** looks like this:
+After you have installed the setup, you can create **~/.vim_runtime/configs.vim** to fill in any configurations that are important for you. For instance, my **configs.vim** looks like this:
 
-	~/.vim_runtime (master)> cat my_configs.vim
+	~/.vim_runtime (master)> cat configs.vim
 	map <leader>ct :cd ~/Desktop/Todoist/todoist<cr>
 	map <leader>cw :cd ~/Desktop/Wedoist/wedoist<cr> 
 
