@@ -119,7 +119,7 @@ set mat=2
 set noerrorbells
 set novisualbell
 set t_vb=
-set tm=500
+set tm=400
 
 " Properly disable sound on errors on MacVim
 if has("gui_macvim")

@@ -25,7 +25,7 @@ colorscheme zen
 " call one#highlight('SpellRare' , 'FFB86C', 'fafafa', 'underline')
 " TODO: clean way to customize palette? just fork?
 " let g:lightline.colorscheme = 'one1'
-" TODO: how to change colorscheme including lightline without restarting: remove all syntax links...
+" TODO: how to change colorscheme including lightline without restarting
 
 "
 set mouse=a
@@ -41,7 +41,6 @@ au BufRead,BufNewFile *.ll set filetype=llvm
 
 " general completion
 let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
-" close preview after completion
 let g:SuperTabClosePreviewOnPopupClose = 1
 " let g:SuperTabDefaultCompletionType = '<c-n>'
 
@@ -60,10 +59,10 @@ endif
 
 " NO preview window for autocompletion stuff
 " set completeopt-=preview
-" TODO: don't abbreviate the info
+" TODO: don't abbreviate the info, rls?
 
 
-" ale general settings --------------------------
+" ale general settings ---------------------------------------
 
 " \   'haskell': ['hlint'],
 let g:ale_linters = {
@@ -80,7 +79,7 @@ let g:ale_fixers = {
             \ }
 
 let g:ale_set_highlights = 1
-" use matchaddpos(..,..,-1) in ale highlighting (hlsearch is 0, default is 10)
+" NOTE: use matchaddpos(..,..,-1) in ale highlighting (hlsearch: 0, default: 10)
 hi ALEError term=underline cterm=underline gui=undercurl
 hi ALEWarning term=underline cterm=underline gui=undercurl
 hi ALEInfo term=underline cterm=underline gui=undercurl
@@ -91,11 +90,9 @@ map <silent><leader>an :ALENext -wrap<CR>
 map <silent><leader>ae :ALENext -wrap -error<CR>
 map <silent><leader>av :ALEPrevious -wrap -error<CR>
 
-" Language Client -----------------------------
+" Language Client (run install.sh) -----------------------------
 " TODO remove LC and use ale LSP
 " TODO: fzf?
-" run install.sh
-"
 map <leader>lcs :LanguageClientStart<CR>
 let g:LanguageClient_autoStart = 0
 let g:LanguageClient_useVirtualText = 0
@@ -109,13 +106,10 @@ map <silent><Leader>lb :call LanguageClient#textDocument_references()<CR>
 map <silent><Leader>la :call LanguageClient#textDocument_codeAction()<CR>
 map <silent><Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
 
-" use ale diagnostics: LC diagnostics doesn't seem to have ALENext stuff and has very annoying default settings
+" use ale diagnostics: LC diagnostics doesn't seem to have ALENext stuff and has
+" very annoying default settings.
 " TODO full ale functionalities for LC
 let g:LanguageClient_diagnosticsEnable = 0
-" src/language_server_protocol.rs:define_signs overrides ale sign definition
-" highlights.  The default value itself seems to be fine but the highlighting
-" doesn't work if LanguageClientStart runs before default ale starts. Below is
-" the default hi link before LC starts.
 hi link ALEErrorSign Error
 hi link ALEStyleErrorSign ALEErrorSign
 hi link ALEWarningSign Todo
@@ -178,52 +172,31 @@ let g:intero_start_immediately = 0
 if has('nvim')
   augroup interoMaps
     au!
-    " Maps for intero. Restrict to Haskell buffers so the bindings don't collide.
-
-    " Background process and window management
     au FileType haskell nnoremap <silent> <leader>is :InteroStart<CR>
     au FileType haskell nnoremap <silent> <leader>ik :InteroKill<CR>
-
-    " Open intero/GHCi split horizontally
     au FileType haskell nnoremap <silent> <leader>io :InteroOpen<CR>
-    " Open intero/GHCi split vertically
     au FileType haskell nnoremap <silent> <leader>iov :InteroOpen<CR><C-W>H
     au FileType haskell nnoremap <silent> <leader>ih :InteroHide<CR>
-
-    " Reloading (pick one)
-    " Automatically reload on save
     " au BufWritePost *.hs InteroReload
-    " Manually save and reload
     au FileType haskell nnoremap <silent> <leader>wr :w \| :InteroReload<CR>
-
-    " Load individual modules
     au FileType haskell nnoremap <silent> <leader>il :InteroLoadCurrentModule<CR>
     au FileType haskell nnoremap <silent> <leader>if :InteroLoadCurrentFile<CR>
-
-    " Type-related information
-    " Heads up! These next two differ from the rest.
     au FileType haskell map <silent> <leader>t <Plug>InteroGenericType
     au FileType haskell map <silent> <leader>T <Plug>InteroType
     au FileType haskell nnoremap <silent> <leader>ii :InteroInfo<CR>
     au FileType haskell nnoremap <silent> <leader>it :InteroTypeInsert<CR>
-
-    " Navigation
     au FileType haskell nnoremap <silent> <leader>jd :InteroGoToDef<CR>
-
-    " Managing targets
-    " Prompts you to enter targets (no silent):
     au FileType haskell nnoremap <leader>ist :InteroSetTargets<SPACE>
-
-    " focus out
     tnoremap <Esc> <C-\><C-n>
   augroup END
 endif
 
-" rust --------------------------------------------
+" rust -------------------------------------------------------------
 " use language client
+" NOTE: External crate completion does't work without extern crate declaration
 
 
-" python ------------------------------------
+" python ------------------------------------------------------------
 " TODO: this disables any other checks. but works when used from cmd.??????????
 " -> just add `# type: ignore` annotation after the import stmt
 " let g:ale_python_mypy_options = "-ignore-missing-imports"
@@ -231,7 +204,7 @@ let g:ale_python_mypy_options = "--check-untyped-defs"
 let g:ale_python_pylint_options = "--disable=R,C,W0614,W0621"
 
 
-" etc ---------------------------------------
+" etc ----------------------------------------------------------
 " HJKL navigation for wrapped lines. <leader>J for joins
 noremap <leader>J J
 noremap <S-j> gj
@@ -282,6 +255,8 @@ noremap q: :
 noremap q <nop>
 noremap Q q
 
+" TODO: spellfiles
+
 " tabs and splits --------------------------------------------
 ca tt tabedit
 map <leader>tt :tabedit<CR>
@@ -306,7 +281,10 @@ au TabClosed * if g:lasttab > 1
 map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
 " map <leader>te ...
 
+" TODO see :help [range], &, g&
+" visual mode -> : -> :'<,'>s/...
 " :%s/pat/\r&/g. & matched str, \r newline
+" :%s/<c-r>//..., using <c-r> to insert from / register
 
 " refresh
 map <leader>ef :e!<CR>
@@ -347,9 +325,10 @@ let g:pandoc#modules#disabled = ["folding"]
 au FileType pandoc syntax spell toplevel
 " set to notoplevel in haskell.vim
 
-" --------------------------------------------------------------------------------------
+" --------------------------------------------------------------------
 
-" ctrl-shift-t of chrome --------------------------------------------------------------
+" ctrl-shift-t of chrome --------------------------------------------------
+" TODO: save filenames when :qa'd and restore
 map <silent><leader><C-t> :call PopQuitBufs()<CR>
 " works only for buffers of closed windows
 au QuitPre * call PushQuitBufs(expand("<abuf>"))
