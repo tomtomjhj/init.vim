@@ -45,7 +45,7 @@ let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
 let g:SuperTabClosePreviewOnPopupClose = 1
 " let g:SuperTabDefaultCompletionType = '<c-n>'
 
-" TODO: deoplete snippets integration??
+" TODO: deoplete snippets integration??. snippets for tex & pandoc
 
 " S L O W
 let g:deoplete#enable_at_startup = 1
@@ -66,7 +66,6 @@ endif
 " ale general settings --------------------------
 
 " \   'haskell': ['hlint'],
-" TODO: cargo check?
 let g:ale_linters = {
             \ 'python': ['pylint', 'mypy'],
             \ 'haskell': [],
@@ -93,7 +92,7 @@ map <silent><leader>ae :ALENext -wrap -error<CR>
 map <silent><leader>av :ALEPrevious -wrap -error<CR>
 
 " Language Client -----------------------------
-
+" TODO remove LC and use ale LSP
 " TODO: fzf?
 " run install.sh
 "
@@ -276,15 +275,23 @@ imap <F1> <Esc>
 
 " insert mode CTRL-O$ to move to eol
 
-" tabs and splits ----------------------------
+" just use <C-F> in cmd mode to see cmd history.
+" just use gQ to enter ex mode.
+" disable default macro key and use Q instead
+noremap q: :
+noremap q <nop>
+noremap Q q
+
+" tabs and splits --------------------------------------------
 ca tt tabedit
 map <leader>tt :tabedit<CR>
 
 " duplicate tab
 map <leader>td :tab split<CR>
 map <leader>q :q<CR>
+map q, :q<CR>
 
-" TODO: rotation https://stackoverflow.com/questions/1269603
+" move windows https://stackoverflow.com/questions/1269603
 
 set splitright
 set splitbelow
@@ -294,14 +301,6 @@ set splitbelow
 au TabClosed * if g:lasttab > 1
   \ | exe "tabn ".(g:lasttab-1)
   \ | endif
-
-
-" open last closed buf
-" TODO: lastbuf_stack. remove from stack when BufEnter?
-" TODO: more options. cur window, new split, ....
-let g:lastbuf = 0
-au BufLeave * let g:lastbuf = bufnr("%")
-map <silent><leader><C-t> :exec("if g:lastbuf>0 \| tabnew +".(g:lastbuf)."buf \| endif")<CR>
 
 " edit from the dir of cur buf
 map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
