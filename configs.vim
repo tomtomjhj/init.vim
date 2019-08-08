@@ -346,3 +346,50 @@ let g:pandoc#syntax#codeblocks#embeds#langs = ["haskell", "python", "cpp", "rust
 let g:pandoc#modules#disabled = ["folding"]
 au FileType pandoc syntax spell toplevel
 " set to notoplevel in haskell.vim
+
+" --------------------------------------------------------------------------------------
+
+" ctrl-shift-t of chrome --------------------------------------------------------------
+map <silent><leader><C-t> :call PopQuitBufs()<CR>
+" works only for buffers of closed windows
+au QuitPre * call PushQuitBufs(expand("<abuf>"))
+" push if clean and empty. remove preceding one if exists
+let g:quitbufs = []
+function! PushQuitBufs(buf)
+    if !IsCleanEmptyBuf(a:buf)
+        call tlib#list#Remove(g:quitbufs, a:buf)
+        call add(g:quitbufs, a:buf)
+    endif
+endfunction
+" TODO: more options. cur window, new split, ....
+function! PopQuitBufs()
+    if len(g:quitbufs) > 0
+        exec "tabnew +".(remove(g:quitbufs, -1))."buf"
+    endif
+endfunction
+
+" automatically remove garbage buffers -----------------------------------------
+" bw, bd, setlocal bufhidden=delete don't work on the buf being hidden
+" defer it until BufEnter to another buf
+let g:lasthidden = 0
+au BufHidden * let g:lasthidden = expand("<abuf>")
+au BufEnter * call CheckAndBW(g:lasthidden)
+function! CheckAndBW(buf)
+    if IsCleanEmptyBuf(a:buf)
+        exec("bw ".a:buf)
+    endif
+endfunction
+
+" utilities ---------------------------------------------------------
+" https://stackoverflow.com/questions/6552295
+" TODO why do I need `+` signs?????
+function! IsCleanEmptyBuf(buf)
+    return a:buf > 0 && buflisted(+a:buf) && empty(bufname(+a:buf)) && !getbufvar(+a:buf, "&mod")
+endfunction
+
+function! CleanGarbageBufs()
+    let bufs = filter(range(1, bufnr('$')), 'IsCleanEmptyBuf(v:val) && bufwinnr(v:val)<0')
+    if !empty(bufs)
+        exe 'bw ' . join(bufs, ' ')
+    endif
+endfunction
