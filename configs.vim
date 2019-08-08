@@ -251,11 +251,10 @@ map <c-space> <C-u>
 " <s-space> does not work
 " map <s-space> <C-u>
 
-" star without moving the cursor. ~Actually, move the cursor to cword's first letter~
-" TODO: idempotent motion?
-" TODO: vim-sneak?
-nmap <silent>* :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<C-M>
-" TODO: do this for vmap
+" star without moving the cursor
+" TODO: move cursor to the start of the word
+noremap <silent>* :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<C-M>
+vnoremap <silent>* :<C-u>call VisualSelection('', '')\|set hlsearch<CR>
 
 " TODO: maybe broken
 " clipboard
