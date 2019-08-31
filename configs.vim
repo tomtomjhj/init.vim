@@ -228,11 +228,10 @@ map <c-space> <C-u>
 noremap <silent>* :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<C-M>
 vnoremap <silent>* :<C-u>call Searchgvy()\|set hlsearch<CR>
 function! Searchgvy()
-    let l:temp = @"
+    " raw text on `"`, escaped text on `/`
     execute "normal! gvy"
     let l:pattern = escape(@", "\\/.*'$^~[]")
     let @/ = l:pattern
-    let @" = l:temp
 endfunction
 
 " TODO: maybe broken
@@ -330,6 +329,7 @@ map <leader>sf :syn sync fromstart<CR>
 let g:pandoc#spell#enabled = 0
 let g:pandoc#syntax#codeblocks#embeds#langs = ["haskell", "python", "cpp", "rust"]
 let g:pandoc#modules#disabled = ["folding"]
+let g:pandoc#formatting#twxtwidth = 80
 au FileType pandoc syntax spell toplevel
 " set to notoplevel in haskell.vim
 

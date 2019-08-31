@@ -55,12 +55,14 @@
 [submodule "my_plugins/deoplete-jedi"]
 	path = my_plugins/deoplete-jedi
 	url = https://github.com/deoplete-plugins/deoplete-jedi
+	ignore = untracked
 [submodule "my_plugins/vim-one"]
 	path = my_plugins/vim-one
 	url = https://github.com/rakr/vim-one
 [submodule "my_plugins/LanguageClient-neovim"]
 	path = my_plugins/LanguageClient-neovim
 	url = https://github.com/autozimu/LanguageClient-neovim
+	ignore = untracked
 [submodule "my_plugins/ale"]
 	path = my_plugins/ale
 	url = https://github.com/tomtomjhj/ale
