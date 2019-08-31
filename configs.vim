@@ -226,7 +226,14 @@ map <c-space> <C-u>
 " star without moving the cursor
 " TODO: move cursor to the start of the word
 noremap <silent>* :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<C-M>
-vnoremap <silent>* :<C-u>call VisualSelection('', '')\|set hlsearch<CR>
+vnoremap <silent>* :<C-u>call Searchgvy()\|set hlsearch<CR>
+function! Searchgvy()
+    let l:temp = @"
+    execute "normal! gvy"
+    let l:pattern = escape(@", "\\/.*'$^~[]")
+    let @/ = l:pattern
+    let @" = l:temp
+endfunction
 
 " TODO: maybe broken
 " clipboard
@@ -256,6 +263,7 @@ noremap q <nop>
 noremap Q q
 
 " TODO: spellfiles
+" TODO: vim-exchange
 
 " tabs and splits --------------------------------------------
 ca tt tabedit
@@ -277,7 +285,7 @@ au TabClosed * if g:lasttab > 1
   \ | exe "tabn ".(g:lasttab-1)
   \ | endif
 
-" edit from the dir of cur buf
+" edit from the dir of cur buf. `<c-r>=`: append from expr register
 map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
 " map <leader>te ...
 
