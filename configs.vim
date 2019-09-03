@@ -225,7 +225,7 @@ map <c-space> <C-u>
 
 " star without moving the cursor
 " TODO: move cursor to the start of the word
-noremap <silent>* :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<C-M>
+noremap <silent>* :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<CR>
 vnoremap <silent>* :<C-u>call Searchgvy()\|set hlsearch<CR>
 function! Searchgvy()
     " raw text on `"`, escaped text on `/`
@@ -261,6 +261,9 @@ noremap q: :
 noremap q <nop>
 noremap Q q
 
+" clever-f
+nmap <Esc> <Plug>(clever-f-reset)
+
 " TODO: spellfiles
 " TODO: vim-exchange
 
@@ -280,6 +283,7 @@ set splitbelow
 
 " I think it's more natural to return to the 'left' tab
 " this breaks `:tabonly`.
+" TODO: chrome-style return to last tab
 au TabClosed * if g:lasttab > 1
   \ | exe "tabn ".(g:lasttab-1)
   \ | endif
@@ -292,6 +296,7 @@ map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
 " visual mode -> : -> :'<,'>s/...
 " :%s/pat/\r&/g. & matched str, \r newline
 " :%s/<c-r>//..., using <c-r> to insert from / register
+" TODO: marks
 
 " refresh
 map <leader>ef :e!<CR>
