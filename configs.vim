@@ -1,6 +1,6 @@
 set runtimepath+=~/.vim_runtime
 
-" themes ---------------------------------------------
+" themes -----------------------------------------------------------------
 " colorscheme dracula
 colorscheme zen
 " colorscheme one
@@ -45,6 +45,7 @@ let g:SuperTabClosePreviewOnPopupClose = 1
 " let g:SuperTabDefaultCompletionType = '<c-n>'
 
 " TODO: deoplete snippets integration??. snippets for tex & pandoc
+" https://castel.dev/post/lecture-notes-1/
 
 " S L O W
 let g:deoplete#enable_at_startup = 1
@@ -62,7 +63,7 @@ endif
 " TODO: don't abbreviate the info, rls?
 
 
-" ale general settings ---------------------------------------
+" ale general settings -----------------------------------------------------
 
 " \   'haskell': ['hlint'],
 let g:ale_linters = {
@@ -90,7 +91,7 @@ map <silent><leader>an :ALENext -wrap<CR>
 map <silent><leader>ae :ALENext -wrap -error<CR>
 map <silent><leader>av :ALEPrevious -wrap -error<CR>
 
-" Language Client (run install.sh) -----------------------------
+" Language Client (run install.sh) --------------------------------------------
 " TODO remove LC and use ale LSP
 " TODO: fzf?
 map <leader>lcs :LanguageClientStart<CR>
@@ -108,7 +109,6 @@ map <silent><Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
 
 " use ale diagnostics: LC diagnostics doesn't seem to have ALENext stuff and has
 " very annoying default settings.
-" TODO full ale functionalities for LC
 let g:LanguageClient_diagnosticsEnable = 0
 hi link ALEErrorSign Error
 hi link ALEStyleErrorSign ALEErrorSign
@@ -149,7 +149,7 @@ let g:LanguageClient_diagnosticsDisplay =
 
 
 
-" haskell ------------------------------------------
+" haskell -----------------------------------------------------------
 let g:haskell_classic_highlighting = 1
 let g:haskell_enable_quantification = 1
 let g:haskell_enable_recursivedo = 1
@@ -197,31 +197,26 @@ endif
 
 
 " python ------------------------------------------------------------
-" TODO: this disables any other checks. but works when used from cmd.??????????
+" this disables any other checks. but works when used from cmd.??????????
 " -> just add `# type: ignore` annotation after the import stmt
 " let g:ale_python_mypy_options = "-ignore-missing-imports"
 let g:ale_python_mypy_options = "--check-untyped-defs"
 let g:ale_python_pylint_options = "--disable=R,C,W0614,W0621"
 
 
-" etc ----------------------------------------------------------
-" HJKL navigation for wrapped lines. <leader>J for joins
-noremap <leader>J J
+" motion -------------------------------------------------------------
+
+" HJKL for wrapped lines. <leader>J for joins
 noremap <S-j> gj
 noremap <S-k> gk
 noremap <S-h> h
 noremap <S-l> l
-map <leader>sw :set wrap<CR>
-map <leader>snw :set nowrap<CR>
-" indent the wrapped line, w/ `> ` at the start
-set breakindent
-set showbreak=>\ 
+noremap <leader>J J
 
 " space to navigate
 map <space> <C-d>
 map <c-space> <C-u>
 " <s-space> does not work
-" map <s-space> <C-u>
 
 " star without moving the cursor
 " TODO: move cursor to the start of the word
@@ -234,8 +229,20 @@ function! Searchgvy()
     let @/ = l:pattern
 endfunction
 
-" TODO: maybe broken
-" clipboard
+" insert mode CTRL-O$ to move to eol
+
+" clever-f
+nmap <Esc> <Plug>(clever-f-reset)
+
+
+" etc ----------------------------------------------------------
+map <leader>sw :set wrap<CR>
+map <leader>snw :set nowrap<CR>
+" indent the wrapped line, w/ `> ` at the start
+set breakindent
+set showbreak=>\ 
+
+" clipboard.
 if has('nvim')
   inoremap <C-v> <ESC>"+pa
   vnoremap <C-c> "+y
@@ -252,8 +259,6 @@ imap <F1> <Esc>
 " imap <C-BS> <C-W>
 " imap <C-S-BS> <C-U>
 
-" insert mode CTRL-O$ to move to eol
-
 " just use <C-F> in cmd mode to see cmd history.
 " just use gQ to enter ex mode.
 " disable default macro key and use Q instead
@@ -261,13 +266,10 @@ noremap q: :
 noremap q <nop>
 noremap Q q
 
-" clever-f
-nmap <Esc> <Plug>(clever-f-reset)
-
-" TODO: spellfiles
+" TODO: fixed spellfile
 " TODO: vim-exchange
 
-" tabs and splits --------------------------------------------
+" tabs and splits --------------------------------------------------
 ca tt tabedit
 map <leader>tt :tabedit<CR>
 
@@ -302,7 +304,7 @@ map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
 map <leader>ef :e!<CR>
 
 
-" tags ----------------------------------------
+" tags ------------------------------------------------------------
 " TODO: CTRL-W commands
 
 " open ctag in a new tab/vertical split
@@ -338,7 +340,6 @@ let g:pandoc#formatting#twxtwidth = 80
 au FileType pandoc syntax spell toplevel
 " set to notoplevel in haskell.vim
 
-" --------------------------------------------------------------------
 
 " ctrl-shift-t of chrome --------------------------------------------------
 " TODO: save filenames when :qa'd and restore
@@ -353,7 +354,7 @@ function! PushQuitBufs(buf)
         call add(g:quitbufs, a:buf)
     endif
 endfunction
-" TODO: more options. cur window, new split, ....
+" TODO: more options. cur window, new split, remember the layout, ...
 function! PopQuitBufs()
     if len(g:quitbufs) > 0
         exec "tabnew +".(remove(g:quitbufs, -1))."buf"
@@ -374,7 +375,7 @@ endfunction
 
 " utilities ---------------------------------------------------------
 " https://stackoverflow.com/questions/6552295
-" TODO why do I need `+` signs?????
+" TODO: `+` signs??
 function! IsCleanEmptyBuf(buf)
     return a:buf > 0 && buflisted(+a:buf) && empty(bufname(+a:buf)) && !getbufvar(+a:buf, "&mod")
 endfunction
