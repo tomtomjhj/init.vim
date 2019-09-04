@@ -66,6 +66,6 @@
 [submodule "my_plugins/ale"]
 	path = my_plugins/ale
 	url = https://github.com/tomtomjhj/ale
-[submodule "my_plugins/clever-f.vim"]
-	path = my_plugins/clever-f.vim
-	url = https://github.com/rhysd/clever-f.vim
+[submodule "my_plugins/vim-sneak"]
+	path = my_plugins/vim-sneak
+	url = https://github.com/justinmk/vim-sneak

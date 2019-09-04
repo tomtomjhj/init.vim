@@ -223,17 +223,24 @@ map <c-space> <C-u>
 noremap <silent>* :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<CR>
 vnoremap <silent>* :<C-u>call Searchgvy()\|set hlsearch<CR>
 function! Searchgvy()
-    " raw text on `"`, escaped text on `/`
+    let l:saved_reg = @"
     execute "normal! gvy"
     let l:pattern = escape(@", "\\/.*'$^~[]")
     let @/ = l:pattern
+    let @" = l:saved_reg
 endfunction
 
 " insert mode CTRL-O$ to move to eol
 
-" clever-f
-nmap <Esc> <Plug>(clever-f-reset)
+let g:sneak#s_next = 1
+let g:sneak#use_ic_scs = 1
+map f <Plug>Sneak_f
+map F <Plug>Sneak_F
+map t <Plug>Sneak_t
+map T <Plug>Sneak_T
+highlight Sneak guifg=black guibg=#afff00 ctermfg=black ctermbg=154
 
+" TODO: https://github.com/tpope/vim-repeat for repeating surround
 
 " etc ----------------------------------------------------------
 map <leader>sw :set wrap<CR>
@@ -267,7 +274,10 @@ noremap q <nop>
 noremap Q q
 
 " TODO: fixed spellfile
-" TODO: vim-exchange
+" TODO: vim-exchange, yankstack
+" TODO: remove neomake, commentary, ...
+" TODO: too many irrelevant scripts loaded? rust -> pandoc -> bunch of other stuff
+" TODO: command to upload to gdrive for notes, .... asynchronously
 
 " tabs and splits --------------------------------------------------
 ca tt tabedit
