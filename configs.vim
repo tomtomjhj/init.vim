@@ -92,7 +92,7 @@ map <silent><leader>ae :ALENext -wrap -error<CR>
 map <silent><leader>av :ALEPrevious -wrap -error<CR>
 
 " Language Client (run install.sh) --------------------------------------------
-" TODO remove LC and use ale LSP:
+" TODO remove LC and use ale LSP? coc? ???
 map <leader>lcs :LanguageClientStart<CR>
 let g:LanguageClient_autoStart = 0
 let g:LanguageClient_useVirtualText = 0
@@ -191,7 +191,6 @@ if has('nvim')
 endif
 
 " rust -------------------------------------------------------------
-" use language client
 " NOTE: External crate completion does't work without extern crate declaration
 
 
@@ -213,12 +212,11 @@ noremap <S-l> l
 noremap <leader>J J
 
 " space to navigate
-map <space> <C-d>
-map <c-space> <C-u>
+noremap <space> <C-d>
+noremap <c-space> <C-u>
 " <s-space> does not work
 
 " star without moving the cursor
-" TODO: move cursor to the start of the word
 noremap <silent>* :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<CR>
 vnoremap <silent>* :<C-u>call Searchgvy()\|set hlsearch<CR>
 function! Searchgvy()
@@ -238,8 +236,6 @@ map F <Plug>Sneak_F
 map t <Plug>Sneak_t
 map T <Plug>Sneak_T
 highlight Sneak guifg=black guibg=#afff00 ctermfg=black ctermbg=154
-
-" TODO: https://github.com/tpope/vim-repeat for repeating surround
 
 " etc ----------------------------------------------------------
 map <leader>sw :set wrap<CR>
@@ -261,10 +257,6 @@ map <leader>fn :echo @%<CR>
 map <F1> <Esc>
 imap <F1> <Esc>
 
-" <C-BS> doesn't work
-" imap <C-BS> <C-W>
-" imap <C-S-BS> <C-U>
-
 " just use <C-F> in cmd mode to see cmd history.
 " just use gQ to enter ex mode.
 " disable default macro key and use Q instead
@@ -277,8 +269,17 @@ vnoremap x "_x
 
 set spellfile=~/.vim_runtime/temp_dirs/en.utf-8.add
 
-let g:rainbow#pairs = [['(', ')'], ['[', ']'], ['{', '}']]
+let g:rainbow#pairs = [['(', ')'], ['{', '}']]
 autocmd FileType * RainbowParentheses
+let g:AutoPairsMapSpace = 0
+let g:AutoPairsCenterLine = 0
+let g:AutoPairsShortcutFastWrap = '<M-w>'
+" <M-n> to jump to the next closing pair
+
+" ys yss yS ySS,
+" .. TODO: maintain position after surround
+" https://github.com/tpope/vim-surround/issues/55#issuecomment-4610756
+" TODO: \left( \right) ,,,
 
 " TODO: modern package manager with lazy load, e.g. Plug, dein
 " https://www.reddit.com/r/vim/comments/5l939k
@@ -311,12 +312,10 @@ au TabClosed * if g:lasttab > 1
 
 " edit from the dir of cur buf. `<c-r>=`: append from expr register
 map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
-" map <leader>te ...
 
 " TODO see :help [range], &, g&
 " visual mode -> : -> :'<,'>s/...
 " :%s/pat/\r&/g. & matched str, \r newline
-" :%s/<c-r>//..., using <c-r> to insert from / register
 " TODO: marks
 
 " refresh
@@ -352,13 +351,28 @@ let g:NERDDefaultAlign = 'both'
 map <leader>sf :syn sync fromstart<CR>
 
 " pandoc ------------------------------------
+let g:tex_flavor = "latex"
+au FileType tex setlocal conceallevel=2
 let g:pandoc#spell#enabled = 0
-let g:pandoc#syntax#codeblocks#embeds#langs = ["haskell", "python", "cpp", "rust"]
+let g:pandoc#syntax#codeblocks#embeds#langs = ["python", "cpp", "rust"]
 let g:pandoc#modules#disabled = ["folding"]
 let g:pandoc#formatting#twxtwidth = 80
-au FileType pandoc syntax spell toplevel
+let g:pandoc#command#custom_open = "Zathura"
+let g:pandoc#command#prefer_pdf = 1
+function! Zathura(file)
+    let file = shellescape(fnamemodify(a:file, ':p'))
+    return 'zathura ' . file
+endfunction
+augroup Pandocs
+    au!
+    au FileType pandoc noremap <leader>pd :Pandoc pdf -Vurlcolor=cyan<CR>
+    au FileType pandoc noremap <leader>po :Pandoc! pdf -Vurlcolor=cyan<CR>
+    au FileType pandoc let b:AutoPairs = AutoPairsDefine({'<!--':'-->', '$':'$', '$$':'$$', '\left(':'\right)', '\frac{':'}{'})
+    " set to notoplevel in haskell.vim
+    au FileType pandoc syntax spell toplevel
+augroup END
+
 " TODO pandoc filetype for LC hover buffer
-" set to notoplevel in haskell.vim
 
 
 " ctrl-shift-t of chrome --------------------------------------------------

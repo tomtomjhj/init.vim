@@ -23,6 +23,7 @@ syn region texMathZoneY	matchgroup=Delimiter start="\$\$" matchgroup=Delimiter	e
 ### TODO
 
 * correctly conceal things like this: `\sum_n`. Need to ignore `_`. Do this without modifying `s:texMathList=[` if possible.
+    * actually this works in tex but not in pandoc.
 
 
 ## Tex BeginEnd
