@@ -1,5 +1,6 @@
 temp_dirs/undodir/*
 temp_dirs/spell/*
+temp_dirs/en.utf-8.add*
 sources_non_forked/ack.vim/.netrwhist
 temp_dirs/yankring_history_v2.txt
 sources_forked/yankring/doc/tags
