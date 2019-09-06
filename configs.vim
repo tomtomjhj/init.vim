@@ -92,8 +92,7 @@ map <silent><leader>ae :ALENext -wrap -error<CR>
 map <silent><leader>av :ALEPrevious -wrap -error<CR>
 
 " Language Client (run install.sh) --------------------------------------------
-" TODO remove LC and use ale LSP
-" TODO: fzf?
+" TODO remove LC and use ale LSP: 
 map <leader>lcs :LanguageClientStart<CR>
 let g:LanguageClient_autoStart = 0
 let g:LanguageClient_useVirtualText = 0
@@ -273,10 +272,16 @@ noremap q: :
 noremap q <nop>
 noremap Q q
 
+" delete block without clearing regs
+vnoremap x "_x
+
 " TODO: fixed spellfile
-" TODO: vim-exchange, yankstack
-" TODO: remove neomake, commentary, ...
-" TODO: too many irrelevant scripts loaded? rust -> pandoc -> bunch of other stuff
+" TODO: modern package manager with lazy load, e.g. Plug, dein
+" https://www.reddit.com/r/vim/comments/5l939k
+" TODO: something that does grep stuff, e.g. ack, flygrep
+" https://github.com/junegunn/fzf/wiki/Examples-(vim)
+" TODO: vim-exchange, yankstack, vim-abolish
+" TODO: neomake?,
 " TODO: command to upload to gdrive for notes, .... asynchronously
 
 " tabs and splits --------------------------------------------------
@@ -348,11 +353,12 @@ let g:pandoc#syntax#codeblocks#embeds#langs = ["haskell", "python", "cpp", "rust
 let g:pandoc#modules#disabled = ["folding"]
 let g:pandoc#formatting#twxtwidth = 80
 au FileType pandoc syntax spell toplevel
+" TODO pandoc filetype for LC hover buffer
 " set to notoplevel in haskell.vim
 
 
 " ctrl-shift-t of chrome --------------------------------------------------
-" TODO: save filenames when :qa'd and restore
+" TODO: debug(non-existent buf), save filenames when :qa'd and restore
 map <silent><leader><C-t> :call PopQuitBufs()<CR>
 " works only for buffers of closed windows
 au QuitPre * call PushQuitBufs(expand("<abuf>"))

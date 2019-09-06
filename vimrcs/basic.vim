@@ -1,30 +1,4 @@
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Maintainer: 
-"       Amir Salihefendic — @amix3k
-"
-" Awesome_version:
-"       Get this config, nice color schemes and lots of plugins!
-"
-"       Install the awesome version from:
-"
-"           https://github.com/amix/vimrc
-"
-" Sections:
-"    -> General
-"    -> VIM user interface
-"    -> Colors and Fonts
-"    -> Files and backups
-"    -> Text, tab and indent related
-"    -> Visual mode related
-"    -> Moving around, tabs and buffers
-"    -> Status line
-"    -> Editing mappings
-"    -> vimgrep searching and cope displaying
-"    -> Spell checking
-"    -> Misc
-"    -> Helper functions
-"
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" TODO: stuff from vim-sensible
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -172,6 +146,8 @@ set nobackup
 set nowb
 set noswapfile
 
+set undodir=~/.vim_runtime/temp_dirs/undodir
+set undofile
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related
@@ -269,26 +245,6 @@ set laststatus=2
 " Format the status line
 set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Editing mappings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Remap VIM 0 to first non-blank character
-"map 0 ^
-
-" Move a line of text using ALT+[jk] or Command+[jk] on mac
-" nmap <M-j> mz:m+<cr>`z
-" nmap <M-k> mz:m-2<cr>`z
-" vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
-" vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
-
-" if has("mac") || has("macunix")
-"   nmap <D-j> <M-j>
-"   nmap <D-k> <M-k>
-"   vmap <D-j> <M-j>
-"   vmap <D-k> <M-k>
-" endif
-
 " Delete trailing white space on save, useful for some filetypes ;)
 fun! CleanExtraSpaces()
     let save_cursor = getpos(".")
@@ -327,6 +283,7 @@ map <leader>ss :setlocal spell!<cr>
 " Toggle paste mode on and off
 map <leader>pp :setlocal paste!<cr>
 
+autocmd! bufwritepost ~/.vim_runtime/configs.vim source ~/.vim_runtime/configs.vim
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions
@@ -358,25 +315,4 @@ function! <SID>BufcloseCloseIt()
     if buflisted(l:currentBufNum)
         execute("bdelete! ".l:currentBufNum)
     endif
-endfunction
-
-function! CmdLine(str)
-    call feedkeys(":" . a:str)
-endfunction 
-
-function! VisualSelection(direction, extra_filter) range
-    let l:saved_reg = @"
-    execute "normal! vgvy"
-
-    let l:pattern = escape(@", "\\/.*'$^~[]")
-    let l:pattern = substitute(l:pattern, "\n$", "", "")
-
-    if a:direction == 'gv'
-        call CmdLine("Ack '" . l:pattern . "' " )
-    elseif a:direction == 'replace'
-        call CmdLine("%s" . '/'. l:pattern . '/')
-    endif
-
-    let @/ = l:pattern
-    let @" = l:saved_reg
 endfunction
