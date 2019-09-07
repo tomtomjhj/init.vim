@@ -60,8 +60,6 @@ endif
 
 " NO preview window for autocompletion stuff
 " set completeopt-=preview
-" TODO: don't abbreviate the info, rls?
-
 
 " ale general settings -----------------------------------------------------
 
@@ -186,7 +184,6 @@ if has('nvim')
     au FileType haskell nnoremap <silent> <leader>it :InteroTypeInsert<CR>
     au FileType haskell nnoremap <silent> <leader>jd :InteroGoToDef<CR>
     au FileType haskell nnoremap <leader>ist :InteroSetTargets<SPACE>
-    tnoremap <Esc> <C-\><C-n>
   augroup END
 endif
 
@@ -235,7 +232,7 @@ map f <Plug>Sneak_f
 map F <Plug>Sneak_F
 map t <Plug>Sneak_t
 map T <Plug>Sneak_T
-highlight Sneak guifg=black guibg=#afff00 ctermfg=black ctermbg=154
+hi Sneak guifg=black guibg=#afff00 ctermfg=black ctermbg=154
 
 " etc ----------------------------------------------------------
 map <leader>sw :set wrap<CR>
@@ -254,8 +251,8 @@ endif
 " filename
 map <leader>fn :echo @%<CR>
 
-map <F1> <Esc>
-imap <F1> <Esc>
+noremap <F1> <Esc>
+inoremap <F1> <Esc>
 
 " just use <C-F> in cmd mode to see cmd history.
 " just use gQ to enter ex mode.
@@ -269,6 +266,7 @@ vnoremap x "_x
 
 set spellfile=~/.vim_runtime/temp_dirs/en.utf-8.add
 
+" pairs
 let g:rainbow#pairs = [['(', ')'], ['{', '}']]
 autocmd FileType * RainbowParentheses
 let g:AutoPairsMapSpace = 0
@@ -276,15 +274,29 @@ let g:AutoPairsCenterLine = 0
 let g:AutoPairsShortcutFastWrap = '<M-w>'
 " <M-n> to jump to the next closing pair
 
+" fzf
+set rtp+=~/.fzf
+let g:fzf_layout = { 'down': '~30%' }
+map <leader>ccl :ccl<CR>
+map <C-b> :Buffers<CR>
+map <C-f> :Files<CR>
+map <leader>F :Files .
+map <leader>rg :Rg<space>
+map <leader>cn :cn<CR>
+map <leader>cN :cN<CR>
+if has("nvim")
+    augroup fzf
+        au!
+        au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
+        au FileType fzf tunmap <buffer> <Esc>
+    augroup END
+endif
+
 " ys yss yS ySS,
 " .. TODO: maintain position after surround
 " https://github.com/tpope/vim-surround/issues/55#issuecomment-4610756
-" TODO: \left( \right) ,,,
-
 " TODO: modern package manager with lazy load, e.g. Plug, dein
 " https://www.reddit.com/r/vim/comments/5l939k
-" TODO: something that does grep stuff, e.g. ack, flygrep
-" https://github.com/junegunn/fzf/wiki/Examples-(vim)
 " TODO: vim-exchange, yankstack, vim-abolish
 " TODO: neomake?,
 " TODO: command to upload to gdrive for notes, .... asynchronously
@@ -344,6 +356,11 @@ autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
 
 
 " Comments ------------------------
+let g:NERDCreateDefaultMappings = 0
+xmap ,c<Space> <Plug>NERDCommenterToggle
+nmap ,c<Space> <Plug>NERDCommenterToggle
+xmap ,cs <Plug>NERDCommenterSexy
+nmap ,cs <Plug>NERDCommenterSexy
 let g:NERDSpaceDelims = 1
 let g:NERDCustomDelimiters = { 'python' : { 'left': '#', 'leftAlt': '', 'rightAlt': '' }}
 let g:NERDDefaultAlign = 'both'
@@ -365,6 +382,7 @@ function! Zathura(file)
 endfunction
 augroup Pandocs
     au!
+    " TODO: auto recompile if some flag is true
     au FileType pandoc noremap <leader>pd :Pandoc pdf -Vurlcolor=cyan<CR>
     au FileType pandoc noremap <leader>po :Pandoc! pdf -Vurlcolor=cyan<CR>
     au FileType pandoc let b:AutoPairs = AutoPairsDefine({'<!--':'-->', '$':'$', '$$':'$$', '\left(':'\right)', '\frac{':'}{'})

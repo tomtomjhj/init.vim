@@ -25,9 +25,6 @@
 [submodule "my_plugins/intero-neovim"]
 	path = my_plugins/intero-neovim
 	url = https://github.com/parsonsmatt/intero-neovim
-[submodule "my_plugins/neomake"]
-	path = my_plugins/neomake
-	url = https://github.com/neomake/neomake
 [submodule "my_plugins/tlib_vim"]
 	path = my_plugins/tlib_vim
 	url = https://github.com/tomtom/tlib_vim
@@ -75,3 +72,6 @@
 [submodule "my_plugins/auto-pairs"]
 	path = my_plugins/auto-pairs
 	url = https://github.com/jiangmiao/auto-pairs
+[submodule "my_plugins/fzf.vim"]
+	path = my_plugins/fzf.vim
+	url = https://github.com/junegunn/fzf.vim

@@ -128,6 +128,13 @@ set encoding=utf8
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
 
+if exists('$TMUX')
+    if has('nvim')
+        set termguicolors
+    else
+        set term=screen-256color
+    endif
+endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Files, backups and undo
