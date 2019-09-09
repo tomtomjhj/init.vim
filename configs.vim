@@ -44,9 +44,6 @@ let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
 let g:SuperTabClosePreviewOnPopupClose = 1
 " let g:SuperTabDefaultCompletionType = '<c-n>'
 
-" TODO: deoplete snippets integration??. snippets for tex & pandoc
-" https://castel.dev/post/lecture-notes-1/
-
 " S L O W
 let g:deoplete#enable_at_startup = 1
 
@@ -57,6 +54,9 @@ else " no gui
     inoremap <Nul> <c-r>=SuperTabAlternateCompletion("\<lt>c-x>\<lt>c-o>")<cr>
   endif
 endif
+
+let g:UltiSnipsExpandTrigger = '<c-l>'
+" <c-j>, <c-k> to navigate
 
 " NO preview window for autocompletion stuff
 " set completeopt-=preview
@@ -267,8 +267,9 @@ vnoremap x "_x
 set spellfile=~/.vim_runtime/temp_dirs/en.utf-8.add
 
 " pairs
+" RainbowParentheses comments using parens e.g. ocaml, haskell, ..
 let g:rainbow#pairs = [['(', ')'], ['{', '}']]
-autocmd FileType * RainbowParentheses
+autocmd FileType c,cpp,rust,lisp RainbowParentheses
 let g:AutoPairsMapSpace = 0
 let g:AutoPairsCenterLine = 0
 let g:AutoPairsShortcutFastWrap = '<M-w>'
@@ -281,6 +282,7 @@ map <leader>ccl :ccl<CR>
 map <C-b> :Buffers<CR>
 map <C-f> :Files<CR>
 map <leader>F :Files .
+map <leader>h :History<CR>
 map <leader>rg :Rg<space>
 map <leader>cn :cn<CR>
 map <leader>cN :cN<CR>
@@ -297,9 +299,8 @@ endif
 " https://github.com/tpope/vim-surround/issues/55#issuecomment-4610756
 " TODO: modern package manager with lazy load, e.g. Plug, dein
 " https://www.reddit.com/r/vim/comments/5l939k
+" git submodule deinit
 " TODO: vim-exchange, yankstack, vim-abolish
-" TODO: neomake?,
-" TODO: command to upload to gdrive for notes, .... asynchronously
 
 " tabs and splits --------------------------------------------------
 ca tt tabedit
@@ -326,7 +327,6 @@ au TabClosed * if g:lasttab > 1
 map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
 
 " TODO see :help [range], &, g&
-" visual mode -> : -> :'<,'>s/...
 " :%s/pat/\r&/g. & matched str, \r newline
 " TODO: marks
 
@@ -362,7 +362,10 @@ nmap ,c<Space> <Plug>NERDCommenterToggle
 xmap ,cs <Plug>NERDCommenterSexy
 nmap ,cs <Plug>NERDCommenterSexy
 let g:NERDSpaceDelims = 1
-let g:NERDCustomDelimiters = { 'python' : { 'left': '#', 'leftAlt': '', 'rightAlt': '' }}
+let g:NERDCustomDelimiters = {
+            \ 'python' : { 'left': '#', 'leftAlt': '#' },
+            \ 'c': { 'left': '//', 'leftAlt': '/*', 'rightAlt': '*/' },
+            \}
 let g:NERDDefaultAlign = 'both'
 
 map <leader>sf :syn sync fromstart<CR>
@@ -385,7 +388,7 @@ augroup Pandocs
     " TODO: auto recompile if some flag is true
     au FileType pandoc noremap <leader>pd :Pandoc pdf -Vurlcolor=cyan<CR>
     au FileType pandoc noremap <leader>po :Pandoc! pdf -Vurlcolor=cyan<CR>
-    au FileType pandoc let b:AutoPairs = AutoPairsDefine({'<!--':'-->', '$':'$', '$$':'$$', '\left(':'\right)', '\frac{':'}{'})
+    au FileType pandoc let b:AutoPairs = AutoPairsDefine({'$':'$', '$$':'$$'})
     " set to notoplevel in haskell.vim
     au FileType pandoc syntax spell toplevel
 augroup END

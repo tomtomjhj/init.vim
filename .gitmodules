@@ -48,7 +48,7 @@
 	url = https://github.com/tomtomjhj/rust.vim
 [submodule "my_plugins/tex-conceal.vim"]
 	path = my_plugins/tex-conceal.vim
-	url = https://github.com/KeitaNakamura/tex-conceal.vim
+	url = https://github.com/tomtomjhj/tex-conceal.vim
 [submodule "my_plugins/deoplete-jedi"]
 	path = my_plugins/deoplete-jedi
 	url = https://github.com/deoplete-plugins/deoplete-jedi
@@ -75,3 +75,10 @@
 [submodule "my_plugins/fzf.vim"]
 	path = my_plugins/fzf.vim
 	url = https://github.com/junegunn/fzf.vim
+[submodule "my_plugins/ultisnips"]
+	path = my_plugins/ultisnips
+	url = https://github.com/SirVer/ultisnips
+	ignore = untracked
+[submodule "my_plugins/vim-snippets"]
+	path = my_plugins/vim-snippets
+	url = https://github.com/honza/vim-snippets
