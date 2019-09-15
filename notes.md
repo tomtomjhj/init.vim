@@ -20,10 +20,10 @@ remvoe concealends
 syn region texMathZoneY	matchgroup=Delimiter start="\$\$" matchgroup=Delimiter	end="\$\$"	end="%stopzone\>"	keepend concealends contains=@texMathZoneGroup
 ```
 
-### TODO
+### Note
 
 * correctly conceal things like this: `\sum_n`. Need to ignore `_`. Do this without modifying `s:texMathList=[` if possible.
-    * actually this works in tex but not in pandoc.
+    * removing `_` from `syn iskeyword` fixes it.
 
 
 ## Tex BeginEnd
@@ -46,16 +46,10 @@ This doesn't work as expected.
 https://vi.stackexchange.com/questions/4530/moving-over-conceal
 
 
-## conceal for each projects
-
-Conceal commands defined for specific projects.
-Just list up the string-cchar pair in local .vimrc and do some magic.
-
-
 # TODO:
-make patch files for above changes
 
-# Chrome-style restore tab?
+* pandoc: command is broken: can't run it on multiple buffers
+* pandoc: math highlighting is broken in enumerate, in hard-wrapped lines
 
 # motions
 

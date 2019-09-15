@@ -379,6 +379,7 @@ let g:pandoc#modules#disabled = ["folding"]
 let g:pandoc#formatting#twxtwidth = 80
 let g:pandoc#command#custom_open = "Zathura"
 let g:pandoc#command#prefer_pdf = 1
+let g:pandoc#hypertext#use_default_mappings = 0
 function! Zathura(file)
     let file = shellescape(fnamemodify(a:file, ':p'))
     return 'zathura ' . file
@@ -386,8 +387,11 @@ endfunction
 augroup Pandocs
     au!
     " TODO: auto recompile if some flag is true
-    au FileType pandoc noremap <leader>pd :Pandoc pdf -Vurlcolor=cyan<CR>
-    au FileType pandoc noremap <leader>po :Pandoc! pdf -Vurlcolor=cyan<CR>
+    " TODO: auto include some predefined headers(?) e.g. fancyhdr, \todo
+    " TODO: `gq` wrt bullet points gets broken after some operations
+    au FileType pandoc nmap <buffer><silent><leader>pd :Pandoc pdf -Vurlcolor=cyan<CR>
+    au FileType pandoc nmap <buffer><silent><leader>po :Pandoc! pdf -Vurlcolor=cyan<CR>
+    au FileType pandoc nmap <buffer><silent>gx <Plug>(pandoc-hypertext-open-system)
     au FileType pandoc let b:AutoPairs = AutoPairsDefine({'$':'$', '$$':'$$'})
     " set to notoplevel in haskell.vim
     au FileType pandoc syntax spell toplevel

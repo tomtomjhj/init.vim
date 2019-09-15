@@ -10,26 +10,37 @@ endsnippet
 snippet ms "mathscr" i
 \\mathscr{${1}}${0}
 endsnippet
+snippet bf "mathbf" i
+\\mathbf{${1}}${0}
+endsnippet
+snippet sf "symbf" i
+\\symbf{${1}}${0}
+endsnippet
 snippet frac "\frac{}{}" i
 \\frac{${1}}{${2}}${0}
 endsnippet
 snippet sum "\sum^{}_{}" i
 \\sum^{${1:n}}_{${2:i=1}}${0}
 endsnippet
+snippet prod "\prod^{}_{}" i
+\\prod^{${1:n}}_{${2:i=1}}${0}
+endsnippet
 snippet lim "\lim_{}" i
 \\lim_{${1:n \\to \\infty}}${0}
 endsnippet
-snippet lr( "left( right)" i
-\\left( ${0:${VISUAL}} \\right)
-endsnippet
+
 snippet lr| "left| right|" i
 \\left| ${0:${VISUAL}} \\right|
 endsnippet
 snippet lr{ "left\{ right\}" i
 \\left\\{ ${0:${VISUAL}} \\right\\}
 endsnippet
+# no closing paren here, since it's added by auto-pairs
+snippet lr( "left( right)" i
+\\left( ${0:${VISUAL}} \\right
+endsnippet
 snippet lr[ "left[ right]" i
-\\left[ ${0:${VISUAL}} \\right]
+\\left[ ${0:${VISUAL}} \\right
 endsnippet
 snippet lra "langle rangle" i
 \\langle ${0:${VISUAL}} \\rangle
@@ -46,7 +57,7 @@ snippet tt "\text{}" i
 \text{ $1 }$0
 endsnippet
 
-# TODO detect math context using tex.vim highlight info
+# TODO detect math context using tex.vim syntax info and auto convert
 # symbols
 snippet bZ "\mathbb{Z}" iA
 \mathbb{Z}
@@ -59,6 +70,9 @@ snippet bR "\mathbb{R}" iA
 endsnippet
 snippet bQ "\mathbb{Q}" iA
 \mathbb{Q}
+endsnippet
+snippet bS "\mathbb{S}" iA
+\mathbb{S}
 endsnippet
 
 snippet => "implies" i
@@ -74,6 +88,19 @@ endsnippet
 snippet hat "\hat{}" i
 \hat{$1}$0
 endsnippet
+snippet sq "\sqrt{}" i
+\sqrt{$1}$0
+endsnippet
+
+snippet norm "norm" i
+\|$1\|$0
+endsnippet
+snippet norm2 "norm_2" i
+\|$1\|_2$0
+endsnippet
+snippet norm22 "norm_2^2" i
+\|$1\|_2^2$0
+endsnippet
 
 snippet __ "_{}" i
 _{$1}$0
@@ -85,7 +112,7 @@ snippet inv "^{-1}" i
 ^{-1}
 endsnippet
 snippet TT "^\top" i
-^\top 
+^\top
 endsnippet
 
 snippet all "\forall \in" i
