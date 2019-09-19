@@ -50,6 +50,8 @@ https://vi.stackexchange.com/questions/4530/moving-over-conceal
 
 * pandoc: command is broken: can't run it on multiple buffers
 * pandoc: math highlighting is broken in enumerate, in hard-wrapped lines
+    * enumerate itself is not broken. Because of the preceding 4 spaces, the line is recognized as a code block.
+    * `let g:pandoc#syntax#protect#codeblocks = 0` fixes it
 
 # motions
 

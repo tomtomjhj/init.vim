@@ -380,6 +380,8 @@ let g:pandoc#formatting#twxtwidth = 80
 let g:pandoc#command#custom_open = "Zathura"
 let g:pandoc#command#prefer_pdf = 1
 let g:pandoc#hypertext#use_default_mappings = 0
+let g:pandoc#syntax#use_definition_lists = 0
+let g:pandoc#syntax#protect#codeblocks = 0
 function! Zathura(file)
     let file = shellescape(fnamemodify(a:file, ':p'))
     return 'zathura ' . file
