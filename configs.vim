@@ -23,9 +23,7 @@ colorscheme zen
 " call one#highlight('SpellLocal', 'FFB86C', 'fafafa', 'underline')
 " call one#highlight('SpellCap'  , 'FFB86C', 'fafafa', 'underline')
 " call one#highlight('SpellRare' , 'FFB86C', 'fafafa', 'underline')
-" TODO: clean way to customize palette? just fork?
 " let g:lightline.colorscheme = 'one1'
-" TODO: how to change colorscheme including lightline without restarting
 
 "
 set mouse=a
@@ -42,9 +40,7 @@ au BufRead,BufNewFile *.ll set filetype=llvm
 " general completion
 let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
 let g:SuperTabClosePreviewOnPopupClose = 1
-" let g:SuperTabDefaultCompletionType = '<c-n>'
 
-" S L O W
 let g:deoplete#enable_at_startup = 1
 
 if has("gui_running")
@@ -58,7 +54,6 @@ endif
 let g:UltiSnipsExpandTrigger = '<c-l>'
 " <c-j>, <c-k> to navigate
 
-" NO preview window for autocompletion stuff
 " set completeopt-=preview
 
 " ale general settings -----------------------------------------------------
@@ -145,7 +140,6 @@ let g:LanguageClient_diagnosticsDisplay =
 \   }
 
 
-
 " haskell -----------------------------------------------------------
 let g:haskell_classic_highlighting = 1
 let g:haskell_enable_quantification = 1
@@ -227,6 +221,7 @@ endfunction
 " insert mode CTRL-O$ to move to eol
 
 let g:sneak#s_next = 1
+let g:sneak#absolute_dir = 1
 let g:sneak#use_ic_scs = 1
 map f <Plug>Sneak_f
 map F <Plug>Sneak_F
@@ -282,8 +277,12 @@ map <leader>ccl :ccl<CR>
 map <C-b> :Buffers<CR>
 map <C-f> :Files<CR>
 map <leader>F :Files .
-map <leader>h :History<CR>
+map <leader>hh :History<CR>
+map <leader>h: :History:<CR>
+map <leader>h/ :History/<CR>
 map <leader>rg :Rg<space>
+" because of E10, need to use '\|' here, even though '\v' is used
+map <leader>r/ :<C-u>Rg <C-r>=substitute(@/,'\v(\\\<\|\\\>)','',"g")<CR>
 map <leader>cn :cn<CR>
 map <leader>cN :cN<CR>
 if has("nvim")
@@ -294,13 +293,10 @@ if has("nvim")
     augroup END
 endif
 
-" ys yss yS ySS,
-" .. TODO: maintain position after surround
 " https://github.com/tpope/vim-surround/issues/55#issuecomment-4610756
-" TODO: modern package manager with lazy load, e.g. Plug, dein
 " https://www.reddit.com/r/vim/comments/5l939k
 " git submodule deinit
-" TODO: vim-exchange, yankstack, vim-abolish
+" vim-exchange, yankstack, vim-abolish
 
 " tabs and splits --------------------------------------------------
 ca tt tabedit
