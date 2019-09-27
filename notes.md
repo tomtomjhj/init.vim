@@ -64,7 +64,8 @@ augroup end
 * pandoc: math highlighting is broken in enumerate, in hard-wrapped lines
     * enumerate itself is not broken. Because of the preceding 4 spaces, the line is recognized as a code block.
     * `let g:pandoc#syntax#protect#codeblocks = 0` fixes it
-* better interaction of hlsearch and conceal?
+* Better interaction of hlsearch and conceal?
+* Pair highlighting in insert mode makes the cursor indiscernible.
 
 # motions
 

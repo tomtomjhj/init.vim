@@ -268,8 +268,22 @@ let g:rainbow#pairs = [['(', ')'], ['{', '}']]
 autocmd FileType c,cpp,rust,lisp RainbowParentheses
 let g:AutoPairsMapSpace = 0
 let g:AutoPairsCenterLine = 0
+let g:AutoPairsMapCh = 0
 let g:AutoPairsShortcutFastWrap = '<M-w>'
-" <M-n> to jump to the next closing pair
+let g:AutoPairsShortcutToggle = ''
+function! ClosingPairJump()
+    call search('["\]'')}$]','W')
+endfunction
+function! OpeningPairJump()
+    "              v no `\` here
+    call search('["[''({$]','bW')
+endfunction
+inoremap <silent> <C-k> <ESC>:call OpeningPairJump()<CR>a
+inoremap <silent> <C-j> <ESC>:call ClosingPairJump()<CR>a
+map <silent> <M-p> :call OpeningPairJump()<CR>
+map <silent> <M-n> :call ClosingPairJump()<CR>
+" digraph
+inoremap <C-space> <C-k>
 
 " fzf
 set rtp+=~/.fzf
@@ -387,6 +401,7 @@ augroup Pandocs
     au!
     " TODO: auto recompile if some flag is true
     " TODO: auto include some predefined headers(?) e.g. fancyhdr, \todo
+    " set things like --include-in-header=asdf.tex in local nvimrc
     " TODO: `gq` wrt bullet points gets broken after some operations
     au FileType pandoc nmap <buffer><silent><leader>pd :Pandoc pdf -Vurlcolor=cyan<CR>
     au FileType pandoc nmap <buffer><silent><leader>po :Pandoc! pdf -Vurlcolor=cyan<CR>
