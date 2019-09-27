@@ -64,6 +64,7 @@ let g:ale_linters = {
             \ 'haskell': [],
             \ 'rust': ['rls'],
             \ 'cpp': [],
+            \ 'markdown': [],
             \ }
 let g:ale_fixers = {
             \ 'python': ['yapf'],
@@ -257,7 +258,7 @@ noremap q <nop>
 noremap Q q
 
 " delete block without clearing regs
-vnoremap x "_x
+noremap x "_x
 
 set spellfile=~/.vim_runtime/temp_dirs/en.utf-8.add
 
@@ -299,7 +300,6 @@ endif
 " vim-exchange, yankstack, vim-abolish
 
 " tabs and splits --------------------------------------------------
-ca tt tabedit
 map <leader>tt :tabedit<CR>
 
 " duplicate tab
@@ -366,8 +366,9 @@ let g:NERDDefaultAlign = 'both'
 
 map <leader>sf :syn sync fromstart<CR>
 
-" pandoc ------------------------------------
+" pandoc, tex ------------------------------------
 let g:tex_flavor = "latex"
+let g:tex_noindent_env = 'document\|verbatim\|lstlisting\|align.\?'
 au FileType tex setlocal conceallevel=2
 let g:pandoc#spell#enabled = 0
 let g:pandoc#syntax#codeblocks#embeds#langs = ["python", "cpp", "rust"]

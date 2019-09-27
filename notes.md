@@ -35,7 +35,7 @@ syn region texMathZoneY	matchgroup=Delimiter start="\$\$" matchgroup=Delimiter	e
 ```
 
 
-## cursor movement on concealed string
+# cursor movement on concealed string
 
 ```
 setlocal concealcursor=n
@@ -43,8 +43,20 @@ setlocal concealcursor=n
 
 This doesn't work as expected.
 
-https://vi.stackexchange.com/questions/4530/moving-over-conceal
+<https://vi.stackexchange.com/questions/4530/moving-over-conceal>
 
+# local nvimrc
+
+```vim
+fun s:c()
+    " ....
+endfun
+
+augroup ft_c
+  autocmd!
+  autocmd Syntax c call s:c()
+augroup end
+```
 
 # TODO:
 
@@ -52,6 +64,7 @@ https://vi.stackexchange.com/questions/4530/moving-over-conceal
 * pandoc: math highlighting is broken in enumerate, in hard-wrapped lines
     * enumerate itself is not broken. Because of the preceding 4 spaces, the line is recognized as a code block.
     * `let g:pandoc#syntax#protect#codeblocks = 0` fixes it
+* better interaction of hlsearch and conceal?
 
 # motions
 
