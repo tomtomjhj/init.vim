@@ -257,7 +257,7 @@ noremap q: :
 noremap q <nop>
 noremap Q q
 
-" delete block without clearing regs
+" delete without clearing regs
 noremap x "_x
 
 set spellfile=~/.vim_runtime/temp_dirs/en.utf-8.add
@@ -312,6 +312,8 @@ endif
 " https://www.reddit.com/r/vim/comments/5l939k
 " git submodule deinit
 " vim-exchange, yankstack, vim-abolish
+" TODO: undotree, vim-dispatch vs asyncrun.vim (see wiki)
+" quickfix, project root, ...
 
 " tabs and splits --------------------------------------------------
 map <leader>tt :tabedit<CR>
@@ -355,6 +357,7 @@ map <silent><leader>g<Bslash> :vsp<CR>:exec("tselect ".expand("<cword>"))<CR>
 
 " open in preview window: <C-w>} and <C-w>g}
 " close preview with :pclose, <C-w>z
+" TODO: <leader>x to close all non-main windows
 map <silent><leader>x :pc<CR>
 " use <leader>tc  (tabclose)
 
@@ -399,20 +402,24 @@ function! Zathura(file)
 endfunction
 augroup Pandocs
     au!
-    " TODO: auto recompile if some flag is true
-    " TODO: auto include some predefined headers(?) e.g. fancyhdr, \todo
-    " set things like --include-in-header=asdf.tex in local nvimrc
-    " TODO: `gq` wrt bullet points gets broken after some operations
-    au FileType pandoc nmap <buffer><silent><leader>pd :Pandoc pdf -Vurlcolor=cyan<CR>
-    au FileType pandoc nmap <buffer><silent><leader>po :Pandoc! pdf -Vurlcolor=cyan<CR>
+    au FileType pandoc nmap <buffer><silent><leader>pd :Pandoc pdf <c-r>=PandocParams()<CR><CR>
+    au FileType pandoc nmap <buffer><silent><leader>po :Pandoc! pdf <c-r>=PandocParams()<CR><CR>
     au FileType pandoc nmap <buffer><silent>gx <Plug>(pandoc-hypertext-open-system)
     au FileType pandoc let b:AutoPairs = AutoPairsDefine({'$':'$', '$$':'$$'})
     " set to notoplevel in haskell.vim
     au FileType pandoc syntax spell toplevel
 augroup END
+function! PandocParams()
+    let default = ' -Vurlcolor=cyan'
+    if !exists('b:custom_pandoc_include_file')
+        return l:default
+    endif
+    " note that --include-in-header overrides header-includes in the yaml metadata
+    return l:default . ' --include-in-header=' . b:custom_pandoc_include_file
+endfunction
 
+" TODO: `gq` wrt bullet points gets broken after some operations
 " TODO pandoc filetype for LC hover buffer
-
 
 " ctrl-shift-t of chrome --------------------------------------------------
 " TODO: debug(non-existent buf), save filenames when :qa'd and restore
