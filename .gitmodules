@@ -71,7 +71,7 @@
 	url = https://github.com/junegunn/rainbow_parentheses.vim
 [submodule "my_plugins/auto-pairs"]
 	path = my_plugins/auto-pairs
-	url = https://github.com/jiangmiao/auto-pairs
+	url = https://github.com/tomtomjhj/auto-pairs
 [submodule "my_plugins/fzf.vim"]
 	path = my_plugins/fzf.vim
 	url = https://github.com/junegunn/fzf.vim

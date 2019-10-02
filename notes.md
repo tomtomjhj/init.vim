@@ -81,3 +81,10 @@ augroup end
 
 * TODO: get more used to operator & motion composition
 * TODO: Insert-mode stuff
+
+# pitfalls
+* because of E10, need to use `'\|'` here, even though `'\v'` is used
+
+    ```vim
+    map <leader>r/ :<C-u>Rg <C-r>=substitute(@/,'\v(\\\<\|\\\>)','',"g")<CR>
+    ```

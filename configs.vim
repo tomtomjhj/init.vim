@@ -296,8 +296,7 @@ map <leader>hh :History<CR>
 map <leader>h: :History:<CR>
 map <leader>h/ :History/<CR>
 map <leader>rg :Rg<space>
-" because of E10, need to use '\|' here, even though '\v' is used
-map <leader>r/ :<C-u>Rg <C-r>=substitute(@/,'\v(\\\<\|\\\>)','',"g")<CR>
+map <leader>r/ :<C-u>Rg <C-r>=substitute(@/,'\v\\[<>]','',"g")<CR>
 map <leader>cn :cn<CR>
 map <leader>cN :cN<CR>
 if has("nvim")
