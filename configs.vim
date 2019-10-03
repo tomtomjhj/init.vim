@@ -1,5 +1,3 @@
-set runtimepath+=~/.vim_runtime
-
 " themes -----------------------------------------------------------------
 " colorscheme dracula
 colorscheme zen
@@ -23,7 +21,7 @@ colorscheme zen
 " call one#highlight('SpellLocal', 'FFB86C', 'fafafa', 'underline')
 " call one#highlight('SpellCap'  , 'FFB86C', 'fafafa', 'underline')
 " call one#highlight('SpellRare' , 'FFB86C', 'fafafa', 'underline')
-" let g:lightline.colorscheme = 'one1'
+" let g:lightline.colorscheme = 'two'
 
 "
 set mouse=a
@@ -152,11 +150,6 @@ let g:haskell_indent_let_no_in = 0
 let g:haskell_indent_if = 0
 let g:haskell_indent_case_alternative = 1
 
-let g:haskell_tabular = 1
-vmap a= :Tabularize /=<CR>
-vmap a; :Tabularize /::<CR>
-vmap a- :Tabularize /-><CR>
-
 au FileType haskell setlocal shiftwidth=2 tabstop=2
 au FileType yaml setlocal shiftwidth=2 tabstop=2
 
@@ -167,7 +160,6 @@ if has('nvim')
     au FileType haskell nnoremap <silent> <leader>is :InteroStart<CR>
     au FileType haskell nnoremap <silent> <leader>ik :InteroKill<CR>
     au FileType haskell nnoremap <silent> <leader>io :InteroOpen<CR>
-    au FileType haskell nnoremap <silent> <leader>iov :InteroOpen<CR><C-W>H
     au FileType haskell nnoremap <silent> <leader>ih :InteroHide<CR>
     " au BufWritePost *.hs InteroReload
     au FileType haskell nnoremap <silent> <leader>wr :w \| :InteroReload<CR>
@@ -288,7 +280,6 @@ inoremap <C-space> <C-k>
 " fzf
 set rtp+=~/.fzf
 let g:fzf_layout = { 'down': '~30%' }
-map <leader>ccl :ccl<CR>
 map <C-b> :Buffers<CR>
 map <C-f> :Files<CR>
 map <leader>F :Files .
@@ -297,8 +288,6 @@ map <leader>h: :History:<CR>
 map <leader>h/ :History/<CR>
 map <leader>rg :Rg<space>
 map <leader>r/ :<C-u>Rg <C-r>=substitute(@/,'\v\\[<>]','',"g")<CR>
-map <leader>cn :cn<CR>
-map <leader>cN :cN<CR>
 if has("nvim")
     augroup fzf
         au!
@@ -307,12 +296,14 @@ if has("nvim")
     augroup END
 endif
 
+map <leader>ar :AsyncRun<space>
+map <leader>as :AsyncStop<CR>
+
 " https://github.com/tpope/vim-surround/issues/55#issuecomment-4610756
 " https://www.reddit.com/r/vim/comments/5l939k
 " git submodule deinit
 " vim-exchange, yankstack, vim-abolish
-" TODO: undotree, vim-dispatch vs asyncrun.vim (see wiki)
-" quickfix, project root, ...
+" asyncrun.vim (see wiki)
 
 " tabs and splits --------------------------------------------------
 map <leader>tt :tabedit<CR>
@@ -321,8 +312,6 @@ map <leader>tt :tabedit<CR>
 map <leader>td :tab split<CR>
 map <leader>q :q<CR>
 map q, :q<CR>
-
-" move windows https://stackoverflow.com/questions/1269603
 
 set splitright
 set splitbelow
@@ -344,6 +333,10 @@ map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
 " refresh
 map <leader>ef :e!<CR>
 
+map <leader>co :copen<CR>
+map <leader>cn :cn<CR>
+map <leader>cN :cN<CR>
+map <silent><leader>x :pc\|ccl\|lcl<CR>
 
 " tags ------------------------------------------------------------
 " TODO: CTRL-W commands
@@ -354,10 +347,7 @@ map <silent><leader><C-\> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 map <silent>g<Bslash> :tab split<CR>:exec("tselect ".expand("<cword>"))<CR>
 map <silent><leader>g<Bslash> :vsp<CR>:exec("tselect ".expand("<cword>"))<CR>
 
-" open in preview window: <C-w>} and <C-w>g}
-" close preview with :pclose, <C-w>z
-" TODO: <leader>x to close all non-main windows
-map <silent><leader>x :pc<CR>
+" open tag in preview window: <C-w>} and <C-w>g}
 " use <leader>tc  (tabclose)
 
 map <leader>tn :tnext<CR>

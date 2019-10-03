@@ -19,9 +19,6 @@
 [submodule "my_plugins/nerdcommenter"]
 	path = my_plugins/nerdcommenter
 	url = https://github.com/scrooloose/nerdcommenter.git
-[submodule "my_plugins/tabular"]
-	path = my_plugins/tabular
-	url = https://github.com/godlygeek/tabular.git
 [submodule "my_plugins/intero-neovim"]
 	path = my_plugins/intero-neovim
 	url = https://github.com/parsonsmatt/intero-neovim
@@ -82,3 +79,27 @@
 [submodule "my_plugins/vim-snippets"]
 	path = my_plugins/vim-snippets
 	url = https://github.com/honza/vim-snippets
+[submodule "my_plugins/lightline.vim"]
+	path = my_plugins/lightline.vim
+	url = https://github.com/tomtomjhj/lightline.vim
+[submodule "my_plugins/lightline-ale"]
+	path = my_plugins/lightline-ale
+	url = https://github.com/maximbaz/lightline-ale
+[submodule "my_plugins/nerdtree"]
+	path = my_plugins/nerdtree
+	url = https://github.com/scrooloose/nerdtree
+[submodule "my_plugins/vim-fugitive"]
+	path = my_plugins/vim-fugitive
+	url = https://github.com/tpope/vim-fugitive
+[submodule "my_plugins/vim-gitgutter"]
+	path = my_plugins/vim-gitgutter
+	url = https://github.com/airblade/vim-gitgutter
+[submodule "my_plugins/vim-repeat"]
+	path = my_plugins/vim-repeat
+	url = https://github.com/tpope/vim-repeat
+[submodule "my_plugins/vim-surround"]
+	path = my_plugins/vim-surround
+	url = https://github.com/tpope/vim-surround/
+[submodule "my_plugins/asyncrun.vim"]
+	path = my_plugins/asyncrun.vim
+	url = https://github.com/skywind3000/asyncrun.vim
