@@ -203,13 +203,13 @@ noremap <c-space> <C-u>
 " star without moving the cursor
 noremap <silent>* :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<CR>
 vnoremap <silent>* :<C-u>call Searchgvy()\|set hlsearch<CR>
-function! Searchgvy()
+func! Searchgvy()
     let l:saved_reg = @"
     execute "normal! gvy"
     let l:pattern = escape(@", "\\/.*'$^~[]")
     let @/ = l:pattern
     let @" = l:saved_reg
-endfunction
+endfunc
 
 " insert mode CTRL-O$ to move to eol
 
@@ -263,13 +263,13 @@ let g:AutoPairsCenterLine = 0
 let g:AutoPairsMapCh = 0
 let g:AutoPairsShortcutFastWrap = '<M-w>'
 let g:AutoPairsShortcutToggle = ''
-function! ClosingPairJump()
+func! ClosingPairJump()
     call search('["\]'')}$]','W')
-endfunction
-function! OpeningPairJump()
+endfunc
+func! OpeningPairJump()
     "              v no `\` here
     call search('["[''({$]','bW')
-endfunction
+endfunc
 inoremap <silent> <C-k> <ESC>:call OpeningPairJump()<CR>a
 inoremap <silent> <C-j> <ESC>:call ClosingPairJump()<CR>a
 map <silent> <M-p> :call OpeningPairJump()<CR>
@@ -298,12 +298,15 @@ endif
 
 map <leader>ar :AsyncRun<space>
 map <leader>as :AsyncStop<CR>
+augroup open_quickfix
+    au!
+    au QuickFixCmdPost * botright copen 8
+augroup END
 
 " https://github.com/tpope/vim-surround/issues/55#issuecomment-4610756
 " https://www.reddit.com/r/vim/comments/5l939k
 " git submodule deinit
 " vim-exchange, yankstack, vim-abolish
-" asyncrun.vim (see wiki)
 
 " tabs and splits --------------------------------------------------
 map <leader>tt :tabedit<CR>
@@ -333,7 +336,7 @@ map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
 " refresh
 map <leader>ef :e!<CR>
 
-map <leader>co :copen<CR>
+map <leader>co :copen 8<CR>
 map <leader>cn :cn<CR>
 map <leader>cN :cN<CR>
 map <silent><leader>x :pc\|ccl\|lcl<CR>
@@ -376,36 +379,40 @@ map <leader>sf :syn sync fromstart<CR>
 let g:tex_flavor = "latex"
 let g:tex_noindent_env = 'document\|verbatim\|lstlisting\|align.\?'
 au FileType tex setlocal conceallevel=2
-let g:pandoc#spell#enabled = 0
 let g:pandoc#syntax#codeblocks#embeds#langs = ["python", "cpp", "rust"]
 let g:pandoc#modules#disabled = ["folding"]
 let g:pandoc#formatting#twxtwidth = 80
-let g:pandoc#command#custom_open = "Zathura"
-let g:pandoc#command#prefer_pdf = 1
 let g:pandoc#hypertext#use_default_mappings = 0
 let g:pandoc#syntax#use_definition_lists = 0
 let g:pandoc#syntax#protect#codeblocks = 0
-function! Zathura(file)
-    let file = shellescape(fnamemodify(a:file, ':p'))
-    return 'zathura ' . file
-endfunction
 augroup Pandocs
     au!
-    au FileType pandoc nmap <buffer><silent><leader>pd :Pandoc pdf <c-r>=PandocParams()<CR><CR>
-    au FileType pandoc nmap <buffer><silent><leader>po :Pandoc! pdf <c-r>=PandocParams()<CR><CR>
+    au FileType pandoc nmap <buffer><silent><leader>pd :call RunPandoc(0)<CR>
+    au FileType pandoc nmap <buffer><silent><leader>po :call RunPandoc(1)<CR>
     au FileType pandoc nmap <buffer><silent>gx <Plug>(pandoc-hypertext-open-system)
     au FileType pandoc let b:AutoPairs = AutoPairsDefine({'$':'$', '$$':'$$'})
     " set to notoplevel in haskell.vim
     au FileType pandoc syntax spell toplevel
 augroup END
-function! PandocParams()
-    let default = ' -Vurlcolor=cyan'
-    if !exists('b:custom_pandoc_include_file')
-        return l:default
+func! RunPandoc(open)
+    let src = expand("%:p")
+    let out = expand("%:p:h") . '/' . expand("%:t:r") . '.pdf'
+    let params = '-Vurlcolor=cyan'
+    let post = a:open ? "-post=call\\ Zathura('" . l:out . "',!g:asyncrun_code)" : ''
+    " set manually or by local vimrc
+    if exists('b:custom_pandoc_include_file')
+        " --include-in-header overrides header-includes in the yaml metadata
+        let l:params .= ' --include-in-header=' . b:custom_pandoc_include_file
     endif
-    " note that --include-in-header overrides header-includes in the yaml metadata
-    return l:default . ' --include-in-header=' . b:custom_pandoc_include_file
-endfunction
+    let cmd = 'pandoc ' . l:src . ' -o ' . l:out . ' ' . l:params
+    exe 'AsyncRun -save=1 -cwd=' . expand("%:p:h") l:post l:cmd
+endfunc
+func! Zathura(file, ...)
+    let check = get(a:, 1, 1)
+    if l:check
+        call jobstart(['zathura', a:file, '--fork'])
+    endif
+endfunc
 
 " TODO: `gq` wrt bullet points gets broken after some operations
 " TODO pandoc filetype for LC hover buffer
@@ -417,18 +424,18 @@ map <silent><leader><C-t> :call PopQuitBufs()<CR>
 au QuitPre * call PushQuitBufs(expand("<abuf>"))
 " push if clean and empty. remove preceding one if exists
 let g:quitbufs = []
-function! PushQuitBufs(buf)
+func! PushQuitBufs(buf)
     if !IsCleanEmptyBuf(a:buf)
         call tlib#list#Remove(g:quitbufs, a:buf)
         call add(g:quitbufs, a:buf)
     endif
-endfunction
+endfunc
 " TODO: more options. cur window, new split, remember the layout, ...
-function! PopQuitBufs()
+func! PopQuitBufs()
     if len(g:quitbufs) > 0
         exec "tabnew +".(remove(g:quitbufs, -1))."buf"
     endif
-endfunction
+endfunc
 
 " automatically remove garbage buffers -----------------------------------------
 " bw, bd, setlocal bufhidden=delete don't work on the buf being hidden
@@ -436,22 +443,22 @@ endfunction
 let g:lasthidden = 0
 au BufHidden * let g:lasthidden = expand("<abuf>")
 au BufEnter * call CheckAndBW(g:lasthidden)
-function! CheckAndBW(buf)
+func! CheckAndBW(buf)
     if IsCleanEmptyBuf(a:buf)
         exec("bw ".a:buf)
     endif
-endfunction
+endfunc
 
 " utilities ---------------------------------------------------------
 " https://stackoverflow.com/questions/6552295
 " TODO: `+` signs??
-function! IsCleanEmptyBuf(buf)
+func! IsCleanEmptyBuf(buf)
     return a:buf > 0 && buflisted(+a:buf) && empty(bufname(+a:buf)) && !getbufvar(+a:buf, "&mod")
-endfunction
+endfunc
 
-function! CleanGarbageBufs()
+func! CleanGarbageBufs()
     let bufs = filter(range(1, bufnr('$')), 'IsCleanEmptyBuf(v:val) && bufwinnr(v:val)<0')
     if !empty(bufs)
         exe 'bw ' . join(bufs, ' ')
     endif
-endfunction
+endfunc
