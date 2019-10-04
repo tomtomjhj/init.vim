@@ -255,7 +255,7 @@ noremap x "_x
 set spellfile=~/.vim_runtime/temp_dirs/en.utf-8.add
 
 " pairs
-" RainbowParentheses comments using parens e.g. ocaml, haskell, ..
+" RainbowParentheses breaks comment syntax using parens
 let g:rainbow#pairs = [['(', ')'], ['{', '}']]
 autocmd FileType c,cpp,rust,lisp RainbowParentheses
 let g:AutoPairsMapSpace = 0
@@ -263,17 +263,16 @@ let g:AutoPairsCenterLine = 0
 let g:AutoPairsMapCh = 0
 let g:AutoPairsShortcutFastWrap = '<M-w>'
 let g:AutoPairsShortcutToggle = ''
-func! ClosingPairJump()
+func! NextClosing()
     call search('["\]'')}$]','W')
 endfunc
-func! OpeningPairJump()
-    "              v no `\` here
-    call search('["[''({$]','bW')
+func! PrevClosing()
+    call search('["\]'')}$]','bW')
 endfunc
-inoremap <silent> <C-k> <ESC>:call OpeningPairJump()<CR>a
-inoremap <silent> <C-j> <ESC>:call ClosingPairJump()<CR>a
-map <silent> <M-p> :call OpeningPairJump()<CR>
-map <silent> <M-n> :call ClosingPairJump()<CR>
+inoremap <silent> <C-k> <ESC>:exec 'norm! l'\|call PrevClosing()<CR>i
+inoremap <silent> <C-j> <ESC>:call NextClosing()<CR>a
+map <silent> <M-p> :call PrevClosing()<CR>
+map <silent> <M-n> :call NextClosing()<CR>
 " digraph
 inoremap <C-space> <C-k>
 

@@ -60,7 +60,6 @@ augroup end
 
 # TODO:
 
-* pandoc: command is broken: can't run it on multiple buffers
 * pandoc: math highlighting is broken in enumerate, in hard-wrapped lines
     * enumerate itself is not broken. Because of the preceding 4 spaces, the line is recognized as a code block.
     * `let g:pandoc#syntax#protect#codeblocks = 0` fixes it
@@ -69,22 +68,7 @@ augroup end
 
 # motions
 
-`:help motion`
-
-* `[(`
-* `v_iw`
-* `v_ab`, `v_aB`, `v_ib`, `v_iB`
-* `v_O`, `v_o`
-* `gn`, `gN`
-
 * `dw`: to remove whitespace from current pos
 
-* TODO: get more used to operator & motion composition
-* TODO: Insert-mode stuff
-
 # pitfalls
-* because of E10, need to use `'\|'` here, even though `'\v'` is used
-
-    ```vim
-    map <leader>r/ :<C-u>Rg <C-r>=substitute(@/,'\v(\\\<\|\\\>)','',"g")<CR>
-    ```
+* because of E10, need to escape(?) `|`(`\|`) when mapping
