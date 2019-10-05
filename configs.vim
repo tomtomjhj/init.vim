@@ -1,4 +1,6 @@
-" themes -----------------------------------------------------------------
+" vim: set foldmethod=marker foldlevel=0 nomodeline:
+
+" Themes {{{
 " colorscheme dracula
 colorscheme zen
 " colorscheme one
@@ -22,8 +24,9 @@ colorscheme zen
 " call one#highlight('SpellCap'  , 'FFB86C', 'fafafa', 'underline')
 " call one#highlight('SpellRare' , 'FFB86C', 'fafafa', 'underline')
 " let g:lightline.colorscheme = 'two'
+" }}}
 
-"
+" mics {{{
 set mouse=a
 set number
 set tabstop=4
@@ -34,37 +37,30 @@ filetype plugin indent on
 au BufRead,BufNewFile *.k set filetype=k
 au BufRead,BufNewFile *.v set filetype=coq
 au BufRead,BufNewFile *.ll set filetype=llvm
+" }}}
 
-" general completion
+" Completion {{{
 let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
 let g:SuperTabClosePreviewOnPopupClose = 1
 
 let g:deoplete#enable_at_startup = 1
 
-if has("gui_running")
-  imap <c-space> <c-r>=SuperTabAlternateCompletion("\<lt>c-x>\<lt>c-o>")<cr>
-else " no gui
-  if has("unix")
-    inoremap <Nul> <c-r>=SuperTabAlternateCompletion("\<lt>c-x>\<lt>c-o>")<cr>
-  endif
-endif
-
 let g:UltiSnipsExpandTrigger = '<c-l>'
 " <c-j>, <c-k> to navigate
 
 " set completeopt-=preview
+" }}}
 
-" ale general settings -----------------------------------------------------
-
-" \   'haskell': ['hlint'],
+" ALE general settings {{{
 let g:ale_linters = {
-            \ 'python': ['pylint', 'mypy'],
-            \ 'haskell': [],
+            \ 'c': ['clang'],
+            \ 'cpp': ['clang'],
+            \ 'python': ['pylint'],
             \ 'rust': ['rls'],
-            \ 'cpp': [],
-            \ 'markdown': [],
             \ }
 let g:ale_fixers = {
+            \ 'c': ['clang-format'],
+            \ 'cpp': ['clang-format'],
             \ 'python': ['yapf'],
             \ 'haskell': ['stylish-haskell'],
             \ 'rust': ['rustfmt'],
@@ -72,6 +68,8 @@ let g:ale_fixers = {
             \ }
 
 let g:ale_set_highlights = 1
+let g:ale_lint_on_text_changed = 0
+let g:ale_linters_explicit = 1
 " NOTE: use matchaddpos(..,..,-1) in ale highlighting (hlsearch: 0, default: 10)
 hi ALEError term=underline cterm=underline gui=undercurl
 hi ALEWarning term=underline cterm=underline gui=undercurl
@@ -83,29 +81,16 @@ map <silent><leader>an :ALENext -wrap<CR>
 map <silent><leader>ae :ALENext -wrap -error<CR>
 map <silent><leader>av :ALEPrevious -wrap -error<CR>
 
-" Language Client (run install.sh) --------------------------------------------
+" }}}
+
+" Language Client (run install.sh) {{{
 " TODO remove LC and use ale LSP? coc? ???
-map <leader>lcs :LanguageClientStart<CR>
 let g:LanguageClient_autoStart = 0
 let g:LanguageClient_useVirtualText = 0
 let g:LanguageClient_serverCommands = { 'haskell': ['hie-wrapper'], 'rust':['rls'] }
-nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-map <silent><Leader>lk :call LanguageClient#textDocument_hover()<CR>
-map <silent><Leader>lg :call LanguageClient#textDocument_definition()<CR>
-map <silent><Leader>lr :call LanguageClient#textDocument_rename()<CR>
-map <silent><Leader>lf :call LanguageClient#textDocument_formatting()<CR>
-map <silent><Leader>lb :call LanguageClient#textDocument_references()<CR>
-map <silent><Leader>la :call LanguageClient#textDocument_codeAction()<CR>
-map <silent><Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
-
 " use ale diagnostics: LC diagnostics doesn't seem to have ALENext stuff and has
 " very annoying default settings.
 let g:LanguageClient_diagnosticsEnable = 0
-hi link ALEErrorSign Error
-hi link ALEStyleErrorSign ALEErrorSign
-hi link ALEWarningSign Todo
-hi link ALEStyleWarningSign ALEWarningSign
-hi link ALEInfoSign ALEWarningSign
 let g:LanguageClient_diagnosticsDisplay =
 \   {
 \       1: {
@@ -137,9 +122,29 @@ let g:LanguageClient_diagnosticsDisplay =
 \           "virtualTexthl": "Todo",
 \       },
 \   }
+augroup LC
+    au!
+    au FileType rust,haskell call SetupLC()
+augroup END
+func! SetupLC()
+    map <leader>lcs :LanguageClientStart<CR>
+    map <silent><buffer><Leader>lk :call LanguageClient#textDocument_hover()<CR>
+    map <silent><buffer><Leader>lg :call LanguageClient#textDocument_definition()<CR>
+    map <silent><buffer><Leader>lr :call LanguageClient#textDocument_rename()<CR>
+    map <silent><buffer><Leader>lf :call LanguageClient#textDocument_formatting()<CR>
+    map <silent><buffer><Leader>lb :call LanguageClient#textDocument_references()<CR>
+    map <silent><buffer><Leader>la :call LanguageClient#textDocument_codeAction()<CR>
+    map <silent><buffer><Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
+    map <silent><buffer><F5> :call LanguageClient_contextMenu()<CR>
+    hi link ALEErrorSign Error
+    hi link ALEStyleErrorSign ALEErrorSign
+    hi link ALEWarningSign Todo
+    hi link ALEStyleWarningSign ALEWarningSign
+    hi link ALEInfoSign ALEWarningSign
+endfunc
+" }}}
 
-
-" haskell -----------------------------------------------------------
+" Haskell {{{
 let g:haskell_classic_highlighting = 1
 let g:haskell_enable_quantification = 1
 let g:haskell_enable_recursivedo = 1
@@ -157,37 +162,89 @@ let g:intero_start_immediately = 0
 if has('nvim')
   augroup interoMaps
     au!
-    au FileType haskell nnoremap <silent> <leader>is :InteroStart<CR>
-    au FileType haskell nnoremap <silent> <leader>ik :InteroKill<CR>
-    au FileType haskell nnoremap <silent> <leader>io :InteroOpen<CR>
-    au FileType haskell nnoremap <silent> <leader>ih :InteroHide<CR>
-    " au BufWritePost *.hs InteroReload
-    au FileType haskell nnoremap <silent> <leader>wr :w \| :InteroReload<CR>
-    au FileType haskell nnoremap <silent> <leader>il :InteroLoadCurrentModule<CR>
-    au FileType haskell nnoremap <silent> <leader>if :InteroLoadCurrentFile<CR>
-    au FileType haskell map <silent> <leader>t <Plug>InteroGenericType
-    au FileType haskell map <silent> <leader>T <Plug>InteroType
-    au FileType haskell nnoremap <silent> <leader>ii :InteroInfo<CR>
-    au FileType haskell nnoremap <silent> <leader>it :InteroTypeInsert<CR>
-    au FileType haskell nnoremap <silent> <leader>jd :InteroGoToDef<CR>
-    au FileType haskell nnoremap <leader>ist :InteroSetTargets<SPACE>
+    au FileType haskell call SetupIntero()
   augroup END
 endif
+func! SetupIntero()
+    nnoremap <silent><buffer><leader>is :InteroStart<CR>
+    nnoremap <silent><buffer><leader>ik :InteroKill<CR>
+    nnoremap <silent><buffer><leader>io :InteroOpen<CR>
+    nnoremap <silent><buffer><leader>ih :InteroHide<CR>
+    nnoremap <silent><buffer><leader>wr :w \| :InteroReload<CR>
+    nnoremap <silent><buffer><leader>il :InteroLoadCurrentModule<CR>
+    nnoremap <silent><buffer><leader>if :InteroLoadCurrentFile<CR>
+    noremap  <silent><buffer><leader>t <Plug>InteroGenericType
+    noremap  <silent><buffer><leader>T <Plug>InteroType
+    nnoremap <silent><buffer><leader>ii :InteroInfo<CR>
+    nnoremap <silent><buffer><leader>it :InteroTypeInsert<CR>
+    nnoremap <silent><buffer><leader>jd :InteroGoToDef<CR>
+    nnoremap <buffer><leader>ist :InteroSetTargets<SPACE>
+endfunc
+" }}}
 
-" rust -------------------------------------------------------------
+" Rust {{{
 " NOTE: External crate completion does't work without extern crate declaration
+" }}}
 
+" C,C++ {{{
+let g:ale_c_clangformat_options = '-style="{BasedOnStyle: llvm, IndentWidth: 4, AccessModifierOffset: -4}"'
+" }}}
 
-" python ------------------------------------------------------------
+" Python {{{
 " this disables any other checks. but works when used from cmd.??????????
 " -> just add `# type: ignore` annotation after the import stmt
 " let g:ale_python_mypy_options = "-ignore-missing-imports"
 let g:ale_python_mypy_options = "--check-untyped-defs"
 let g:ale_python_pylint_options = "--disable=R,C,W0614,W0621"
+" }}}
 
+" Pandoc, Tex {{{
+let g:tex_flavor = "latex"
+let g:tex_noindent_env = 'document\|verbatim\|lstlisting\|align.\?'
+au FileType tex setlocal conceallevel=2
+let g:pandoc#syntax#codeblocks#embeds#langs = ["python", "cpp", "rust"]
+let g:pandoc#modules#disabled = ["folding"]
+let g:pandoc#formatting#twxtwidth = 80
+let g:pandoc#hypertext#use_default_mappings = 0
+let g:pandoc#syntax#use_definition_lists = 0
+let g:pandoc#syntax#protect#codeblocks = 0
+augroup Pandocs
+    au!
+    au FileType pandoc call SetupPandoc()
+augroup END
+func! SetupPandoc()
+    let b:AutoPairs = AutoPairsDefine({'$':'$', '$$':'$$'})
+    " set to notoplevel in haskell.vim
+    syntax spell toplevel
+    nmap <buffer><silent><leader>pd :call RunPandoc(0)<CR>
+    nmap <buffer><silent><leader>po :call RunPandoc(1)<CR>
+    nmap <buffer><silent>gx <Plug>(pandoc-hypertext-open-system)
+endfunc
+func! RunPandoc(open)
+    let src = expand("%:p")
+    let out = expand("%:p:h") . '/' . expand("%:t:r") . '.pdf'
+    let params = '-Vurlcolor=cyan --highlight-style=kate'
+    let post = a:open ? "-post=call\\ Zathura('" . l:out . "',!g:asyncrun_code)" : ''
+    " set manually or by local vimrc
+    if exists('b:custom_pandoc_include_file')
+        " --include-in-header overrides header-includes in the yaml metadata
+        let l:params .= ' --include-in-header=' . b:custom_pandoc_include_file
+    endif
+    let cmd = 'pandoc ' . l:src . ' -o ' . l:out . ' ' . l:params
+    exe 'AsyncRun -save=1 -cwd=' . expand("%:p:h") l:post l:cmd
+endfunc
+func! Zathura(file, ...)
+    let check = get(a:, 1, 1)
+    if l:check
+        call jobstart(['zathura', a:file, '--fork'])
+    endif
+endfunc
 
-" motion -------------------------------------------------------------
+" TODO: `gq` wrt bullet points gets broken after some operations
+" TODO pandoc filetype for LC hover buffer
+" }}}
 
+" Motion {{{
 " HJKL for wrapped lines. <leader>J for joins
 noremap <S-j> gj
 noremap <S-k> gk
@@ -211,8 +268,6 @@ func! Searchgvy()
     let @" = l:saved_reg
 endfunc
 
-" insert mode CTRL-O$ to move to eol
-
 let g:sneak#s_next = 1
 let g:sneak#absolute_dir = 1
 let g:sneak#use_ic_scs = 1
@@ -222,7 +277,9 @@ map t <Plug>Sneak_t
 map T <Plug>Sneak_T
 hi Sneak guifg=black guibg=#afff00 ctermfg=black ctermbg=154
 
-" etc ----------------------------------------------------------
+" }}}
+
+" etc {{{
 map <leader>sw :set wrap<CR>
 map <leader>snw :set nowrap<CR>
 " indent the wrapped line, w/ `> ` at the start
@@ -237,7 +294,7 @@ if has('nvim')
 endif
 
 " filename
-map <leader>fn :echo @%<CR>
+map <silent><leader>fn :echo '<C-R>=expand("%:p")<CR>''<CR>
 
 noremap <F1> <Esc>
 inoremap <F1> <Esc>
@@ -255,9 +312,6 @@ noremap x "_x
 set spellfile=~/.vim_runtime/temp_dirs/en.utf-8.add
 
 " pairs
-" RainbowParentheses breaks comment syntax using parens
-let g:rainbow#pairs = [['(', ')'], ['{', '}']]
-autocmd FileType c,cpp,rust,lisp RainbowParentheses
 let g:AutoPairsMapSpace = 0
 let g:AutoPairsCenterLine = 0
 let g:AutoPairsMapCh = 0
@@ -302,12 +356,61 @@ augroup open_quickfix
     au QuickFixCmdPost * botright copen 8
 augroup END
 
+map <leader>co :copen 8<CR>
+map ]q :cn<CR>
+map [q :cN<CR>
+map <silent><leader>x :pc\|ccl\|lcl<CR>
+
+" edit from the dir of cur buf. `<c-r>=`: append from expr register
+map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
+" refresh
+map <leader>ef :e!<CR>
+
 " https://github.com/tpope/vim-surround/issues/55#issuecomment-4610756
 " https://www.reddit.com/r/vim/comments/5l939k
 " git submodule deinit
 " vim-exchange, yankstack, vim-abolish
+" see :help [range], &, g&
+" :%s/pat/\r&/g.
+" marks
+" }}}
 
-" tabs and splits --------------------------------------------------
+" tags {{{
+" TODO: CTRL-W commands
+
+" open ctag in a new tab/vertical split
+map <silent><C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
+map <silent><leader><C-\> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
+map <silent>g<Bslash> :tab split<CR>:exec("tselect ".expand("<cword>"))<CR>
+map <silent><leader>g<Bslash> :vsp<CR>:exec("tselect ".expand("<cword>"))<CR>
+
+" open tag in preview window: <C-w>} and <C-w>g}
+" use <leader>tc  (tabclose)
+
+map <leader>tn :tnext<CR>
+map <leader>tN :tNext<CR>
+
+autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
+" autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
+" }}}
+
+" Comments {{{
+let g:NERDCreateDefaultMappings = 0
+xmap ,c<Space> <Plug>NERDCommenterToggle
+nmap ,c<Space> <Plug>NERDCommenterToggle
+xmap ,cs <Plug>NERDCommenterSexy
+nmap ,cs <Plug>NERDCommenterSexy
+let g:NERDSpaceDelims = 1
+let g:NERDCustomDelimiters = {
+            \ 'python' : { 'left': '#', 'leftAlt': '#' },
+            \ 'c': { 'left': '//', 'leftAlt': '/*', 'rightAlt': '*/' },
+            \}
+let g:NERDDefaultAlign = 'both'
+
+map <leader>sf :syn sync fromstart<CR>
+" }}}
+
+" Tabs, windows, buffers {{{
 map <leader>tt :tabedit<CR>
 
 " duplicate tab
@@ -325,98 +428,7 @@ au TabClosed * if g:lasttab > 1
   \ | exe "tabn ".(g:lasttab-1)
   \ | endif
 
-" edit from the dir of cur buf. `<c-r>=`: append from expr register
-map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
-
-" TODO see :help [range], &, g&
-" :%s/pat/\r&/g. & matched str, \r newline
-" TODO: marks
-
-" refresh
-map <leader>ef :e!<CR>
-
-map <leader>co :copen 8<CR>
-map <leader>cn :cn<CR>
-map <leader>cN :cN<CR>
-map <silent><leader>x :pc\|ccl\|lcl<CR>
-
-" tags ------------------------------------------------------------
-" TODO: CTRL-W commands
-
-" open ctag in a new tab/vertical split
-map <silent><C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
-map <silent><leader><C-\> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
-map <silent>g<Bslash> :tab split<CR>:exec("tselect ".expand("<cword>"))<CR>
-map <silent><leader>g<Bslash> :vsp<CR>:exec("tselect ".expand("<cword>"))<CR>
-
-" open tag in preview window: <C-w>} and <C-w>g}
-" use <leader>tc  (tabclose)
-
-map <leader>tn :tnext<CR>
-map <leader>tN :tNext<CR>
-
-autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
-" autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
-
-
-" Comments ------------------------
-let g:NERDCreateDefaultMappings = 0
-xmap ,c<Space> <Plug>NERDCommenterToggle
-nmap ,c<Space> <Plug>NERDCommenterToggle
-xmap ,cs <Plug>NERDCommenterSexy
-nmap ,cs <Plug>NERDCommenterSexy
-let g:NERDSpaceDelims = 1
-let g:NERDCustomDelimiters = {
-            \ 'python' : { 'left': '#', 'leftAlt': '#' },
-            \ 'c': { 'left': '//', 'leftAlt': '/*', 'rightAlt': '*/' },
-            \}
-let g:NERDDefaultAlign = 'both'
-
-map <leader>sf :syn sync fromstart<CR>
-
-" pandoc, tex ------------------------------------
-let g:tex_flavor = "latex"
-let g:tex_noindent_env = 'document\|verbatim\|lstlisting\|align.\?'
-au FileType tex setlocal conceallevel=2
-let g:pandoc#syntax#codeblocks#embeds#langs = ["python", "cpp", "rust"]
-let g:pandoc#modules#disabled = ["folding"]
-let g:pandoc#formatting#twxtwidth = 80
-let g:pandoc#hypertext#use_default_mappings = 0
-let g:pandoc#syntax#use_definition_lists = 0
-let g:pandoc#syntax#protect#codeblocks = 0
-augroup Pandocs
-    au!
-    au FileType pandoc nmap <buffer><silent><leader>pd :call RunPandoc(0)<CR>
-    au FileType pandoc nmap <buffer><silent><leader>po :call RunPandoc(1)<CR>
-    au FileType pandoc nmap <buffer><silent>gx <Plug>(pandoc-hypertext-open-system)
-    au FileType pandoc let b:AutoPairs = AutoPairsDefine({'$':'$', '$$':'$$'})
-    " set to notoplevel in haskell.vim
-    au FileType pandoc syntax spell toplevel
-augroup END
-func! RunPandoc(open)
-    let src = expand("%:p")
-    let out = expand("%:p:h") . '/' . expand("%:t:r") . '.pdf'
-    let params = '-Vurlcolor=cyan'
-    let post = a:open ? "-post=call\\ Zathura('" . l:out . "',!g:asyncrun_code)" : ''
-    " set manually or by local vimrc
-    if exists('b:custom_pandoc_include_file')
-        " --include-in-header overrides header-includes in the yaml metadata
-        let l:params .= ' --include-in-header=' . b:custom_pandoc_include_file
-    endif
-    let cmd = 'pandoc ' . l:src . ' -o ' . l:out . ' ' . l:params
-    exe 'AsyncRun -save=1 -cwd=' . expand("%:p:h") l:post l:cmd
-endfunc
-func! Zathura(file, ...)
-    let check = get(a:, 1, 1)
-    if l:check
-        call jobstart(['zathura', a:file, '--fork'])
-    endif
-endfunc
-
-" TODO: `gq` wrt bullet points gets broken after some operations
-" TODO pandoc filetype for LC hover buffer
-
-" ctrl-shift-t of chrome --------------------------------------------------
+" ctrl-shift-t of chrome
 " TODO: debug(non-existent buf), save filenames when :qa'd and restore
 map <silent><leader><C-t> :call PopQuitBufs()<CR>
 " works only for buffers of closed windows
@@ -436,7 +448,7 @@ func! PopQuitBufs()
     endif
 endfunc
 
-" automatically remove garbage buffers -----------------------------------------
+" Garbage buffers
 " bw, bd, setlocal bufhidden=delete don't work on the buf being hidden
 " defer it until BufEnter to another buf
 let g:lasthidden = 0
@@ -448,7 +460,6 @@ func! CheckAndBW(buf)
     endif
 endfunc
 
-" utilities ---------------------------------------------------------
 " https://stackoverflow.com/questions/6552295
 " TODO: `+` signs??
 func! IsCleanEmptyBuf(buf)
@@ -461,3 +472,4 @@ func! CleanGarbageBufs()
         exe 'bw ' . join(bufs, ' ')
     endif
 endfunc
+" }}}

@@ -21,7 +21,7 @@ snippet sf "textsf" i
 \\textsf{${1}}${0}
 endsnippet
 snippet tt "\text{}" i
-\text{ $1 }$0
+\text{ $1}$0
 endsnippet
 snippet cd "\texttt{}" i
 \texttt{$1}$0
@@ -40,32 +40,50 @@ snippet prod "\prod^{}_{}" i
 \\prod^{${1:n}}_{${2:i=1}}${0}
 endsnippet
 snippet lim "\lim_{}" i
-\\lim_{${1:n \\to \\infty}}${0}
+\\lim_{${1:n\\to\\infty}}${0}
 endsnippet
 
 snippet lr| "left| right|" i
-\\left| ${1} \\right|${0}
+\\left|${1}\\right|${0}
 endsnippet
 # no closing paren here, since it's added by auto-pairs
 snippet lr{ "left\{ right\}" i
-\\left\\{ ${1} \\right\\${0}
+\\left\\{${1}\\right\\${0}
 endsnippet
 snippet lr( "left( right)" i
-\\left( ${1} \\right${0}
+\\left(${1}\\right${0}
 endsnippet
 snippet lr[ "left[ right]" i
-\\left[ ${1} \\right${0}
+\\left[${1}\\right${0}
 endsnippet
 snippet lra "langle rangle" i
-\\langle ${1} \\rangle${0}
+\\langle ${1}\\rangle${0}
 endsnippet
 snippet set "\{ \}" i
 \\{${1}\\}${0}
 endsnippet
-snippet beg "begin{} / end{}" bA
+
+snippet beg "begin{} / end{}" w
 \\begin{$1}
 $0
 \\end{$1}
+endsnippet
+
+snippet tikz "tikz figure" w
+\begin{figure}
+\centering
+\begin{tikzpicture}
+${0}
+\end{tikzpicture}
+\end{figure}
+endsnippet
+snippet tn "Tikz node" w
+\node (${1/[^0-9a-zA-Z]//g}${2}) ${3:[${4}]} {$${1}$};
+$0
+endsnippet
+snippet td "Tikz draw" w
+\draw[${4:-}] (${1}) to node {${3}} (${2});
+$0
 endsnippet
 
 # TODO detect math context using tex.vim syntax info and auto convert

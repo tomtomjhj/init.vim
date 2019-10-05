@@ -63,9 +63,6 @@
 [submodule "my_plugins/vim-sneak"]
 	path = my_plugins/vim-sneak
 	url = https://github.com/justinmk/vim-sneak
-[submodule "my_plugins/rainbow_parentheses.vim"]
-	path = my_plugins/rainbow_parentheses.vim
-	url = https://github.com/junegunn/rainbow_parentheses.vim
 [submodule "my_plugins/auto-pairs"]
 	path = my_plugins/auto-pairs
 	url = https://github.com/tomtomjhj/auto-pairs
