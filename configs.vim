@@ -26,35 +26,26 @@ Plug 'Shougo/vimproc.vim', { 'do' : 'make' }
 
 " completion
 Plug 'ervandew/supertab'
-if has('nvim')
-    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins', 'tag': '5.1' }
-else
-    " Plug 'Shougo/deoplete.nvim', { 'tag': '5.1' }
-    " Plug 'roxma/nvim-yarp'
-    " Plug 'roxma/vim-hug-neovim-rpc'
-endif
-
+Plug 'Shougo/deoplete.nvim',
+            \ { 'do': ':UpdateRemotePlugins', 'tag': '5.1', 'on': [] }
+" if !has('nvim') | Plug 'roxma/nvim-yarp' | Plug 'roxma/vim-hug-neovim-rpc' | endif
 Plug 'SirVer/ultisnips', { 'on': [] } | Plug 'honza/vim-snippets'
-augroup load_snippets
+augroup Completions
   au!
-  au InsertEnter * call plug#load('ultisnips') | au! load_snippets
+  au InsertEnter * call plug#load('ultisnips') | call plug#load('deoplete.nvim')
+              \ | au! Completions
 augroup END
 
 " lanauges
-Plug '~/.vim/my_plugins/ale'
-Plug 'autozimu/LanguageClient-neovim', {
-            \ 'branch': 'next',
-            \ 'do': 'bash install.sh',
-            \ 'for': ['rust', 'haskell'],
-            \ }
+Plug 'dense-analysis/ale'
 Plug '~/.vim/my_plugins/vim-pandoc-syntax' | Plug 'vim-pandoc/vim-pandoc'
 Plug '~/.vim/my_plugins/tex-conceal.vim'
 Plug '~/.vim/my_plugins/rust.vim'
 Plug 'deoplete-plugins/deoplete-jedi'
-Plug '~/.vim/my_plugins/haskell-vim'
-Plug 'parsonsmatt/intero-neovim'
 Plug '~/.vim/my_plugins/vim-ocaml'
-" Plug 'tomlion/vim-solidity', { 'for': 'solidity' }
+Plug '~/.vim/my_plugins/haskell-vim'
+" Plug 'parsonsmatt/intero-neovim'
+" Plug 'tomlion/vim-solidity'
 
 call plug#end()
 " }}}
@@ -65,7 +56,7 @@ set number
 set ruler
 set foldcolumn=1
 set scrolloff=2
-set showtabline=2
+set showtabline=1
 
 set tabstop=4
 set shiftwidth=4
@@ -218,80 +209,25 @@ let g:ale_fixers = {
             \ }
 
 let g:ale_set_highlights = 1
-let g:ale_lint_on_text_changed = 0
 let g:ale_linters_explicit = 1
-" NOTE: use matchaddpos(..,..,-1) in ale highlighting (hlsearch: 0, default: 10)
 hi ALEError term=underline cterm=underline gui=undercurl
-hi ALEWarning term=underline cterm=underline gui=undercurl
-hi ALEInfo term=underline cterm=underline gui=undercurl
+hi ALEWarning term=NONE cterm=NONE gui=NONE
+hi ALEInfo term=NONE cterm=NONE gui=NONE
 
-map <silent><leader>af :ALEFix<CR>
-map <silent><leader>ad :ALEDetail<CR>
-map <silent><leader>an :ALENext -wrap<CR>
-map <silent><leader>ae :ALENext -wrap -error<CR>
-map <silent><leader>av :ALEPrevious -wrap -error<CR>
+nmap <leader>ad <Plug>(ale_detail)
+nmap <leader>af <Plug>(ale_fix)
+" TODO: check https://github.com/dense-analysis/ale/issues/2317
+nmap <leader>ah <Plug>(ale_hover)
+nmap <C-[> <Plug>(ale_hover)
+nmap <leader>aj <Plug>(ale_go_to_definition)
+nmap <leader>an :ALERename<CR>
+nmap <leader>at <Plug>(ale_toggle)
+nmap <leader>ar <Plug>(ale_find_references)
+nmap ]a <Plug>(ale_next_wrap)
+nmap ]A <Plug>(ale_next_wrap_error)
+nmap [a <Plug>(ale_previous_wrap)
+nmap [A <Plug>(ale_prevous_wrap_error)
 
-" }}}
-
-" Language Client (run install.sh) {{{
-" TODO remove LC and use ale LSP? coc? ???
-let g:LanguageClient_autoStart = 0
-let g:LanguageClient_useVirtualText = 0
-let g:LanguageClient_serverCommands = { 'haskell': ['hie-wrapper'], 'rust':['rls'] }
-" use ale diagnostics: LC diagnostics doesn't seem to have ALENext stuff and has
-" very annoying default settings.
-let g:LanguageClient_diagnosticsEnable = 0
-let g:LanguageClient_diagnosticsDisplay =
-\   {
-\       1: {
-\           "name": "Error",
-\           "texthl": "ALEError",
-\           "signText": ">>",
-\           "signTexthl": "ALEErrorSign",
-\           "virtualTexthl": "Error",
-\       },
-\       2: {
-\           "name": "Warning",
-\           "texthl": "ALEWarning",
-\           "signText": "--",
-\           "signTexthl": "ALEWarningSign",
-\           "virtualTexthl": "Todo",
-\       },
-\       3: {
-\           "name": "Information",
-\           "texthl": "ALEInfo",
-\           "signText": "--",
-\           "signTexthl": "ALEInfoSign",
-\           "virtualTexthl": "Todo",
-\       },
-\       4: {
-\           "name": "Hint",
-\           "texthl": "ALEInfo",
-\           "signText": "!",
-\           "signTexthl": "ALEInfoSign",
-\           "virtualTexthl": "Todo",
-\       },
-\   }
-augroup LC
-    au!
-    au FileType rust,haskell call SetupLC()
-augroup END
-func! SetupLC()
-    map <leader>lcs :LanguageClientStart<CR>
-    map <silent><buffer><Leader>lk :call LanguageClient#textDocument_hover()<CR>
-    map <silent><buffer><Leader>lg :call LanguageClient#textDocument_definition()<CR>
-    map <silent><buffer><Leader>lr :call LanguageClient#textDocument_rename()<CR>
-    map <silent><buffer><Leader>lf :call LanguageClient#textDocument_formatting()<CR>
-    map <silent><buffer><Leader>lb :call LanguageClient#textDocument_references()<CR>
-    map <silent><buffer><Leader>la :call LanguageClient#textDocument_codeAction()<CR>
-    map <silent><buffer><Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
-    map <silent><buffer><F5> :call LanguageClient_contextMenu()<CR>
-    hi link ALEErrorSign Error
-    hi link ALEStyleErrorSign ALEErrorSign
-    hi link ALEWarningSign Todo
-    hi link ALEStyleWarningSign ALEWarningSign
-    hi link ALEInfoSign ALEWarningSign
-endfunc
 " }}}
 
 " Haskell {{{
@@ -333,10 +269,13 @@ endfunc
 " }}}
 
 " Rust {{{
+au FileType rust nmap <buffer><C-]> <Plug>(ale_go_to_definition)
+au FileType rust nmap <buffer><silent><C-\> :tab split<CR><Plug>(ale_go_to_definition)
 " NOTE: External crate completion does't work without extern crate declaration
 " }}}
 
 " C,C++ {{{
+" TODO: this should be based on tabstop and shiftwidth, see editorconfig doc
 let g:ale_c_clangformat_options = '-style="{BasedOnStyle: llvm, IndentWidth: 4, AccessModifierOffset: -4}"'
 " }}}
 
@@ -391,7 +330,6 @@ func! Zathura(file, ...)
 endfunc
 
 " TODO: `gq` wrt bullet points gets broken after some operations
-" TODO pandoc filetype for LC hover buffer
 " }}}
 
 " Motion {{{
@@ -497,8 +435,8 @@ if has("nvim")
     augroup END
 endif
 
-map <leader>ar :AsyncRun<space>
-map <leader>as :AsyncStop<CR>
+map <leader>R :AsyncRun<space>
+map <leader>S :AsyncStop<CR>
 augroup open_quickfix
     au!
     au QuickFixCmdPost * botright copen 8
@@ -511,8 +449,6 @@ map [q :cN<CR>
 map <silent><leader>x :pc\|ccl\|lcl<CR>
 
 let g:NERDTreeWinPos = "right"
-let g:NERDTreeIgnore = ['\.pyc$', '__pycache__']
-let g:NERDTreeWinSize=35
 nmap <leader>nn :NERDTreeToggle<cr>
 
 let g:gitgutter_enabled=0
@@ -529,21 +465,14 @@ nmap <silent><leader>gg :GitGutterToggle<cr>
 
 " tags {{{
 " TODO: CTRL-W commands
-
-" open ctag in a new tab/vertical split
+" open tag in a new tab/vertical split
 map <silent><C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 map <silent><leader><C-\> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 map <silent>g<Bslash> :tab split<CR>:exec("tselect ".expand("<cword>"))<CR>
 map <silent><leader>g<Bslash> :vsp<CR>:exec("tselect ".expand("<cword>"))<CR>
-
-" open tag in preview window: <C-w>} and <C-w>g}
-" use <leader>tc  (tabclose)
-
 map <leader>tn :tnext<CR>
 map <leader>tN :tNext<CR>
-
-autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
-" autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
+" open tag in preview window: <C-w>} and <C-w>g}
 " }}}
 
 " Comments {{{
@@ -575,7 +504,7 @@ command! W w
 command! Q q
 command! Qa qa
 
-map <leader>tc :tabclose<cr>
+map <leader>cx :tabclose<cr>
 map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 map <leader>td :tab split<CR>
 map <leader>tt :tabedit<CR>

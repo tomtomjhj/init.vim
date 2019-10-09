@@ -71,4 +71,4 @@ augroup end
 * `dw`: to remove whitespace from current pos
 
 # pitfalls
-* because of E10, need to escape(?) `|`(`\|`) when mapping
+* `:h map-bar`

@@ -13,9 +13,6 @@
 [submodule "my_plugins/tex-conceal.vim"]
 	path = my_plugins/tex-conceal.vim
 	url = https://github.com/tomtomjhj/tex-conceal.vim
-[submodule "my_plugins/ale"]
-	path = my_plugins/ale
-	url = https://github.com/tomtomjhj/ale
 [submodule "my_plugins/auto-pairs"]
 	path = my_plugins/auto-pairs
 	url = https://github.com/tomtomjhj/auto-pairs
