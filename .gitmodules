@@ -1,42 +1,9 @@
 [submodule "my_plugins/haskell-vim"]
 	path = my_plugins/haskell-vim
 	url = https://github.com/tomtomjhj/haskell-vim
-[submodule "my_plugins/supertab"]
-	path = my_plugins/supertab
-	url = https://github.com/ervandew/supertab
-[submodule "my_plugins/vim-pandoc"]
-	path = my_plugins/vim-pandoc
-	url = https://github.com/vim-pandoc/vim-pandoc
 [submodule "my_plugins/vim-pandoc-syntax"]
 	path = my_plugins/vim-pandoc-syntax
 	url = https://github.com/tomtomjhj/vim-pandoc-syntax
-[submodule "my_plugins/vimproc.vim"]
-	path = my_plugins/vimproc.vim
-	url = https://github.com/Shougo/vimproc.vim
-[submodule "my_plugins/deoplete.nvim"]
-	path = my_plugins/deoplete.nvim
-	url = https://github.com/Shougo/deoplete.nvim
-[submodule "my_plugins/nerdcommenter"]
-	path = my_plugins/nerdcommenter
-	url = https://github.com/scrooloose/nerdcommenter.git
-[submodule "my_plugins/intero-neovim"]
-	path = my_plugins/intero-neovim
-	url = https://github.com/parsonsmatt/intero-neovim
-[submodule "my_plugins/tlib_vim"]
-	path = my_plugins/tlib_vim
-	url = https://github.com/tomtom/tlib_vim
-[submodule "my_plugins/nvim-yarp"]
-	path = my_plugins/nvim-yarp
-	url = https://github.com/roxma/nvim-yarp
-[submodule "my_plugins/vim-hug-neovim-rpc"]
-	path = my_plugins/vim-hug-neovim-rpc
-	url = https://github.com/roxma/vim-hug-neovim-rpc
-[submodule "my_plugins/editorconfig-vim"]
-	path = my_plugins/editorconfig-vim
-	url = https://github.com/editorconfig/editorconfig-vim
-[submodule "my_plugins/vim-solidity"]
-	path = my_plugins/vim-solidity
-	url = https://github.com/tomlion/vim-solidity
 [submodule "my_plugins/vim-ocaml"]
 	path = my_plugins/vim-ocaml
 	url = https://github.com/tomtomjhj/vim-ocaml
@@ -46,57 +13,12 @@
 [submodule "my_plugins/tex-conceal.vim"]
 	path = my_plugins/tex-conceal.vim
 	url = https://github.com/tomtomjhj/tex-conceal.vim
-[submodule "my_plugins/deoplete-jedi"]
-	path = my_plugins/deoplete-jedi
-	url = https://github.com/deoplete-plugins/deoplete-jedi
-	ignore = untracked
-[submodule "my_plugins/vim-one"]
-	path = my_plugins/vim-one
-	url = https://github.com/rakr/vim-one
-[submodule "my_plugins/LanguageClient-neovim"]
-	path = my_plugins/LanguageClient-neovim
-	url = https://github.com/autozimu/LanguageClient-neovim
-	ignore = untracked
 [submodule "my_plugins/ale"]
 	path = my_plugins/ale
 	url = https://github.com/tomtomjhj/ale
-[submodule "my_plugins/vim-sneak"]
-	path = my_plugins/vim-sneak
-	url = https://github.com/justinmk/vim-sneak
 [submodule "my_plugins/auto-pairs"]
 	path = my_plugins/auto-pairs
 	url = https://github.com/tomtomjhj/auto-pairs
-[submodule "my_plugins/fzf.vim"]
-	path = my_plugins/fzf.vim
-	url = https://github.com/junegunn/fzf.vim
-[submodule "my_plugins/ultisnips"]
-	path = my_plugins/ultisnips
-	url = https://github.com/SirVer/ultisnips
-	ignore = untracked
-[submodule "my_plugins/vim-snippets"]
-	path = my_plugins/vim-snippets
-	url = https://github.com/honza/vim-snippets
 [submodule "my_plugins/lightline.vim"]
 	path = my_plugins/lightline.vim
 	url = https://github.com/tomtomjhj/lightline.vim
-[submodule "my_plugins/lightline-ale"]
-	path = my_plugins/lightline-ale
-	url = https://github.com/maximbaz/lightline-ale
-[submodule "my_plugins/nerdtree"]
-	path = my_plugins/nerdtree
-	url = https://github.com/scrooloose/nerdtree
-[submodule "my_plugins/vim-fugitive"]
-	path = my_plugins/vim-fugitive
-	url = https://github.com/tpope/vim-fugitive
-[submodule "my_plugins/vim-gitgutter"]
-	path = my_plugins/vim-gitgutter
-	url = https://github.com/airblade/vim-gitgutter
-[submodule "my_plugins/vim-repeat"]
-	path = my_plugins/vim-repeat
-	url = https://github.com/tpope/vim-repeat
-[submodule "my_plugins/vim-surround"]
-	path = my_plugins/vim-surround
-	url = https://github.com/tpope/vim-surround/
-[submodule "my_plugins/asyncrun.vim"]
-	path = my_plugins/asyncrun.vim
-	url = https://github.com/skywind3000/asyncrun.vim

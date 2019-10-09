@@ -1,7 +1,168 @@
 " vim: set foldmethod=marker foldlevel=0 nomodeline:
 
+" Plug {{{
+call plug#begin('~/.vim/plugged')
+
+" theme
+Plug '~/.vim/my_plugins/lightline.vim'
+Plug 'maximbaz/lightline-ale'
+Plug 'rakr/vim-one'
+
+" general
+Plug 'tomtom/tlib_vim'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'justinmk/vim-sneak'
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter', { 'on': 'GitGutterToggle' }
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdcommenter'
+Plug 'skywind3000/asyncrun.vim'
+Plug 'editorconfig/editorconfig-vim'
+Plug '~/.vim/my_plugins/auto-pairs'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'Shougo/vimproc.vim', { 'do' : 'make' }
+
+" completion
+Plug 'ervandew/supertab'
+if has('nvim')
+    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins', 'tag': '5.1' }
+else
+    " Plug 'Shougo/deoplete.nvim', { 'tag': '5.1' }
+    " Plug 'roxma/nvim-yarp'
+    " Plug 'roxma/vim-hug-neovim-rpc'
+endif
+" only for markdown/tex?
+Plug 'SirVer/ultisnips', { 'on': [] } | Plug 'honza/vim-snippets'
+augroup load_snippets
+  au!
+  au InsertEnter * call plug#load('ultisnips') | au! load_snippets
+augroup END
+" https://github.com/junegunn/vim-plug/wiki/tips#loading-plugins-manually
+" https://github.com/junegunn/vim-plug/wiki/faq
+
+" lanauges
+Plug '~/.vim/my_plugins/ale'
+Plug 'autozimu/LanguageClient-neovim', {
+            \ 'branch': 'next',
+            \ 'do': 'bash install.sh',
+            \ 'for': ['rust', 'haskell'],
+            \ }
+
+Plug '~/.vim/my_plugins/vim-pandoc-syntax' | Plug 'vim-pandoc/vim-pandoc'
+Plug '~/.vim/my_plugins/tex-conceal.vim'
+Plug '~/.vim/my_plugins/rust.vim'
+Plug 'deoplete-plugins/deoplete-jedi'
+Plug '~/.vim/my_plugins/haskell-vim'
+Plug 'parsonsmatt/intero-neovim'
+Plug '~/.vim/my_plugins/vim-ocaml'
+" Plug 'tomlion/vim-solidity', { 'for': 'solidity' }
+"
+call plug#end()
+" }}}
+
+" Basic {{{
+set mouse=a
+set number
+set ruler
+set foldcolumn=1
+set scrolloff=2
+set showtabline=2
+
+set tabstop=4
+set shiftwidth=4
+set expandtab
+set smarttab
+set autoindent
+set smartindent
+
+set wrap
+" indent the wrapped line, w/ `> ` at the start
+set breakindent
+set showbreak=>\ 
+set backspace=eol,start,indent
+set whichwrap+=<,>,h,l
+
+let mapleader = ","
+set timeoutlen=400
+
+let $LANG='en'
+set langmenu=en
+set encoding=utf8
+set spellfile=~/.vim/spell/en.utf-8.add
+
+set wildmenu
+set wildignore=*.o,*~,*.pyc,*.pdf,*.v.d,*.vo,*.glob
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
+
+set ignorecase
+set smartcase
+set hlsearch
+set incsearch
+set lazyredraw
+set magic
+
+set noerrorbells
+set novisualbell
+set t_vb=
+
+set nobackup
+set nowritebackup
+set noswapfile
+set undodir=~/.vim/undodir
+set undofile
+set autoread
+set switchbuf=useopen,usetab,newtab
+set hidden
+" Return to last edit position when opening files
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+set history=500
+autocmd! BufWritePost ~/.vim/configs.vim source ~/.vim/configs.vim
+
+set exrc
+set secure
+
+au BufRead,BufNewFile *.k set filetype=k
+au BufRead,BufNewFile *.v set filetype=coq
+au BufRead,BufNewFile *.ll set filetype=llvm
+" }}}
+
 " Themes {{{
+let g:lightline = {
+      \ 'colorscheme': 'wombat',
+      \ 'active': {
+      \   'left': [ ['mode', 'paste'],
+      \             ['fugitive', 'readonly', 'filename', 'modified'] ],
+      \   'right': [ ['lineinfo'], ['percent'], ['linter_checking', 'linter_errors', 'linter_warnings'] ]
+      \ },
+      \ 'component': {
+      \   'readonly': '%{&filetype=="help"?"":&readonly?"🔒":""}',
+      \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
+      \   'fugitive': '%{fugitive#statusline()}'
+      \ },
+      \ 'component_expand': {
+      \  'linter_checking': 'lightline#ale#checking',
+      \  'linter_warnings': 'lightline#ale#warnings',
+      \  'linter_errors': 'lightline#ale#errors',
+      \  'linter_ok': 'lightline#ale#ok',
+      \ },
+      \ 'component_type': {
+      \     'linter_checking': 'left',
+      \     'linter_warnings': 'warning',
+      \     'linter_errors': 'error',
+      \     'linter_ok': 'left',
+      \ },
+      \ 'component_visible_condition': {
+      \   'readonly': '(&filetype!="help"&& &readonly)',
+      \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
+      \   'fugitive': '(exists("*fugitive#statusline"))'
+      \ },
+      \ 'separator': { 'left': ' ', 'right': ' ' },
+      \ 'subseparator': { 'left': ' ', 'right': ' ' }
+      \ }
 " colorscheme dracula
+set background=dark
 colorscheme zen
 " colorscheme one
 " set background=light
@@ -24,19 +185,6 @@ colorscheme zen
 " call one#highlight('SpellCap'  , 'FFB86C', 'fafafa', 'underline')
 " call one#highlight('SpellRare' , 'FFB86C', 'fafafa', 'underline')
 " let g:lightline.colorscheme = 'two'
-" }}}
-
-" mics {{{
-set mouse=a
-set number
-set tabstop=4
-set shiftwidth=4
-
-filetype plugin indent on
-
-au BufRead,BufNewFile *.k set filetype=k
-au BufRead,BufNewFile *.v set filetype=coq
-au BufRead,BufNewFile *.ll set filetype=llvm
 " }}}
 
 " Completion {{{
@@ -280,11 +428,11 @@ hi Sneak guifg=black guibg=#afff00 ctermfg=black ctermbg=154
 " }}}
 
 " etc {{{
+map <silent><leader><cr> :noh<cr>
+map <leader>ss :setlocal spell!<cr>
+map <leader>pp :setlocal paste!<cr>
 map <leader>sw :set wrap<CR>
 map <leader>snw :set nowrap<CR>
-" indent the wrapped line, w/ `> ` at the start
-set breakindent
-set showbreak=>\ 
 
 " clipboard.
 if has('nvim')
@@ -294,7 +442,7 @@ if has('nvim')
 endif
 
 " filename
-map <silent><leader>fn :echo '<C-R>=expand("%:p")<CR>''<CR>
+map <silent><leader>fn :echo '<C-R>=expand("%:p")<CR>'<CR>
 
 noremap <F1> <Esc>
 inoremap <F1> <Esc>
@@ -308,8 +456,6 @@ noremap Q q
 
 " delete without clearing regs
 noremap x "_x
-
-set spellfile=~/.vim_runtime/temp_dirs/en.utf-8.add
 
 " pairs
 let g:AutoPairsMapSpace = 0
@@ -356,15 +502,19 @@ augroup open_quickfix
     au QuickFixCmdPost * botright copen 8
 augroup END
 
+" quickfix, loclist, ...
 map <leader>co :copen 8<CR>
 map ]q :cn<CR>
 map [q :cN<CR>
 map <silent><leader>x :pc\|ccl\|lcl<CR>
 
-" edit from the dir of cur buf. `<c-r>=`: append from expr register
-map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
-" refresh
-map <leader>ef :e!<CR>
+let g:NERDTreeWinPos = "right"
+let g:NERDTreeIgnore = ['\.pyc$', '__pycache__']
+let g:NERDTreeWinSize=35
+nmap <leader>nn :NERDTreeToggle<cr>
+
+let g:gitgutter_enabled=0
+nmap <silent><leader>gg :GitGutterToggle<cr>
 
 " https://github.com/tpope/vim-surround/issues/55#issuecomment-4610756
 " https://www.reddit.com/r/vim/comments/5l939k
@@ -411,12 +561,28 @@ map <leader>sf :syn sync fromstart<CR>
 " }}}
 
 " Tabs, windows, buffers {{{
-map <leader>tt :tabedit<CR>
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
 
-" duplicate tab
-map <leader>td :tab split<CR>
 map <leader>q :q<CR>
 map q, :q<CR>
+nmap <leader>w :w!<cr>
+command! W w
+command! Q q
+command! Qa qa
+
+map <leader>tc :tabclose<cr>
+map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
+map <leader>td :tab split<CR>
+map <leader>tt :tabedit<CR>
+map <leader>cd :cd %:p:h<cr>:pwd<cr>
+map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
+map <leader>ef :e!<CR>
+let g:lasttab = 1
+nmap <leader>tl :exe "tabn ".g:lasttab<CR>
+au TabLeave * let g:lasttab = tabpagenr()
 
 set splitright
 set splitbelow
@@ -472,4 +638,5 @@ func! CleanGarbageBufs()
         exe 'bw ' . join(bufs, ' ')
     endif
 endfunc
+
 " }}}

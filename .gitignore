@@ -1,8 +1,8 @@
-temp_dirs/undodir/*
-temp_dirs/spell/*
-temp_dirs/en.utf-8.add*
+undodir/*
+spell/*
 tags
 .DS_Store
 __pycache__
 *.py[cod]
 .mypy_cache/*
+plugged/*
