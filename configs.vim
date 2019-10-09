@@ -3,7 +3,7 @@
 " Plug {{{
 call plug#begin('~/.vim/plugged')
 
-" theme
+" appearance
 Plug '~/.vim/my_plugins/lightline.vim'
 Plug 'maximbaz/lightline-ale'
 Plug 'rakr/vim-one'
@@ -33,14 +33,12 @@ else
     " Plug 'roxma/nvim-yarp'
     " Plug 'roxma/vim-hug-neovim-rpc'
 endif
-" only for markdown/tex?
+
 Plug 'SirVer/ultisnips', { 'on': [] } | Plug 'honza/vim-snippets'
 augroup load_snippets
   au!
   au InsertEnter * call plug#load('ultisnips') | au! load_snippets
 augroup END
-" https://github.com/junegunn/vim-plug/wiki/tips#loading-plugins-manually
-" https://github.com/junegunn/vim-plug/wiki/faq
 
 " lanauges
 Plug '~/.vim/my_plugins/ale'
@@ -49,7 +47,6 @@ Plug 'autozimu/LanguageClient-neovim', {
             \ 'do': 'bash install.sh',
             \ 'for': ['rust', 'haskell'],
             \ }
-
 Plug '~/.vim/my_plugins/vim-pandoc-syntax' | Plug 'vim-pandoc/vim-pandoc'
 Plug '~/.vim/my_plugins/tex-conceal.vim'
 Plug '~/.vim/my_plugins/rust.vim'
@@ -58,7 +55,7 @@ Plug '~/.vim/my_plugins/haskell-vim'
 Plug 'parsonsmatt/intero-neovim'
 Plug '~/.vim/my_plugins/vim-ocaml'
 " Plug 'tomlion/vim-solidity', { 'for': 'solidity' }
-"
+
 call plug#end()
 " }}}
 
@@ -164,30 +161,32 @@ let g:lightline = {
       \ 'separator': { 'left': ' ', 'right': ' ' },
       \ 'subseparator': { 'left': ' ', 'right': ' ' }
       \ }
-" colorscheme dracula
-set background=dark
-colorscheme zen
-" colorscheme one
-" set background=light
-" call one#highlight('Normal', '1c1c1c', '', '')
-" call one#highlight('Comment', '767676', '', '')
-" call one#highlight('SpecialComment', '767676', '', '')
-" call one#highlight('Conceal', '767676', '', '')
-" call one#highlight('rustCommentLine',         '767676', '', '')
-" call one#highlight('rustCommentLineDoc',      '767676', '', '')
-" call one#highlight('rustCommentLineDocError', '767676', '', '')
-" call one#highlight('rustCommentBlock',        '767676', '', '')
-" call one#highlight('rustCommentBlockDoc',     '767676', '', '')
-" call one#highlight('rustCommentBlockDocError','767676', '', '')
-" call one#highlight('gitcommitComment','767676', '', '')
-" call one#highlight('vimCommentTitle','767676', '', '')
-" call one#highlight('vimLineComment','767676', '', '')
-" call one#highlight('Todo', 'fafafa', 'ffafd7', 'bold')
-" call one#highlight('SpellBad'  , 'FF5555', 'fafafa', 'underline')
-" call one#highlight('SpellLocal', 'FFB86C', 'fafafa', 'underline')
-" call one#highlight('SpellCap'  , 'FFB86C', 'fafafa', 'underline')
-" call one#highlight('SpellRare' , 'FFB86C', 'fafafa', 'underline')
-" let g:lightline.colorscheme = 'two'
+" `vil() { nvim "$@" --cmd 'set background=light' }` for light theme
+if &background == 'dark'
+    colorscheme zen
+    " colorscheme dracula
+else
+    colorscheme one
+    call one#highlight('Normal', '1c1c1c', '', '')
+    call one#highlight('Comment', '767676', '', '')
+    call one#highlight('SpecialComment', '767676', '', '')
+    call one#highlight('Conceal', '767676', '', '')
+    call one#highlight('rustCommentLine',         '767676', '', '')
+    call one#highlight('rustCommentLineDoc',      '767676', '', '')
+    call one#highlight('rustCommentLineDocError', '767676', '', '')
+    call one#highlight('rustCommentBlock',        '767676', '', '')
+    call one#highlight('rustCommentBlockDoc',     '767676', '', '')
+    call one#highlight('rustCommentBlockDocError','767676', '', '')
+    call one#highlight('gitcommitComment','767676', '', '')
+    call one#highlight('vimCommentTitle','767676', '', '')
+    call one#highlight('vimLineComment','767676', '', '')
+    call one#highlight('Todo', 'fafafa', 'ffafd7', 'bold')
+    call one#highlight('SpellBad'  , 'FF5555', 'fafafa', 'underline')
+    call one#highlight('SpellLocal', 'FFB86C', 'fafafa', 'underline')
+    call one#highlight('SpellCap'  , 'FFB86C', 'fafafa', 'underline')
+    call one#highlight('SpellRare' , 'FFB86C', 'fafafa', 'underline')
+    let g:lightline.colorscheme = 'two'
+endif
 " }}}
 
 " Completion {{{
