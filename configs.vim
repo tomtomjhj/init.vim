@@ -126,6 +126,9 @@ set secure
 au BufRead,BufNewFile *.k set filetype=k
 au BufRead,BufNewFile *.v set filetype=coq
 au BufRead,BufNewFile *.ll set filetype=llvm
+
+let g:python_host_prog  = '/usr/bin/python2'
+let g:python3_host_prog = '/usr/bin/python3'
 " }}}
 
 " Themes {{{
