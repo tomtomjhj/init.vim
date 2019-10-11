@@ -292,7 +292,7 @@ let g:tex_flavor = "latex"
 let g:tex_noindent_env = 'document\|verbatim\|lstlisting\|align.\?'
 au FileType tex setlocal conceallevel=2
 let g:pandoc#syntax#codeblocks#embeds#langs = ["python", "cpp", "rust"]
-let g:pandoc#modules#disabled = ["folding"]
+let g:pandoc#modules#enabled = ["formatting", "keyboard", "toc", "spell", "hypertext"]
 let g:pandoc#formatting#twxtwidth = 80
 let g:pandoc#hypertext#use_default_mappings = 0
 let g:pandoc#syntax#use_definition_lists = 0
@@ -439,7 +439,7 @@ map <leader>R :AsyncRun<space>
 map <leader>S :AsyncStop<CR>
 augroup open_quickfix
     au!
-    au QuickFixCmdPost * botright copen 8
+    au QuickFixCmdPost caddfile,cexpr,cgetexpr,caddexpr,caddbuffer botright copen 8
 augroup END
 
 " quickfix, loclist, ...
