@@ -125,12 +125,13 @@ let g:lightline = {
       \ 'active': {
       \   'left': [ ['mode', 'paste'],
       \             ['fugitive', 'readonly', 'filename', 'modified'] ],
-      \   'right': [ ['lineinfo'], ['percent'], ['linter_checking', 'linter_errors', 'linter_warnings'] ]
+      \   'right': [ ['lineinfo'], ['percent'], ['linter_checking', 'linter_errors', 'linter_warnings'], ['asyncrun'] ]
       \ },
       \ 'component': {
       \   'readonly': '%{&filetype=="help"?"":&readonly?"🔒":""}',
       \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
-      \   'fugitive': '%{fugitive#statusline()}'
+      \   'fugitive': '%{fugitive#statusline()}',
+      \   'asyncrun': '%{g:asyncrun_status}'
       \ },
       \ 'component_expand': {
       \  'linter_checking': 'lightline#ale#checking',
@@ -269,8 +270,10 @@ endfunc
 " }}}
 
 " Rust {{{
+let g:rust_fold = 1
 au FileType rust nmap <buffer><C-]> <Plug>(ale_go_to_definition)
 au FileType rust nmap <buffer><silent><C-\> :tab split<CR><Plug>(ale_go_to_definition)
+au FileType rust nmap <leader>C :silent make! check<CR><leader>cv<C-W>p
 " NOTE: External crate completion does't work without extern crate declaration
 " }}}
 
@@ -313,14 +316,19 @@ func! RunPandoc(open)
     let src = expand("%:p")
     let out = expand("%:p:h") . '/' . expand("%:t:r") . '.pdf'
     let params = '-Vurlcolor=cyan --highlight-style=kate'
-    let post = a:open ? "-post=call\\ Zathura('" . l:out . "',!g:asyncrun_code)" : ''
-    " set manually or by local vimrc
+    let post = "exec 'au! pandoc_quickfix'"
+    let post .= a:open ? "|call Zathura('" . l:out . "',!g:asyncrun_code)" : ''
+    let post = escape(post, ' ')
+    " set manually or by local vimrc, override header-includes in yaml metadata
     if exists('b:custom_pandoc_include_file')
-        " --include-in-header overrides header-includes in the yaml metadata
         let l:params .= ' --include-in-header=' . b:custom_pandoc_include_file
     endif
     let cmd = 'pandoc ' . l:src . ' -o ' . l:out . ' ' . l:params
-    exe 'AsyncRun -save=1 -cwd=' . expand("%:p:h") l:post l:cmd
+    augroup pandoc_quickfix
+        au!
+        au QuickFixCmdPost caddexpr botright copen 8
+    augroup END
+    exe 'AsyncRun -save=1 -cwd=' . expand("%:p:h") '-post=' . l:post l:cmd
 endfunc
 func! Zathura(file, ...)
     let check = get(a:, 1, 1)
@@ -387,9 +395,7 @@ map <silent><leader>fn :echo '<C-R>=expand("%:p")<CR>'<CR>
 noremap <F1> <Esc>
 inoremap <F1> <Esc>
 
-" just use <C-F> in cmd mode to see cmd history.
-" just use gQ to enter ex mode.
-" disable default macro key and use Q instead
+" c_CTRL-F for cmd history, gQ to enter ex mode. Q instead of q for macros
 noremap q: :
 noremap q <nop>
 noremap Q q
@@ -437,13 +443,12 @@ endif
 
 map <leader>R :AsyncRun<space>
 map <leader>S :AsyncStop<CR>
-augroup open_quickfix
-    au!
-    au QuickFixCmdPost caddfile,cexpr,cgetexpr,caddexpr,caddbuffer botright copen 8
-augroup END
+command! -bang -nargs=* -complete=file Make AsyncRun -program=make @ <args>
+map <leader>M :Make<space>
 
 " quickfix, loclist, ...
-map <leader>co :copen 8<CR>
+map <leader>co :copen 12<CR>
+map <leader>cv :vertical copen <C-R>=min([&columns-112,&columns/2])<CR>\|setlocal nowrap<CR>
 map ]q :cn<CR>
 map [q :cN<CR>
 map <silent><leader>x :pc\|ccl\|lcl<CR>
@@ -456,7 +461,6 @@ nmap <silent><leader>gg :GitGutterToggle<cr>
 
 " https://github.com/tpope/vim-surround/issues/55#issuecomment-4610756
 " https://www.reddit.com/r/vim/comments/5l939k
-" git submodule deinit
 " vim-exchange, yankstack, vim-abolish
 " see :help [range], &, g&
 " :%s/pat/\r&/g.
@@ -528,7 +532,7 @@ au TabClosed * if g:lasttab > 1
 " ctrl-shift-t of chrome
 " TODO: debug(non-existent buf), save filenames when :qa'd and restore
 map <silent><leader><C-t> :call PopQuitBufs()<CR>
-" works only for buffers of closed windows
+" works only for buffers of windows closed by :q, not :tabc
 au QuitPre * call PushQuitBufs(expand("<abuf>"))
 " push if clean and empty. remove preceding one if exists
 let g:quitbufs = []

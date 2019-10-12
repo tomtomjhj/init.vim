@@ -72,3 +72,6 @@ augroup end
 
 # pitfalls
 * `:h map-bar`
+* wrap autocmds in `exec 'au ...'`: may not work as expected because of the interaction w/ `|`
+* Matching `errorformat` may fail if the output from `:AsyncRun ...` is complex & quickfix is already open.
+  Probably the output should be buffered.

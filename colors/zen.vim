@@ -22,7 +22,7 @@ let s:black     = ['#000000', 0]
 let s:subtle    = ['#424450', 238]
 
 let s:selection = ['#44475A', 239]
-let s:comment   = ['#87af87', 108]
+let s:comment   = ['#afd7af', 151]
 let s:cyan      = ['#87d7d7', 116]
 " #afd7ff
 let s:lightcyan = ['#afd7d7', 152] 
