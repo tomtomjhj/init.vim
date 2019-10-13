@@ -114,6 +114,7 @@ set secure
 au BufRead,BufNewFile *.k set filetype=k
 au BufRead,BufNewFile *.v set filetype=coq
 au BufRead,BufNewFile *.ll set filetype=llvm
+au BufRead,BufNewFile *.mir set filetype=rust
 
 let g:python_host_prog  = '/usr/bin/python2'
 let g:python3_host_prog = '/usr/bin/python3'
@@ -292,7 +293,7 @@ let g:ale_python_pylint_options = "--disable=R,C,W0614,W0621"
 
 " Pandoc, Tex {{{
 let g:tex_flavor = "latex"
-let g:tex_noindent_env = 'document\|verbatim\|lstlisting\|align.\?'
+let g:tex_noindent_env = '\v\w+.?'
 au FileType tex setlocal conceallevel=2
 let g:pandoc#syntax#codeblocks#embeds#langs = ["python", "cpp", "rust"]
 let g:pandoc#modules#enabled = ["formatting", "keyboard", "toc", "spell", "hypertext"]

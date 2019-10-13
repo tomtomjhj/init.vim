@@ -78,12 +78,10 @@ ${0}
 \end{figure}
 endsnippet
 snippet tn "Tikz node" w
-\node (${1/[^0-9a-zA-Z]//g}${2}) ${3:[${4}]} {$${1}$};
-$0
+\node (${1/[^0-9a-zA-Z']//g}${2}) ${3:[${4}]} {$${1}$};
 endsnippet
 snippet td "Tikz draw" w
 \draw[${4:-}] (${1}) to node {${3}} (${2});
-$0
 endsnippet
 
 # TODO detect math context using tex.vim syntax info and auto convert
