@@ -52,23 +52,17 @@ call plug#end()
 
 " Basic {{{
 set mouse=a
-set number
-set ruler
+set number | set ruler
 set foldcolumn=1
 set scrolloff=2
 set showtabline=1
 
-set tabstop=4
-set shiftwidth=4
-set expandtab
-set smarttab
-set autoindent
-set smartindent
+set tabstop=4 | set shiftwidth=4
+set expandtab | set smarttab
+set autoindent | set smartindent
 
-set wrap
 " indent the wrapped line, w/ `> ` at the start
-set breakindent
-set showbreak=>\ 
+set wrap | set linebreak | set breakindent | set showbreak=>\ 
 set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
 
@@ -84,32 +78,25 @@ set wildmenu
 set wildignore=*.o,*~,*.pyc,*.pdf,*.v.d,*.vo,*.glob
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
 
-set ignorecase
-set smartcase
-set hlsearch
-set incsearch
-set lazyredraw
 set magic
+set ignorecase | set smartcase
+set hlsearch | set incsearch
 
-set noerrorbells
-set novisualbell
-set t_vb=
+set noerrorbells | set novisualbell | set t_vb=
 
-set nobackup
-set nowritebackup
-set noswapfile
-set undodir=~/.vim/undodir
-set undofile
+set nobackup | set nowritebackup | set noswapfile
+set undofile | set undodir=~/.vim/undodir
+
 set autoread
 set switchbuf=useopen,usetab,newtab
 set hidden
+set lazyredraw
 " Return to last edit position when opening files
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 set history=500
 autocmd! BufWritePost ~/.vim/configs.vim source ~/.vim/configs.vim
 
-set exrc
-set secure
+set exrc | set secure
 
 au BufRead,BufNewFile *.k set filetype=k
 au BufRead,BufNewFile *.v set filetype=coq
@@ -157,7 +144,6 @@ let g:lightline = {
 " `vil() { nvim "$@" --cmd 'set background=light' }` for light theme
 if &background == 'dark'
     colorscheme zen
-    " colorscheme dracula
 else
     colorscheme one
     call one#highlight('Normal', '1c1c1c', '', '')
@@ -183,15 +169,14 @@ endif
 " }}}
 
 " Completion {{{
-let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
+" TODO: Use context stuff to let supertab use <c-p> when deoplete isn't the
+" one who filled up the completion list.
+let g:SuperTabDefaultCompletionType = '<c-n>'
 let g:SuperTabClosePreviewOnPopupClose = 1
 
 let g:deoplete#enable_at_startup = 1
 
 let g:UltiSnipsExpandTrigger = '<c-l>'
-" <c-j>, <c-k> to navigate
-
-" set completeopt-=preview
 " }}}
 
 " ALE general settings {{{
@@ -274,7 +259,7 @@ endfunc
 let g:rust_fold = 1
 au FileType rust nmap <buffer><C-]> <Plug>(ale_go_to_definition)
 au FileType rust nmap <buffer><silent><C-\> :tab split<CR><Plug>(ale_go_to_definition)
-au FileType rust nmap <leader>C :silent make! check<CR><leader>cv<C-W>p
+au FileType rust nmap <leader>C :silent make! check<CR><leader>cv
 " NOTE: External crate completion does't work without extern crate declaration
 " }}}
 
@@ -327,7 +312,7 @@ func! RunPandoc(open)
     let cmd = 'pandoc ' . l:src . ' -o ' . l:out . ' ' . l:params
     augroup pandoc_quickfix
         au!
-        au QuickFixCmdPost caddexpr botright copen 8
+        au QuickFixCmdPost caddexpr botright copen 8 | winc p
     augroup END
     exe 'AsyncRun -save=1 -cwd=' . expand("%:p:h") '-post=' . l:post l:cmd
 endfunc
@@ -448,8 +433,8 @@ command! -bang -nargs=* -complete=file Make AsyncRun -program=make @ <args>
 map <leader>M :Make<space>
 
 " quickfix, loclist, ...
-map <leader>co :copen 12<CR>
-map <leader>cv :vertical copen <C-R>=min([&columns-112,&columns/2])<CR>\|setlocal nowrap<CR>
+map <leader>co :copen 12\| winc p<CR>
+map <leader>cv :vert copen <C-R>=min([&columns-112,&columns/2])<CR>\|setlocal nowrap\|winc p<CR>
 map ]q :cn<CR>
 map [q :cN<CR>
 map <silent><leader>x :pc\|ccl\|lcl<CR>
