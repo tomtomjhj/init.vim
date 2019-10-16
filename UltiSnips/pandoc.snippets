@@ -1,37 +1,37 @@
 snippet nc "\newcommand"
-\\newcommand{\\${1:cmd}}[${2:opt}]{${3:realcmd}} ${0}
+\newcommand{\${1:cmd}}[${2:opt}]{${3:realcmd}} ${0}
 endsnippet
 
 snippet mf "mathfrak" i
-\\mathfrak{${1}}${0}
+\mathfrak{$0}
 endsnippet
 snippet mc "mathcal" i
-\\mathcal{${1}}${0}
+\mathcal{$0}
 endsnippet
 snippet ms "mathscr" i
-\\mathscr{${1}}${0}
+\mathscr{$0}
 endsnippet
 snippet bf "mathbf" i
-\\mathbf{${1}}${0}
+\mathbf{$0}
 endsnippet
 snippet bb "mathbb" i
-\\mathbb{${1}}${0}
+\mathbb{$0}
 endsnippet
 snippet sf "textsf" i
-\\textsf{${1}}${0}
+\textsf{$0}
 endsnippet
 snippet tt "\text{}" i
-\text{ $1}$0
+\text{ $0}
 endsnippet
 snippet cd "\texttt{}" i
-\texttt{$1}$0
+\texttt{$0}
 endsnippet
 snippet yf "symbf" i
-\\symbf{${1}}${0}
+\symbf{$0}
 endsnippet
 
 snippet frac "\frac{}{}" i
-\\frac{${1}}{${2}}${0}
+\\frac{${1}}{${0}}
 endsnippet
 snippet sum "\sum^{}_{}" i
 \\sum^{${1:n}}_{${2:i=1}}${0}
@@ -60,7 +60,10 @@ snippet lra "langle rangle" i
 \\langle ${1}\\rangle${0}
 endsnippet
 snippet set "\{ \}" i
-\\{${1}\\}${0}
+\\{${0}\\}
+endsnippet
+snippet bmat "begin{bmatrix} / end{bmatrix}" w
+\begin{bmatrix}$0\end{bmatrix}
 endsnippet
 
 snippet beg "begin{} / end{}" w
@@ -106,17 +109,18 @@ snippet => "implies" i
 \implies
 endsnippet
 
+# handle jumps with end paren jumps if possible
 snippet bar "\bar{}" i
-\bar{$1}$0
+\bar{$0}
 endsnippet
 snippet over "\overline{}" i
-\overline{$1}$0
+\overline{$0}
 endsnippet
 snippet hat "\hat{}" i
-\hat{$1}$0
+\hat{$0}
 endsnippet
 snippet sq "\sqrt{}" i
-\sqrt{$1}$0
+\sqrt{$0}
 endsnippet
 
 snippet norm "norm" i
@@ -130,10 +134,10 @@ snippet norm22 "norm_2^2" i
 endsnippet
 
 snippet __ "_{}" iA
-_{$1}$0
+_{$0}
 endsnippet
 snippet ^^ "^{}" iA
-^{$1}$0
+^{$0}
 endsnippet
 snippet inv "^{-1}" i
 ^{-1}
@@ -142,8 +146,11 @@ snippet TT "^\top" i
 ^\top
 endsnippet
 
-snippet all "\forall \in" i
+snippet for "\forall \in" i
 \forall $1\in $2
+endsnippet
+snippet all "\forall" i
+\forall
 endsnippet
 snippet ext "\exists \in" i
 \exists $1\in $2

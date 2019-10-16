@@ -33,7 +33,9 @@ Plug 'SirVer/ultisnips', { 'on': [] } | Plug 'honza/vim-snippets'
 augroup Completions
   au!
   au InsertEnter * call plug#load('ultisnips') | call plug#load('deoplete.nvim')
+              \ | exec 'vnoremap <silent><C-l> <ESC>:call VisualJump(g:pair_closer, 1, 1)<CR>'
               \ | au! Completions
+  " I don't use UltiSnips#SaveLastVisualSelection
 augroup END
 
 " lanauges
@@ -341,8 +343,8 @@ noremap <c-space> <C-u>
 
 " star without moving the cursor
 noremap <silent>* :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<CR>
-vnoremap <silent>* :<C-u>call Searchgvy()\|set hlsearch<CR>
-func! Searchgvy()
+vnoremap <silent>* :<C-u>call Searchgv()\|set hlsearch<CR>
+func! Searchgv()
     let l:saved_reg = @"
     execute "normal! gvy"
     let l:pattern = escape(@", "\\/.*'$^~[]")
@@ -359,6 +361,39 @@ map t <Plug>Sneak_t
 map T <Plug>Sneak_T
 hi Sneak guifg=black guibg=#afff00 ctermfg=black ctermbg=154
 
+" shortcut jumps inspired by snippets and auto-pairs
+let g:pair_opener = '\v("|\[|''|\(|\{|\$)'
+let g:pair_closer = '\v("|\]|''|\)|\}|\$)'
+let g:shortcut_jump_target = g:pair_closer
+inoremap <silent> <C-j> <C-\><C-O>:call search(g:shortcut_jump_target, 'ceW')<CR><Right>
+inoremap <silent> <C-k> <C-\><C-O>:call search(g:shortcut_jump_target, 'bW')<CR>
+map <silent> ]j :call search(g:shortcut_jump_target,'W')<CR>
+map <silent> [j :call search(g:shortcut_jump_target,'bW')<CR>
+vnoremap <silent> <C-l> <ESC>:call VisualJump(g:pair_closer, 1, 1)<CR>
+vnoremap <silent> <C-h> <ESC>:call VisualJump(g:pair_opener, 0, 1)<CR>
+vnoremap <silent> <C-j> <ESC>:call VisualJump(g:pair_opener, 1, 0)<CR>
+vnoremap <silent> <C-k> <ESC>:call VisualJump(g:pair_closer, 0, 0)<CR>
+func! VisualJump(target, forward, expand)
+    let l:saved_reg = @/
+    let @/ = a:target
+    let l:wrapscan = &wrapscan
+    " TODO: v_gN behaves differently after vim-patch 8.1.0629
+    if a:expand
+        let l:flip = a:forward == (getpos('.') != getpos("'>"))
+        let l:cmd = l:flip ? 'gvo' : 'gv'
+        let l:cmd .= a:forward ? 'gn' : 'gNh'
+    else " shrink
+        let l:flip = a:forward == (getpos('.') == getpos("'>"))
+        let l:cmd = l:flip ? 'gvo' : 'gv'
+        let l:cmd .= a:forward ? 'gnh' : 'gN'
+    endif
+    set nowrapscan
+    exec 'normal!' l:cmd
+    let &wrapscan = l:wrapscan
+    let @/ = l:saved_reg
+endfunc
+" remap digraph
+inoremap <C-space> <C-k>
 " }}}
 
 " etc {{{
@@ -389,24 +424,13 @@ noremap Q q
 " delete without clearing regs
 noremap x "_x
 
-" pairs
+" auto-pairs
 let g:AutoPairsMapSpace = 0
 let g:AutoPairsCenterLine = 0
 let g:AutoPairsMapCh = 0
 let g:AutoPairsShortcutFastWrap = '<M-w>'
 let g:AutoPairsShortcutToggle = ''
-func! NextClosing()
-    call search('["\]'')}$]','W')
-endfunc
-func! PrevClosing()
-    call search('["\]'')}$]','bW')
-endfunc
-inoremap <silent> <C-k> <ESC>:exec 'norm! l'\|call PrevClosing()<CR>i
-inoremap <silent> <C-j> <ESC>:call NextClosing()<CR>a
-map <silent> <M-p> :call PrevClosing()<CR>
-map <silent> <M-n> :call NextClosing()<CR>
-" digraph
-inoremap <C-space> <C-k>
+let g:AutoPairsShortcutJump = ''
 
 " fzf
 set rtp+=~/.fzf
@@ -427,6 +451,7 @@ if has("nvim")
     augroup END
 endif
 
+" asyncrun
 map <leader>R :AsyncRun<space>
 map <leader>S :AsyncStop<CR>
 command! -bang -nargs=* -complete=file Make AsyncRun -program=make @ <args>
@@ -437,6 +462,8 @@ map <leader>co :copen 12\| winc p<CR>
 map <leader>cv :vert copen <C-R>=min([&columns-112,&columns/2])<CR>\|setlocal nowrap\|winc p<CR>
 map ]q :cn<CR>
 map [q :cN<CR>
+map ]l :ln<CR>
+map [l :lN<CR>
 map <silent><leader>x :pc\|ccl\|lcl<CR>
 
 let g:NERDTreeWinPos = "right"
@@ -446,7 +473,6 @@ let g:gitgutter_enabled=0
 nmap <silent><leader>gg :GitGutterToggle<cr>
 
 " https://github.com/tpope/vim-surround/issues/55#issuecomment-4610756
-" https://www.reddit.com/r/vim/comments/5l939k
 " vim-exchange, yankstack, vim-abolish
 " see :help [range], &, g&
 " :%s/pat/\r&/g.
@@ -460,8 +486,8 @@ map <silent><C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 map <silent><leader><C-\> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 map <silent>g<Bslash> :tab split<CR>:exec("tselect ".expand("<cword>"))<CR>
 map <silent><leader>g<Bslash> :vsp<CR>:exec("tselect ".expand("<cword>"))<CR>
-map <leader>tn :tnext<CR>
-map <leader>tN :tNext<CR>
+map ]t :tn<CR>
+map [t :tN<CR>
 " open tag in preview window: <C-w>} and <C-w>g}
 " }}}
 
@@ -482,10 +508,10 @@ map <leader>sf :syn sync fromstart<CR>
 " }}}
 
 " Tabs, windows, buffers {{{
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-h> <C-W>h
-map <C-l> <C-W>l
+nnoremap <C-j> <C-W>j
+nnoremap <C-k> <C-W>k
+nnoremap <C-h> <C-W>h
+nnoremap <C-l> <C-W>l
 
 map <leader>q :q<CR>
 map q, :q<CR>
