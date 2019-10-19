@@ -23,6 +23,7 @@ Plug '~/.vim/my_plugins/auto-pairs'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'Shougo/vimproc.vim', { 'do' : 'make' }
+Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment'
 
 " completion
 Plug 'ervandew/supertab'
@@ -295,6 +296,7 @@ augroup END
 func! SetupPandoc()
     let b:AutoPairs = AutoPairsDefine({'$':'$', '$$':'$$'})
     " set to notoplevel in haskell.vim
+    call textobj#user#plugin('pandoc', s:pandoc_textobj)
     syntax spell toplevel
     nmap <buffer><silent><leader>pd :call RunPandoc(0)<CR>
     nmap <buffer><silent><leader>po :call RunPandoc(1)<CR>
@@ -323,6 +325,73 @@ func! Zathura(file, ...)
     if l:check
         call jobstart(['zathura', a:file, '--fork'])
     endif
+endfunc
+
+let s:pandoc_textobj = {
+            \   'begin-end': {
+            \     'pattern': ['\\begin{[^}]\+}\s*\n\?', '\s*\\end{[^}]\+}'],
+            \     'select-a': 'ae',
+            \     'select-i': 'ie',
+            \   },
+            \  'dollar-math': {
+            \     'select-a-function': 'DollarMatha',
+            \     'select-a': 'am',
+            \     'select-i-function': 'DollarMathi',
+            \     'select-i': 'im',
+            \   },
+            \  'dollar-mathmath': {
+            \     'select-a-function': 'DollarMathMatha',
+            \     'select-a': 'aM',
+            \     'select-i-function': 'DollarMathMathi',
+            \     'select-i': 'iM',
+            \   },
+            \ }
+
+func! DollarMatha()
+    if synIDattr(get(synstack(line('.'), col('.')), 0, 0), 'name') != 'pandocLaTeXInlineMath'
+        return 0
+    endif
+    if !search('\v\$', 'bW') | return 0 | endif
+    let head_pos = getpos('.')
+    if !search('\v\$', 'W') | return 0 | endif
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
+endfunc
+func! DollarMathi()
+    if synIDattr(get(synstack(line('.'), col('.')), 0, 0), 'name') != 'pandocLaTeXInlineMath'
+        return 0
+    endif
+    if !search('\v\$', 'bW') | return 0 | endif
+    normal! l
+    let head_pos = getpos('.')
+    if !search('\v\$', 'W') | return 0 | endif
+    normal! h
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
+endfunc
+func! DollarMathMatha()
+    if synIDattr(get(synstack(line('.'), col('.')), 0, 0), 'name') != 'pandocLaTeXMathBlock'
+        return 0
+    endif
+    if !search('\v\$\$', 'bW') | return 0 | endif
+    let head_pos = getpos('.')
+    if !search('\v\$\$', 'W') | return 0 | endif
+    normal! l
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
+endfunc
+func! DollarMathMathi()
+    if synIDattr(get(synstack(line('.'), col('.')), 0, 0), 'name') != 'pandocLaTeXMathBlock'
+        return 0
+    endif
+    if !search('\v\$\$', 'bW') | return 0 | endif
+    normal! l
+    call search('\v\S', 'W')
+    let head_pos = getpos('.')
+    if !search('\v\$\$', 'W')  | return 0 | endif
+    call search('\v\S', 'bW')
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
 endfunc
 
 " TODO: `gq` wrt bullet points gets broken after some operations
