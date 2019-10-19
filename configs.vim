@@ -347,8 +347,18 @@ let s:pandoc_textobj = {
             \   },
             \ }
 
+func! IsInMath(type)
+    let stack = synstack(line('.'), col('.'))
+    for i in stack
+        let name = synIDattr(i, 'name')
+        if name == a:type
+            return 1
+        endif
+    endfor
+    return 0
+endfunc
 func! DollarMatha()
-    if synIDattr(get(synstack(line('.'), col('.')), 0, 0), 'name') != 'pandocLaTeXInlineMath'
+    if !IsInMath('pandocLaTeXInlineMath')
         return 0
     endif
     if !search('\v\$', 'bW') | return 0 | endif
@@ -358,7 +368,7 @@ func! DollarMatha()
     return ['v', head_pos, tail_pos]
 endfunc
 func! DollarMathi()
-    if synIDattr(get(synstack(line('.'), col('.')), 0, 0), 'name') != 'pandocLaTeXInlineMath'
+    if !IsInMath('pandocLaTeXInlineMath')
         return 0
     endif
     if !search('\v\$', 'bW') | return 0 | endif
@@ -370,7 +380,7 @@ func! DollarMathi()
     return ['v', head_pos, tail_pos]
 endfunc
 func! DollarMathMatha()
-    if synIDattr(get(synstack(line('.'), col('.')), 0, 0), 'name') != 'pandocLaTeXMathBlock'
+    if !IsInMath('pandocLaTeXMathBlock')
         return 0
     endif
     if !search('\v\$\$', 'bW') | return 0 | endif
@@ -381,7 +391,7 @@ func! DollarMathMatha()
     return ['v', head_pos, tail_pos]
 endfunc
 func! DollarMathMathi()
-    if synIDattr(get(synstack(line('.'), col('.')), 0, 0), 'name') != 'pandocLaTeXMathBlock'
+    if !IsInMath('pandocLaTeXMathBlock')
         return 0
     endif
     if !search('\v\$\$', 'bW') | return 0 | endif
