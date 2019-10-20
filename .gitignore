@@ -6,3 +6,4 @@ __pycache__
 *.py[cod]
 .mypy_cache/*
 plugged/*
+autoload/plug.vim.old

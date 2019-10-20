@@ -34,9 +34,7 @@ Plug 'SirVer/ultisnips', { 'on': [] } | Plug 'honza/vim-snippets'
 augroup Completions
   au!
   au InsertEnter * call plug#load('ultisnips') | call plug#load('deoplete.nvim')
-              \ | exec 'vnoremap <silent><C-l> <ESC>:call VisualJump(g:pair_closer, 1, 1)<CR>'
               \ | au! Completions
-  " I don't use UltiSnips#SaveLastVisualSelection
 augroup END
 
 " lanauges
@@ -448,28 +446,32 @@ inoremap <silent> <C-j> <C-\><C-O>:call search(g:shortcut_jump_target, 'ceW')<CR
 inoremap <silent> <C-k> <C-\><C-O>:call search(g:shortcut_jump_target, 'bW')<CR>
 map <silent> ]j :call search(g:shortcut_jump_target,'W')<CR>
 map <silent> [j :call search(g:shortcut_jump_target,'bW')<CR>
-vnoremap <silent> <C-l> <ESC>:call VisualJump(g:pair_closer, 1, 1)<CR>
-vnoremap <silent> <C-h> <ESC>:call VisualJump(g:pair_opener, 0, 1)<CR>
-vnoremap <silent> <C-j> <ESC>:call VisualJump(g:pair_opener, 1, 0)<CR>
-vnoremap <silent> <C-k> <ESC>:call VisualJump(g:pair_closer, 0, 0)<CR>
-func! VisualJump(target, forward, expand)
-    let l:saved_reg = @/
-    let @/ = a:target
+vnoremap <silent> <C-j> <ESC>:call VisualJump(1)<CR>
+vnoremap <silent> <C-k> <ESC>:call VisualJump(0)<CR>
+func! VisualJump(forward)
+    let cur_pos = [line('.'), col('.')]
+    let left_pos = [line("'<"), col("'<")]
+    let right_pos = [line("'>"), col("'>")]
+    let on_right = l:left_pos == l:right_pos ? a:forward : l:cur_pos == l:right_pos
+    " raw target. need to change if flip detected
+    let target = searchpos(l:on_right ? g:pair_closer : g:pair_opener, a:forward ? 'nW' : 'nbW')
+    let flipped = l:on_right ? SearchPosLE(l:target, l:left_pos) : SearchPosLE(l:right_pos, l:target)
+    let cmd = l:flipped ? 'gvo' : 'gv'
+    let cmd .= a:forward ? 'gn' : 'gN'
+    let saved_reg = @/
+    let @/ = (l:on_right != l:flipped) ? g:pair_closer : g:pair_opener
     let l:wrapscan = &wrapscan
-    " TODO: v_gN behaves differently after vim-patch 8.1.0629
-    if a:expand
-        let l:flip = a:forward == (getpos('.') != getpos("'>"))
-        let l:cmd = l:flip ? 'gvo' : 'gv'
-        let l:cmd .= a:forward ? 'gn' : 'gNh'
-    else " shrink
-        let l:flip = a:forward == (getpos('.') == getpos("'>"))
-        let l:cmd = l:flip ? 'gvo' : 'gv'
-        let l:cmd .= a:forward ? 'gnh' : 'gN'
-    endif
     set nowrapscan
     exec 'normal!' l:cmd
+    " TODO: v_gN behaves differently after vim-patch 8.1.0629
+    if l:on_right == l:flipped
+        exec 'normal! h'
+    endif
     let &wrapscan = l:wrapscan
     let @/ = l:saved_reg
+endfunc
+func! SearchPosLE(p1, p2)
+    return a:p1[0] < a:p2[0] || (a:p1[0] == a:p2[0] && a:p1[1] <= a:p2[1])
 endfunc
 " remap digraph
 inoremap <C-space> <C-k>
@@ -541,7 +543,7 @@ map <leader>co :copen 12\| winc p<CR>
 map <leader>cv :vert copen <C-R>=min([&columns-112,&columns/2])<CR>\|setlocal nowrap\|winc p<CR>
 map ]q :cn<CR>
 map [q :cN<CR>
-map ]l :ln<CR>
+map ]l :lne<CR>
 map [l :lN<CR>
 map <silent><leader>x :pc\|ccl\|lcl<CR>
 
