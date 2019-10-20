@@ -299,6 +299,7 @@ func! SetupPandoc()
     nmap <buffer><silent><leader>pd :call RunPandoc(0)<CR>
     nmap <buffer><silent><leader>po :call RunPandoc(1)<CR>
     nmap <buffer><silent>gx <Plug>(pandoc-hypertext-open-system)
+    nmap <buffer><silent><leader>py vid<leader>R python3<CR><leader>cv
 endfunc
 func! RunPandoc(open)
     let src = expand("%:p")
@@ -331,6 +332,12 @@ let s:pandoc_textobj = {
             \     'select-a': 'ae',
             \     'select-i': 'ie',
             \   },
+            \   'code': {
+            \     'select-a-function': 'FencedCodeBlocka',
+            \     'select-a': 'ad',
+            \     'select-i-function': 'FencedCodeBlocki',
+            \     'select-i': 'id',
+            \   },
             \  'dollar-math': {
             \     'select-a-function': 'DollarMatha',
             \     'select-a': 'am',
@@ -345,7 +352,31 @@ let s:pandoc_textobj = {
             \   },
             \ }
 
-func! IsInMath(type)
+" TODO: move the functions to autoload
+func! FencedCodeBlocka()
+    if !InSynStack('pandocDelimitedCodeBlock')
+        return 0
+    endif
+    if !search('```\w*', 'bW') | return 0 | endif
+    let head_pos = getpos('.')
+    if !search('```', 'W') | return 0 | endif
+    normal! E
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
+endfunc
+func! FencedCodeBlocki()
+    if !InSynStack('pandocDelimitedCodeBlock')
+        return 0
+    endif
+    if !search('```\w*', 'bW') | return 0 | endif
+    normal! W
+    let head_pos = getpos('.')
+    if !search('```', 'W') | return 0 | endif
+    normal! b
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
+endfunc
+func! InSynStack(type)
     let stack = synstack(line('.'), col('.'))
     for i in stack
         let name = synIDattr(i, 'name')
@@ -356,7 +387,7 @@ func! IsInMath(type)
     return 0
 endfunc
 func! DollarMatha()
-    if !IsInMath('pandocLaTeXInlineMath')
+    if !InSynStack('pandocLaTeXInlineMath')
         return 0
     endif
     if !search('\v\$', 'bW') | return 0 | endif
@@ -366,7 +397,7 @@ func! DollarMatha()
     return ['v', head_pos, tail_pos]
 endfunc
 func! DollarMathi()
-    if !IsInMath('pandocLaTeXInlineMath')
+    if !InSynStack('pandocLaTeXInlineMath')
         return 0
     endif
     if !search('\v\$', 'bW') | return 0 | endif
@@ -378,7 +409,7 @@ func! DollarMathi()
     return ['v', head_pos, tail_pos]
 endfunc
 func! DollarMathMatha()
-    if !IsInMath('pandocLaTeXMathBlock')
+    if !InSynStack('pandocLaTeXMathBlock')
         return 0
     endif
     if !search('\v\$\$', 'bW') | return 0 | endif
@@ -389,7 +420,7 @@ func! DollarMathMatha()
     return ['v', head_pos, tail_pos]
 endfunc
 func! DollarMathMathi()
-    if !IsInMath('pandocLaTeXMathBlock')
+    if !InSynStack('pandocLaTeXMathBlock')
         return 0
     endif
     if !search('\v\$\$', 'bW') | return 0 | endif
@@ -597,9 +628,11 @@ nnoremap <C-l> <C-W>l
 map <leader>q :q<CR>
 map q, :q<CR>
 nmap <leader>w :w!<cr>
-command! W w
-command! Q q
-command! Qa qa
+command! -bang W w
+command! -bang Q q
+command! -bang Wq wq
+command! -bang Wqa wqa
+command! -bang Qa qa
 
 map <leader>cx :tabclose<cr>
 map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
