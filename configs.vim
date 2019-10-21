@@ -7,6 +7,7 @@ call plug#begin('~/.vim/plugged')
 Plug '~/.vim/my_plugins/lightline.vim'
 Plug 'maximbaz/lightline-ale'
 Plug 'rakr/vim-one'
+Plug 'lifepillar/vim-solarized8'
 
 " general
 Plug 'tomtom/tlib_vim'
@@ -146,26 +147,34 @@ let g:lightline = {
 if &background == 'dark'
     colorscheme zen
 else
-    colorscheme one
-    call one#highlight('Normal', '1c1c1c', '', '')
-    call one#highlight('Comment', '767676', '', '')
-    call one#highlight('SpecialComment', '767676', '', '')
-    call one#highlight('Conceal', '767676', '', '')
-    call one#highlight('rustCommentLine',         '767676', '', '')
-    call one#highlight('rustCommentLineDoc',      '767676', '', '')
-    call one#highlight('rustCommentLineDocError', '767676', '', '')
-    call one#highlight('rustCommentBlock',        '767676', '', '')
-    call one#highlight('rustCommentBlockDoc',     '767676', '', '')
-    call one#highlight('rustCommentBlockDocError','767676', '', '')
-    call one#highlight('gitcommitComment','767676', '', '')
-    call one#highlight('vimCommentTitle','767676', '', '')
-    call one#highlight('vimLineComment','767676', '', '')
-    call one#highlight('Todo', 'fafafa', 'ffafd7', 'bold')
-    call one#highlight('SpellBad'  , 'FF5555', 'fafafa', 'underline')
-    call one#highlight('SpellLocal', 'FFB86C', 'fafafa', 'underline')
-    call one#highlight('SpellCap'  , 'FFB86C', 'fafafa', 'underline')
-    call one#highlight('SpellRare' , 'FFB86C', 'fafafa', 'underline')
-    let g:lightline.colorscheme = 'two'
+    let g:solarized_enable_extra_hi_groups = 1
+    let g:solarized_italics = 0
+    set termguicolors
+    colorscheme solarized8_high
+    hi Special guifg=#735050
+    hi Conceal guifg=#735050
+    hi Statement gui=bold
+    let g:lightline.colorscheme = 'solarized'
+    " colorscheme one
+    " call one#highlight('Normal', '1c1c1c', '', '')
+    " call one#highlight('Comment', '767676', '', '')
+    " call one#highlight('SpecialComment', '767676', '', '')
+    " call one#highlight('Conceal', '767676', '', '')
+    " call one#highlight('rustCommentLine',         '767676', '', '')
+    " call one#highlight('rustCommentLineDoc',      '767676', '', '')
+    " call one#highlight('rustCommentLineDocError', '767676', '', '')
+    " call one#highlight('rustCommentBlock',        '767676', '', '')
+    " call one#highlight('rustCommentBlockDoc',     '767676', '', '')
+    " call one#highlight('rustCommentBlockDocError','767676', '', '')
+    " call one#highlight('gitcommitComment','767676', '', '')
+    " call one#highlight('vimCommentTitle','767676', '', '')
+    " call one#highlight('vimLineComment','767676', '', '')
+    " call one#highlight('Todo', 'fafafa', 'ffafd7', 'bold')
+    " call one#highlight('SpellBad'  , 'FF5555', 'fafafa', 'underline')
+    " call one#highlight('SpellLocal', 'FFB86C', 'fafafa', 'underline')
+    " call one#highlight('SpellCap'  , 'FFB86C', 'fafafa', 'underline')
+    " call one#highlight('SpellRare' , 'FFB86C', 'fafafa', 'underline')
+    " let g:lightline.colorscheme = 'two'
 endif
 " }}}
 
