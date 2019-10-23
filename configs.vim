@@ -6,7 +6,6 @@ call plug#begin('~/.vim/plugged')
 " appearance
 Plug '~/.vim/my_plugins/lightline.vim'
 Plug 'maximbaz/lightline-ale'
-Plug 'rakr/vim-one'
 Plug 'lifepillar/vim-solarized8'
 
 " general
@@ -29,7 +28,7 @@ Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment'
 " completion
 Plug 'ervandew/supertab'
 Plug 'Shougo/deoplete.nvim',
-            \ { 'do': ':UpdateRemotePlugins', 'tag': '5.1', 'on': [] }
+            \ { 'do': ':UpdateRemotePlugins', 'on': [] }
 " if !has('nvim') | Plug 'roxma/nvim-yarp' | Plug 'roxma/vim-hug-neovim-rpc' | endif
 Plug 'SirVer/ultisnips', { 'on': [] } | Plug 'honza/vim-snippets'
 augroup Completions
@@ -114,14 +113,15 @@ let g:lightline = {
       \ 'colorscheme': 'wombat',
       \ 'active': {
       \   'left': [ ['mode', 'paste'],
-      \             ['fugitive', 'readonly', 'filename', 'modified'] ],
+      \             ['fugitive', 'readonly', 'shortrelpath', 'modified'] ],
       \   'right': [ ['lineinfo'], ['percent'], ['linter_checking', 'linter_errors', 'linter_warnings'], ['asyncrun'] ]
       \ },
       \ 'component': {
       \   'readonly': '%{&filetype=="help"?"":&readonly?"🔒":""}',
+      \   'shortrelpath': '%{pathshorten(fnamemodify(expand("%"), ":~:."))}',
       \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
       \   'fugitive': '%{fugitive#statusline()}',
-      \   'asyncrun': '%{g:asyncrun_status}'
+      \   'asyncrun': '%{g:asyncrun_status}',
       \ },
       \ 'component_expand': {
       \  'linter_checking': 'lightline#ale#checking',
@@ -151,30 +151,9 @@ else
     let g:solarized_italics = 0
     set termguicolors
     colorscheme solarized8_high
-    hi Special guifg=#735050
-    hi Conceal guifg=#735050
+    hi Special guifg=#735050 | hi Conceal guifg=#735050
     hi Statement gui=bold
     let g:lightline.colorscheme = 'solarized'
-    " colorscheme one
-    " call one#highlight('Normal', '1c1c1c', '', '')
-    " call one#highlight('Comment', '767676', '', '')
-    " call one#highlight('SpecialComment', '767676', '', '')
-    " call one#highlight('Conceal', '767676', '', '')
-    " call one#highlight('rustCommentLine',         '767676', '', '')
-    " call one#highlight('rustCommentLineDoc',      '767676', '', '')
-    " call one#highlight('rustCommentLineDocError', '767676', '', '')
-    " call one#highlight('rustCommentBlock',        '767676', '', '')
-    " call one#highlight('rustCommentBlockDoc',     '767676', '', '')
-    " call one#highlight('rustCommentBlockDocError','767676', '', '')
-    " call one#highlight('gitcommitComment','767676', '', '')
-    " call one#highlight('vimCommentTitle','767676', '', '')
-    " call one#highlight('vimLineComment','767676', '', '')
-    " call one#highlight('Todo', 'fafafa', 'ffafd7', 'bold')
-    " call one#highlight('SpellBad'  , 'FF5555', 'fafafa', 'underline')
-    " call one#highlight('SpellLocal', 'FFB86C', 'fafafa', 'underline')
-    " call one#highlight('SpellCap'  , 'FFB86C', 'fafafa', 'underline')
-    " call one#highlight('SpellRare' , 'FFB86C', 'fafafa', 'underline')
-    " let g:lightline.colorscheme = 'two'
 endif
 " }}}
 
@@ -443,6 +422,7 @@ func! DollarMathMathi()
 endfunc
 
 " TODO: `gq` wrt bullet points gets broken after some operations
+" ``` pair <CR> automatically indents the whole body after some operations
 " }}}
 
 " Motion {{{
@@ -546,6 +526,7 @@ noremap Q q
 noremap x "_x
 
 " auto-pairs
+" TODO: motion-parametrized wrapping
 let g:AutoPairsMapSpace = 0
 let g:AutoPairsCenterLine = 0
 let g:AutoPairsMapCh = 0
