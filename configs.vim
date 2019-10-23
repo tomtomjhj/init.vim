@@ -143,6 +143,7 @@ let g:lightline = {
       \ 'separator': { 'left': ' ', 'right': ' ' },
       \ 'subseparator': { 'left': ' ', 'right': ' ' }
       \ }
+" TODO show max prefix + 1 letter in the rel path
 " `vil() { nvim "$@" --cmd 'set background=light' }` for light theme
 if &background == 'dark'
     colorscheme zen
@@ -158,6 +159,7 @@ endif
 " }}}
 
 " Completion {{{
+" TODO: Prefix completion???
 " TODO: Use context stuff to let supertab use <c-p> when deoplete isn't the
 " one who filled up the completion list.
 let g:SuperTabDefaultCompletionType = '<c-n>'

@@ -21,10 +21,10 @@ snippet sf "textsf" i
 \textsf{$0}
 endsnippet
 snippet tt "\text{}" i
-\text{ $0}
+\text{ ${0:${VISUAL}}}
 endsnippet
 snippet cd "\texttt{}" i
-\texttt{$0}
+\texttt{${0:${VISUAL}}}
 endsnippet
 snippet yf "symbf" i
 \symbf{$0}
@@ -44,23 +44,23 @@ snippet lim "\lim_{}" i
 endsnippet
 
 snippet lr| "left| right|" i
-\\left|${1}\\right|${0}
+\\left|${1:${VISUAL}}\\right|${0}
 endsnippet
 # no closing paren here, since it's added by auto-pairs
 snippet lr{ "left\{ right\}" i
-\\left\\{${1}\\right\\${0}
+\\left\\{${1:${VISUAL}}\\right\\${0}
 endsnippet
 snippet lr( "left( right)" i
-\\left(${1}\\right${0}
+\\left(${1:${VISUAL}}\\right${0}
 endsnippet
 snippet lr[ "left[ right]" i
-\\left[${1}\\right${0}
+\\left[${1:${VISUAL}}\\right${0}
 endsnippet
 snippet lra "langle rangle" i
-\\langle ${1}\\rangle${0}
+\\langle ${1:${VISUAL}}\\rangle${0}
 endsnippet
 snippet set "\{ \}" i
-\\{${0}\\}
+\\{${0:${VISUAL}}\\}
 endsnippet
 snippet bmat "begin{bmatrix} / end{bmatrix}" w
 \begin{bmatrix}$0\end{bmatrix}
@@ -114,23 +114,23 @@ snippet bar "\bar{}" i
 \bar{$0}
 endsnippet
 snippet over "\overline{}" i
-\overline{$0}
+\overline{${0:${VISUAL}}}
 endsnippet
 snippet hat "\hat{}" i
 \hat{$0}
 endsnippet
 snippet sq "\sqrt{}" i
-\sqrt{$0}
+\sqrt{${0:${VISUAL}}}
 endsnippet
 
 snippet norm "norm" i
-\|$1\|$0
+\|${1:${VISUAL}}\|$0
 endsnippet
 snippet norm2 "norm_2" i
-\|$1\|_2$0
+\|${1:${VISUAL}}\|_2$0
 endsnippet
 snippet norm22 "norm_2^2" i
-\|$1\|_2^2$0
+\|${1:${VISUAL}}\|_2^2$0
 endsnippet
 
 snippet __ "_{}" iA
