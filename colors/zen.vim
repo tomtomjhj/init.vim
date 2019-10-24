@@ -24,10 +24,11 @@ let s:subtle    = ['#424450', 238]
 let s:selection = ['#44475A', 239]
 let s:comment   = ['#afd7af', 151]
 let s:cyan      = ['#87d7d7', 116]
-" #afd7ff
 let s:lightcyan = ['#afd7d7', 152] 
 let s:green     = ['#afd75f', 149]
+let s:deepskyblue = ['#005f5f', 23]
 let s:orange    = ['#FFB86C', 215]
+let s:mediumpurple = ['#5f5f87', 60]
 let s:pink      = ['#ffafd7', 218]
 let s:purple    = ['#d7afff', 183]
 let s:red       = ['#FF5555', 203]
@@ -39,25 +40,6 @@ let s:yellowish = ['#ffd7af', 223]
 let s:special   = ['#ffd7d7', 224]
 
 let s:none      = ['NONE', 'NONE']
-
-if has('nvim')
-  let g:terminal_color_0  = '#44475A'
-  let g:terminal_color_1  = '#DE312B'
-  let g:terminal_color_2  = '#2FD651'
-  let g:terminal_color_3  = '#D0D662'
-  let g:terminal_color_4  = '#9C6FCF'
-  let g:terminal_color_5  = '#DE559C'
-  let g:terminal_color_6  = '#6AC5D3'
-  let g:terminal_color_7  = '#D7D4C8'
-  let g:terminal_color_8  = '#656B84'
-  let g:terminal_color_9  = '#FF5555'
-  let g:terminal_color_10 = '#50FA7B'
-  let g:terminal_color_11 = '#F1FA8C'
-  let g:terminal_color_12 = '#BD93F9'
-  let g:terminal_color_13 = '#FF79C6'
-  let g:terminal_color_14 = '#8BE9FD'
-  let g:terminal_color_15 = '#F8F8F2'
-endif
 
 " }}}2
 " User Configuration: {{{2
@@ -183,15 +165,14 @@ call s:h('ZenErrorLine', s:none, s:none, [s:attrs.undercurl], s:red)
 call s:h('ZenWarnLine', s:none, s:none, [s:attrs.undercurl], s:orange)
 call s:h('ZenInfoLine', s:none, s:none, [s:attrs.undercurl], s:cyan)
 
-"call s:h('ZenTodo', s:cyan, s:none, [s:attrs.bold, s:attrs.inverse])
 call s:h('ZenTodo', s:pink, s:none, [s:attrs.bold, s:attrs.inverse])
-"call s:h('ZenSearch', s:green, s:none, [s:attrs.inverse])
-call s:h('ZenSearch', s:fgdarkish, s:none, [s:attrs.bold, s:attrs.inverse, s:attrs.underline])
-call s:h('ZenBoundary', s:comment, s:bgdark)
+hi! ZenSearch cterm=reverse,bold,underline gui=reverse,bold,underline
+call s:h('ZenBoundary', s:fgdarkish, s:bgdark)
 call s:h('ZenLink', s:cyan, s:none, [s:attrs.underline])
 
+call s:h('ZenDiffAdd', s:none, s:deepskyblue)
 call s:h('ZenDiffChange', s:none, s:none)
-call s:h('ZenDiffText', s:bg, s:orange)
+call s:h('ZenDiffText', s:none, s:mediumpurple)
 call s:h('ZenDiffDelete', s:red, s:bgdark)
 
 call s:h('ZenSpecial', s:special)
@@ -252,7 +233,7 @@ hi! link CursorColumn ZenSelection
 hi! link ColorColumn ZenSelection
 
 " Diffs
-hi! link DiffAdd ZenGreen
+hi! link DiffAdd ZenDiffAdd
 hi! link DiffChange ZenDiffChange
 hi! link DiffText ZenDiffText
 hi! link DiffDelete ZenDiffDelete
