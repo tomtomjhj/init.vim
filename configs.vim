@@ -174,7 +174,7 @@ let g:UltiSnipsExpandTrigger = '<c-l>'
 let g:ale_linters = {
             \ 'c': ['clang'],
             \ 'cpp': ['clang'],
-            \ 'python': ['pylint'],
+            \ 'python': ['pyls', 'pylint'],
             \ 'rust': ['rls'],
             \ }
 let g:ale_fixers = {
@@ -205,6 +205,9 @@ nmap ]a <Plug>(ale_next_wrap)
 nmap ]A <Plug>(ale_next_wrap_error)
 nmap [a <Plug>(ale_previous_wrap)
 nmap [A <Plug>(ale_prevous_wrap_error)
+au FileType rust,python nmap <buffer><C-]> <Plug>(ale_go_to_definition)
+au FileType rust,python nmap <buffer><silent><C-\> :tab split<CR><Plug>(ale_go_to_definition)
+au Filetype rust,python nmap <silent><leader><C-\> :vsp<CR><Plug>(ale_go_to_definition)
 
 " }}}
 
@@ -248,10 +251,8 @@ endfunc
 
 " Rust {{{
 let g:rust_fold = 1
-au FileType rust nmap <buffer><C-]> <Plug>(ale_go_to_definition)
-au FileType rust nmap <buffer><silent><C-\> :tab split<CR><Plug>(ale_go_to_definition)
 au FileType rust nmap <leader>C :silent make! check<CR><leader>cv
-" NOTE: External crate completion does't work without extern crate declaration
+" NOTE: External crate completion doesn't work without extern crate declaration
 " }}}
 
 " C,C++ {{{
@@ -260,11 +261,29 @@ let g:ale_c_clangformat_options = '-style="{BasedOnStyle: llvm, IndentWidth: 4, 
 " }}}
 
 " Python {{{
-" this disables any other checks. but works when used from cmd.??????????
+" This disables any other checks. But works when used from cmd.??????????
 " -> just add `# type: ignore` annotation after the import stmt
 " let g:ale_python_mypy_options = "-ignore-missing-imports"
 let g:ale_python_mypy_options = "--check-untyped-defs"
 let g:ale_python_pylint_options = "--disable=R,C,W0614,W0621"
+" TODO: configure pyls' pylint
+" https://github.com/palantir/python-language-server/blob/develop/vscode-client/package.json
+let g:ale_python_pyls_config = {
+            \ 'pyls': {
+            \   'plugins': {
+            \     'jedi_completion': { 'enabled': v:false },
+            \     'rope_completion': { 'enabled': v:false },
+            \     'mccabe': { 'enabled': v:false },
+            \     'preload': { 'enabled': v:false },
+            \     'pycodestyle': { 'enabled': v:false },
+            \     'pydocstyle': { 'enabled': v:false },
+            \     'pyflakes': { 'enabled': v:false },
+            \     'pylint': { 'enabled': v:false },
+            \     'yapf': { 'enabled': v:false },
+            \   }
+            \ }
+            \}
+
 " }}}
 
 " Pandoc, Tex {{{
@@ -564,6 +583,8 @@ map <leader>M :Make<space>
 " quickfix, loclist, ...
 map <leader>co :copen 12\| winc p<CR>
 map <leader>cv :vert copen <C-R>=min([&columns-112,&columns/2])<CR>\|setlocal nowrap\|winc p<CR>
+map <leader>lo :lopen 12\| winc p<CR>
+map <leader>lv :vert lopen <C-R>=min([&columns-112,&columns/2])<CR>\|setlocal nowrap\|winc p<CR>
 map ]q :cn<CR>
 map [q :cN<CR>
 map ]l :lne<CR>
