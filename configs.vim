@@ -15,8 +15,7 @@ Plug 'tpope/vim-repeat'
 Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter', { 'on': 'GitGutterToggle' }
-Plug 'scrooloose/nerdtree'
-Plug 'scrooloose/nerdcommenter'
+Plug 'scrooloose/nerdcommenter', { 'on': ['<plug>NERDCommenterToggle', '<plug>NERDCommenterSexy'] }
 Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug '~/.vim/my_plugins/auto-pairs'
@@ -26,7 +25,20 @@ Plug 'Shougo/vimproc.vim', { 'do' : 'make' }
 Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment'
 Plug 'rhysd/git-messenger.vim'
 
-" completion, see `augroup Completions`
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+augroup SetupNerdtree
+    au!
+    au VimEnter * silent! autocmd! FileExplorer
+    au BufEnter,VimEnter *
+                \ if get(g:, 'loaded_nerd_tree', 0) |
+                \   exec 'au! SetupNerdtree' |
+                \ elseif isdirectory(expand("<amatch>")) |
+                \   call plug#load('nerdtree') |
+                \   exec 'au! SetupNerdtree' |
+                \ endif |
+augroup END
+
+" completion
 Plug 'ervandew/supertab'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins', 'on': [] }
 " if !has('nvim') | Plug 'roxma/nvim-yarp' | Plug 'roxma/vim-hug-neovim-rpc' | endif
