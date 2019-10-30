@@ -26,16 +26,19 @@ Plug 'Shougo/vimproc.vim', { 'do' : 'make' }
 Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment'
 Plug 'rhysd/git-messenger.vim'
 
-" completion
+" completion, see `augroup Completions`
 Plug 'ervandew/supertab'
-Plug 'Shougo/deoplete.nvim',
-            \ { 'do': ':UpdateRemotePlugins', 'on': [] }
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins', 'on': [] }
 " if !has('nvim') | Plug 'roxma/nvim-yarp' | Plug 'roxma/vim-hug-neovim-rpc' | endif
 Plug 'SirVer/ultisnips', { 'on': [] } | Plug 'honza/vim-snippets'
+
 augroup Completions
   au!
-  au InsertEnter * call plug#load('ultisnips') | call plug#load('deoplete.nvim')
-              \ | au! Completions
+  au InsertEnter *
+              \ call plug#load('ultisnips') |
+              \ call plug#load('deoplete.nvim') |
+              \ call deoplete#custom#source('ale', { 'max_info_width': 0, 'max_menu_width': 0 }) |
+              \ au! Completions
 augroup END
 
 " lanauges
@@ -159,10 +162,13 @@ endif
 " }}}
 
 " Completion {{{
-" TODO: Prefix completion like emacs?: completeopt longest
-" TODO: don't abbreviate preview info and type signitures etc
-" TODO: Use context stuff to let supertab use <c-p> when deoplete isn't the
-" one who filled up the completion list.
+" deoplete + completeopt longest?
+" TODO: let supertab use <c-p> 'with <c-n> ordering' when deoplete didn't work,
+
+" TODO:
+" * ale-deoplete should sanitize the menu text, e.g. multi-line defs
+" * add menu content at the top of the preview info
+
 let g:SuperTabDefaultCompletionType = '<c-n>'
 let g:SuperTabClosePreviewOnPopupClose = 1
 
@@ -262,10 +268,7 @@ let g:ale_c_clangformat_options = '-style="{BasedOnStyle: llvm, IndentWidth: 4, 
 " }}}
 
 " Python {{{
-" This disables any other checks. But works when used from cmd.??????????
-" -> just add `# type: ignore` annotation after the import stmt
-" let g:ale_python_mypy_options = '-ignore-missing-imports'
-" let g:ale_python_mypy_options = '--check-untyped-defs'
+" let g:ale_python_mypy_options = '--ignore-missing-imports --check-untyped-defs'
 let g:ale_python_pyls_config = {
             \ 'pyls': {
             \   'plugins': {
@@ -634,11 +637,11 @@ nnoremap <C-l> <C-W>l
 map <leader>q :q<CR>
 map q, :q<CR>
 nmap <leader>w :w!<cr>
-command! -bang W w
-command! -bang Q q
-command! -bang Wq wq
-command! -bang Wqa wqa
-command! -bang Qa qa
+command! -bang W exec 'w<bang>'
+command! -bang Q exec 'q<bang>'
+command! -bang Wq exec 'wq<bang>'
+command! -bang Wqa exec 'wqa<bang>'
+command! -bang Qa exec 'qa<bang>'
 
 map <leader>cx :tabclose<cr>
 map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
