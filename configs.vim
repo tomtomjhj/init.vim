@@ -24,6 +24,7 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'Shougo/vimproc.vim', { 'do' : 'make' }
 Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment'
+Plug 'rhysd/git-messenger.vim'
 
 " completion
 Plug 'ervandew/supertab'
@@ -42,7 +43,6 @@ Plug 'dense-analysis/ale'
 Plug '~/.vim/my_plugins/vim-pandoc-syntax' | Plug 'vim-pandoc/vim-pandoc'
 Plug '~/.vim/my_plugins/tex-conceal.vim'
 Plug '~/.vim/my_plugins/rust.vim'
-Plug 'deoplete-plugins/deoplete-jedi'
 Plug '~/.vim/my_plugins/vim-ocaml'
 Plug '~/.vim/my_plugins/haskell-vim'
 " Plug 'parsonsmatt/intero-neovim'
@@ -159,7 +159,8 @@ endif
 " }}}
 
 " Completion {{{
-" TODO: Prefix completion???
+" TODO: Prefix completion like emacs?: completeopt longest
+" TODO: don't abbreviate preview info and type signitures etc
 " TODO: Use context stuff to let supertab use <c-p> when deoplete isn't the
 " one who filled up the completion list.
 let g:SuperTabDefaultCompletionType = '<c-n>'
@@ -174,7 +175,7 @@ let g:UltiSnipsExpandTrigger = '<c-l>'
 let g:ale_linters = {
             \ 'c': ['clang'],
             \ 'cpp': ['clang'],
-            \ 'python': ['pyls', 'pylint'],
+            \ 'python': ['pyls'],
             \ 'rust': ['rls'],
             \ }
 let g:ale_fixers = {
@@ -199,15 +200,15 @@ nmap <leader>ah <Plug>(ale_hover)
 nmap <C-[> <Plug>(ale_hover)
 nmap <leader>aj <Plug>(ale_go_to_definition)
 nmap <leader>an :ALERename<CR>
-nmap <leader>at <Plug>(ale_toggle)
 nmap <leader>ar <Plug>(ale_find_references)
 nmap ]a <Plug>(ale_next_wrap)
 nmap ]A <Plug>(ale_next_wrap_error)
 nmap [a <Plug>(ale_previous_wrap)
 nmap [A <Plug>(ale_prevous_wrap_error)
+au FileType rust,python nmap <buffer>gd <Plug>(ale_go_to_definition)
 au FileType rust,python nmap <buffer><C-]> <Plug>(ale_go_to_definition)
 au FileType rust,python nmap <buffer><silent><C-\> :tab split<CR><Plug>(ale_go_to_definition)
-au Filetype rust,python nmap <silent><leader><C-\> :vsp<CR><Plug>(ale_go_to_definition)
+au Filetype rust,python nmap <buffer><silent><leader><C-\> :vsp<CR><Plug>(ale_go_to_definition)
 
 " }}}
 
@@ -263,22 +264,18 @@ let g:ale_c_clangformat_options = '-style="{BasedOnStyle: llvm, IndentWidth: 4, 
 " Python {{{
 " This disables any other checks. But works when used from cmd.??????????
 " -> just add `# type: ignore` annotation after the import stmt
-" let g:ale_python_mypy_options = "-ignore-missing-imports"
-let g:ale_python_mypy_options = "--check-untyped-defs"
-let g:ale_python_pylint_options = "--disable=R,C,W0614,W0621"
-" TODO: configure pyls' pylint
-" https://github.com/palantir/python-language-server/blob/develop/vscode-client/package.json
+" let g:ale_python_mypy_options = '-ignore-missing-imports'
+" let g:ale_python_mypy_options = '--check-untyped-defs'
 let g:ale_python_pyls_config = {
             \ 'pyls': {
             \   'plugins': {
-            \     'jedi_completion': { 'enabled': v:false },
             \     'rope_completion': { 'enabled': v:false },
             \     'mccabe': { 'enabled': v:false },
             \     'preload': { 'enabled': v:false },
             \     'pycodestyle': { 'enabled': v:false },
             \     'pydocstyle': { 'enabled': v:false },
             \     'pyflakes': { 'enabled': v:false },
-            \     'pylint': { 'enabled': v:false },
+            \     'pylint': { 'args': ['-dR', '-dC', '-dW0614', '-dW0621'] },
             \     'yapf': { 'enabled': v:false },
             \   }
             \ }
@@ -504,10 +501,6 @@ func! VisualJump(forward)
     let l:wrapscan = &wrapscan
     set nowrapscan
     exec 'normal!' l:cmd
-    " TODO: v_gN behaves differently after vim-patch 8.1.0629
-    if l:on_right == l:flipped
-        exec 'normal! h'
-    endif
     let &wrapscan = l:wrapscan
     let @/ = l:saved_reg
 endfunc
