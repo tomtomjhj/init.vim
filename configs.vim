@@ -491,14 +491,15 @@ map t <Plug>Sneak_t
 map T <Plug>Sneak_T
 hi Sneak guifg=black guibg=#afff00 ctermfg=black ctermbg=154
 
-" shortcut jumps inspired by snippets and auto-pairs
+" In insert mode, jump past (a word | a non-space,non-word char | whitespace)
+let g:quick_jump = '\v(\w+|[^0-9A-Za-z_ ]|\s+)'
+inoremap <C-j> <C-\><C-O>:call search(g:quick_jump, 'ceW')<CR><Right>
+inoremap <C-k> <C-\><C-O>:call search(g:quick_jump, 'bW')<CR>
+inoremap <C-space> <C-k>
+
+" extend visual block up to pair opener/closer
 let g:pair_opener = '\v("|\[|''|\(|\{|\$)'
 let g:pair_closer = '\v("|\]|''|\)|\}|\$)'
-let g:shortcut_jump_target = g:pair_closer
-inoremap <silent> <C-j> <C-\><C-O>:call search(g:shortcut_jump_target, 'ceW')<CR><Right>
-inoremap <silent> <C-k> <C-\><C-O>:call search(g:shortcut_jump_target, 'bW')<CR>
-map <silent> ]j :call search(g:shortcut_jump_target,'W')<CR>
-map <silent> [j :call search(g:shortcut_jump_target,'bW')<CR>
 vnoremap <silent> <C-j> <ESC>:call VisualJump(1)<CR>
 vnoremap <silent> <C-k> <ESC>:call VisualJump(0)<CR>
 func! VisualJump(forward)
@@ -522,8 +523,6 @@ endfunc
 func! SearchPosLE(p1, p2)
     return a:p1[0] < a:p2[0] || (a:p1[0] == a:p2[0] && a:p1[1] <= a:p2[1])
 endfunc
-" remap digraph
-inoremap <C-space> <C-k>
 " }}}
 
 " etc {{{
@@ -555,13 +554,14 @@ noremap Q q
 noremap x "_x
 
 " auto-pairs
-" TODO: motion-parametrized wrapping
 let g:AutoPairsMapSpace = 0
 let g:AutoPairsCenterLine = 0
 let g:AutoPairsMapCh = 0
-let g:AutoPairsShortcutFastWrap = '<M-w>'
 let g:AutoPairsShortcutToggle = ''
 let g:AutoPairsShortcutJump = ''
+inoremap <buffer><silent> <M-e> <C-R>=AutoPairsFastWrap("e")<CR>
+inoremap <buffer><silent> <M-E> <C-R>=AutoPairsFastWrap("E")<CR>
+inoremap <buffer><silent> <M-$> <C-R>=AutoPairsFastWrap("$")<CR>
 
 " fzf
 set rtp+=~/.fzf
@@ -605,8 +605,8 @@ nmap <leader>nn :NERDTreeToggle<cr>
 let g:gitgutter_enabled=0
 nmap <silent><leader>gg :GitGutterToggle<cr>
 
-" https://github.com/tpope/vim-surround/issues/55#issuecomment-4610756
-" vim-exchange, yankstack, vim-abolish
+inoremap <CR> <C-G>u<CR>
+
 " see :help [range], &, g&
 " :%s/pat/\r&/g.
 " marks
