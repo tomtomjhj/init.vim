@@ -301,7 +301,6 @@ let g:tex_noindent_env = '\v\w+.?'
 au FileType tex setlocal conceallevel=2
 let g:pandoc#syntax#codeblocks#embeds#langs = ["python", "cpp", "rust"]
 let g:pandoc#modules#enabled = ["formatting", "keyboard", "toc", "spell", "hypertext"]
-let g:pandoc#formatting#twxtwidth = 80
 let g:pandoc#hypertext#use_default_mappings = 0
 let g:pandoc#syntax#use_definition_lists = 0
 let g:pandoc#syntax#protect#codeblocks = 0
@@ -314,6 +313,9 @@ func! SetupPandoc()
     " set to notoplevel in haskell.vim
     call textobj#user#plugin('pandoc', s:pandoc_textobj)
     syntax spell toplevel
+    setlocal comments=fb:*,fb:-,fb:+,n:> commentstring=>\ %s
+    setlocal formatoptions=jtcqln
+    setlocal formatlistpat=^\\s*\\d\\+\\.\\s\\+\\\|^[-*+]\\s\\+\\\|^\\[^\\ze[^\\]]\\+\\]:
     nmap <buffer><silent><leader>pd :call RunPandoc(0)<CR>
     nmap <buffer><silent><leader>po :call RunPandoc(1)<CR>
     nmap <buffer><silent>gx <Plug>(pandoc-hypertext-open-system)
@@ -451,8 +453,7 @@ func! DollarMathMathi()
     return ['v', head_pos, tail_pos]
 endfunc
 
-" TODO: `gq` wrt bullet points gets broken after some operations
-" ``` pair <CR> automatically indents the whole body after some operations
+" TODO: ``` pair <CR> automatically indents the whole body after some operations
 " }}}
 
 " Motion {{{

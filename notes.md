@@ -65,6 +65,7 @@ augroup end
     * `let g:pandoc#syntax#protect#codeblocks = 0` fixes it
 * Better interaction of hlsearch and conceal?
 * Pair highlighting in insert mode makes the cursor indiscernible.
+* `undo_ftplugin` for pandoc is triggered because of default markdown things. This breaks `gq` formatting.
 
 # motions
 
@@ -76,5 +77,3 @@ augroup end
 * Matching `errorformat` may fail if the output from `:AsyncRun ...` is complex & quickfix is already open.
   Probably the output should be buffered.
 
-# oh
-* `i_CTRL-G u`
