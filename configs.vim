@@ -40,17 +40,14 @@ augroup END
 
 " completion
 Plug 'ervandew/supertab'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins', 'on': [] }
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 " if !has('nvim') | Plug 'roxma/nvim-yarp' | Plug 'roxma/vim-hug-neovim-rpc' | endif
 Plug 'SirVer/ultisnips', { 'on': [] } | Plug 'honza/vim-snippets'
 
 augroup Completions
   au!
   au InsertEnter *
-              \ call plug#load('ultisnips') |
-              \ call plug#load('deoplete.nvim') |
-              \ call deoplete#custom#source('ale', { 'max_info_width': 0, 'max_menu_width': 0 }) |
-              \ au! Completions
+              \ call plug#load('ultisnips') | call deoplete#enable() | au! Completions
 augroup END
 
 " lanauges
@@ -174,17 +171,17 @@ endif
 " }}}
 
 " Completion {{{
-" deoplete + completeopt longest?
-" TODO: let supertab use <c-p> 'with <c-n> ordering' when deoplete didn't work,
-
 " TODO:
-" * ale-deoplete should sanitize the menu text, e.g. multi-line defs
+" * deoplete + completeopt+=longest
 " * add menu content at the top of the preview info
 
 let g:SuperTabDefaultCompletionType = '<c-n>'
 let g:SuperTabClosePreviewOnPopupClose = 1
 
-let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_at_startup = 0
+call deoplete#custom#source('around', 'min_pattern_length', 1)
+call deoplete#custom#source('ale', { 'max_info_width': 0, 'max_menu_width': 0 })
+call deoplete#custom#var('around', { 'mark_above': '[↑]', 'mark_below': '[↓]', 'mark_changes': '[*]' })
 
 let g:UltiSnipsExpandTrigger = '<c-l>'
 " }}}
