@@ -456,6 +456,37 @@ endfunc
 " TODO: ``` pair <CR> automatically indents the whole body after some operations
 " }}}
 
+" searching {{{
+" search_mode: which command last set @/?
+" `*`, `v_*` without moving the cursor
+nnoremap <silent>* :let search_mode='n'\|let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<CR>
+vnoremap <silent>* :<C-u>let search_mode='v'\|call Searchgv()\|set hlsearch<CR>
+func! Searchgv()
+    let l:saved_reg = @"
+    execute "normal! gvy"
+    let l:pattern = escape(@", '\.*$^~[]')
+    let @/ = l:pattern
+    let @" = l:saved_reg
+endfunc
+nnoremap / :let search_mode='/'<CR>/
+
+nnoremap <leader>rg :Rg<space>
+nnoremap <leader>r/ :<C-u>Rg <C-r>=RgInput(@/)<CR>
+func! RgInput(raw)
+    if g:search_mode == 'n'
+        return substitute(a:raw, '\v\\[<>]','','g')
+    elseif g:search_mode == 'v'
+        return escape(a:raw, '|(){}') " not escaped by Searchgv
+    else " can convert most of strict very magic to riggrep regex, otherwise, DIY
+        if a:raw[0:1] != '\v'
+            return substitute(a:raw, '\v\\[<>]','','g')
+        endif
+        return substitute(a:raw[2:], '\v\\([~/])', '\1', 'g')
+    endif
+endfunc
+
+" }}}
+
 " Motion {{{
 " HJKL for wrapped lines. <leader>J for joins
 noremap <S-j> gj
@@ -469,17 +500,6 @@ noremap <space> <C-d>
 noremap <c-space> <C-u>
 " <s-space> does not work
 
-" star without moving the cursor
-noremap <silent>* :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<CR>
-vnoremap <silent>* :<C-u>call Searchgv()\|set hlsearch<CR>
-func! Searchgv()
-    let l:saved_reg = @"
-    execute "normal! gvy"
-    let l:pattern = escape(@", "\\/.*'$^~[]")
-    let @/ = l:pattern
-    let @" = l:saved_reg
-endfunc
-
 let g:sneak#s_next = 1
 let g:sneak#absolute_dir = 1
 let g:sneak#use_ic_scs = 1
@@ -489,7 +509,7 @@ map t <Plug>Sneak_t
 map T <Plug>Sneak_T
 hi Sneak guifg=black guibg=#afff00 ctermfg=black ctermbg=154
 
-" In insert mode, jump past (a word | a non-space,non-word char | whitespace)
+" Jump past (a word | a non-space,non-word char | whitespace) in insert mode
 let g:quick_jump = '\v(\w+|[^0-9A-Za-z_ ]|\s+)'
 inoremap <C-j> <C-\><C-O>:call search(g:quick_jump, 'ceW')<CR><Right>
 inoremap <C-k> <C-\><C-O>:call search(g:quick_jump, 'bW')<CR>
@@ -570,8 +590,7 @@ map <leader>F :Files .
 map <leader>hh :History<CR>
 map <leader>h: :History:<CR>
 map <leader>h/ :History/<CR>
-map <leader>rg :Rg<space>
-map <leader>r/ :<C-u>Rg <C-r>=substitute(@/,'\v\\[<>]','',"g")<CR>
+
 if has("nvim")
     augroup fzf
         au!

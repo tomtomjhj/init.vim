@@ -69,6 +69,11 @@ augroup end
 # TODO:
 * Better interaction of `hlsearch` and conceal?
 * Restore default `iskeyword` inside pandoc code block: it's impossible.
+* Convert magic to ripgrep regex. Probably impossible.
+  - unescape: `\(abc\) -> (abc), \~ -> ~, \/ -> /`
+  - escape: `(abc)->\(abc\), {abc} -> \{abc\}`
+  - don't touch: `\., \$, \^, \\ `
+
 
 # Tips
 * `dw`: to remove whitespace from current position.
