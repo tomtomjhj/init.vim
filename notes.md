@@ -1,4 +1,4 @@
-# Tex
+# Tex & pandoc
 
 ## Tex conceal
 
@@ -14,7 +14,7 @@ In `sytax/tex.vim`, around line 981, comment out following lines.
 ```
 
 ### do not conceal `$$` of math block
-remvoe concealends
+Remove `concealends`
 
 ```vim
 syn region texMathZoneY	matchgroup=Delimiter start="\$\$" matchgroup=Delimiter	end="\$\$"	end="%stopzone\>"	keepend concealends contains=@texMathZoneGroup
@@ -26,7 +26,7 @@ syn region texMathZoneY	matchgroup=Delimiter start="\$\$" matchgroup=Delimiter	e
     * removing `_` from `syn iskeyword` fixes it.
 
 
-## Tex BeginEnd
+## Tex Begin-End
 
 ```vim
  syn match texBadMath		"\\end\s*{\s*\(displaymath\|equation\|eqnarray\|math\|align\)\*\=\s*}"
@@ -34,6 +34,14 @@ syn region texMathZoneY	matchgroup=Delimiter start="\$\$" matchgroup=Delimiter	e
  call TexNewMathZone("E","align",1)
 ```
 
+## pandoc math highlight is broken in numbered lists, hard-wrapped lines
+List itself is not broken. Because of the preceding 4 spaces, the line is recognized as a code block.
+`let g:pandoc#syntax#protect#codeblocks = 0` fixes it.
+
+## `gq` in pandoc lists is broken
+Vim runs `undo_ftplugin` for pandoc because default `Filetype markdown` gets triggered at first `InsertEnter`.
+This will reset several format-related settings, which breaks `gq` for markdown lists.
+To fix this, manually reset all of the relevant settings in `Filetype pandoc`.
 
 # cursor movement on concealed string
 
@@ -45,7 +53,7 @@ This doesn't work as expected.
 
 <https://vi.stackexchange.com/questions/4530/moving-over-conceal>
 
-# local nvimrc
+# local `.nvimrc`
 
 ```vim
 fun s:c()
@@ -59,21 +67,15 @@ augroup end
 ```
 
 # TODO:
+* Better interaction of `hlsearch` and conceal?
+* Restore default `iskeyword` inside pandoc code block: it's impossible.
 
-* pandoc: math highlighting is broken in enumerate, in hard-wrapped lines
-    * enumerate itself is not broken. Because of the preceding 4 spaces, the line is recognized as a code block.
-    * `let g:pandoc#syntax#protect#codeblocks = 0` fixes it
-* Better interaction of hlsearch and conceal?
-* Pair highlighting in insert mode makes the cursor indiscernible.
-* `undo_ftplugin` for pandoc is triggered because of default markdown things. This breaks `gq` formatting.
-
-# motions
-
-* `dw`: to remove whitespace from current pos
+# Tips
+* `dw`: to remove whitespace from current position.
 
 # pitfalls
 * `:h map-bar`
-* !!! Wrap autocmds with `exec 'au ...'`: may not work as expected because of the interaction w/ `|`
+* Wrap `autocmd`s with `exec 'au ...'`: may not work as expected because of the interaction w/ `|`
 * Matching `errorformat` may fail if the output from `:AsyncRun ...` is complex & quickfix is already open.
   Probably the output should be buffered.
 

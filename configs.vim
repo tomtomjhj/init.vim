@@ -392,7 +392,7 @@ func! FencedCodeBlocki()
     normal! W
     let head_pos = getpos('.')
     if !search('```', 'W') | return 0 | endif
-    normal! b
+    call search('\v\S', 'bW')
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
 endfunc
@@ -644,14 +644,14 @@ nnoremap <C-k> <C-W>k
 nnoremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
 
-map <leader>q :q<CR>
-map q, :q<CR>
-nmap <leader>w :w!<cr>
-command! -bang W exec 'w<bang>'
-command! -bang Q exec 'q<bang>'
-command! -bang Wq exec 'wq<bang>'
+map <leader>q :<C-u>q<CR>
+map q, :<C-u>q<CR>
+nmap <leader>w :<C-u>w!<cr>
+command! -bang W   exec 'w<bang>'
+command! -bang Q   exec 'q<bang>'
+command! -bang Wq  exec 'wq<bang>'
 command! -bang Wqa exec 'wqa<bang>'
-command! -bang Qa exec 'qa<bang>'
+command! -bang Qa  exec 'qa<bang>'
 
 map <leader>cx :tabclose<cr>
 map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
