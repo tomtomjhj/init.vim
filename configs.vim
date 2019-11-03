@@ -54,7 +54,7 @@ augroup END
 Plug 'dense-analysis/ale'
 Plug '~/.vim/my_plugins/vim-pandoc-syntax' | Plug 'vim-pandoc/vim-pandoc'
 Plug '~/.vim/my_plugins/tex-conceal.vim'
-Plug '~/.vim/my_plugins/rust.vim'
+Plug 'rust-lang/rust.vim'
 Plug '~/.vim/my_plugins/vim-ocaml'
 Plug '~/.vim/my_plugins/haskell-vim'
 " Plug 'parsonsmatt/intero-neovim'

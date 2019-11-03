@@ -7,9 +7,6 @@
 [submodule "my_plugins/vim-ocaml"]
 	path = my_plugins/vim-ocaml
 	url = https://github.com/tomtomjhj/vim-ocaml
-[submodule "my_plugins/rust.vim"]
-	path = my_plugins/rust.vim
-	url = https://github.com/tomtomjhj/rust.vim
 [submodule "my_plugins/tex-conceal.vim"]
 	path = my_plugins/tex-conceal.vim
 	url = https://github.com/tomtomjhj/tex-conceal.vim
