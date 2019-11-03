@@ -105,7 +105,7 @@ set switchbuf=useopen,usetab,newtab
 set hidden
 set lazyredraw
 " Return to last edit position when opening files
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+au BufWinEnter * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 set history=500
 autocmd! BufWritePost ~/.vim/configs.vim source ~/.vim/configs.vim
 
