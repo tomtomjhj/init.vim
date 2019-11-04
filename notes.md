@@ -73,7 +73,9 @@ augroup end
   - unescape: `\(abc\) -> (abc), \~ -> ~, \/ -> /`
   - escape: `(abc)->\(abc\), {abc} -> \{abc\}`
   - don't touch: `\., \$, \^, \\ `
-
+* git diff arbitrary commits inside nvim
+* auto-pairs adds weird indent if the previous line ends with `,`. Indent size if the size of the first word in the previous line.
+    * reset `indentexpr` just before running `=k` in auto-pairs
 
 # Tips
 * `dw`: to remove whitespace from current position.

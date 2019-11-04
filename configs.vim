@@ -73,6 +73,7 @@ set showtabline=1
 set tabstop=4 | set shiftwidth=4
 set expandtab | set smarttab
 set autoindent | set smartindent
+" TODO: insert indents at InsertEnter
 
 " indent the wrapped line, w/ `> ` at the start
 set wrap | set linebreak | set breakindent | set showbreak=>\ 
@@ -313,6 +314,7 @@ func! SetupPandoc()
     " set to notoplevel in haskell.vim
     call textobj#user#plugin('pandoc', s:pandoc_textobj)
     syntax spell toplevel
+    " fix `gq` for lists
     setlocal comments=fb:*,fb:-,fb:+,n:> commentstring=>\ %s
     setlocal formatoptions=jtcqln
     setlocal formatlistpat=^\\s*\\d\\+\\.\\s\\+\\\|^[-*+]\\s\\+\\\|^\\[^\\ze[^\\]]\\+\\]:
@@ -372,7 +374,7 @@ let s:pandoc_textobj = {
             \   },
             \ }
 
-" TODO: move the functions to autoload
+" TODO: move the functions to autoload {{{
 func! FencedCodeBlocka()
     if !InSynStack('pandocDelimitedCodeBlock')
         return 0
@@ -452,8 +454,8 @@ func! DollarMathMathi()
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
 endfunc
+" }}}
 
-" TODO: ``` pair <CR> automatically indents the whole body after some operations
 " }}}
 
 " searching {{{
