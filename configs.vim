@@ -34,6 +34,7 @@ augroup SetupNerdtree
                 \   exec 'au! SetupNerdtree' |
                 \ elseif isdirectory(expand("<amatch>")) |
                 \   call plug#load('nerdtree') |
+                \   call nerdtree#checkForBrowse(expand("<amatch>")) |
                 \   exec 'au! SetupNerdtree' |
                 \ endif |
 augroup END
@@ -664,6 +665,9 @@ map <leader>sf :syn sync fromstart<CR>
 " }}}
 
 " Tabs, windows, buffers {{{
+set splitright
+set splitbelow
+
 nnoremap <C-j> <C-W>j
 nnoremap <C-k> <C-W>k
 nnoremap <C-h> <C-W>h
@@ -684,20 +688,39 @@ map <leader>td :tab split<CR>
 map <leader>tt :tabedit<CR>
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
-map <leader>ef :e!<CR>
-let g:lasttab = 1
-nmap <leader>tl :exe "tabn ".g:lasttab<CR>
-au TabLeave * let g:lasttab = tabpagenr()
+map <leader>fe :e!<CR>
 
-set splitright
-set splitbelow
+" switch/return to last tab
+" NOTE: breaks/broken by :tabmove
+let g:last_tab = 1
+let g:last_tab_backup = 1
+let g:last_viewed = 1
+nmap <silent><leader>` :exe 'tabn' g:last_tab<cr>
+augroup LastTab
+    au!
+    au TabLeave * let g:last_tab_backup = g:last_tab | let g:last_tab = tabpagenr()
+    au TabEnter * let g:last_viewed = tabpagenr()
+    au TabClosed * call OnTabClosed(expand('<afile>'))
+augroup END
+func! OnTabClosed(closed)
+    if a:closed < g:last_tab_backup
+        let g:last_tab_backup -= 1
+    endif
+    if a:closed < g:last_tab
+        let g:last_tab -= 1
+    elseif a:closed == g:last_tab
+        let g:last_tab = g:last_tab_backup
+    endif
+    let l:target = 0
+    if a:closed < g:last_viewed
+        let g:last_viewed -= 1
+        let l:target = g:last_viewed
+    elseif a:closed == g:last_viewed
+        let l:target = g:last_tab != g:last_viewed ? g:last_tab : 0
+    endif
+    if l:target | exec 'tabn' l:target | endif
+endfunc
 
-" I think it's more natural to return to the 'left' tab
-" this breaks `:tabonly`.
-" TODO: chrome-style return to last tab
-au TabClosed * if g:lasttab > 1
-  \ | exe "tabn ".(g:lasttab-1)
-  \ | endif
 
 " ctrl-shift-t of chrome
 " TODO: debug(non-existent buf), save filenames when :qa'd and restore
