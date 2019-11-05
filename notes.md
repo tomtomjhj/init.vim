@@ -43,6 +43,8 @@ Vim runs `undo_ftplugin` for pandoc because default `Filetype markdown` gets tri
 This will reset several format-related settings, which breaks `gq` for markdown lists.
 To fix this, manually reset all of the relevant settings in `Filetype pandoc`.
 
+The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
+
 # cursor movement on concealed string
 
 ```
@@ -85,4 +87,8 @@ augroup end
 * Wrap `autocmd`s with `exec 'au ...'`: may not work as expected because of the interaction w/ `|`
 * Matching `errorformat` may fail if the output from `:AsyncRun ...` is complex & quickfix is already open.
   Probably the output should be buffered.
+* Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
+  This breaks non-idempotent operations at `FileType` like `AutoPairsDefine({}, ["'"])`
+    * Just disable lazy load as it turns out that loading ultisnip isn't slow.
+    * The root cause might be related to loading something that contains filetype plugin.
 

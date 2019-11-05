@@ -43,12 +43,11 @@ augroup END
 Plug 'ervandew/supertab'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 " if !has('nvim') | Plug 'roxma/nvim-yarp' | Plug 'roxma/vim-hug-neovim-rpc' | endif
-Plug 'SirVer/ultisnips', { 'on': [] } | Plug 'honza/vim-snippets'
+Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 
 augroup Completions
   au!
-  au InsertEnter *
-              \ call plug#load('ultisnips') | call deoplete#enable() | au! Completions
+  au InsertEnter * call deoplete#enable() | au! Completions
 augroup END
 
 " lanauges
@@ -269,7 +268,12 @@ endfunc
 
 " Rust {{{
 let g:rust_fold = 1
-au FileType rust nmap <buffer><leader>C :AsyncRun -program=make -cwd=%:p:h -post=OQ check<CR>
+let g:rust_keep_autopairs_default = 1
+augroup SetupRust
+    au!
+    au FileType rust nmap <buffer><leader>C :AsyncRun -program=make -cwd=%:p:h -post=OQ check<CR>
+    au FileType rust if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({}, ["'"]) | endif
+augroup END
 " NOTE: External crate completion doesn't work without extern crate declaration
 " }}}
 
@@ -294,31 +298,26 @@ let g:ale_python_pyls_config = {
             \   }
             \ }
             \}
-
 " }}}
 
 " Pandoc, Tex {{{
 let g:tex_flavor = "latex"
 let g:tex_noindent_env = '\v\w+.?'
-au FileType tex setlocal conceallevel=2
 let g:pandoc#syntax#codeblocks#embeds#langs = ["python", "cpp", "rust"]
 let g:pandoc#modules#enabled = ["formatting", "keyboard", "toc", "spell", "hypertext"]
 let g:pandoc#hypertext#use_default_mappings = 0
 let g:pandoc#syntax#use_definition_lists = 0
 let g:pandoc#syntax#protect#codeblocks = 0
-augroup Pandocs
+augroup SetupPandocTex
     au!
     au FileType pandoc call SetupPandoc()
+    au FileType tex setlocal conceallevel=2
 augroup END
 func! SetupPandoc()
     let b:AutoPairs = AutoPairsDefine({'$':'$', '$$':'$$'})
     " set to notoplevel in haskell.vim
     call textobj#user#plugin('pandoc', s:pandoc_textobj)
     syntax spell toplevel
-    " fix `gq` for lists
-    setlocal comments=fb:*,fb:-,fb:+,n:> commentstring=>\ %s
-    setlocal formatoptions=jtcqln
-    setlocal formatlistpat=^\\s*\\d\\+\\.\\s\\+\\\|^[-*+]\\s\\+\\\|^\\[^\\ze[^\\]]\\+\\]:
     nmap <buffer><silent><leader>pd :call RunPandoc(0)<CR>
     nmap <buffer><silent><leader>po :call RunPandoc(1)<CR>
     nmap <buffer><silent>gx <Plug>(pandoc-hypertext-open-system)
@@ -487,7 +486,6 @@ func! RgInput(raw)
         return substitute(a:raw[2:], '\v\\([~/])', '\1', 'g')
     endif
 endfunc
-
 " }}}
 
 " Motion {{{
