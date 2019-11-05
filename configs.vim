@@ -268,7 +268,7 @@ endfunc
 
 " Rust {{{
 let g:rust_fold = 1
-au FileType rust nmap <leader>C :silent make! check<CR><leader>cv
+au FileType rust nmap <buffer><leader>C :AsyncRun -program=make -cwd=%:p:h -post=OQ check<CR>
 " NOTE: External crate completion doesn't work without extern crate declaration
 " }}}
 
@@ -321,7 +321,7 @@ func! SetupPandoc()
     nmap <buffer><silent><leader>pd :call RunPandoc(0)<CR>
     nmap <buffer><silent><leader>po :call RunPandoc(1)<CR>
     nmap <buffer><silent>gx <Plug>(pandoc-hypertext-open-system)
-    nmap <buffer><silent><leader>py vid<leader>R python3<CR><leader>cv
+    nmap <buffer><silent><leader>py vid:AsyncRun python3<CR>:OQ<CR>
 endfunc
 func! RunPandoc(open)
     let src = expand("%:p")
@@ -608,10 +608,14 @@ command! -bang -nargs=* -complete=file Make AsyncRun -program=make @ <args>
 map <leader>M :Make<space>
 
 " quickfix, loclist, ...
-map <leader>co :copen 12\| winc p<CR>
-map <leader>cv :vert copen <C-R>=min([&columns-112,&columns/2])<CR>\|setlocal nowrap\|winc p<CR>
-map <leader>lo :lopen 12\| winc p<CR>
-map <leader>lv :vert lopen <C-R>=min([&columns-112,&columns/2])<CR>\|setlocal nowrap\|winc p<CR>
+command! CV exec 'vert copen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p
+command! CO copen 12 | winc p
+command! OQ if &columns > 170 | exec 'CV' | else | exec 'CO' | endif
+map <leader>oq :OQ<CR>
+command! LV exec 'vert lopen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p
+command! LO lopen 12 | winc p
+command! OL if &columns > 170 | exec 'LV' | else | exec 'LO' | endif
+map <leader>ol :OL<CR>
 map ]q :cn<CR>
 map [q :cN<CR>
 map ]l :lne<CR>
@@ -708,7 +712,6 @@ func! PushQuitBufs(buf)
         call add(g:quitbufs, a:buf)
     endif
 endfunc
-" TODO: more options. cur window, new split, remember the layout, ...
 func! PopQuitBufs()
     if len(g:quitbufs) > 0
         exec "tabnew +".(remove(g:quitbufs, -1))."buf"
