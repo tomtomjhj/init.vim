@@ -456,19 +456,33 @@ endfunc
 
 " }}}
 
-" searching {{{
+" search, copy, paste {{{
+" repetitive pastes using designated register @p
+noremap <M-y> "py
+noremap <M-p> "pp
+
 " search_mode: which command last set @/?
-" `*`, `v_*` without moving the cursor
-nnoremap <silent>* :let search_mode='n'\|let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<CR>
-vnoremap <silent>* :<C-u>let search_mode='v'\|call Searchgv()\|set hlsearch<CR>
-func! Searchgv()
-    let l:saved_reg = @"
-    execute "normal! gvy"
+" `*`, `v_*` without moving the cursor. Reserve @c for the raw original text
+" NOTE: Can't repeat properly if ins-special-special is used. Use q-recording.
+" -> wrapper for qrc...q ?
+nnoremap <silent>* :call Star()\|set hlsearch<CR>
+vnoremap <silent>* :<C-u>call VisualStar()\|set hlsearch<CR>
+" set hlsearch inside the function doesn't work? Maybe :h function-search-undo?
+func! Star()
+    let g:search_mode = 'n'
+    let @c = expand('<cword>')
+    let @/ = '\<' . @c . '\>'
+endfunc
+func! VisualStar()
+    let g:search_mode = 'v'
+    let l:reg_save = @"
+    exec "normal! gvy"
+    let @c = @"
     let l:pattern = escape(@", '\.*$^~[]')
     let @/ = l:pattern
-    let @" = l:saved_reg
+    let @" = l:reg_save
 endfunc
-nnoremap / :let search_mode='/'<CR>/
+nnoremap / :let g:search_mode='/'<CR>/
 
 nnoremap <leader>rg :Rg<space>
 nnoremap <leader>r/ :<C-u>Rg <C-r>=RgInput(@/)<CR>
@@ -476,7 +490,7 @@ func! RgInput(raw)
     if g:search_mode == 'n'
         return substitute(a:raw, '\v\\[<>]','','g')
     elseif g:search_mode == 'v'
-        return escape(a:raw, '|(){}') " not escaped by Searchgv
+        return escape(a:raw, '|(){}') " not escaped by VisualStar
     else " can convert most of strict very magic to riggrep regex, otherwise, DIY
         if a:raw[0:1] != '\v'
             return substitute(a:raw, '\v\\[<>]','','g')
@@ -509,7 +523,7 @@ map T <Plug>Sneak_T
 hi Sneak guifg=black guibg=#afff00 ctermfg=black ctermbg=154
 
 " Jump past (a word | a non-space,non-word char | whitespace) in insert mode
-let g:quick_jump = '\v(\w+|[^0-9A-Za-z_ ]|\s+)'
+let g:quick_jump = '\v(\w+|[^[:alnum:]_[:blank:]]|\s+)'
 inoremap <C-j> <C-\><C-O>:call search(g:quick_jump, 'ceW')<CR><Right>
 inoremap <C-k> <C-\><C-O>:call search(g:quick_jump, 'bW')<CR>
 inoremap <C-space> <C-k>
