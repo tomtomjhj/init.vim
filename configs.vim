@@ -26,16 +26,16 @@ Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment'
 Plug 'rhysd/git-messenger.vim'
 
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-augroup SetupNerdtree
+augroup SetupNerdTree
     au!
-    au VimEnter * silent! autocmd! FileExplorer
+    au VimEnter * silent! au! FileExplorer
     au BufEnter,VimEnter *
                 \ if get(g:, 'loaded_nerd_tree', 0) |
-                \   exec 'au! SetupNerdtree' |
+                \   exec 'au! SetupNerdTree' |
                 \ elseif isdirectory(expand("<amatch>")) |
                 \   call plug#load('nerdtree') |
                 \   call nerdtree#checkForBrowse(expand("<amatch>")) |
-                \   exec 'au! SetupNerdtree' |
+                \   exec 'au! SetupNerdTree' |
                 \ endif |
 augroup END
 
@@ -100,22 +100,25 @@ set noerrorbells | set novisualbell | set t_vb=
 
 set nobackup | set nowritebackup | set noswapfile
 set undofile | set undodir=~/.vim/undodir
+set history=500
 
 set autoread
 set switchbuf=useopen,usetab,newtab
 set hidden
 set lazyredraw
-" Return to last edit position when opening files
-au BufWinEnter * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-set history=500
-autocmd! BufWritePost ~/.vim/configs.vim source ~/.vim/configs.vim
 
 set exrc | set secure
 
-au BufRead,BufNewFile *.k set filetype=k
-au BufRead,BufNewFile *.v set filetype=coq
-au BufRead,BufNewFile *.ll set filetype=llvm
-au BufRead,BufNewFile *.mir set filetype=rust
+augroup BasicSetup
+    au!
+    " Return to last edit position when opening files
+    au BufWinEnter * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+    au! BufWritePost ~/.vim/configs.vim source ~/.vim/configs.vim
+    au BufRead,BufNewFile *.k set filetype=k
+    au BufRead,BufNewFile *.v set filetype=coq
+    au BufRead,BufNewFile *.ll set filetype=llvm
+    au BufRead,BufNewFile *.mir set filetype=rust
+augroup END
 
 let g:python_host_prog  = '/usr/bin/python2'
 let g:python3_host_prog = '/usr/bin/python3'
@@ -156,7 +159,7 @@ let g:lightline = {
       \ 'separator': { 'left': ' ', 'right': ' ' },
       \ 'subseparator': { 'left': ' ', 'right': ' ' }
       \ }
-" TODO show max prefix + 1 letter in the rel path
+" TODO: show max prefix + 1 letter in the rel path
 " `vil() { nvim "$@" --cmd 'set background=light' }` for light theme
 if &background == 'dark'
     colorscheme zen
@@ -213,7 +216,11 @@ nmap <leader>ad <Plug>(ale_detail)
 nmap <leader>af <Plug>(ale_fix)
 " TODO: check https://github.com/dense-analysis/ale/issues/2317
 nmap <leader>ah <Plug>(ale_hover)
-nmap <C-[> <Plug>(ale_hover)
+" Can't distinguish <ESC> and <C-[> in terminal.
+nmap <M-[> <Plug>(ale_hover)
+nmap <M-]> <Plug>(ale_go_to_definition)
+nmap <silent><M-\> :tab split<CR><Plug>(ale_go_to_definition)
+nmap <silent><leader><M-\> :vsp<CR><Plug>(ale_go_to_definition)
 nmap <leader>aj <Plug>(ale_go_to_definition)
 nmap <leader>an :ALERename<CR>
 nmap <leader>ar <Plug>(ale_find_references)
@@ -221,11 +228,6 @@ nmap ]a <Plug>(ale_next_wrap)
 nmap ]A <Plug>(ale_next_wrap_error)
 nmap [a <Plug>(ale_previous_wrap)
 nmap [A <Plug>(ale_prevous_wrap_error)
-au FileType rust,python nmap <buffer>gd <Plug>(ale_go_to_definition)
-au FileType rust,python nmap <buffer><C-]> <Plug>(ale_go_to_definition)
-au FileType rust,python nmap <buffer><silent><C-\> :tab split<CR><Plug>(ale_go_to_definition)
-au Filetype rust,python nmap <buffer><silent><leader><C-\> :vsp<CR><Plug>(ale_go_to_definition)
-
 " }}}
 
 " Haskell {{{
@@ -239,17 +241,13 @@ let g:haskell_indent_let_no_in = 0
 let g:haskell_indent_if = 0
 let g:haskell_indent_case_alternative = 1
 
-au FileType haskell setlocal shiftwidth=2 tabstop=2
-au FileType yaml setlocal shiftwidth=2 tabstop=2
-
 let g:intero_start_immediately = 0
-if has('nvim')
-  augroup interoMaps
+augroup SetupHaskell
     au!
     au FileType haskell call SetupIntero()
-  augroup END
-endif
+augroup END
 func! SetupIntero()
+    setlocal shiftwidth=2 tabstop=2
     nnoremap <silent><buffer><leader>is :InteroStart<CR>
     nnoremap <silent><buffer><leader>ik :InteroKill<CR>
     nnoremap <silent><buffer><leader>io :InteroOpen<CR>
@@ -337,7 +335,7 @@ func! RunPandoc(open)
     let cmd = 'pandoc ' . l:src . ' -o ' . l:out . ' ' . l:params
     augroup pandoc_quickfix
         au!
-        au QuickFixCmdPost caddexpr botright copen 8 | winc p
+        au QuickFixCmdPost caddexpr belowright copen 8 | winc p
     augroup END
     exe 'AsyncRun -save=1 -cwd=' . expand("%:p:h") '-post=' . l:post l:cmd
 endfunc
@@ -578,9 +576,9 @@ let g:AutoPairsCenterLine = 0
 let g:AutoPairsMapCh = 0
 let g:AutoPairsShortcutToggle = ''
 let g:AutoPairsShortcutJump = ''
-inoremap <buffer><silent> <M-e> <C-R>=AutoPairsFastWrap("e")<CR>
-inoremap <buffer><silent> <M-E> <C-R>=AutoPairsFastWrap("E")<CR>
-inoremap <buffer><silent> <M-$> <C-R>=AutoPairsFastWrap("$")<CR>
+inoremap <silent><M-e> <C-R>=AutoPairsFastWrap("e")<CR>
+inoremap <silent><M-E> <C-R>=AutoPairsFastWrap("E")<CR>
+inoremap <silent><M-$> <C-R>=AutoPairsFastWrap("$")<CR>
 
 " fzf
 set rtp+=~/.fzf
@@ -608,12 +606,13 @@ map <leader>M :Make<space>
 
 " quickfix, loclist, ...
 command! CV exec 'vert copen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p
-command! CO copen 12 | winc p
-command! OQ if &columns > 170 | exec 'CV' | else | exec 'CO' | endif
+command! CO belowright copen 12 | winc p
+" TODO: generalize?
+command! OQ if winwidth(0) > 170 | exec 'CV' | else | exec 'CO' | endif
 map <leader>oq :OQ<CR>
 command! LV exec 'vert lopen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p
-command! LO lopen 12 | winc p
-command! OL if &columns > 170 | exec 'LV' | else | exec 'LO' | endif
+command! LO belowright lopen 12 | winc p
+command! OL if winwidth(0) > 170 | exec 'LV' | else | exec 'LO' | endif
 map <leader>ol :OL<CR>
 map ]q :cn<CR>
 map [q :cN<CR>
@@ -635,7 +634,6 @@ inoremap <CR> <C-G>u<CR>
 " }}}
 
 " tags {{{
-" TODO: CTRL-W commands
 " open tag in a new tab/vertical split
 map <silent><C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 map <silent><leader><C-\> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
@@ -719,12 +717,13 @@ func! OnTabClosed(closed)
     if l:target | exec 'tabn' l:target | endif
 endfunc
 
-
-" ctrl-shift-t of chrome
-" TODO: debug(non-existent buf), save filenames when :qa'd and restore
+" ctrl-shift-t of chrome. bug: non-existent buf
 map <silent><leader><C-t> :call PopQuitBufs()<CR>
 " works only for buffers of windows closed by :q, not :tabc
-au QuitPre * call PushQuitBufs(expand("<abuf>"))
+augroup RestoreTab
+    au!
+    au QuitPre * call PushQuitBufs(expand("<abuf>"))
+augroup END
 " push if clean and empty. remove preceding one if exists
 let g:quitbufs = []
 func! PushQuitBufs(buf)
@@ -743,16 +742,18 @@ endfunc
 " bw, bd, setlocal bufhidden=delete don't work on the buf being hidden
 " defer it until BufEnter to another buf
 let g:lasthidden = 0
-au BufHidden * let g:lasthidden = expand("<abuf>")
-au BufEnter * call CheckAndBW(g:lasthidden)
+augroup GarbageBuf
+    au!
+    au BufHidden * let g:lasthidden = expand("<abuf>")
+    au BufEnter * call CheckAndBW(g:lasthidden)
+augroup END
 func! CheckAndBW(buf)
     if IsCleanEmptyBuf(a:buf)
         exec("bw ".a:buf)
     endif
 endfunc
 
-" https://stackoverflow.com/questions/6552295
-" TODO: `+` signs??
+" https://stackoverflow.com/questions/6552295.`+` signs??
 func! IsCleanEmptyBuf(buf)
     return a:buf > 0 && buflisted(+a:buf) && empty(bufname(+a:buf)) && !getbufvar(+a:buf, "&mod")
 endfunc
@@ -763,5 +764,4 @@ func! CleanGarbageBufs()
         exe 'bw ' . join(bufs, ' ')
     endif
 endfunc
-
 " }}}
