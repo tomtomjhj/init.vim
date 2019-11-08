@@ -57,6 +57,7 @@ Plug '~/.vim/my_plugins/tex-conceal.vim'
 Plug 'rust-lang/rust.vim'
 Plug '~/.vim/my_plugins/vim-ocaml'
 Plug '~/.vim/my_plugins/haskell-vim'
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 " Plug 'parsonsmatt/intero-neovim'
 " Plug 'tomlion/vim-solidity'
 
@@ -112,7 +113,7 @@ set exrc | set secure
 augroup BasicSetup
     au!
     " Return to last edit position when opening files
-    au BufWinEnter * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+    au BufWinEnter * if line("'\"") > 1 && line("'\"") <= line("$") | exe "norm! g'\"" | endif
     au! BufWritePost ~/.vim/configs.vim source ~/.vim/configs.vim
     au BufRead,BufNewFile *.k set filetype=k
     au BufRead,BufNewFile *.v set filetype=coq
@@ -159,8 +160,7 @@ let g:lightline = {
       \ 'separator': { 'left': ' ', 'right': ' ' },
       \ 'subseparator': { 'left': ' ', 'right': ' ' }
       \ }
-" TODO: show max prefix + 1 letter in the rel path
-" `vil() { nvim "$@" --cmd 'set background=light' }` for light theme
+" `vil() { nvim "$@" --cmd 'set background=light'; }` for light theme
 if &background == 'dark'
     colorscheme zen
 else
@@ -380,7 +380,7 @@ func! FencedCodeBlocka()
     if !search('```\w*', 'bW') | return 0 | endif
     let head_pos = getpos('.')
     if !search('```', 'W') | return 0 | endif
-    normal! E
+    exec 'norm! E'
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
 endfunc
@@ -389,7 +389,7 @@ func! FencedCodeBlocki()
         return 0
     endif
     if !search('```\w*', 'bW') | return 0 | endif
-    normal! W
+    exec 'norm! W'
     let head_pos = getpos('.')
     if !search('```', 'W') | return 0 | endif
     call search('\v\S', 'bW')
@@ -421,10 +421,10 @@ func! DollarMathi()
         return 0
     endif
     if !search('\v\$', 'bW') | return 0 | endif
-    normal! l
+    exec 'norm! l'
     let head_pos = getpos('.')
     if !search('\v\$', 'W') | return 0 | endif
-    normal! h
+    exec 'norm! h'
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
 endfunc
@@ -435,7 +435,7 @@ func! DollarMathMatha()
     if !search('\v\$\$', 'bW') | return 0 | endif
     let head_pos = getpos('.')
     if !search('\v\$\$', 'W') | return 0 | endif
-    normal! l
+    exec 'norm! l'
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
 endfunc
@@ -444,7 +444,7 @@ func! DollarMathMathi()
         return 0
     endif
     if !search('\v\$\$', 'bW') | return 0 | endif
-    normal! l
+    exec 'norm! l'
     call search('\v\S', 'W')
     let head_pos = getpos('.')
     if !search('\v\$\$', 'W')  | return 0 | endif
@@ -464,7 +464,7 @@ noremap <M-p> "pp
 " search_mode: which command last set @/?
 " `*`, `v_*` without moving the cursor. Reserve @c for the raw original text
 " NOTE: Can't repeat properly if ins-special-special is used. Use q-recording.
-" -> wrapper for qrc...q ?
+" -> wrapper for qrcgn...q ?
 nnoremap <silent>* :call Star()\|set hlsearch<CR>
 vnoremap <silent>* :<C-u>call VisualStar()\|set hlsearch<CR>
 " set hlsearch inside the function doesn't work? Maybe :h function-search-undo?
@@ -476,7 +476,7 @@ endfunc
 func! VisualStar()
     let g:search_mode = 'v'
     let l:reg_save = @"
-    exec "normal! gvy"
+    exec "norm! gvy"
     let @c = @"
     let l:pattern = escape(@", '\.*$^~[]')
     let @/ = l:pattern
@@ -490,7 +490,7 @@ func! RgInput(raw)
     if g:search_mode == 'n'
         return substitute(a:raw, '\v\\[<>]','','g')
     elseif g:search_mode == 'v'
-        return escape(a:raw, '|(){}') " not escaped by VisualStar
+        return escape(a:raw, '+|?-(){}') " not escaped by VisualStar
     else " can convert most of strict very magic to riggrep regex, otherwise, DIY
         if a:raw[0:1] != '\v'
             return substitute(a:raw, '\v\\[<>]','','g')
@@ -509,8 +509,8 @@ noremap <S-l> l
 noremap <leader>J J
 
 " space to navigate
-noremap <space> <C-d>
-noremap <c-space> <C-u>
+nnoremap <space> <C-d>
+nnoremap <c-space> <C-u>
 " <s-space> does not work
 
 let g:sneak#s_next = 1
@@ -524,8 +524,8 @@ hi Sneak guifg=black guibg=#afff00 ctermfg=black ctermbg=154
 
 " Jump past (a word | a non-space,non-word char | whitespace) in insert mode
 let g:quick_jump = '\v(\w+|[^[:alnum:]_[:blank:]]|\s+)'
-inoremap <C-j> <C-\><C-O>:call search(g:quick_jump, 'ceW')<CR><Right>
-inoremap <C-k> <C-\><C-O>:call search(g:quick_jump, 'bW')<CR>
+inoremap <silent><C-j> <C-\><C-O>:call search(g:quick_jump, 'ceW')<CR><Right>
+inoremap <silent><C-k> <C-\><C-O>:call search(g:quick_jump, 'bW')<CR>
 inoremap <C-space> <C-k>
 
 " extend visual block up to pair opener/closer
@@ -547,7 +547,7 @@ func! VisualJump(forward)
     let @/ = (l:on_right != l:flipped) ? g:pair_closer : g:pair_opener
     let l:wrapscan = &wrapscan
     set nowrapscan
-    exec 'normal!' l:cmd
+    exec 'norm!' l:cmd
     let &wrapscan = l:wrapscan
     let @/ = l:saved_reg
 endfunc
@@ -557,11 +557,10 @@ endfunc
 " }}}
 
 " etc {{{
-map <silent><leader><cr> :noh<cr>
-map <leader>ss :setlocal spell!<cr>
-map <leader>pp :setlocal paste!<cr>
-map <leader>sw :set wrap<CR>
-map <leader>snw :set nowrap<CR>
+map <silent><leader><CR> :noh<CR>
+map <leader>ss :setlocal spell!\|setlocal spell?<cr>
+map <leader>pp :setlocal paste!\|setlocal paste?<cr>
+map <leader>sw :set wrap!\|set wrap?<CR>
 
 " clipboard.
 if has('nvim')
@@ -621,7 +620,6 @@ map <leader>M :Make<space>
 " quickfix, loclist, ...
 command! CV exec 'vert copen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p
 command! CO belowright copen 12 | winc p
-" TODO: generalize?
 command! OQ if winwidth(0) > 170 | exec 'CV' | else | exec 'CO' | endif
 map <leader>oq :OQ<CR>
 command! LV exec 'vert lopen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p
@@ -634,13 +632,18 @@ map ]l :lne<CR>
 map [l :lN<CR>
 map <silent><leader>x :pc\|ccl\|lcl<CR>
 
+inoremap <CR> <C-G>u<CR>
+
 let g:NERDTreeWinPos = "right"
 nmap <leader>nn :NERDTreeToggle<cr>
 
 let g:gitgutter_enabled=0
 nmap <silent><leader>gg :GitGutterToggle<cr>
 
-inoremap <CR> <C-G>u<CR>
+let g:EditorConfig_exclude_patterns = ['.*[.]git/.*']
+
+let g:mkdp_auto_close = 0
+let g:mkdp_preview_options = { 'disable_sync_scroll': 1 }
 
 " see :help [range], &, g&
 " :%s/pat/\r&/g.
