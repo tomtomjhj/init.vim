@@ -92,3 +92,15 @@ augroup end
     * Just disable lazy load as it turns out that loading ultisnip isn't slow.
     * The root cause might be related to loading something that contains filetype plugin.
 
+# hmm..
+* I don't want to rely on `set whichwrap+=]` for quick jump but this doesn't
+  work properly at the column `col('$')-1`
+    ```vim
+    inoremap <silent><C-j> <C-R>=QuickJumpRightKey()<CR>
+    func! QuickJumpRightKey()
+        return col('.') ==  col('$')
+                    \ ? "\<C-\>\<C-O> "
+                    \ : "\<C-\>\<C-O>:call search(g:quick_jump, 'ceW')\<CR>\<Right>"
+    endfunc
+    ```
+    * use `<expr>`?

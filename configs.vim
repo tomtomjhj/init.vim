@@ -79,7 +79,7 @@ set autoindent | set smartindent
 " indent the wrapped line, w/ `> ` at the start
 set wrap | set linebreak | set breakindent | set showbreak=>\ 
 set backspace=eol,start,indent
-set whichwrap+=<,>,h,l
+set whichwrap+=<,>,[,],h,l
 
 let mapleader = ","
 set timeoutlen=400
@@ -523,10 +523,19 @@ map T <Plug>Sneak_T
 hi Sneak guifg=black guibg=#afff00 ctermfg=black ctermbg=154
 
 " Jump past (a word | a non-space,non-word char | whitespace) in insert mode
+" Assumes `set whichwrap+=]` for i_<Right>
 let g:quick_jump = '\v(\w+|[^[:alnum:]_[:blank:]]|\s+)'
-inoremap <silent><C-j> <C-\><C-O>:call search(g:quick_jump, 'ceW')<CR><Right>
-inoremap <silent><C-k> <C-\><C-O>:call search(g:quick_jump, 'bW')<CR>
+inoremap <silent><C-j> <C-\><C-O>:call QuickJumpRight()<CR><Right>
+inoremap <silent><C-k> <C-\><C-O>:call QuickJumpLeft()<CR>
 inoremap <C-space> <C-k>
+func! QuickJumpRight()
+    if col('.') !=  col('$')
+        call search(g:quick_jump, 'ceW')
+    endif
+endfunc
+func! QuickJumpLeft()
+    call search(col('.') != 1 ? g:quick_jump : '\v$', 'bW')
+endfunc
 
 " extend visual block up to pair opener/closer
 let g:pair_opener = '\v("|\[|''|\(|\{|\$)'
