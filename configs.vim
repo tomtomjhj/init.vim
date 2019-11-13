@@ -522,9 +522,9 @@ map t <Plug>Sneak_t
 map T <Plug>Sneak_T
 hi Sneak guifg=black guibg=#afff00 ctermfg=black ctermbg=154
 
-" Jump past (a word | a non-space,non-word char | whitespace) in insert mode
+" Jump past (a word | repetition of non-paren speicial char | a paren | whitespace)
 " Assumes `set whichwrap+=]` for i_<Right>
-let g:quick_jump = '\v(\w+|[^[:alnum:]_[:blank:]]|\s+)'
+let g:quick_jump = '\v(\w+|([^[:alnum:]_[:blank:](){}[\]<>])\2*|[(){}[\]<>]|\s+)'
 inoremap <silent><C-j> <C-\><C-O>:call QuickJumpRight()<CR><Right>
 inoremap <silent><C-k> <C-\><C-O>:call QuickJumpLeft()<CR>
 inoremap <C-space> <C-k>
