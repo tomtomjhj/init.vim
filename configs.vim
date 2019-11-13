@@ -537,6 +537,10 @@ func! QuickJumpLeft()
     call search(col('.') != 1 ? g:quick_jump : '\v$', 'bW')
 endfunc
 
+" vim#964
+inoremap <C-w> <C-\><C-o>db
+inoremap <C-u> <C-\><C-o>d0
+
 " extend visual block up to pair opener/closer
 let g:pair_opener = '\v("|\[|''|\(|\{|\$)'
 let g:pair_closer = '\v("|\]|''|\)|\}|\$)'
