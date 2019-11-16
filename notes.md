@@ -70,17 +70,21 @@ augroup end
 
 # TODO:
 * Better interaction of `hlsearch` and conceal?
-* Restore default `iskeyword` inside pandoc code block: it's impossible.
 * Convert magic to ripgrep regex. Probably impossible.
   - unescape: `\(abc\) -> (abc), \~ -> ~, \/ -> /`
   - escape: `(abc)->\(abc\), {abc} -> \{abc\}`
   - don't touch: `\., \$, \^, \\ `
-* git diff arbitrary commits inside nvim
+* git diff arbitrary commits inside nvim, diff mode usage, git-gutter,...
+* sudoedit settings: undodir, ...
+
+## Done
 * auto-pairs adds weird indent if the previous line ends with `,`. Indent size if the size of the first word in the previous line.
     * reset `indentexpr` just before running `=k` in auto-pairs
+* Restore default `iskeyword` inside pandoc code block: it's impossible.
 
 # Tips
 * `dw`: to remove whitespace from current position.
+* `q.push(\w\+\w\@!,\@!`: enforce `\w\+` to consume all `\w`
 
 # pitfalls
 * `:h map-bar`

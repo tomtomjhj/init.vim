@@ -270,6 +270,7 @@ let g:rust_keep_autopairs_default = 1
 augroup SetupRust
     au!
     au FileType rust nmap <buffer><leader>C :AsyncRun -program=make -cwd=%:p:h -post=OQ check<CR>
+    au FileType rust vmap <buffer><leader>af :RustFmtRange<CR>
     au FileType rust if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({}, ["'"]) | endif
 augroup END
 " NOTE: External crate completion doesn't work without extern crate declaration
