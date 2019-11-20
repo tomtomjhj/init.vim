@@ -66,18 +66,18 @@ call plug#end()
 
 " Basic {{{
 set mouse=a
-set number | set ruler
-set foldcolumn=1
+set number ruler
+set foldcolumn=1 foldnestmax=5
 set scrolloff=2
 set showtabline=1
 
-set tabstop=4 | set shiftwidth=4
-set expandtab | set smarttab
-set autoindent | set smartindent
+set tabstop=4 shiftwidth=4
+set expandtab smarttab
+set autoindent smartindent
 " TODO: insert indents at InsertEnter
 
 " indent the wrapped line, w/ `> ` at the start
-set wrap | set linebreak | set breakindent | set showbreak=>\ 
+set wrap linebreak breakindent showbreak=>\ 
 set backspace=eol,start,indent
 set whichwrap+=<,>,[,],h,l
 
@@ -94,13 +94,13 @@ set wildignore=*.o,*~,*.pyc,*.pdf,*.v.d,*.vo,*.glob
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
 
 set magic
-set ignorecase | set smartcase
-set hlsearch | set incsearch
+set ignorecase smartcase
+set hlsearch incsearch
 
-set noerrorbells | set novisualbell | set t_vb=
+set noerrorbells novisualbell t_vb=
 
-set nobackup | set nowritebackup | set noswapfile
-set undofile | set undodir=~/.vim/undodir
+set nobackup nowritebackup noswapfile
+set undofile undodir=~/.vim/undodir
 set history=500
 
 set autoread
@@ -108,13 +108,13 @@ set switchbuf=useopen,usetab,newtab
 set hidden
 set lazyredraw
 
-set exrc | set secure
+set exrc secure
 
 augroup BasicSetup
     au!
     " Return to last edit position when opening files
-    au BufWinEnter * if line("'\"") > 1 && line("'\"") <= line("$") | exe "norm! g'\"" | endif
-    au! BufWritePost ~/.vim/configs.vim source ~/.vim/configs.vim
+    au BufWinEnter * if line("'\"") > 1 && line("'\"") <= line("$") | exec "norm! g'\"" | endif
+    au BufWritePost ~/.vim/configs.vim source ~/.vim/configs.vim
     au BufRead,BufNewFile *.k set filetype=k
     au BufRead,BufNewFile *.v set filetype=coq
     au BufRead,BufNewFile *.ll set filetype=llvm
@@ -212,7 +212,7 @@ hi ALEError term=underline cterm=underline gui=undercurl
 hi ALEWarning term=NONE cterm=NONE gui=NONE
 hi ALEInfo term=NONE cterm=NONE gui=NONE
 
-nmap <leader>ad <Plug>(ale_detail)
+nmap <leader>ad <Plug>(ale_detail)<C-W>p
 nmap <leader>af <Plug>(ale_fix)
 " TODO: check https://github.com/dense-analysis/ale/issues/2317
 nmap <leader>ah <Plug>(ale_hover)
@@ -338,7 +338,7 @@ func! RunPandoc(open)
         au!
         au QuickFixCmdPost caddexpr belowright copen 8 | winc p
     augroup END
-    exe 'AsyncRun -save=1 -cwd=' . expand("%:p:h") '-post=' . l:post l:cmd
+    exec 'AsyncRun -save=1 -cwd=' . expand("%:p:h") '-post=' . l:post l:cmd
 endfunc
 func! Zathura(file, ...)
     let check = get(a:, 1, 1)
@@ -396,16 +396,6 @@ func! FencedCodeBlocki()
     call search('\v\S', 'bW')
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
-endfunc
-func! InSynStack(type)
-    let stack = synstack(line('.'), col('.'))
-    for i in stack
-        let name = synIDattr(i, 'name')
-        if name == a:type
-            return 1
-        endif
-    endfor
-    return 0
 endfunc
 func! DollarMatha()
     if !InSynStack('pandocLaTeXInlineMath')
@@ -659,6 +649,18 @@ let g:EditorConfig_exclude_patterns = ['.*[.]git/.*']
 let g:mkdp_auto_close = 0
 let g:mkdp_preview_options = { 'disable_sync_scroll': 1 }
 
+func! SynStackName()
+    return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
+func! InSynStack(type)
+    for i in synstack(line('.'), col('.'))
+        if synIDattr(i, 'name') == a:type
+            return 1
+        endif
+    endfor
+    return 0
+endfunc
+
 " see :help [range], &, g&
 " :%s/pat/\r&/g.
 " marks
@@ -722,7 +724,7 @@ map <leader>fe :e!<CR>
 let g:last_tab = 1
 let g:last_tab_backup = 1
 let g:last_viewed = 1
-nmap <silent><leader>` :exe 'tabn' g:last_tab<cr>
+nmap <silent><leader>` :exec 'tabn' g:last_tab<cr>
 augroup LastTab
     au!
     au TabLeave * let g:last_tab_backup = g:last_tab | let g:last_tab = tabpagenr()
@@ -780,7 +782,7 @@ augroup GarbageBuf
 augroup END
 func! CheckAndBW(buf)
     if IsCleanEmptyBuf(a:buf)
-        exec("bw ".a:buf)
+        exec "bw" a:buf
     endif
 endfunc
 
@@ -792,7 +794,7 @@ endfunc
 func! CleanGarbageBufs()
     let bufs = filter(range(1, bufnr('$')), 'IsCleanEmptyBuf(v:val) && bufwinnr(v:val)<0')
     if !empty(bufs)
-        exe 'bw ' . join(bufs, ' ')
+        exec 'bw' join(bufs, ' ')
     endif
 endfunc
 " }}}
