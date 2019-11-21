@@ -24,6 +24,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'Shougo/vimproc.vim', { 'do' : 'make' }
 Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment'
 Plug 'rhysd/git-messenger.vim'
+Plug 'Konfekt/FastFold'
 
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 augroup SetupNerdTree
@@ -279,6 +280,10 @@ augroup END
 " C,C++ {{{
 " TODO: this should be based on tabstop and shiftwidth, see editorconfig doc
 let g:ale_c_clangformat_options = '-style="{BasedOnStyle: llvm, IndentWidth: 4, AccessModifierOffset: -4}"'
+augroup SetupCCpp
+    au!
+    au FileType c,cpp setlocal foldmethod=syntax foldlevel=99
+augroup END
 " }}}
 
 " Python {{{

@@ -67,4 +67,3 @@ hi def link cBraces Delimiter
 
 
 syn match cType "\<[a-zA-Z_][a-zA-Z0-9_]*_t\>"
-setlocal foldmethod=syntax foldlevel=99
