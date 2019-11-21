@@ -59,6 +59,7 @@ Plug 'rust-lang/rust.vim'
 Plug '~/.vim/my_plugins/vim-ocaml'
 Plug '~/.vim/my_plugins/haskell-vim'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+Plug 'lervag/vimtex'
 " Plug 'parsonsmatt/intero-neovim'
 " Plug 'tomlion/vim-solidity'
 
@@ -197,7 +198,9 @@ let g:ale_linters = {
             \ 'cpp': ['clang'],
             \ 'python': ['pyls'],
             \ 'rust': ['rls'],
+            \ 'tex': ['texlab'],
             \ }
+let g:ale_lsp_root = {}
 let g:ale_fixers = {
             \ 'c': ['clang-format'],
             \ 'cpp': ['clang-format'],
@@ -312,10 +315,12 @@ let g:pandoc#modules#enabled = ["formatting", "keyboard", "toc", "spell", "hyper
 let g:pandoc#hypertext#use_default_mappings = 0
 let g:pandoc#syntax#use_definition_lists = 0
 let g:pandoc#syntax#protect#codeblocks = 0
+let g:vimtex_fold_enabled = 1
+call deoplete#custom#var('omni', 'input_patterns', { 'tex': g:vimtex#re#deoplete })
 augroup SetupPandocTex
     au!
     au FileType pandoc call SetupPandoc()
-    au FileType tex setlocal conceallevel=2
+    au FileType tex call SetupTex()
 augroup END
 func! SetupPandoc()
     let b:AutoPairs = AutoPairsDefine({'$':'$', '$$':'$$'})
@@ -346,10 +351,25 @@ func! RunPandoc(open)
     exec 'AsyncRun -save=1 -cwd=' . expand("%:p:h") '-post=' . l:post l:cmd
 endfunc
 func! Zathura(file, ...)
-    let check = get(a:, 1, 1)
-    if l:check
+    if get(a:, 1, 1)
         call jobstart(['zathura', a:file, '--fork'])
     endif
+endfunc
+func! SetupTex()
+    setlocal conceallevel=2
+    set foldlevel=99
+    " Default texlab root to dir containing .git/. Set b:ale_lsp_root if needed.
+    let g:ale_lsp_root['texlab'] = function("ALETexlabGitRoot")
+    " override textobj-comment
+    xmap <buffer> ic <Plug>(vimtex-ic)
+    omap <buffer> ic <Plug>(vimtex-ic)
+    xmap <buffer> ac <Plug>(vimtex-ac)
+    omap <buffer> ac <Plug>(vimtex-ac)
+endfunc
+func! ALETexlabGitRoot(buffer)
+    let l:project_root = ale#path#FindNearestDirectory(a:buffer, '.git')
+    let l:mods = ':h:h'
+    return !empty(l:project_root) ? fnamemodify(l:project_root, l:mods) : ''
 endfunc
 
 let s:pandoc_textobj = {
