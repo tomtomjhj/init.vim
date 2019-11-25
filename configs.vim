@@ -9,6 +9,7 @@ Plug 'maximbaz/lightline-ale'
 Plug 'lifepillar/vim-solarized8'
 
 " general
+if !has('nvim') | Plug 'tpope/vim-sensible' | endif
 Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
@@ -21,7 +22,6 @@ Plug 'editorconfig/editorconfig-vim'
 Plug '~/.vim/my_plugins/auto-pairs'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'Shougo/vimproc.vim', { 'do' : 'make' }
 Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment'
 Plug 'rhysd/git-messenger.vim'
 Plug 'Konfekt/FastFold'
@@ -42,8 +42,12 @@ augroup END
 
 " completion
 Plug 'ervandew/supertab'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-" if !has('nvim') | Plug 'roxma/nvim-yarp' | Plug 'roxma/vim-hug-neovim-rpc' | endif
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'roxma/nvim-yarp' | Plug 'roxma/vim-hug-neovim-rpc'
+  Plug 'Shougo/deoplete.nvim'
+endif
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 
 augroup Completions
@@ -163,7 +167,7 @@ let g:lightline = {
       \ 'subseparator': { 'left': ' ', 'right': ' ' }
       \ }
 " `vil() { nvim "$@" --cmd 'set background=light'; }` for light theme
-if &background == 'dark'
+if &background == 'dark' || !has('nvim')
     colorscheme zen
 else
     let g:solarized_enable_extra_hi_groups = 1
@@ -221,6 +225,7 @@ nmap <leader>af <Plug>(ale_fix)
 " TODO: check https://github.com/dense-analysis/ale/issues/2317
 nmap <leader>ah <Plug>(ale_hover)
 " Can't distinguish <ESC> and <C-[> in terminal.
+" TODO: <M- maps are broken in vim
 nmap <M-[> <Plug>(ale_hover)
 nmap <M-]> <Plug>(ale_go_to_definition)
 nmap <silent><M-\> :tab split<CR><Plug>(ale_go_to_definition)
@@ -500,8 +505,14 @@ func! VisualStar()
 endfunc
 nnoremap / :let g:search_mode='/'<CR>/
 
-nnoremap <leader>rg :Rg<space>
-nnoremap <leader>r/ :<C-u>Rg <C-r>=RgInput(@/)<CR>
+if has('nvim')
+    nnoremap <leader>rg :Rg<space>
+    nnoremap <leader>r/ :<C-u>Rg <C-r>=RgInput(@/)<CR>
+else
+    command! -bang -nargs=* GGrep call fzf#vim#grep('git grep --line-number '.shellescape(<q-args>), 0, <bang>0)
+    nnoremap <leader>rg :GGrep<space>
+    nnoremap <leader>r/ :<C-u>GGrep <C-r>=RgInput(@/)<CR>
+endif
 func! RgInput(raw)
     if g:search_mode == 'n'
         return substitute(a:raw, '\v\\[<>]','','g')
