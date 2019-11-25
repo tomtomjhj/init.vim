@@ -166,7 +166,7 @@ call s:h('ZenWarnLine', s:none, s:none, [s:attrs.undercurl], s:orange)
 call s:h('ZenInfoLine', s:none, s:none, [s:attrs.undercurl], s:cyan)
 
 call s:h('ZenTodo', s:pink, s:none, [s:attrs.bold, s:attrs.inverse])
-hi! ZenSearch cterm=reverse,bold,underline gui=reverse,bold,underline
+hi! ZenSearch cterm=reverse,bold gui=reverse,bold
 call s:h('ZenBoundary', s:fgdarkish, s:bgdark)
 call s:h('ZenLink', s:cyan, s:none, [s:attrs.underline])
 

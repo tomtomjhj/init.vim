@@ -26,7 +26,7 @@ Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment'
 Plug 'rhysd/git-messenger.vim'
 Plug 'Konfekt/FastFold'
 
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
 augroup SetupNerdTree
     au!
     au VimEnter * silent! au! FileExplorer
@@ -64,6 +64,7 @@ Plug '~/.vim/my_plugins/vim-ocaml'
 Plug '~/.vim/my_plugins/haskell-vim'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'lervag/vimtex'
+Plug 'Shougo/deoplete-clangx'
 " Plug 'parsonsmatt/intero-neovim'
 " Plug 'tomlion/vim-solidity'
 
@@ -88,7 +89,7 @@ set backspace=eol,start,indent
 set whichwrap+=<,>,[,],h,l
 
 let mapleader = ","
-set timeoutlen=400
+set timeoutlen=420
 
 let $LANG='en'
 set langmenu=en
@@ -228,8 +229,11 @@ nmap <leader>ah <Plug>(ale_hover)
 " TODO: <M- maps are broken in vim
 nmap <M-[> <Plug>(ale_hover)
 nmap <M-]> <Plug>(ale_go_to_definition)
+nmap <M-o> <C-o>
+nmap <M-i> <C-i>
 nmap <silent><M-\> :tab split<CR><Plug>(ale_go_to_definition)
 nmap <silent><leader><M-\> :vsp<CR><Plug>(ale_go_to_definition)
+nmap <leader>ah <Plug>(ale_hover)
 nmap <leader>aj <Plug>(ale_go_to_definition)
 nmap <leader>an :ALERename<CR>
 nmap <leader>ar <Plug>(ale_find_references)
@@ -274,13 +278,14 @@ endfunc
 " }}}
 
 " Rust {{{
+" TODO: use rust-analyzer
 let g:rust_fold = 1
 let g:rust_keep_autopairs_default = 1
 augroup SetupRust
     au!
     au FileType rust nmap <buffer><leader>C :AsyncRun -program=make -cwd=%:p:h -post=OQ check<CR>
     au FileType rust vmap <buffer><leader>af :RustFmtRange<CR>
-    au FileType rust if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({}, ["'"]) | endif
+    au FileType rust if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({'|': '|'}, ["'"]) | endif
 augroup END
 " NOTE: External crate completion doesn't work without extern crate declaration
 " }}}
@@ -332,8 +337,8 @@ func! SetupPandoc()
     " set to notoplevel in haskell.vim
     call textobj#user#plugin('pandoc', s:pandoc_textobj)
     syntax spell toplevel
-    nmap <buffer><silent><leader>pd :call RunPandoc(0)<CR>
-    nmap <buffer><silent><leader>po :call RunPandoc(1)<CR>
+    nmap <buffer><silent><leader>C :call RunPandoc(0)<CR>
+    nmap <buffer><silent><leader>O :call RunPandoc(1)<CR>
     nmap <buffer><silent>gx <Plug>(pandoc-hypertext-open-system)
     nmap <buffer><silent><leader>py vid:AsyncRun python3<CR>:OQ<CR>
 endfunc
@@ -384,96 +389,24 @@ let s:pandoc_textobj = {
             \     'select-i': 'ie',
             \   },
             \   'code': {
-            \     'select-a-function': 'FencedCodeBlocka',
+            \     'select-a-function': 'stuff#FencedCodeBlocka',
             \     'select-a': 'ad',
-            \     'select-i-function': 'FencedCodeBlocki',
+            \     'select-i-function': 'stuff#FencedCodeBlocki',
             \     'select-i': 'id',
             \   },
             \  'dollar-math': {
-            \     'select-a-function': 'DollarMatha',
+            \     'select-a-function': 'stuff#DollarMatha',
             \     'select-a': 'am',
-            \     'select-i-function': 'DollarMathi',
+            \     'select-i-function': 'stuff#DollarMathi',
             \     'select-i': 'im',
             \   },
             \  'dollar-mathmath': {
-            \     'select-a-function': 'DollarMathMatha',
+            \     'select-a-function': 'stuff#DollarMathMatha',
             \     'select-a': 'aM',
-            \     'select-i-function': 'DollarMathMathi',
+            \     'select-i-function': 'stuff#DollarMathMathi',
             \     'select-i': 'iM',
             \   },
             \ }
-
-" TODO: move the functions to autoload {{{
-func! FencedCodeBlocka()
-    if !InSynStack('pandocDelimitedCodeBlock')
-        return 0
-    endif
-    if !search('```\w*', 'bW') | return 0 | endif
-    let head_pos = getpos('.')
-    if !search('```', 'W') | return 0 | endif
-    exec 'norm! E'
-    let tail_pos = getpos('.')
-    return ['v', head_pos, tail_pos]
-endfunc
-func! FencedCodeBlocki()
-    if !InSynStack('pandocDelimitedCodeBlock')
-        return 0
-    endif
-    if !search('```\w*', 'bW') | return 0 | endif
-    exec 'norm! W'
-    let head_pos = getpos('.')
-    if !search('```', 'W') | return 0 | endif
-    call search('\v\S', 'bW')
-    let tail_pos = getpos('.')
-    return ['v', head_pos, tail_pos]
-endfunc
-func! DollarMatha()
-    if !InSynStack('pandocLaTeXInlineMath')
-        return 0
-    endif
-    if !search('\v\$', 'bW') | return 0 | endif
-    let head_pos = getpos('.')
-    if !search('\v\$', 'W') | return 0 | endif
-    let tail_pos = getpos('.')
-    return ['v', head_pos, tail_pos]
-endfunc
-func! DollarMathi()
-    if !InSynStack('pandocLaTeXInlineMath')
-        return 0
-    endif
-    if !search('\v\$', 'bW') | return 0 | endif
-    exec 'norm! l'
-    let head_pos = getpos('.')
-    if !search('\v\$', 'W') | return 0 | endif
-    exec 'norm! h'
-    let tail_pos = getpos('.')
-    return ['v', head_pos, tail_pos]
-endfunc
-func! DollarMathMatha()
-    if !InSynStack('pandocLaTeXMathBlock')
-        return 0
-    endif
-    if !search('\v\$\$', 'bW') | return 0 | endif
-    let head_pos = getpos('.')
-    if !search('\v\$\$', 'W') | return 0 | endif
-    exec 'norm! l'
-    let tail_pos = getpos('.')
-    return ['v', head_pos, tail_pos]
-endfunc
-func! DollarMathMathi()
-    if !InSynStack('pandocLaTeXMathBlock')
-        return 0
-    endif
-    if !search('\v\$\$', 'bW') | return 0 | endif
-    exec 'norm! l'
-    call search('\v\S', 'W')
-    let head_pos = getpos('.')
-    if !search('\v\$\$', 'W')  | return 0 | endif
-    call search('\v\S', 'bW')
-    let tail_pos = getpos('.')
-    return ['v', head_pos, tail_pos]
-endfunc
-" }}}
 
 " }}}
 
@@ -540,6 +473,9 @@ nnoremap <space> <C-d>
 nnoremap <c-space> <C-u>
 " <s-space> does not work
 
+nnoremap <M-0> ^w
+vnoremap <M-0> ^w
+
 let g:sneak#s_next = 1
 let g:sneak#absolute_dir = 1
 let g:sneak#use_ic_scs = 1
@@ -552,6 +488,7 @@ hi Sneak guifg=black guibg=#afff00 ctermfg=black ctermbg=154
 " Jump past (a word | repetition of non-paren speicial char | a paren | whitespace)
 " Assumes `set whichwrap+=]` for i_<Right>
 let g:quick_jump = '\v(\w+|([^[:alnum:]_[:blank:](){}[\]<>])\2*|[(){}[\]<>]|\s+)'
+" TODO ultisnips sometimes doesn't restore this mapping (doesn't remove it's maps)
 inoremap <silent><C-j> <C-\><C-O>:call QuickJumpRight()<CR><Right>
 inoremap <silent><C-k> <C-\><C-O>:call QuickJumpLeft()<CR>
 inoremap <C-space> <C-k>
@@ -676,6 +613,7 @@ inoremap <CR> <C-G>u<CR>
 
 let g:NERDTreeWinPos = "right"
 nmap <leader>nn :NERDTreeToggle<cr>
+nmap <leader>nf :NERDTreeFind<cr>
 
 let g:gitgutter_enabled=0
 nmap <silent><leader>gg :GitGutterToggle<cr>
