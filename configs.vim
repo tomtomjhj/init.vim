@@ -56,7 +56,8 @@ augroup Completions
 augroup END
 
 " lanauges
-Plug 'dense-analysis/ale'
+Plug 'tomtomjhj/ale'
+Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh', 'for': 'rust' }
 Plug '~/.vim/my_plugins/vim-pandoc-syntax' | Plug 'vim-pandoc/vim-pandoc'
 Plug '~/.vim/my_plugins/tex-conceal.vim'
 Plug 'rust-lang/rust.vim'
@@ -192,12 +193,14 @@ let g:SuperTabClosePreviewOnPopupClose = 1
 let g:deoplete#enable_at_startup = 0
 call deoplete#custom#source('around', 'min_pattern_length', 1)
 call deoplete#custom#source('ale', { 'max_info_width': 0, 'max_menu_width': 0 })
+call deoplete#custom#source('LanguageClient', { 'max_info_width': 0, 'max_menu_width': 0 })
+call deoplete#custom#var('omni', 'input_patterns', { 'tex': g:vimtex#re#deoplete })
 call deoplete#custom#var('around', { 'mark_above': '[↑]', 'mark_below': '[↓]', 'mark_changes': '[*]' })
 
 let g:UltiSnipsExpandTrigger = '<c-l>'
 " }}}
 
-" ALE general settings {{{
+" ALE, LSP, tags, ... global settings {{{
 let g:ale_linters = {
             \ 'c': ['clang'],
             \ 'cpp': ['clang'],
@@ -214,9 +217,16 @@ let g:ale_fixers = {
             \ 'rust': ['rustfmt'],
             \ '*': ['trim_whitespace']
             \ }
-
 let g:ale_set_highlights = 1
 let g:ale_linters_explicit = 1
+let g:LanguageClient_diagnosticsEnable = 0
+let g:LanguageClient_diagnosticsDisplay = {
+\   1: { 'signTexthl': 'ALEError' },
+\   2: { 'signTexthl': 'ALEWarning' },
+\   3: { 'signTexthl': 'ALEInfo' },
+\   4: { 'signTexthl': 'ALEInfo' },
+\}
+let g:LanguageClient_useFloatingHover = 0
 hi ALEError term=underline cterm=underline gui=undercurl
 hi ALEWarning term=NONE cterm=NONE gui=NONE
 hi ALEInfo term=NONE cterm=NONE gui=NONE
@@ -278,15 +288,28 @@ endfunc
 " }}}
 
 " Rust {{{
-" TODO: use rust-analyzer
 let g:rust_fold = 1
 let g:rust_keep_autopairs_default = 1
+if executable('ra_lsp_server')
+    let g:ale_rust_rls_config = { 'rust': { 'racer_completion': v:false } }
+    let g:LanguageClient_serverCommands = { 'rust': ['ra_lsp_server'] }
+endif
 augroup SetupRust
     au!
-    au FileType rust nmap <buffer><leader>C :AsyncRun -program=make -cwd=%:p:h -post=OQ check<CR>
-    au FileType rust vmap <buffer><leader>af :RustFmtRange<CR>
-    au FileType rust if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({'|': '|'}, ["'"]) | endif
+    au FileType rust call SetupRust()
 augroup END
+func! SetupRust()
+    if executable('ra_lsp_server')
+        " NOTE: LC can handle multiple definition candidate w/ fzf
+        nmap <buffer><silent><leader>lh :call LanguageClient#textDocument_hover()<CR>
+        nmap <buffer><silent><leader>lg :call LanguageClient#textDocument_definition()<CR>
+        nmap <buffer><silent><leader>lr :call LanguageClient#textDocument_references()<CR>
+        nmap <buffer><silent><leader>ln :call LanguageClient#textDocument_rename()<CR>
+    endif
+    nmap <buffer><leader>C :AsyncRun -program=make -cwd=%:p:h -post=OQ check<CR>
+    vmap <buffer><leader>af :RustFmtRange<CR>
+    if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({'|': '|'}, ["'"]) | endif
+endfunc
 " NOTE: External crate completion doesn't work without extern crate declaration
 " }}}
 
@@ -326,7 +349,6 @@ let g:pandoc#hypertext#use_default_mappings = 0
 let g:pandoc#syntax#use_definition_lists = 0
 let g:pandoc#syntax#protect#codeblocks = 0
 let g:vimtex_fold_enabled = 1
-call deoplete#custom#var('omni', 'input_patterns', { 'tex': g:vimtex#re#deoplete })
 augroup SetupPandocTex
     au!
     au FileType pandoc call SetupPandoc()

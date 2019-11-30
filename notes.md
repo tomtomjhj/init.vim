@@ -71,11 +71,19 @@ augroup end
 # TODO:
 * Better interaction of `hlsearch` and conceal?
 * Convert magic to ripgrep regex. Probably impossible.
-  - unescape: `\(abc\) -> (abc), \~ -> ~, \/ -> /`
-  - escape: `(abc)->\(abc\), {abc} -> \{abc\}`
-  - don't touch: `\., \$, \^, \\ `
+    - unescape: `\(abc\) -> (abc), \~ -> ~, \/ -> /`
+    - escape: `(abc)->\(abc\), {abc} -> \{abc\}`
+    - don't touch: `\., \$, \^, \\ `
 * git diff arbitrary commits inside nvim, diff mode usage, git-gutter,...
 * sudoedit settings: undodir, ...
+* TODO: rust-analyzer provides better completion but doesn't have proper diagnostics
+    - rust-analyzer source for deoplete? adapt vim-racer?
+    - nvim lsp with rust-analyzer, use omnifunc only
+    - ale rust-analyzer + cargo check (can't check unsaved buffer)
+    * ✓ use LC for rust-analyzer completion only.
+        * NOTE: rust-analyzer [adds unecessary `(…)` after
+          method](https://github.com/rust-analyzer/rust-analyzer/blob/9712889ee4c6cffa37c2ace5da9b00bf29adab56/crates/ra_ide/src/completion/presentation.rs#L228).
+          ALE somehow removes this but LC doesn't.
 
 ## Done
 * auto-pairs adds weird indent if the previous line ends with `,`. Indent size if the size of the first word in the previous line.
