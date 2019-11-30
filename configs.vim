@@ -44,6 +44,7 @@ augroup END
 Plug 'ervandew/supertab'
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  Plug 'ncm2/float-preview.nvim' | set completeopt-=preview
 else
   Plug 'roxma/nvim-yarp' | Plug 'roxma/vim-hug-neovim-rpc'
   Plug 'Shougo/deoplete.nvim'
@@ -651,6 +652,8 @@ let g:EditorConfig_exclude_patterns = ['.*[.]git/.*']
 
 let g:mkdp_auto_close = 0
 let g:mkdp_preview_options = { 'disable_sync_scroll': 1 }
+
+let g:float_preview#winhl = 'Normal:PmenuSel,NormalNC:PmenuSel'
 
 func! SynStackName()
     return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
