@@ -231,18 +231,14 @@ hi ALEError term=underline cterm=underline gui=undercurl
 hi ALEWarning term=NONE cterm=NONE gui=NONE
 hi ALEInfo term=NONE cterm=NONE gui=NONE
 
+" TODO: hover preview https://github.com/dense-analysis/ale/issues/2317
+" TODO: <M- maps are broken in vim
 nmap <leader>ad <Plug>(ale_detail)<C-W>p
 nmap <leader>af <Plug>(ale_fix)
-" TODO: check https://github.com/dense-analysis/ale/issues/2317
-nmap <leader>ah <Plug>(ale_hover)
-" Can't distinguish <ESC> and <C-[> in terminal.
-" TODO: <M- maps are broken in vim
 nmap <M-[> <Plug>(ale_hover)
 nmap <M-]> <Plug>(ale_go_to_definition)
-nmap <M-o> <C-o>
-nmap <M-i> <C-i>
-nmap <silent><M-\> :tab split<CR><Plug>(ale_go_to_definition)
-nmap <silent><leader><M-\> :vsp<CR><Plug>(ale_go_to_definition)
+nmap <silent><M-\> <Plug>(ale_go_to_definition_in_tab)
+nmap <silent><leader><M-\> :if IsWide() \| ALEGoToDefinitionInVSplit \| else \| ALEGoToDefinitionInSplit \| endif<CR>
 nmap <leader>ah <Plug>(ale_hover)
 nmap <leader>aj <Plug>(ale_go_to_definition)
 nmap <leader>an :ALERename<CR>
@@ -251,6 +247,17 @@ nmap ]a <Plug>(ale_next_wrap)
 nmap ]A <Plug>(ale_next_wrap_error)
 nmap [a <Plug>(ale_previous_wrap)
 nmap [A <Plug>(ale_prevous_wrap_error)
+nmap <M-o> <C-o>
+nmap <M-i> <C-i>
+
+" open tag in a new tab/split, (preview: <c-w>})
+noremap <C-\> <C-w>]<C-w>T
+noremap <leader><C-\> <C-w>]:if IsWide() \| wincmd L \| endif<CR>
+" can't use <c-w>T for tselect because of the prompt
+noremap g<Bslash> :tab split<CR>:exec("tselect ".expand("<cword>"))<CR>
+noremap <leader>g<Bslash> :if IsWide() \| vsp \| else \| sp \| endif<CR>:exec("tselect ".expand("<cword>"))<CR>
+map ]t :tn<CR>
+map [t :tN<CR>
 " }}}
 
 " Haskell {{{
@@ -619,11 +626,11 @@ map <leader>M :Make<space>
 " quickfix, loclist, ...
 command! CV exec 'vert copen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p
 command! CO belowright copen 12 | winc p
-command! OQ if winwidth(0) > 170 | exec 'CV' | else | exec 'CO' | endif
+command! OQ if IsWide() | exec 'CV' | else | exec 'CO' | endif
 map <leader>oq :OQ<CR>
 command! LV exec 'vert lopen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p
 command! LO belowright lopen 12 | winc p
-command! OL if winwidth(0) > 170 | exec 'LV' | else | exec 'LO' | endif
+command! OL if IsWide() | exec 'LV' | else | exec 'LO' | endif
 map <leader>ol :OL<CR>
 map ]q :cn<CR>
 map [q :cN<CR>
@@ -656,21 +663,13 @@ func! InSynStack(type)
     endfor
     return 0
 endfunc
+func! IsWide()
+    return winwidth(0) > 170
+endfunc
 
 " see :help [range], &, g&
 " :%s/pat/\r&/g.
 " marks
-" }}}
-
-" tags {{{
-" open tag in a new tab/vertical split
-map <silent><C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
-map <silent><leader><C-\> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
-map <silent>g<Bslash> :tab split<CR>:exec("tselect ".expand("<cword>"))<CR>
-map <silent><leader>g<Bslash> :vsp<CR>:exec("tselect ".expand("<cword>"))<CR>
-map ]t :tn<CR>
-map [t :tN<CR>
-" open tag in preview window: <C-w>} and <C-w>g}
 " }}}
 
 " Comments {{{

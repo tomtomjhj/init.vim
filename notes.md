@@ -103,6 +103,7 @@ augroup end
   This breaks non-idempotent operations at `FileType` like `AutoPairsDefine({}, ["'"])`
     * Just disable lazy load as it turns out that loading ultisnip isn't slow.
     * The root cause might be related to loading something that contains filetype plugin.
+* Terminals can't distinguish some keys e.g. `<ESC>` and `<C-[>`, ....
 
 # hmm..
 * I don't want to rely on `set whichwrap+=]` for quick jump but this doesn't
