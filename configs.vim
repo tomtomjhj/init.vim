@@ -113,11 +113,14 @@ set undofile undodir=~/.vim/undodir
 set history=500
 
 set autoread
+set splitright splitbelow
 set switchbuf=useopen,usetab,newtab
 set hidden
 set lazyredraw
 
 set exrc secure
+
+let &pumheight = min([&window/4, 20])
 
 augroup BasicSetup
     au!
@@ -128,6 +131,7 @@ augroup BasicSetup
     au BufRead,BufNewFile *.v set filetype=coq
     au BufRead,BufNewFile *.ll set filetype=llvm
     au BufRead,BufNewFile *.mir set filetype=rust
+    au VimResized * let &pumheight = min([&window/4, 20])
 augroup END
 
 let g:python_host_prog  = '/usr/bin/python2'
@@ -184,9 +188,6 @@ endif
 " }}}
 
 " Completion {{{
-" TODO:
-" * deoplete + completeopt+=longest
-" * add menu content at the top of the preview info
 
 let g:SuperTabDefaultCompletionType = '<c-n>'
 let g:SuperTabClosePreviewOnPopupClose = 1
@@ -692,9 +693,6 @@ map <leader>sf :syn sync fromstart<CR>
 " }}}
 
 " Tabs, windows, buffers {{{
-set splitright
-set splitbelow
-
 nnoremap <C-j> <C-W>j
 nnoremap <C-k> <C-W>k
 nnoremap <C-h> <C-W>h
