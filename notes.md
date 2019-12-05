@@ -76,19 +76,21 @@ augroup end
     - don't touch: `\., \$, \^, \\ `
 * git diff arbitrary commits inside nvim, diff mode usage, git-gutter,...
 * sudoedit settings: undodir, ...
-* TODO: rust-analyzer provides better completion but doesn't have proper diagnostics
+* deoplete: filter prefix match and extract longest prefix
+
+
+## Done
+* auto-pairs adds weird indent if the previous line ends with `,`. Indent size if the size of the first word in the previous line.
+    * reset `indentexpr` just before running `=k` in auto-pairs
+* Restore default `iskeyword` inside pandoc code block: it's impossible.
+* rust-analyzer provides better completion but doesn't have proper diagnostics
     - rust-analyzer source for deoplete? adapt vim-racer?
     - nvim lsp with rust-analyzer, use omnifunc only
     - ale rust-analyzer + cargo check (can't check unsaved buffer)
     * ✓ use LC for rust-analyzer completion only.
         * NOTE: rust-analyzer [adds unecessary `(…)` after
           method](https://github.com/rust-analyzer/rust-analyzer/blob/9712889ee4c6cffa37c2ace5da9b00bf29adab56/crates/ra_ide/src/completion/presentation.rs#L228).
-          ALE somehow removes this but LC doesn't.
-
-## Done
-* auto-pairs adds weird indent if the previous line ends with `,`. Indent size if the size of the first word in the previous line.
-    * reset `indentexpr` just before running `=k` in auto-pairs
-* Restore default `iskeyword` inside pandoc code block: it's impossible.
+          ALE somehow removes this but LC doesn't
 
 # Tips
 * `dw`: to remove whitespace from current position.
@@ -104,6 +106,8 @@ augroup end
     * Just disable lazy load as it turns out that loading ultisnip isn't slow.
     * The root cause might be related to loading something that contains filetype plugin.
 * Terminals can't distinguish some keys e.g. `<ESC>` and `<C-[>`, ....
+* `inoremap <C-w> <C-R>={-> execute("norm db")}()<CR><C-R>=col('.')==col('$')-1?"\<lt>C-G>U\<lt>Right>":""<CR>`
+  This still breaks undo after ins-special-special and is still broken at the line end.
 
 # hmm..
 * I don't want to rely on `set whichwrap+=]` for quick jump but this doesn't

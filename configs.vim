@@ -469,6 +469,7 @@ func! VisualStar()
 endfunc
 nnoremap / :let g:search_mode='/'<CR>/
 
+" TODO: Rgp with preview
 if has('nvim')
     nnoremap <leader>rg :Rg<space>
     nnoremap <leader>r/ :<C-u>Rg <C-r>=RgInput(@/)<CR>
@@ -504,6 +505,7 @@ nnoremap <space> <C-d>
 nnoremap <c-space> <C-u>
 " <s-space> does not work
 
+" TODO: count
 nnoremap <M-0> ^w
 vnoremap <M-0> ^w
 
@@ -516,22 +518,49 @@ map t <Plug>Sneak_t
 map T <Plug>Sneak_T
 hi Sneak guifg=black guibg=#afff00 ctermfg=black ctermbg=154
 
-" Jump past (a word | repetition of non-paren speicial char | a paren | whitespace)
-" Assumes `set whichwrap+=]` for i_<Right>
-let g:quick_jump = '\v(\w+|([^[:alnum:]_[:blank:](){}[\]<>])\2*|[(){}[\]<>]|\s+)'
+" eord: (a word | repetition of non-paren speicial char | a paren | whitespace)
+let g:eord = '\v(\w+|([^[:alnum:]_[:blank:](){}[\]<>$])\2*|[(){}[\]<>$]|\s+)'
 " TODO ultisnips sometimes doesn't restore this mapping (doesn't remove it's maps)
-inoremap <silent><C-j> <C-\><C-O>:call QuickJumpRight()<CR><Right>
-inoremap <silent><C-k> <C-\><C-O>:call QuickJumpLeft()<CR>
+" Jump past a eord. Assumes `set whichwrap+=]` for i_<Right>
+inoremap <silent><C-j> <C-\><C-O>:call EordJumpRight()<CR><Right>
+inoremap <silent><C-k> <C-\><C-O>:call EordJumpLeft()<CR>
 inoremap <C-space> <C-k>
-func! QuickJumpRight()
+func! EordJumpRight()
     if col('.') !=  col('$')
-        call search(g:quick_jump, 'ceW')
+        call search(g:eord, 'ceW')
     endif
 endfunc
-func! QuickJumpLeft()
-    call search(col('.') != 1 ? g:quick_jump : '\v$', 'bW')
+func! EordJumpLeft()
+    call search(col('.') != 1 ? g:eord : '\v$', 'bW')
 endfunc
 
+let s:eord_textobj = {
+            \   'eord': {
+            \     'pattern': g:eord,
+            \     'select': ['ir', 'ar'],
+            \   },
+            \   'to-eord': {
+            \     'select-i-function': 'ToPrevEord',
+            \     'select-i': 'iR',
+            \   },
+            \ }
+func! ToPrevEord()
+    let cur_pos = getpos('.')
+    if cur_pos[2] != 1 " normal case
+        let tail_pos = [cur_pos[0], cur_pos[1], cur_pos[2]-1, cur_pos[3]]
+        if !search(g:eord, 'bW') | return 0 | endif
+        let head_pos = getpos('.')
+        return ['v', head_pos, tail_pos]
+    endif
+    " newline case
+    if !search('\v$', 'bW') | return 0 | endif
+    let newline = getpos('.')
+    return ['v', newline, newline]
+endfunc
+call textobj#user#plugin('eord', s:eord_textobj)
+
+" i_CTRL-O splits undo. undojoin? can't use i_CTRL-R= stuff
+imap <M-w> <C-\><C-o>diR
 " vim#964
 inoremap <C-w> <C-\><C-o>db
 inoremap <C-u> <C-\><C-o>d0
@@ -600,9 +629,9 @@ let g:AutoPairsShortcutJump = ''
 inoremap <silent><M-e> <C-R>=AutoPairsFastWrap("e")<CR>
 inoremap <silent><M-E> <C-R>=AutoPairsFastWrap("E")<CR>
 inoremap <silent><M-$> <C-R>=AutoPairsFastWrap("$")<CR>
+inoremap <silent><M-;> <C-R>=AutoPairsFastWrap("t;")<CR>
 
 " fzf
-set rtp+=~/.fzf
 let g:fzf_layout = { 'down': '~30%' }
 map <C-b> :Buffers<CR>
 map <C-f> :Files<CR>
