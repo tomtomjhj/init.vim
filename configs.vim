@@ -491,7 +491,7 @@ func! RgInput(raw)
 endfunc
 " }}}
 
-" Motion {{{
+" Motion, insert mode, ... {{{
 " HJKL for wrapped lines. <leader>J for joins
 noremap <S-j> gj
 noremap <S-k> gk
@@ -519,11 +519,12 @@ hi Sneak guifg=black guibg=#afff00 ctermfg=black ctermbg=154
 
 " eord: (a word | repetition of non-paren speicial char | a paren | whitespace)
 let g:eord = '\v(\w+|([^[:alnum:]_[:blank:](){}[\]<>$])\2*|[(){}[\]<>$]|\s+)'
-" TODO ultisnips sometimes doesn't restore this mapping (doesn't remove it's maps)
+
 " Jump past a eord. Assumes `set whichwrap+=]` for i_<Right>
-inoremap <silent><C-j> <C-\><C-O>:call EordJumpRight()<CR><Right>
+inoremap <silent><C-j> <C-\><C-O>:call EordJumpRight()<CR><Right><C-\><C-o><ESC>
 inoremap <silent><C-k> <C-\><C-O>:call EordJumpLeft()<CR>
 inoremap <C-space> <C-k>
+" TODO: `e` replacement
 func! EordJumpRight()
     if col('.') !=  col('$')
         call search(g:eord, 'ceW')
@@ -533,36 +534,38 @@ func! EordJumpLeft()
     call search(col('.') != 1 ? g:eord : '\v$', 'bW')
 endfunc
 
-let s:eord_textobj = {
-            \   'eord': {
-            \     'pattern': g:eord,
-            \     'select': ['ir', 'ar'],
-            \   },
-            \   'to-eord': {
-            \     'select-i-function': 'ToPrevEord',
-            \     'select-i': 'iR',
-            \   },
-            \ }
-func! ToPrevEord()
-    let cur_pos = getpos('.')
-    if cur_pos[2] != 1 " normal case
-        let tail_pos = [cur_pos[0], cur_pos[1], cur_pos[2]-1, cur_pos[3]]
-        if !search(g:eord, 'bW') | return 0 | endif
-        let head_pos = getpos('.')
-        return ['v', head_pos, tail_pos]
-    endif
-    " newline case
-    if !search('\v$', 'bW') | return 0 | endif
-    let newline = getpos('.')
-    return ['v', newline, newline]
-endfunc
+let s:eord_textobj = { 'eord': { 'pattern': g:eord, 'select': ['ir', 'ar'] } }
 call textobj#user#plugin('eord', s:eord_textobj)
 
-" i_CTRL-O splits undo. undojoin? can't use i_CTRL-R= stuff
-imap <M-w> <C-\><C-o>diR
-" vim#964
-inoremap <C-w> <C-\><C-o>db
-inoremap <C-u> <C-\><C-o>d0
+" Delete a single character of other non-blank chars
+inoremap <expr><C-w> FineGrainedICtrlW()
+func! FineGrainedICtrlW()
+    let l:col = col('.')
+    if l:col == 1 | return "\<BS>" | endif
+    let l:before = strpart(getline('.'), 0, l:col - 1)
+    let l:chars = split(l:before, '.\zs')
+    if l:chars[-1] =~ '\s'
+        let l:len = len(l:chars)
+        let l:idx = 1
+        while l:idx < l:len && l:chars[-(l:idx + 1)] =~ '\s'
+            let l:idx += 1
+        endwhile
+        if l:idx == l:len || l:chars[-(l:idx + 1)] =~ '\k'
+            return "\<C-\>\<C-o>\<ESC>\<C-w>"
+        endif
+        let b:sts = &softtabstop
+        setlocal softtabstop=0
+        return repeat("\<BS>", l:idx) . "\<C-R>=ResetSTS()\<CR>\<BS>"
+    elseif l:chars[-1] !~ '\k'
+        return "\<BS>"
+    else
+        return "\<C-\>\<C-o>\<ESC>\<C-w>"
+    endif
+endfunc
+func! ResetSTS()
+    let &sts = b:sts
+    return ''
+endfunc
 
 " extend visual block up to pair opener/closer
 let g:pair_opener = '\v("|\[|''|\(|\{|\$)'

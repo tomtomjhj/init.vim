@@ -96,6 +96,8 @@ augroup end
 # Tips
 * `dw`: to remove whitespace from current position.
 * `q.push(\w\+\w\@!,\@!`: enforce `\w\+` to consume all `\w`
+* `strcharpart(strpart(line, col - 1), 0, 1)`
+* `<C-\><C-o><ESC>` to reset insert starting point after ins-special-special
 
 # pitfalls
 * `:h map-bar`
