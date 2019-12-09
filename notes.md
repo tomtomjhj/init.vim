@@ -77,6 +77,7 @@ augroup end
 * git diff arbitrary commits inside nvim, diff mode usage, git-gutter,...
 * sudoedit settings: undodir, ...
 * deoplete: filter prefix match and extract longest prefix
+* `g]`-like commands can't be used in functions etc?
 
 
 ## Done
@@ -108,6 +109,7 @@ augroup end
 * Terminals can't distinguish some keys e.g. `<ESC>` and `<C-[>`, ....
 * `inoremap <C-w> <C-R>={-> execute("norm db")}()<CR><C-R>=col('.')==col('$')-1?"\<lt>C-G>U\<lt>Right>":""<CR>`
   This still breaks undo after ins-special-special and is still broken at the line end.
+* `<C-w>]` doesn't open in new tab if `switchbuf=useopen` which is useful for quickfix stuff.
 
 # hmm..
 * I don't want to rely on `set whichwrap+=]` for quick jump but this doesn't

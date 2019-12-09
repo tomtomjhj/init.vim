@@ -114,7 +114,7 @@ set history=500
 
 set autoread
 set splitright splitbelow
-set switchbuf=useopen,usetab,newtab
+set switchbuf=useopen,usetab
 set hidden
 set lazyredraw
 
@@ -252,12 +252,11 @@ nmap [A <Plug>(ale_prevous_wrap_error)
 nmap <M-o> <C-o>
 nmap <M-i> <C-i>
 
-" open tag in a new tab/split, (preview: <c-w>})
-noremap <C-\> <C-w>]<C-w>T
-noremap <leader><C-\> <C-w>]:if IsWide() \| wincmd L \| endif<CR>
-" can't use <c-w>T for tselect because of the prompt
-noremap g<Bslash> :tab split<CR>:exec("tselect ".expand("<cword>"))<CR>
-noremap <leader>g<Bslash> :if IsWide() \| vsp \| else \| sp \| endif<CR>:exec("tselect ".expand("<cword>"))<CR>
+" open tag in a new tab/split, (preview: <c-w>}). <C-w>] is affected by switchbuf
+noremap <silent><C-\> :tab split<CR><C-]>
+noremap <silent><leader><C-\> :if IsWide() \| vsp \| else \| sp \| endif<CR><C-]>
+noremap g<Bslash> :tab split<CR>g]
+noremap <leader>g<Bslash> :if IsWide() \| vsp \| else \| sp \| endif<CR>g]
 map ]t :tn<CR>
 map [t :tN<CR>
 " }}}
