@@ -1,4 +1,5 @@
 " vim: set foldmethod=marker foldlevel=0 nomodeline:
+" TODO: filetype specific stuff in ftplugin
 
 " Plug {{{
 call plug#begin('~/.vim/plugged')
@@ -16,7 +17,7 @@ Plug 'tpope/vim-repeat'
 Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter', { 'on': 'GitGutterToggle' }
-Plug 'scrooloose/nerdcommenter', { 'on': ['<plug>NERDCommenterToggle', '<plug>NERDCommenterSexy'] }
+Plug 'preservim/nerdcommenter', { 'on': ['<plug>NERDCommenterToggle', '<plug>NERDCommenterSexy'] }
 Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug '~/.vim/my_plugins/auto-pairs'
@@ -96,7 +97,10 @@ set timeoutlen=420
 let $LANG='en'
 set langmenu=en
 set encoding=utf8
+" TODO: project spell file
 set spellfile=~/.vim/spell/en.utf-8.add
+" TODO: something better for spellcapcheck
+set spellcapcheck=
 
 set wildmenu
 set wildignore=*.o,*~,*.pyc,*.pdf,*.v.d,*.vo,*.glob
@@ -198,6 +202,7 @@ call deoplete#custom#source('ale', { 'max_info_width': 0, 'max_menu_width': 0 })
 call deoplete#custom#source('LanguageClient', { 'max_info_width': 0, 'max_menu_width': 0 })
 call deoplete#custom#var('omni', 'input_patterns', { 'tex': g:vimtex#re#deoplete })
 call deoplete#custom#var('around', { 'mark_above': '[↑]', 'mark_below': '[↓]', 'mark_changes': '[*]' })
+" set ignore_case false
 
 let g:UltiSnipsExpandTrigger = '<c-l>'
 " }}}
@@ -228,7 +233,6 @@ let g:LanguageClient_diagnosticsDisplay = {
 \   3: { 'signTexthl': 'ALEInfo' },
 \   4: { 'signTexthl': 'ALEInfo' },
 \}
-let g:LanguageClient_useFloatingHover = 0
 hi ALEError term=underline cterm=underline gui=undercurl
 hi ALEWarning term=NONE cterm=NONE gui=NONE
 hi ALEInfo term=NONE cterm=NONE gui=NONE
@@ -369,6 +373,7 @@ func! SetupPandoc()
     syntax spell toplevel
     nmap <buffer><silent><leader>C :call RunPandoc(0)<CR>
     nmap <buffer><silent><leader>O :call RunPandoc(1)<CR>
+    nmap <buffer><silent><leader>oo :call Zathura("<C-r>=expand("%:p:h") . '/' . expand("%:t:r") . '.pdf'<CR>")<CR>
     nmap <buffer><silent>gx <Plug>(pandoc-hypertext-open-system)
     nmap <buffer><silent><leader>py vid:AsyncRun python3<CR>:OQ<CR>
 endfunc
@@ -380,6 +385,7 @@ func! RunPandoc(open)
     let post .= a:open ? "|call Zathura('" . l:out . "',!g:asyncrun_code)" : ''
     let post = escape(post, ' ')
     " set manually or by local vimrc, override header-includes in yaml metadata
+    " TODO: local_vimrc or editorconfig hook
     if exists('b:custom_pandoc_include_file')
         let l:params .= ' --include-in-header=' . b:custom_pandoc_include_file
     endif
@@ -445,6 +451,8 @@ let s:pandoc_textobj = {
 noremap <M-y> "py
 noremap <M-p> "pp
 
+map Y y$
+
 " search_mode: which command last set @/?
 " `*`, `v_*` without moving the cursor. Reserve @c for the raw original text
 " NOTE: Can't repeat properly if ins-special-special is used. Use q-recording.
@@ -469,7 +477,7 @@ endfunc
 nnoremap / :let g:search_mode='/'<CR>/
 
 " TODO: Rgp with preview
-if has('nvim')
+if executable('rg')
     nnoremap <leader>rg :Rg<space>
     nnoremap <leader>r/ :<C-u>Rg <C-r>=RgInput(@/)<CR>
 else
@@ -504,7 +512,6 @@ nnoremap <space> <C-d>
 nnoremap <c-space> <C-u>
 " <s-space> does not work
 
-" TODO: count
 nnoremap <M-0> ^w
 vnoremap <M-0> ^w
 
@@ -517,27 +524,36 @@ map t <Plug>Sneak_t
 map T <Plug>Sneak_T
 hi Sneak guifg=black guibg=#afff00 ctermfg=black ctermbg=154
 
-" eord: (a word | repetition of non-paren speicial char | a paren | whitespace)
-let g:eord = '\v(\w+|([^[:alnum:]_[:blank:](){}[\]<>$])\2*|[(){}[\]<>$]|\s+)'
+" TODO: (speicial char -> non-blank, non-keyword), user-defined (paren -> pair?)
+" s-word: (a keyword | repetition of non-paren speicial char | a paren | whitespace)
+let g:sword = '\v(\k+|([^[:alnum:]_[:blank:](){}[\]<>$])\2*|[(){}[\]<>$]|\s+)'
 
-" Jump past a eord. Assumes `set whichwrap+=]` for i_<Right>
-inoremap <silent><C-j> <C-\><C-O>:call EordJumpRight()<CR><Right><C-\><C-o><ESC>
-inoremap <silent><C-k> <C-\><C-O>:call EordJumpLeft()<CR>
+" Jump past a sword. Assumes `set whichwrap+=]` for i_<Right>
+inoremap <silent><C-j> <C-\><C-O>:call SwordJumpRight()<CR><Right><C-\><C-o><ESC>
+inoremap <silent><C-k> <C-\><C-O>:call SwordJumpLeft()<CR>
 inoremap <C-space> <C-k>
 " TODO: `e` replacement
-func! EordJumpRight()
+nnoremap <silent><M-e> :call search(g:sword, 'eW')<CR>
+func! SwordJumpRight()
     if col('.') !=  col('$')
-        call search(g:eord, 'ceW')
+        call search(g:sword, 'ceW')
     endif
 endfunc
-func! EordJumpLeft()
-    call search(col('.') != 1 ? g:eord : '\v$', 'bW')
+func! SwordJumpLeft()
+    call search(col('.') != 1 ? g:sword : '\v$', 'bW')
 endfunc
 
-let s:eord_textobj = { 'eord': { 'pattern': g:eord, 'select': ['ir', 'ar'] } }
-call textobj#user#plugin('eord', s:eord_textobj)
+let s:sword_textobj = { 'sword': {
+            \ 'pattern': g:sword,
+            \ 'select': ['ir', 'ar'],
+            \ 'move-p': '<M-b>'
+            \ } }
+call textobj#user#plugin('sword', s:sword_textobj)
 
+inoremap <CR> <C-G>u<CR>
+inoremap <C-u> <C-\><C-o><ESC><C-g>u<C-u>
 " Delete a single character of other non-blank chars
+" TODO: delete sword
 inoremap <expr><C-w> FineGrainedICtrlW()
 func! FineGrainedICtrlW()
     let l:col = col('.')
@@ -550,12 +566,14 @@ func! FineGrainedICtrlW()
         while l:idx < l:len && l:chars[-(l:idx + 1)] =~ '\s'
             let l:idx += 1
         endwhile
+        " TODO: default to <c-w> if \k or [paren]
         if l:idx == l:len || l:chars[-(l:idx + 1)] =~ '\k'
             return "\<C-\>\<C-o>\<ESC>\<C-w>"
         endif
         let b:sts = &softtabstop
         setlocal softtabstop=0
         return repeat("\<BS>", l:idx) . "\<C-R>=ResetSTS()\<CR>\<BS>"
+    " TODO: [paren] only
     elseif l:chars[-1] !~ '\k'
         return "\<BS>"
     else
@@ -671,8 +689,6 @@ map ]l :lne<CR>
 map [l :lN<CR>
 map <silent><leader>x :pc\|ccl\|lcl<CR>
 
-inoremap <CR> <C-G>u<CR>
-
 let g:NERDTreeWinPos = "right"
 nmap <leader>nn :NERDTreeToggle<cr>
 nmap <leader>nf :NERDTreeFind<cr>
@@ -680,7 +696,7 @@ nmap <leader>nf :NERDTreeFind<cr>
 let g:gitgutter_enabled=0
 nmap <silent><leader>gg :GitGutterToggle<cr>
 
-let g:EditorConfig_exclude_patterns = ['.*[.]git/.*']
+let g:EditorConfig_exclude_patterns = ['.*[.]git/.*', 'fugitive://.*', 'scp://.*']
 
 let g:mkdp_auto_close = 0
 let g:mkdp_preview_options = { 'disable_sync_scroll': 1 }

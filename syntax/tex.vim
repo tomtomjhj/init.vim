@@ -769,7 +769,6 @@ if has("conceal") && &enc == 'utf-8'
     \ ['nearrow'	, '↗'],
     \ ['neg'		, '¬'],
     \ ['neq'		, '≠'],
-    \ ['nequiv'		, '≢'],
     \ ['ni'		, '∋'],
     \ ['notin'		, '∉'],
     \ ['nwarrow'	, '↖'],

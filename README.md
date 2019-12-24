@@ -15,5 +15,6 @@ source ~/.vim/configs.vim
 ```
 
 ```sh
+pip3 install --user pynvim
 nvim -c PlugInstall
 ```
