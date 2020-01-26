@@ -341,11 +341,12 @@ let g:ale_python_pyls_config = {
             \   'plugins': {
             \     'rope_completion': { 'enabled': v:false },
             \     'mccabe': { 'enabled': v:false },
+            \     'pyls_mypy': { 'enabled': v:true, 'live_mode': v:false },
             \     'preload': { 'enabled': v:false },
             \     'pycodestyle': { 'enabled': v:false },
             \     'pydocstyle': { 'enabled': v:false },
             \     'pyflakes': { 'enabled': v:false },
-            \     'pylint': { 'args': ['-dR', '-dC', '-dW0614', '-dW0621'] },
+            \     'pylint': { 'enabled': v:true, 'args': ['-dR', '-dC', '-dW0614', '-dW0621'] },
             \     'yapf': { 'enabled': v:false },
             \   }
             \ }
