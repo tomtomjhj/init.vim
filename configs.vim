@@ -99,8 +99,6 @@ set langmenu=en
 set encoding=utf8
 " TODO: project spell file
 set spellfile=~/.vim/spell/en.utf-8.add
-" TODO: something better for spellcapcheck
-set spellcapcheck=
 
 set wildmenu
 set wildignore=*.o,*~,*.pyc,*.pdf,*.v.d,*.vo,*.glob
@@ -618,6 +616,7 @@ endfunc
 " etc {{{
 map <silent><leader><CR> :noh<CR>
 map <leader>ss :setlocal spell!\|setlocal spell?<cr>
+map <leader>sc :if &spc == "" \| setl spc< \| else \| setl spc= \| endif \| setl spc?<CR>
 map <leader>pp :setlocal paste!\|setlocal paste?<cr>
 map <leader>sw :set wrap!\|set wrap?<CR>
 
