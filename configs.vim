@@ -237,7 +237,6 @@ hi ALEError term=underline cterm=underline gui=undercurl
 hi ALEWarning term=NONE cterm=NONE gui=NONE
 hi ALEInfo term=NONE cterm=NONE gui=NONE
 
-" TODO: hover preview https://github.com/dense-analysis/ale/issues/2317
 " TODO: <M- maps are broken in vim
 nmap <leader>ad <Plug>(ale_detail)<C-W>p
 nmap <leader>af <Plug>(ale_fix)
@@ -247,14 +246,23 @@ nmap <silent><M-\> <Plug>(ale_go_to_definition_in_tab)
 nmap <silent><leader><M-\> :if IsWide() \| ALEGoToDefinitionInVSplit \| else \| ALEGoToDefinitionInSplit \| endif<CR>
 nmap <leader>ah <Plug>(ale_hover)
 nmap <leader>aj <Plug>(ale_go_to_definition)
-nmap <leader>an :ALERename<CR>
-nmap <leader>ar <Plug>(ale_find_references)
+nmap <leader>rn :ALERename<CR>
+nmap <leader>rf <Plug>(ale_find_references)
 nmap ]a <Plug>(ale_next_wrap)
 nmap ]A <Plug>(ale_next_wrap_error)
 nmap [a <Plug>(ale_previous_wrap)
 nmap [A <Plug>(ale_prevous_wrap_error)
 nmap <M-o> <C-o>
 nmap <M-i> <C-i>
+
+func! LCMaps()
+    nmap <buffer><silent><M-[> :call LanguageClient#textDocument_hover()<CR>
+    nmap <buffer><silent><M-]> :call LanguageClient#textDocument_definition()<CR>
+    nmap <buffer><silent><M-\> :call LanguageClient#textDocument_definition({'gotoCmd': 'tab split'})<CR>
+    nmap <buffer><silent><leader><M-\> :call LanguageClient#textDocument_definition({'gotoCmd': IsWide() ? 'vsp' : 'sp'})<CR>
+    nmap <buffer><silent><leader>rf :call LanguageClient#textDocument_references()<CR>
+    nmap <buffer><silent><leader>rn :call LanguageClient#textDocument_rename()<CR>
+endfunc
 
 " open tag in a new tab/split, (preview: <c-w>}). <C-w>] is affected by switchbuf
 noremap <silent><C-\> :tab split<CR><C-]>
@@ -311,13 +319,7 @@ augroup SetupRust
     au FileType rust call SetupRust()
 augroup END
 func! SetupRust()
-    if executable('ra_lsp_server')
-        " NOTE: LC can handle multiple definition candidate w/ fzf
-        nmap <buffer><silent><leader>lh :call LanguageClient#textDocument_hover()<CR>
-        nmap <buffer><silent><leader>lg :call LanguageClient#textDocument_definition()<CR>
-        nmap <buffer><silent><leader>lr :call LanguageClient#textDocument_references()<CR>
-        nmap <buffer><silent><leader>ln :call LanguageClient#textDocument_rename()<CR>
-    endif
+    if executable('ra_lsp_server') | call LCMaps() | endif
     nmap <buffer><leader>C :AsyncRun -program=make -cwd=%:p:h -post=OQ check<CR>
     vmap <buffer><leader>af :RustFmtRange<CR>
     if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({'|': '|'}, ["'"]) | endif
@@ -476,7 +478,7 @@ func! VisualStar()
 endfunc
 nnoremap / :let g:search_mode='/'<CR>/
 
-" TODO: Rgp with preview
+" TODO: Rgp with preview, set directory, ...
 if executable('rg')
     nnoremap <leader>rg :Rg<space>
     nnoremap <leader>r/ :<C-u>Rg <C-r>=RgInput(@/)<CR>
