@@ -372,14 +372,12 @@ hi! link markdownHeadingDelimiter markdownH1
 hi! link markdownHeadingRule markdownH1
 
 hi! link markdownBold ZenOrangeBold
-" hi! link markdownItalic ZenYellowItalic
 hi! link markdownItalic ZenFgItalic
 hi! link markdownBoldItalic ZenOrangeBoldItalic
 
 hi! link markdownBlockquote ZenCyan
 
 hi! link markdownCode Special
-" hi! link markdownCodeDelimiter ZenGreen
 
 hi! link markdownListMarker ZenCyan
 hi! link markdownOrderedListMarker ZenCyan

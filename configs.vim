@@ -28,8 +28,7 @@ Plug 'rhysd/git-messenger.vim'
 Plug 'Konfekt/FastFold'
 
 Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
-augroup SetupNerdTree
-    au!
+augroup SetupNerdTree | au!
     au VimEnter * silent! au! FileExplorer
     au BufEnter,VimEnter *
                 \ if get(g:, 'loaded_nerd_tree', 0) |
@@ -52,8 +51,7 @@ else
 endif
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 
-augroup Completions
-  au!
+augroup Completions | au!
   au InsertEnter * call deoplete#enable() | au! Completions
 augroup END
 
@@ -100,7 +98,7 @@ set encoding=utf8
 " TODO: project spell file
 set spellfile=~/.vim/spell/en.utf-8.add
 
-set wildmenu
+set wildmenu wildmode=longest:full,full
 set wildignore=*.o,*~,*.pyc,*.pdf,*.v.d,*.vo,*.glob
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
 
@@ -124,8 +122,7 @@ set exrc secure
 
 let &pumheight = min([&window/4, 20])
 
-augroup BasicSetup
-    au!
+augroup BasicSetup | au!
     " Return to last edit position when opening files
     au BufWinEnter * if line("'\"") > 1 && line("'\"") <= line("$") | exec "norm! g'\"" | endif
     au BufWritePost ~/.vim/configs.vim source ~/.vim/configs.vim
@@ -283,8 +280,7 @@ let g:haskell_indent_if = 0
 let g:haskell_indent_case_alternative = 1
 
 let g:intero_start_immediately = 0
-augroup SetupHaskell
-    au!
+augroup SetupHaskell | au!
     au FileType haskell call SetupIntero()
 augroup END
 func! SetupIntero()
@@ -312,8 +308,7 @@ if executable('ra_lsp_server')
     let g:ale_rust_rls_config = { 'rust': { 'racer_completion': v:false } }
     let g:LanguageClient_serverCommands = { 'rust': ['ra_lsp_server'] }
 endif
-augroup SetupRust
-    au!
+augroup SetupRust | au!
     au FileType rust call SetupRust()
 augroup END
 func! SetupRust()
@@ -328,8 +323,7 @@ endfunc
 " C,C++ {{{
 " TODO: this should be based on tabstop and shiftwidth, see editorconfig doc
 let g:ale_c_clangformat_options = '-style="{BasedOnStyle: llvm, IndentWidth: 4, AccessModifierOffset: -4}"'
-augroup SetupCCpp
-    au!
+augroup SetupCCpp | au!
     au FileType c,cpp setlocal foldmethod=syntax foldlevel=99
 augroup END
 " }}}
@@ -356,14 +350,15 @@ let g:ale_python_pyls_config = {
 " Pandoc, Tex {{{
 let g:tex_flavor = "latex"
 let g:tex_noindent_env = '\v\w+.?'
+" use PandocHighlight or TODO: stuff from gabrielelana/vim-markdown
 let g:pandoc#syntax#codeblocks#embeds#langs = ["python", "cpp", "rust"]
-let g:pandoc#modules#enabled = ["formatting", "keyboard", "toc", "spell", "hypertext"]
+let g:pandoc#modules#enabled = ["formatting", "keyboard", "toc", "hypertext"]
+let g:pandoc#folding#level = 99
 let g:pandoc#hypertext#use_default_mappings = 0
 let g:pandoc#syntax#use_definition_lists = 0
 let g:pandoc#syntax#protect#codeblocks = 0
 let g:vimtex_fold_enabled = 1
-augroup SetupPandocTex
-    au!
+augroup SetupPandocTex | au!
     au FileType pandoc call SetupPandoc()
     au FileType tex call SetupTex()
 augroup END
@@ -377,6 +372,7 @@ func! SetupPandoc()
     nmap <buffer><silent><leader>oo :call Zathura("<C-r>=expand("%:p:h") . '/' . expand("%:t:r") . '.pdf'<CR>")<CR>
     nmap <buffer><silent>gx <Plug>(pandoc-hypertext-open-system)
     nmap <buffer><silent><leader>py vid:AsyncRun python3<CR>:OQ<CR>
+    nmap <buffer>zM :call pandoc#folding#Init()\|unmap <lt>buffer>zM<CR>zM
 endfunc
 func! RunPandoc(open)
     let src = expand("%:p")
@@ -391,8 +387,7 @@ func! RunPandoc(open)
         let l:params .= ' --include-in-header=' . b:custom_pandoc_include_file
     endif
     let cmd = 'pandoc ' . l:src . ' -o ' . l:out . ' ' . l:params
-    augroup pandoc_quickfix
-        au!
+    augroup pandoc_quickfix | au!
         au QuickFixCmdPost caddexpr belowright copen 8 | winc p
     augroup END
     exec 'AsyncRun -save=1 -cwd=' . expand("%:p:h") '-post=' . l:post l:cmd
@@ -663,8 +658,7 @@ map <leader>h: :History:<CR>
 map <leader>h/ :History/<CR>
 
 if has("nvim")
-    augroup fzf
-        au!
+    augroup fzf | au!
         au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
         au FileType fzf tunmap <buffer> <Esc>
     augroup END
@@ -770,8 +764,7 @@ let g:last_tab = 1
 let g:last_tab_backup = 1
 let g:last_viewed = 1
 nmap <silent><leader>` :exec 'tabn' g:last_tab<cr>
-augroup LastTab
-    au!
+augroup LastTab | au!
     au TabLeave * let g:last_tab_backup = g:last_tab | let g:last_tab = tabpagenr()
     au TabEnter * let g:last_viewed = tabpagenr()
     au TabClosed * call OnTabClosed(expand('<afile>'))
@@ -798,8 +791,7 @@ endfunc
 " ctrl-shift-t of chrome. bug: non-existent buf
 map <silent><leader><C-t> :call PopQuitBufs()<CR>
 " works only for buffers of windows closed by :q, not :tabc
-augroup RestoreTab
-    au!
+augroup RestoreTab | au!
     au QuitPre * call PushQuitBufs(expand("<abuf>"))
 augroup END
 " push if clean and empty. remove preceding one if exists
@@ -820,8 +812,7 @@ endfunc
 " bw, bd, setlocal bufhidden=delete don't work on the buf being hidden
 " defer it until BufEnter to another buf
 let g:lasthidden = 0
-augroup GarbageBuf
-    au!
+augroup GarbageBuf | au!
     au BufHidden * let g:lasthidden = expand("<abuf>")
     au BufEnter * call CheckAndBW(g:lasthidden)
 augroup END
