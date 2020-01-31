@@ -96,6 +96,13 @@ Plug 'rhysd/vim-llvm'
 Plug 'fatih/vim-go', { 'do': 'rm -r plugin ftplugin' }
 " Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] }
 
+" etc etc
+if has('nvim')
+    " if :lua bit.band(1,1) doesn't work, luarocks install luabitop
+    " → luajit not enabled in PPA version?
+    Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
+endif
+
 call plug#end()
 " }}}
 
@@ -755,6 +762,34 @@ let g:mkdp_preview_options = {
             \ 'mkit': { 'typographer': v:false },
             \ 'disable_sync_scroll': 1 }
 " }}}
+
+" Firenvim. chrome://extensions/shortcuts
+if has('nvim')
+    let g:firenvim_config = {
+                \ 'globalSettings': {
+                \     'alt': 'all',
+                \  },
+                \ 'localSettings': {
+                \     '.*': {
+                \         'cmdline': 'neovim',
+                \         'priority': 0,
+                \         'selector': 'textarea',
+                \         'takeover': 'never',
+                \     },
+                \ }
+                \ }
+    augroup FirenvimStuff | au!
+        au UIEnter * call FirenvimUIEnter(deepcopy(v:event))
+    augroup END
+    function! s:IsFirenvimActive(event) abort
+        let l:ui = nvim_get_chan_info(a:event.chan)
+        return has_key(l:ui, 'client') && has_key(l:ui.client, 'name') && l:ui.client.name =~? 'Firenvim'
+    endfunction
+    function! FirenvimUIEnter(event) abort
+        if !s:IsFirenvimActive(a:event) | return | endif
+        " inoremap <buffer> <M-CR> <Esc>:w<CR>:call firenvim#press_keys("<LT>CR>")<CR>ggdGa
+    endfunction
+endif
 
 func! SynStackName()
     return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
