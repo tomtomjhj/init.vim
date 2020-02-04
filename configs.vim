@@ -211,7 +211,6 @@ let g:ale_linters = {
             \ 'rust': ['rls'],
             \ 'tex': ['texlab'],
             \ }
-let g:ale_lsp_root = {}
 let g:ale_fixers = {
             \ 'c': ['clang-format'],
             \ 'cpp': ['clang-format'],
@@ -402,18 +401,13 @@ endfunc
 func! SetupTex()
     setlocal conceallevel=2
     set foldlevel=99
-    " Default texlab root to dir containing .git/. Set b:ale_lsp_root if needed.
-    let g:ale_lsp_root['texlab'] = function("ALETexlabGitRoot")
+    " defaults to asyncrun-project-root
+    let b:ale_lsp_root = asyncrun#get_root("%")
     " override textobj-comment
     xmap <buffer> ic <Plug>(vimtex-ic)
     omap <buffer> ic <Plug>(vimtex-ic)
     xmap <buffer> ac <Plug>(vimtex-ac)
     omap <buffer> ac <Plug>(vimtex-ac)
-endfunc
-func! ALETexlabGitRoot(buffer)
-    let l:project_root = ale#path#FindNearestDirectory(a:buffer, '.git')
-    let l:mods = ':h:h'
-    return !empty(l:project_root) ? fnamemodify(l:project_root, l:mods) : ''
 endfunc
 
 let s:pandoc_textobj = {
@@ -470,7 +464,6 @@ nnoremap / :let g:search_mode='/'<CR>/
 
 " TODO: window position?
 let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.6, 'rounded': v:false } }
-let g:rg_cmd_base = 'rg --column --line-number --no-heading --color=always --smart-case '
 nnoremap <leader>G :Grep<space>
 nnoremap <leader>g/ :<C-u>Grep <C-r>=RgInput(@/)<CR>
 nnoremap <leader>gf :Grepf<space>
@@ -487,10 +480,8 @@ if has("nvim")
     augroup END
 endif
 
-command! -bang -nargs=* Grep
-  \ call fzf#vim#grep(
-  \   g:rg_cmd_base . shellescape(<q-args>), 1,
-  \   fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}, 'down'), <bang>0)
+" use bang to search in the project root
+command! -nargs=* -bang Grep  call Ripgrep(<q-args>, <bang>0)
 command! -nargs=* -bang Grepf call RipgrepFly(<q-args>, <bang>0)
 
 func! RgInput(raw)
@@ -505,12 +496,20 @@ func! RgInput(raw)
         return substitute(a:raw[2:], '\v\\([~/])', '\1', 'g')
     endif
 endfunc
-func! RipgrepFly(query, fullscreen)
+let g:rg_cmd_base = 'rg --column --line-number --no-heading --color=always --colors path:fg:218 --smart-case '
+func! Ripgrep(query, on_root)
+    let cmd = g:rg_cmd_base . shellescape(a:query)
+    let spec = {'options': ['--layout=reverse', '--info=inline']}
+    if a:on_root | let spec['dir'] = asyncrun#get_root("%") | endif
+    call fzf#vim#grep(cmd, 1, fzf#vim#with_preview(spec, 'down'))
+endfunc
+func! RipgrepFly(query, on_root)
   let command_fmt = g:rg_cmd_base . '%s || true'
   let initial_command = printf(command_fmt, shellescape(a:query))
   let reload_command = printf(command_fmt, '{q}')
   let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command, '--layout=reverse', '--info=inline']}
-  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec, 'down'), a:fullscreen)
+  if a:on_root | let spec['dir'] = asyncrun#get_root("%") | endif
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec, 'down'))
 endfunc
 
 " }}}
