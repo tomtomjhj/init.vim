@@ -130,6 +130,7 @@ augroup BasicSetup | au!
     au BufRead,BufNewFile *.v set filetype=coq
     au BufRead,BufNewFile *.ll set filetype=llvm
     au BufRead,BufNewFile *.mir set filetype=rust
+    au FileType lisp if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({}, ["'"]) | endif
     au VimResized * let &pumheight = min([&window/4, 20])
 augroup END
 
@@ -228,6 +229,7 @@ let g:LanguageClient_diagnosticsDisplay = {
 \   3: { 'signTexthl': 'ALEInfo' },
 \   4: { 'signTexthl': 'ALEInfo' },
 \}
+let g:LanguageClient_virtualTextPrefix = 'ℹ️ '
 hi ALEError term=underline cterm=underline gui=undercurl
 hi ALEWarning term=NONE cterm=NONE gui=NONE
 hi ALEInfo term=NONE cterm=NONE gui=NONE
@@ -313,7 +315,7 @@ augroup SetupRust | au!
 augroup END
 func! SetupRust()
     if executable('ra_lsp_server') | call LCMaps() | endif
-    nmap <buffer><leader>C :AsyncRun -program=make -cwd=%:p:h -post=OQ check<CR>
+    nmap <buffer><leader>C :AsyncRun -program=make -post=OQ check<CR>
     vmap <buffer><leader>af :RustFmtRange<CR>
     if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({'|': '|'}, ["'"]) | endif
 endfunc
@@ -442,13 +444,7 @@ let s:pandoc_textobj = {
 
 " }}}
 
-" search, copy, paste {{{
-" repetitive pastes using designated register @p
-noremap <M-y> "py
-noremap <M-p> "pp
-
-map Y y$
-
+" search & fzf {{{
 " search_mode: which command last set @/?
 " `*`, `v_*` without moving the cursor. Reserve @c for the raw original text
 " NOTE: Can't repeat properly if ins-special-special is used. Use q-recording.
@@ -472,15 +468,31 @@ func! VisualStar()
 endfunc
 nnoremap / :let g:search_mode='/'<CR>/
 
-" TODO: Rgp with preview, set directory, ...
-if executable('rg')
-    nnoremap <leader>rg :Rg<space>
-    nnoremap <leader>r/ :<C-u>Rg <C-r>=RgInput(@/)<CR>
-else
-    command! -bang -nargs=* GGrep call fzf#vim#grep('git grep --line-number '.shellescape(<q-args>), 0, <bang>0)
-    nnoremap <leader>rg :GGrep<space>
-    nnoremap <leader>r/ :<C-u>GGrep <C-r>=RgInput(@/)<CR>
+" TODO: window position?
+let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.6, 'rounded': v:false } }
+let g:rg_cmd_base = 'rg --column --line-number --no-heading --color=always --smart-case '
+nnoremap <leader>G :Grep<space>
+nnoremap <leader>g/ :<C-u>Grep <C-r>=RgInput(@/)<CR>
+nnoremap <leader>gf :Grepf<space>
+map <leader>b :Buffers<CR>
+map <C-f> :Files<CR>
+map <leader>F :Files .
+map <leader>hh :History<CR>
+map <leader>h: :History:<CR>
+map <leader>h/ :History/<CR>
+if has("nvim")
+    augroup fzf | au!
+        au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
+        au FileType fzf tunmap <buffer> <Esc>
+    augroup END
 endif
+
+command! -bang -nargs=* Grep
+  \ call fzf#vim#grep(
+  \   g:rg_cmd_base . shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}, 'down'), <bang>0)
+command! -nargs=* -bang Grepf call RipgrepFly(<q-args>, <bang>0)
+
 func! RgInput(raw)
     if g:search_mode == 'n'
         return substitute(a:raw, '\v\\[<>]','','g')
@@ -493,6 +505,14 @@ func! RgInput(raw)
         return substitute(a:raw[2:], '\v\\([~/])', '\1', 'g')
     endif
 endfunc
+func! RipgrepFly(query, fullscreen)
+  let command_fmt = g:rg_cmd_base . '%s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command, '--layout=reverse', '--info=inline']}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec, 'down'), a:fullscreen)
+endfunc
+
 " }}}
 
 " Motion, insert mode, ... {{{
@@ -637,6 +657,12 @@ noremap Q q
 " delete without clearing regs
 noremap x "_x
 
+" repetitive pastes using designated register @p
+noremap <M-y> "py
+noremap <M-p> "pp
+
+map Y y$
+
 " auto-pairs
 let g:AutoPairsMapSpace = 0
 let g:AutoPairsCenterLine = 0
@@ -647,22 +673,6 @@ inoremap <silent><M-e> <C-R>=AutoPairsFastWrap("e")<CR>
 inoremap <silent><M-E> <C-R>=AutoPairsFastWrap("E")<CR>
 inoremap <silent><M-$> <C-R>=AutoPairsFastWrap("$")<CR>
 inoremap <silent><M-;> <C-R>=AutoPairsFastWrap("t;")<CR>
-
-" fzf
-let g:fzf_layout = { 'down': '~30%' }
-map <C-b> :Buffers<CR>
-map <C-f> :Files<CR>
-map <leader>F :Files .
-map <leader>hh :History<CR>
-map <leader>h: :History:<CR>
-map <leader>h/ :History/<CR>
-
-if has("nvim")
-    augroup fzf | au!
-        au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
-        au FileType fzf tunmap <buffer> <Esc>
-    augroup END
-endif
 
 " asyncrun
 map <leader>R :AsyncRun<space>
