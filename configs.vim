@@ -462,8 +462,7 @@ func! VisualStar()
 endfunc
 nnoremap / :let g:search_mode='/'<CR>/
 
-" TODO: window position?
-let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.6, 'rounded': v:false } }
+let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1, 'border': 'top', 'highlight': 'VertSplit' } }
 nnoremap <leader>G :Grep<space>
 nnoremap <leader>g/ :<C-u>Grep <C-r>=RgInput(@/)<CR>
 nnoremap <leader>gf :Grepf<space>
