@@ -17,7 +17,7 @@ Plug 'tpope/vim-repeat'
 Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter', { 'on': 'GitGutterToggle' }
-Plug 'preservim/nerdcommenter', { 'on': ['<plug>NERDCommenterToggle', '<plug>NERDCommenterSexy'] }
+Plug 'preservim/nerdcommenter', { 'on': ['<plug>NERDCommenterComment', '<plug>NERDCommenterToggle', '<plug>NERDCommenterInsert', '<plug>NERDCommenterSexy'] }
 Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug '~/.vim/my_plugins/auto-pairs'
@@ -27,7 +27,7 @@ Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment'
 Plug 'rhysd/git-messenger.vim'
 Plug 'Konfekt/FastFold'
 
-Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
+Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
 augroup SetupNerdTree | au!
     au VimEnter * silent! au! FileExplorer
     au BufEnter,VimEnter *
@@ -111,6 +111,7 @@ set noerrorbells novisualbell t_vb=
 set nobackup nowritebackup noswapfile
 set undofile undodir=~/.vim/undodir
 set history=500
+if has('nvim') | set shada=!,'150,<50,s30,h | endif
 
 set autoread
 set splitright splitbelow
@@ -174,7 +175,8 @@ let g:lightline = {
       \ 'subseparator': { 'left': ' ', 'right': ' ' }
       \ }
 " `vil() { nvim "$@" --cmd 'set background=light'; }` for light theme
-if &background == 'dark' || !has('nvim')
+if exists('g:colors_name') " loading the color again breaks lightline
+elseif &background == 'dark' || !has('nvim')
     colorscheme zen
 else
     let g:solarized_enable_extra_hi_groups = 1
@@ -314,7 +316,7 @@ augroup SetupRust | au!
 augroup END
 func! SetupRust()
     if executable('ra_lsp_server') | call LCMaps() | endif
-    nmap <buffer><leader>C :AsyncRun -program=make -post=OQ check<CR>
+    nmap <buffer><leader>C :AsyncRun -program=make -post=OQ test --no-run<CR>
     vmap <buffer><leader>af :RustFmtRange<CR>
     if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({'|': '|'}, ["'"]) | endif
 endfunc
@@ -465,8 +467,11 @@ nnoremap / :let g:search_mode='/'<CR>/
 let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1, 'border': 'top', 'highlight': 'VertSplit' } }
 nnoremap <leader>G :Grep<space>
 nnoremap <leader>g/ :<C-u>Grep <C-r>=RgInput(@/)<CR>
+nnoremap <leader>gw :<C-u>Grep <C-r>=expand("<cword>")<CR>
 nnoremap <leader>gf :Grepf<space>
+" TODO: select the buffer to wipe
 map <leader>b :Buffers<CR>
+" TODO: from root/cwd
 map <C-f> :Files<CR>
 map <leader>F :Files .
 map <leader>hh :History<CR>
@@ -476,6 +481,8 @@ if has("nvim")
     augroup fzf | au!
         au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
         au FileType fzf tunmap <buffer> <Esc>
+        " TODO: adaptive fzf_layout
+        " au VimResized * call
     augroup END
 endif
 
@@ -634,6 +641,9 @@ map <leader>sc :if &spc == "" \| setl spc< \| else \| setl spc= \| endif \| setl
 map <leader>pp :setlocal paste!\|setlocal paste?<cr>
 map <leader>sw :set wrap!\|set wrap?<CR>
 
+map <leader>dp :diffput<CR>
+map <leader>do :diffget<CR>
+
 " clipboard.
 if has('nvim')
   inoremap <C-v> <ESC>"+pa
@@ -729,6 +739,8 @@ endfunc
 
 " Comments {{{
 let g:NERDCreateDefaultMappings = 0
+imap <M-/> <Plug>NERDCommenterInsert
+vmap <M-/> <Plug>NERDCommenterComment
 xmap ,c<Space> <Plug>NERDCommenterToggle
 nmap ,c<Space> <Plug>NERDCommenterToggle
 xmap ,cs <Plug>NERDCommenterSexy
