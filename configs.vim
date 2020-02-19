@@ -238,7 +238,7 @@ hi ALEInfo term=NONE cterm=NONE gui=NONE
 " TODO: <M- maps are broken in vim
 nmap <leader>ad <Plug>(ale_detail)<C-W>p
 nmap <leader>af <Plug>(ale_fix)
-nmap <M-[> <Plug>(ale_hover)
+nmap <M-.> <Plug>(ale_hover)
 nmap <M-]> <Plug>(ale_go_to_definition)
 nmap <silent><M-\> <Plug>(ale_go_to_definition_in_tab)
 nmap <silent><leader><M-\> :if IsWide() \| ALEGoToDefinitionInVSplit \| else \| ALEGoToDefinitionInSplit \| endif<CR>
@@ -254,7 +254,7 @@ nmap <M-o> <C-o>
 nmap <M-i> <C-i>
 
 func! LCMaps()
-    nmap <buffer><silent><M-[> :call LanguageClient#textDocument_hover()<CR>
+    nmap <buffer><silent><M-.> :call LanguageClient#textDocument_hover()<CR>
     nmap <buffer><silent><M-]> :call LanguageClient#textDocument_definition()<CR>
     nmap <buffer><silent><M-\> :call LanguageClient#textDocument_definition({'gotoCmd': 'tab split'})<CR>
     nmap <buffer><silent><leader><M-\> :call LanguageClient#textDocument_definition({'gotoCmd': IsWide() ? 'vsp' : 'sp'})<CR>
@@ -656,6 +656,7 @@ map <silent><leader>fn :echo '<C-R>=expand("%:p")<CR>'<CR>
 
 noremap <F1> <Esc>
 inoremap <F1> <Esc>
+inoremap <C-q> <Esc>
 
 " c_CTRL-F for cmd history, gQ to enter ex mode. Q instead of q for macros
 noremap q: :
@@ -680,7 +681,7 @@ let g:AutoPairsShortcutJump = ''
 inoremap <silent><M-e> <C-R>=AutoPairsFastWrap("e")<CR>
 inoremap <silent><M-E> <C-R>=AutoPairsFastWrap("E")<CR>
 inoremap <silent><M-$> <C-R>=AutoPairsFastWrap("$")<CR>
-inoremap <silent><M-;> <C-R>=AutoPairsFastWrap("t;")<CR>
+inoremap <silent><M-:> <C-R>=AutoPairsFastWrap("t;")<CR>
 
 " asyncrun
 map <leader>R :AsyncRun<space>
