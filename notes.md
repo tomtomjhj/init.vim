@@ -82,6 +82,10 @@ augroup end
 
 
 ## Done
+* Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
+  This breaks non-idempotent operations at `FileType` like `AutoPairsDefine({}, ["'"])`
+    * Just disable lazy load as it turns out that loading ultisnip isn't slow.
+    * The root cause might be related to loading something that contains filetype plugin.
 * auto-pairs adds weird indent if the previous line ends with `,`. Indent size if the size of the first word in the previous line.
     * reset `indentexpr` just before running `=k` in auto-pairs
 * Restore default `iskeyword` inside pandoc code block: it's impossible.
@@ -100,20 +104,20 @@ augroup end
 * `strcharpart(strpart(line, col - 1), 0, 1)`
 * `<C-\><C-o><ESC>` to reset insert starting point after ins-special-special
 * cmdline-completion
+* <https://superuser.com/a/1454131/1089985>
+* <https://blog.antoyo.xyz/vim-tips>
 
 # pitfalls
 * `:h map-bar`
 * Wrap `autocmd`s with `exec 'au ...'`: may not work as expected because of the interaction w/ `|`
 * Matching `errorformat` may fail if the output from `:AsyncRun ...` is complex & quickfix is already open.
   Probably the output should be buffered.
-* Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
-  This breaks non-idempotent operations at `FileType` like `AutoPairsDefine({}, ["'"])`
-    * Just disable lazy load as it turns out that loading ultisnip isn't slow.
-    * The root cause might be related to loading something that contains filetype plugin.
-* Terminals can't distinguish some keys e.g. `<ESC>` and `<C-[>`, ....
+* Terminals can't distinguish some keys e.g. `<ESC>` and `<C-[>`, .. . `<M-[>` is prefix of `<PageUp>`, ...
 * `inoremap <C-w> <C-R>={-> execute("norm db")}()<CR><C-R>=col('.')==col('$')-1?"\<lt>C-G>U\<lt>Right>":""<CR>`
   This still breaks undo after ins-special-special and is still broken at the line end.
 * `<C-w>]` doesn't open in new tab if `switchbuf=useopen` which is useful for quickfix stuff.
+* `<ESC>` is somewhat different from `CTRL-C`: c (`/`, `?`), i, v, ..
+* `<Up>` is slightly different from `<C-p>`
 
 # hmm..
 * I don't want to rely on `set whichwrap+=]` for quick jump but this doesn't

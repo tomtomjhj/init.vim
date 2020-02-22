@@ -552,7 +552,6 @@ nnoremap <M-0> ^w
 vnoremap <M-0> ^w
 
 let g:sneak#s_next = 1
-let g:sneak#absolute_dir = 1
 let g:sneak#use_ic_scs = 1
 map f <Plug>Sneak_f
 map F <Plug>Sneak_F
@@ -660,18 +659,19 @@ map <leader>dp :diffput<CR>
 map <leader>do :diffget<CR>
 
 " clipboard.
-if has('nvim')
-  inoremap <C-v> <ESC>"+pa
-  vnoremap <C-c> "+y
-  vnoremap <C-x> "+d
-endif
+inoremap <C-v> <C-\><C-o>:setl paste<CR><C-r>+<C-\><C-o>:setl nopaste<CR>
+vnoremap <C-c> "+y
 
 " filename
 map <silent><leader>fn :echo '<C-R>=expand("%:p")<CR>'<CR>
 
 noremap <F1> <Esc>
 inoremap <F1> <Esc>
-inoremap <C-q> <Esc>
+noremap! <C-q> <C-c>
+vnoremap <C-q> <Esc>
+
+cnoremap <M-p> <Up>
+cnoremap <M-n> <Down>
 
 " c_CTRL-F for cmd history, gQ to enter ex mode. Q instead of q for macros
 noremap q: :
