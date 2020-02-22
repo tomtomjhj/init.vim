@@ -465,31 +465,34 @@ endfunc
 nnoremap / :let g:search_mode='/'<CR>/
 
 let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1, 'border': 'top', 'highlight': 'VertSplit' } }
-nnoremap <leader>G :Grep<space>
+
+nnoremap <leader>G  :<C-u>Grep<space>
 nnoremap <leader>g/ :<C-u>Grep <C-r>=RgInput(@/)<CR>
 nnoremap <leader>gw :<C-u>Grep <C-r>=expand("<cword>")<CR>
-nnoremap <leader>gf :Grepf<space>
-" TODO: select the buffer to wipe
-map <leader>b :Buffers<CR>
-" TODO: from root/cwd
-map <C-f> :Files<CR>
-map <leader>F :Files .
-map <leader>hh :History<CR>
-map <leader>h: :History:<CR>
-map <leader>h/ :History/<CR>
-if has("nvim")
-    augroup fzf | au!
-        au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
-        au FileType fzf tunmap <buffer> <Esc>
-        " TODO: adaptive fzf_layout
-        " au VimResized * call
-    augroup END
-endif
+nnoremap <leader>gf :<C-u>Grepf<space>
+noremap  <leader>b  :<C-u>Buffers<CR>
+noremap  <C-f>      :<C-u>Files<CR>
+noremap  <leader>hh :<C-u>History<CR>
+noremap  <leader>h: :<C-u>History:<CR>
+noremap  <leader>h/ :<C-u>History/<CR>
 
-" use bang to search in the project root
-command! -nargs=* -bang Grep  call Ripgrep(<q-args>, <bang>0)
-command! -nargs=* -bang Grepf call RipgrepFly(<q-args>, <bang>0)
+augroup fzf | au!
+    au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
+    au FileType fzf tunmap <buffer> <Esc>
+augroup END
 
+command! -nargs=* -bang Grep  call Ripgrep(<q-args>)
+command! -nargs=* -bang Grepf call RipgrepFly(<q-args>)
+command! -bang -nargs=? -complete=dir Files call Files(<q-args>)
+
+func! FzfOpts(arg, spec)
+    " TODO: use merge()?
+    let l:opts = string(a:arg)
+    " fullscreen
+    if l:opts =~ '2' | let a:spec['window'] = { 'width': 1, 'height': (&lines-(tabpagenr()>1)-1.0)/&lines, 'yoffset': 1, 'border': 'top', 'highlight': 'VertSplit' } | endif
+    " from project root
+    if l:opts =~ '3' | let a:spec['dir'] = asyncrun#get_root("%") | endif
+endfunc
 func! RgInput(raw)
     if g:search_mode == 'n'
         return substitute(a:raw, '\v\\[<>]','','g')
@@ -502,20 +505,32 @@ func! RgInput(raw)
         return substitute(a:raw[2:], '\v\\([~/])', '\1', 'g')
     endif
 endfunc
-let g:rg_cmd_base = 'rg --column --line-number --no-heading --color=always --colors path:fg:218 --smart-case '
-func! Ripgrep(query, on_root)
+let g:rg_cmd_base = 'rg --column --line-number --no-heading --color=always --colors path:fg:218 --colors match:fg:116 --smart-case '
+func! Ripgrep(query)
     let cmd = g:rg_cmd_base . shellescape(a:query)
-    let spec = {'options': ['--layout=reverse', '--info=inline']}
-    if a:on_root | let spec['dir'] = asyncrun#get_root("%") | endif
-    call fzf#vim#grep(cmd, 1, fzf#vim#with_preview(spec, 'down'))
+    let spec = {'options': ['--info=inline']}
+    call FzfOpts(v:count, spec)
+    call fzf#vim#grep(cmd, 1, fzf#vim#with_preview(spec, 'up'))
 endfunc
-func! RipgrepFly(query, on_root)
-  let command_fmt = g:rg_cmd_base . '%s || true'
-  let initial_command = printf(command_fmt, shellescape(a:query))
-  let reload_command = printf(command_fmt, '{q}')
-  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command, '--layout=reverse', '--info=inline']}
-  if a:on_root | let spec['dir'] = asyncrun#get_root("%") | endif
-  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec, 'down'))
+func! RipgrepFly(query)
+    let command_fmt = g:rg_cmd_base . '%s || true'
+    let initial_command = printf(command_fmt, shellescape(a:query))
+    let reload_command = printf(command_fmt, '{q}')
+    let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command, '--info=inline']}
+    call FzfOpts(v:count, spec)
+    call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec, 'up'))
+endfunc
+func! Files(query)
+    let spec = {}
+    call FzfOpts(v:count, spec)
+    if empty(a:query) && !empty(get(spec, 'dir', ''))
+        let l:query = spec['dir']
+        unlet spec['dir']
+        let spec['options'] = ['--prompt', fnamemodify(l:query, ':~:.') . '/']
+    else
+        let l:query = a:query
+    endif
+    call fzf#vim#files(l:query, spec)
 endfunc
 
 " }}}

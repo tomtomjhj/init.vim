@@ -78,6 +78,7 @@ augroup end
 * sudoedit settings: undodir, ...
 * deoplete: filter prefix match and extract longest prefix
 * `g]`-like commands can't be used in functions etc?
+* fzf: make a feature request for ivy-like actions
 
 
 ## Done
