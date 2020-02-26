@@ -305,6 +305,7 @@ endfunc
 " }}}
 
 " Rust {{{
+" TODO: rust symbol prettyfier: ${GT,LT,C,u20,u7b,u7d}$
 let g:rust_fold = 1
 let g:rust_keep_autopairs_default = 1
 if executable('ra_lsp_server')
@@ -466,6 +467,7 @@ nnoremap / :let g:search_mode='/'<CR>/
 
 let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1, 'border': 'top', 'highlight': 'VertSplit' } }
 
+" TODO: cycle between Grepf and Grep
 nnoremap <leader>G  :<C-u>Grep<space>
 nnoremap <leader>g/ :<C-u>Grep <C-r>=RgInput(@/)<CR>
 nnoremap <leader>gw :<C-u>Grep <C-r>=expand("<cword>")<CR>
@@ -477,8 +479,14 @@ noremap  <leader>h: :<C-u>History:<CR>
 noremap  <leader>h/ :<C-u>History/<CR>
 
 augroup fzf | au!
-    au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
-    au FileType fzf tunmap <buffer> <Esc>
+    if has('nvim')
+        au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
+        au TermOpen * tnoremap <buffer> <C-q> <c-\><c-n>
+        au FileType fzf tunmap <buffer> <Esc>
+        au FileType fzf tunmap <buffer> <C-q>
+    else
+        tnoremap <C-q> <Esc>
+    endif
 augroup END
 
 command! -nargs=* -bang Grep  call Ripgrep(<q-args>)
@@ -566,7 +574,7 @@ let g:sword = '\v(\k+|([^[:alnum:]_[:blank:](){}[\]<>$])\2*|[(){}[\]<>$]|\s+)'
 " Jump past a sword. Assumes `set whichwrap+=]` for i_<Right>
 inoremap <silent><C-j> <C-\><C-O>:call SwordJumpRight()<CR><Right><C-\><C-o><ESC>
 inoremap <silent><C-k> <C-\><C-O>:call SwordJumpLeft()<CR>
-inoremap <C-space> <C-k>
+noremap! <C-space> <C-k>
 " TODO: `e` replacement
 nnoremap <silent><M-e> :call search(g:sword, 'eW')<CR>
 func! SwordJumpRight()

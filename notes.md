@@ -113,6 +113,7 @@ augroup end
 * Matching `errorformat` may fail if the output from `:AsyncRun ...` is complex & quickfix is already open.
   Probably the output should be buffered.
 * Terminals can't distinguish some keys e.g. `<ESC>` and `<C-[>`, .. . `<M-[>` is prefix of `<PageUp>`, ...
+    * vim won't receive `<C-q>` if `<C-q>`,`<C-s>` is enabled in the terminal
 * `inoremap <C-w> <C-R>={-> execute("norm db")}()<CR><C-R>=col('.')==col('$')-1?"\<lt>C-G>U\<lt>Right>":""<CR>`
   This still breaks undo after ins-special-special and is still broken at the line end.
 * `<C-w>]` doesn't open in new tab if `switchbuf=useopen` which is useful for quickfix stuff.
