@@ -68,6 +68,10 @@ Plug 'lervag/vimtex'
 Plug 'Shougo/deoplete-clangx'
 " Plug 'parsonsmatt/intero-neovim'
 " Plug 'tomlion/vim-solidity'
+" Plug 'LumaKernel/coquille'
+" Plug 'https://framagit.org/tyreunom/coquille', { 'do': ':UpdateRemotePlugins' }
+" NOTE: doesn't work in nvim, not async
+Plug 'let-def/vimbufsync' | Plug 'whonore/Coqtail'
 
 call plug#end()
 " }}}
@@ -128,7 +132,6 @@ augroup BasicSetup | au!
     au BufWinEnter * if line("'\"") > 1 && line("'\"") <= line("$") | exec "norm! g'\"" | endif
     au BufWritePost ~/.vim/configs.vim source ~/.vim/configs.vim
     au BufRead,BufNewFile *.k set filetype=k
-    au BufRead,BufNewFile *.v set filetype=coq
     au BufRead,BufNewFile *.ll set filetype=llvm
     au BufRead,BufNewFile *.mir set filetype=rust
     au FileType lisp if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({}, ["'"]) | endif
