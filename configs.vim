@@ -311,15 +311,15 @@ endfunc
 " TODO: rust symbol prettyfier: ${GT,LT,C,u20,u7b,u7d}$
 let g:rust_fold = 1
 let g:rust_keep_autopairs_default = 1
-if executable('ra_lsp_server')
+if executable('rust-analyzer')
     let g:ale_rust_rls_config = { 'rust': { 'racer_completion': v:false } }
-    let g:LanguageClient_serverCommands = { 'rust': ['ra_lsp_server'] }
+    let g:LanguageClient_serverCommands = { 'rust': ['rust-analyzer'] }
 endif
 augroup SetupRust | au!
     au FileType rust call SetupRust()
 augroup END
 func! SetupRust()
-    if executable('ra_lsp_server') | call LCMaps() | endif
+    if executable('rust-analyzer') | call LCMaps() | endif
     nmap <buffer><leader>C :AsyncRun -program=make -post=OQ test --no-run<CR>
     vmap <buffer><leader>af :RustFmtRange<CR>
     if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({'|': '|'}, ["'"]) | endif
