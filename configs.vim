@@ -1,5 +1,4 @@
 " vim: set foldmethod=marker foldlevel=0 nomodeline:
-" TODO: filetype specific stuff in ftplugin
 
 " Plug {{{
 call plug#begin('~/.vim/plugged')
@@ -8,6 +7,7 @@ call plug#begin('~/.vim/plugged')
 Plug '~/.vim/my_plugins/lightline.vim'
 Plug 'maximbaz/lightline-ale'
 Plug 'lifepillar/vim-solarized8'
+Plug 'tomtomjhj/zenbruh.vim'
 
 " general
 if !has('nvim') | Plug 'tpope/vim-sensible' | endif
@@ -72,6 +72,7 @@ Plug 'Shougo/deoplete-clangx'
 " Plug 'https://framagit.org/tyreunom/coquille', { 'do': ':UpdateRemotePlugins' }
 " NOTE: doesn't work in nvim, not async
 Plug 'let-def/vimbufsync' | Plug 'whonore/Coqtail'
+" Plug 'puremourning/vimspector'
 
 call plug#end()
 " }}}
@@ -147,14 +148,14 @@ let g:lightline = {
       \ 'colorscheme': 'wombat',
       \ 'active': {
       \   'left': [ ['mode', 'paste'],
-      \             ['fugitive', 'readonly', 'shortrelpath', 'modified'] ],
+      \             ['git', 'readonly', 'shortrelpath', 'modified'] ],
       \   'right': [ ['lineinfo'], ['percent'], ['linter_checking', 'linter_errors', 'linter_warnings'], ['asyncrun'] ]
       \ },
       \ 'component': {
       \   'readonly': '%{&filetype=="help"?"":&readonly?"🔒":""}',
       \   'shortrelpath': '%{pathshorten(fnamemodify(expand("%"), ":~:."))}',
       \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
-      \   'fugitive': '%{fugitive#statusline()}',
+      \   'git': '%{GitStatusline()}',
       \   'asyncrun': '%{g:asyncrun_status}',
       \ },
       \ 'component_expand': {
@@ -172,7 +173,6 @@ let g:lightline = {
       \ 'component_visible_condition': {
       \   'readonly': '(&filetype!="help"&& &readonly)',
       \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
-      \   'fugitive': '(exists("*fugitive#statusline"))'
       \ },
       \ 'separator': { 'left': ' ', 'right': ' ' },
       \ 'subseparator': { 'left': ' ', 'right': ' ' }
@@ -180,7 +180,7 @@ let g:lightline = {
 " `vil() { nvim "$@" --cmd 'set background=light'; }` for light theme
 if exists('g:colors_name') " loading the color again breaks lightline
 elseif &background == 'dark' || !has('nvim')
-    colorscheme zen
+    colorscheme zenbruh
 else
     let g:solarized_enable_extra_hi_groups = 1
     let g:solarized_italics = 0
@@ -284,27 +284,7 @@ let g:haskell_enable_static_pointers = 1
 let g:haskell_indent_let_no_in = 0
 let g:haskell_indent_if = 0
 let g:haskell_indent_case_alternative = 1
-
 let g:intero_start_immediately = 0
-augroup SetupHaskell | au!
-    au FileType haskell call SetupIntero()
-augroup END
-func! SetupIntero()
-    setlocal shiftwidth=2 tabstop=2
-    nnoremap <silent><buffer><leader>is :InteroStart<CR>
-    nnoremap <silent><buffer><leader>ik :InteroKill<CR>
-    nnoremap <silent><buffer><leader>io :InteroOpen<CR>
-    nnoremap <silent><buffer><leader>ih :InteroHide<CR>
-    nnoremap <silent><buffer><leader>wr :w \| :InteroReload<CR>
-    nnoremap <silent><buffer><leader>il :InteroLoadCurrentModule<CR>
-    nnoremap <silent><buffer><leader>if :InteroLoadCurrentFile<CR>
-    noremap  <silent><buffer><leader>t <Plug>InteroGenericType
-    noremap  <silent><buffer><leader>T <Plug>InteroType
-    nnoremap <silent><buffer><leader>ii :InteroInfo<CR>
-    nnoremap <silent><buffer><leader>it :InteroTypeInsert<CR>
-    nnoremap <silent><buffer><leader>jd :InteroGoToDef<CR>
-    nnoremap <buffer><leader>ist :InteroSetTargets<SPACE>
-endfunc
 " }}}
 
 " Rust {{{
@@ -315,15 +295,6 @@ if executable('rust-analyzer')
     let g:ale_rust_rls_config = { 'rust': { 'racer_completion': v:false } }
     let g:LanguageClient_serverCommands = { 'rust': ['rust-analyzer'] }
 endif
-augroup SetupRust | au!
-    au FileType rust call SetupRust()
-augroup END
-func! SetupRust()
-    if executable('rust-analyzer') | call LCMaps() | endif
-    nmap <buffer><leader>C :AsyncRun -program=make -post=OQ test --no-run<CR>
-    vmap <buffer><leader>af :RustFmtRange<CR>
-    if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({'|': '|'}, ["'"]) | endif
-endfunc
 " NOTE: External crate completion doesn't work without extern crate declaration
 " }}}
 
@@ -331,7 +302,7 @@ endfunc
 " TODO: this should be based on tabstop and shiftwidth, see editorconfig doc
 let g:ale_c_clangformat_options = '-style="{BasedOnStyle: llvm, IndentWidth: 4, AccessModifierOffset: -4}"'
 augroup SetupCCpp | au!
-    au FileType c,cpp setlocal foldmethod=syntax foldlevel=99
+    au FileType c,cpp nmap <buffer>zM :set foldmethod=syntax foldlevel=99\|unmap <lt>buffer>zM<CR>zM
 augroup END
 " }}}
 
@@ -365,83 +336,11 @@ let g:pandoc#hypertext#use_default_mappings = 0
 let g:pandoc#syntax#use_definition_lists = 0
 let g:pandoc#syntax#protect#codeblocks = 0
 let g:vimtex_fold_enabled = 1
-augroup SetupPandocTex | au!
-    au FileType pandoc call SetupPandoc()
-    au FileType tex call SetupTex()
-augroup END
-func! SetupPandoc()
-    let b:AutoPairs = AutoPairsDefine({'$':'$', '$$':'$$'})
-    " set to notoplevel in haskell.vim
-    call textobj#user#plugin('pandoc', s:pandoc_textobj)
-    syntax spell toplevel
-    nmap <buffer><silent><leader>C :call RunPandoc(0)<CR>
-    nmap <buffer><silent><leader>O :call RunPandoc(1)<CR>
-    nmap <buffer><silent><leader>oo :call Zathura("<C-r>=expand("%:p:h") . '/' . expand("%:t:r") . '.pdf'<CR>")<CR>
-    nmap <buffer><silent>gx <Plug>(pandoc-hypertext-open-system)
-    nmap <buffer><silent><leader>py vid:AsyncRun python3<CR>:OQ<CR>
-    nmap <buffer>zM :call pandoc#folding#Init()\|unmap <lt>buffer>zM<CR>zM
-endfunc
-func! RunPandoc(open)
-    let src = expand("%:p")
-    let out = expand("%:p:h") . '/' . expand("%:t:r") . '.pdf'
-    let params = '-Vurlcolor=cyan --highlight-style=kate'
-    let post = "exec 'au! pandoc_quickfix'"
-    let post .= a:open ? "|call Zathura('" . l:out . "',!g:asyncrun_code)" : ''
-    let post = escape(post, ' ')
-    " set manually or by local vimrc, override header-includes in yaml metadata
-    " TODO: local_vimrc or editorconfig hook
-    if exists('b:custom_pandoc_include_file')
-        let l:params .= ' --include-in-header=' . b:custom_pandoc_include_file
-    endif
-    let cmd = 'pandoc ' . l:src . ' -o ' . l:out . ' ' . l:params
-    augroup pandoc_quickfix | au!
-        au QuickFixCmdPost caddexpr belowright copen 8 | winc p
-    augroup END
-    exec 'AsyncRun -save=1 -cwd=' . expand("%:p:h") '-post=' . l:post l:cmd
-endfunc
 func! Zathura(file, ...)
     if get(a:, 1, 1)
         call jobstart(['zathura', a:file, '--fork'])
     endif
 endfunc
-func! SetupTex()
-    setlocal conceallevel=2
-    set foldlevel=99
-    " defaults to asyncrun-project-root
-    let b:ale_lsp_root = asyncrun#get_root("%")
-    " override textobj-comment
-    xmap <buffer> ic <Plug>(vimtex-ic)
-    omap <buffer> ic <Plug>(vimtex-ic)
-    xmap <buffer> ac <Plug>(vimtex-ac)
-    omap <buffer> ac <Plug>(vimtex-ac)
-endfunc
-
-let s:pandoc_textobj = {
-            \   'begin-end': {
-            \     'pattern': ['\\begin{[^}]\+}\s*\n\?', '\s*\\end{[^}]\+}'],
-            \     'select-a': 'ae',
-            \     'select-i': 'ie',
-            \   },
-            \   'code': {
-            \     'select-a-function': 'stuff#FencedCodeBlocka',
-            \     'select-a': 'ad',
-            \     'select-i-function': 'stuff#FencedCodeBlocki',
-            \     'select-i': 'id',
-            \   },
-            \  'dollar-math': {
-            \     'select-a-function': 'stuff#DollarMatha',
-            \     'select-a': 'am',
-            \     'select-i-function': 'stuff#DollarMathi',
-            \     'select-i': 'im',
-            \   },
-            \  'dollar-mathmath': {
-            \     'select-a-function': 'stuff#DollarMathMatha',
-            \     'select-a': 'aM',
-            \     'select-i-function': 'stuff#DollarMathMathi',
-            \     'select-i': 'iM',
-            \   },
-            \ }
-
 " }}}
 
 " search & fzf {{{
@@ -767,7 +666,7 @@ endfunc
 " Comments {{{
 let g:NERDCreateDefaultMappings = 0
 imap <M-/> <Plug>NERDCommenterInsert
-vmap <M-/> <Plug>NERDCommenterComment
+map <M-/> <Plug>NERDCommenterComment
 xmap ,c<Space> <Plug>NERDCommenterToggle
 nmap ,c<Space> <Plug>NERDCommenterToggle
 xmap ,cs <Plug>NERDCommenterSexy

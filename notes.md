@@ -79,7 +79,7 @@ augroup end
 * deoplete: filter prefix match and extract longest prefix
 * `g]`-like commands can't be used in functions etc?
 * fzf: make a feature request for ivy-like actions
-
+* <https://vimways.org/2018/from-vimrc-to-vim>
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -101,6 +101,7 @@ augroup end
 # Tips
 * `dw`: to remove whitespace from current position.
 * `q.push(\w\+\w\@!,\@!`: enforce `\w\+` to consume all `\w`
+    * `\@<!`
 * `strcharpart(strpart(line, col - 1), 0, 1)`
 * `<C-\><C-o><ESC>` to reset insert starting point after ins-special-special
 * cmdline-completion
