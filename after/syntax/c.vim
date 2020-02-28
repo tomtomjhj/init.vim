@@ -23,6 +23,9 @@ syn keyword cTodo contained BUG NOTE
 syn match cUserFunction "\<\h\w*\>\(\s\|\n\)*("me=e-1 contains=cParen,cCppParen
 hi def link cUserFunction Function
 
+syn match cUserConstant "\<[A-Z_][A-Z0-9_]*\>\ze\(\(\s\|\n\)*(\)\@!"
+hi def link cUserConstant Constant
+
 
 " Common ANSI-standard Names
 syn keyword cAnsiName
@@ -54,9 +57,13 @@ syn match cOperator "/$"
 syn match cOperator "&&\|||"
 syn match cOperator "[][]"
 
-" Preprocessor
-syn keyword cDefined defined contained containedin=cDefine
-hi def link cDefined cDefine
+syn match cInclude   display "^\s*\zs\(%:\|#\)\s*include\>\s*" nextgroup=cIncluded
+syn region cDefine   matchgroup=cDefineDelim start="^\s*\zs\(%:\|#\)\s*\(define\|undef\)\>" skip="\\$" end="$" keepend contains=ALLBUT,@cPreProcGroup,@Spell
+hi def link cDefine NONE
+hi def link cDefineDelim Macro
+
+" syn keyword cDefined defined contained containedin=cDefine
+" hi def link cDefined Keyword
 
 " Delimiters
 syn match cDelimiter "[,();\\]"
@@ -66,4 +73,4 @@ syn match cBraces display "[{}]"
 hi def link cBraces Delimiter
 
 
-syn match cType "\<[a-zA-Z_][a-zA-Z0-9_]*_t\>"
+syn match cType "\<\h\w*_t\>"
