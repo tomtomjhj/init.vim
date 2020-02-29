@@ -370,15 +370,13 @@ nnoremap / :let g:search_mode='/'<CR>/
 let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1, 'border': 'top', 'highlight': 'VertSplit' } }
 
 " TODO: cycle between Grepf and Grep
-nnoremap <leader>G  :<C-u>Grep<space>
+nnoremap <C-g>      :<C-u>Grep<space>
 nnoremap <leader>g/ :<C-u>Grep <C-r>=RgInput(@/)<CR>
 nnoremap <leader>gw :<C-u>Grep <C-r>=expand("<cword>")<CR>
 nnoremap <leader>gf :<C-u>Grepf<space>
 noremap  <leader>b  :<C-u>Buffers<CR>
 noremap  <C-f>      :<C-u>Files<CR>
 noremap  <leader>hh :<C-u>History<CR>
-noremap  <leader>h: :<C-u>History:<CR>
-noremap  <leader>h/ :<C-u>History/<CR>
 
 augroup fzf | au!
     if has('nvim')
@@ -572,8 +570,8 @@ map <leader>do :diffget<CR>
 inoremap <C-v> <C-\><C-o>:setl paste<CR><C-r>+<C-\><C-o>:setl nopaste<CR>
 vnoremap <C-c> "+y
 
-" filename
-map <silent><leader>fn :echo '<C-R>=expand("%:p")<CR>'<CR>
+" buf/filename
+noremap <leader>fn 2<C-g>
 
 noremap <F1> <Esc>
 inoremap <F1> <Esc>
@@ -583,7 +581,7 @@ vnoremap <C-q> <Esc>
 cnoremap <M-p> <Up>
 cnoremap <M-n> <Down>
 
-" c_CTRL-F for cmd history, gQ to enter ex mode. Q instead of q for macros
+" c_CTRL-F: editable cmd/search history, gQ: enter ex mode, Q instead of q for macros
 noremap q: :
 noremap q <nop>
 noremap Q q

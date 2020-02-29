@@ -107,6 +107,7 @@ augroup end
 * cmdline-completion
 * <https://superuser.com/a/1454131/1089985>
 * <https://blog.antoyo.xyz/vim-tips>
+* `/_CTRL-L`, `/_CTRL-G`, `/_CTRL-T`
 
 # pitfalls
 * `:h map-bar`
