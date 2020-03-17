@@ -58,7 +58,9 @@ augroup END
 " lanauges
 Plug 'tomtomjhj/ale'
 Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh', 'for': 'rust' }
-Plug '~/.vim/my_plugins/vim-pandoc-syntax' | Plug 'vim-pandoc/vim-pandoc'
+Plug 'tomtomjhj/vim-markdown'
+let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
+Plug '~/.vim/my_plugins/vim-pandoc-syntax'
 Plug '~/.vim/my_plugins/tex-conceal.vim'
 Plug 'rust-lang/rust.vim'
 Plug '~/.vim/my_plugins/vim-ocaml'
@@ -325,7 +327,7 @@ let g:ale_python_pyls_config = {
             \}
 " }}}
 
-" Pandoc, Tex {{{
+" Markdown, Pandoc, Tex {{{
 let g:tex_flavor = "latex"
 let g:tex_noindent_env = '\v\w+.?'
 " use PandocHighlight or TODO: stuff from gabrielelana/vim-markdown
@@ -336,6 +338,7 @@ let g:pandoc#hypertext#use_default_mappings = 0
 let g:pandoc#syntax#use_definition_lists = 0
 let g:pandoc#syntax#protect#codeblocks = 0
 let g:vimtex_fold_enabled = 1
+let g:vim_markdown_folding_disabled = 1
 func! Zathura(file, ...)
     if get(a:, 1, 1)
         call jobstart(['zathura', a:file, '--fork'])
@@ -646,7 +649,7 @@ func! SynStackName()
 endfunc
 func! InSynStack(type)
     for i in synstack(line('.'), col('.'))
-        if synIDattr(i, 'name') == a:type
+        if synIDattr(i, 'name') =~ a:type
             return 1
         endif
     endfor
