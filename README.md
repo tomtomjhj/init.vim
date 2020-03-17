@@ -7,10 +7,8 @@ git submodule update --init
 
 ```vim
 " ~/.config/nvim/init.vim
-if has('nvim')
-  set runtimepath+=~/.vim
-  set runtimepath+=~/.vim/after
-endif
+set runtimepath+=~/.vim
+set runtimepath+=~/.vim/after
 source ~/.vim/configs.vim
 ```
 

@@ -21,7 +21,7 @@ Plug 'preservim/nerdcommenter', { 'on': ['<plug>NERDCommenterComment', '<plug>NE
 Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug '~/.vim/my_plugins/auto-pairs'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': { -> fzf#install() }}
 Plug 'junegunn/fzf.vim'
 Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment'
 Plug 'rhysd/git-messenger.vim'
@@ -56,13 +56,13 @@ augroup Completions | au!
 augroup END
 
 " lanauges
-Plug 'tomtomjhj/ale'
+Plug 'dense-analysis/ale'
 Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh', 'for': 'rust' }
 Plug 'tomtomjhj/vim-markdown'
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
 Plug '~/.vim/my_plugins/vim-pandoc-syntax'
 Plug '~/.vim/my_plugins/tex-conceal.vim'
-Plug 'rust-lang/rust.vim'
+Plug 'rust-lang/rust.vim' | Plug 'tomtomjhj/vim-rust-syntax-ext'
 Plug '~/.vim/my_plugins/vim-ocaml'
 Plug '~/.vim/my_plugins/haskell-vim'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
@@ -70,11 +70,13 @@ Plug 'lervag/vimtex'
 Plug 'Shougo/deoplete-clangx'
 " Plug 'parsonsmatt/intero-neovim'
 " Plug 'tomlion/vim-solidity'
-" Plug 'LumaKernel/coquille'
+" Plug 'LumaKernel/coquille' (see issue)
 " Plug 'https://framagit.org/tyreunom/coquille', { 'do': ':UpdateRemotePlugins' }
 " NOTE: doesn't work in nvim, not async
 Plug 'let-def/vimbufsync' | Plug 'whonore/Coqtail'
 " Plug 'puremourning/vimspector'
+Plug 'cespare/vim-toml'
+Plug 'rhysd/vim-llvm'
 
 call plug#end()
 " }}}
@@ -135,7 +137,6 @@ augroup BasicSetup | au!
     au BufWinEnter * if line("'\"") > 1 && line("'\"") <= line("$") | exec "norm! g'\"" | endif
     au BufWritePost ~/.vim/configs.vim source ~/.vim/configs.vim
     au BufRead,BufNewFile *.k set filetype=k
-    au BufRead,BufNewFile *.ll set filetype=llvm
     au BufRead,BufNewFile *.mir set filetype=rust
     au FileType lisp if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({}, ["'"]) | endif
     au VimResized * let &pumheight = min([&window/4, 20])
