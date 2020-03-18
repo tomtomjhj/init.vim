@@ -2,7 +2,6 @@
 
 ```sh
 git clone https://github.com/tomtomjhj/init.vim ~/.vim
-git submodule update --init
 ```
 
 ```vim

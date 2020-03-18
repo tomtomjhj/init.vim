@@ -4,7 +4,7 @@
 call plug#begin('~/.vim/plugged')
 
 " appearance
-Plug '~/.vim/my_plugins/lightline.vim'
+Plug 'itchyny/lightline.vim'
 Plug 'maximbaz/lightline-ale'
 Plug 'lifepillar/vim-solarized8'
 Plug 'tomtomjhj/zenbruh.vim'
@@ -20,7 +20,7 @@ Plug 'airblade/vim-gitgutter', { 'on': 'GitGutterToggle' }
 Plug 'preservim/nerdcommenter', { 'on': ['<plug>NERDCommenterComment', '<plug>NERDCommenterToggle', '<plug>NERDCommenterInsert', '<plug>NERDCommenterSexy'] }
 Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
-Plug '~/.vim/my_plugins/auto-pairs'
+Plug 'tomtomjhj/auto-pairs'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': { -> fzf#install() }}
 Plug 'junegunn/fzf.vim'
 Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment'
@@ -56,15 +56,15 @@ augroup Completions | au!
 augroup END
 
 " lanauges
+" TODO: pandoc-syntax, ocaml, haskell -> just use after/syntax
 Plug 'dense-analysis/ale'
 Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh', 'for': 'rust' }
 Plug 'tomtomjhj/vim-markdown'
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
-Plug '~/.vim/my_plugins/vim-pandoc-syntax'
-Plug '~/.vim/my_plugins/tex-conceal.vim'
+Plug 'tomtomjhj/vim-pandoc-syntax'
 Plug 'rust-lang/rust.vim' | Plug 'tomtomjhj/vim-rust-syntax-ext'
-Plug '~/.vim/my_plugins/vim-ocaml'
-Plug '~/.vim/my_plugins/haskell-vim'
+Plug 'tomtomjhj/vim-ocaml'
+Plug 'tomtomjhj/haskell-vim'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'lervag/vimtex'
 Plug 'Shougo/deoplete-clangx'
