@@ -58,7 +58,7 @@ augroup END
 " lanauges
 " TODO: pandoc-syntax, ocaml, haskell -> just use after/syntax
 Plug 'dense-analysis/ale'
-Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh', 'for': 'rust' }
+Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh', 'for': ['rust', 'ocaml'] }
 Plug 'tomtomjhj/vim-markdown'
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
 Plug 'tomtomjhj/vim-pandoc-syntax'
@@ -225,18 +225,21 @@ let g:ale_fixers = {
             \ 'python': ['yapf'],
             \ 'haskell': ['stylish-haskell'],
             \ 'rust': ['rustfmt'],
+            \ 'ocaml': ['ocamlformat'],
             \ '*': ['trim_whitespace']
             \ }
 let g:ale_set_highlights = 1
 let g:ale_linters_explicit = 1
+let g:LanguageClient_serverCommands = {}
 let g:LanguageClient_diagnosticsEnable = 0
-let g:LanguageClient_diagnosticsDisplay = {
-\   1: { 'signTexthl': 'ALEError' },
-\   2: { 'signTexthl': 'ALEWarning' },
-\   3: { 'signTexthl': 'ALEInfo' },
-\   4: { 'signTexthl': 'ALEInfo' },
-\}
-let g:LanguageClient_virtualTextPrefix = 'ℹ️ '
+let g:LanguageClient_diagnosticsList = 'Location'
+let g:LanguageClient_diagnosticsDisplay =
+\{ 1: { 'name': 'Error', 'texthl': 'ALEError', 'signText': '>>', 'signTexthl': 'error', 'virtualTexthl': 'Error', },
+\  2: { 'name': 'Warning', 'texthl': 'ALEWarning', 'signText': '--', 'signTexthl': 'Todo', 'virtualTexthl': 'Todo', },
+\  3: { 'name': 'Information', 'texthl': 'ALEInfo', 'signText': '--', 'signTexthl': 'Todo', 'virtualTexthl': 'Todo', },
+\  4: { 'name': 'Hint', 'texthl': 'ALEInfo', 'signText': '--', 'signTexthl': 'Todo', 'virtualTexthl': 'Todo', }, }
+let g:LanguageClient_virtualTextPrefix = '[𝑖] '
+let g:LanguageClient_useVirtualText = 'CodeLens'
 hi ALEError term=underline cterm=underline gui=undercurl
 hi ALEWarning term=NONE cterm=NONE gui=NONE
 hi ALEInfo term=NONE cterm=NONE gui=NONE
@@ -266,6 +269,16 @@ func! LCMaps()
     nmap <buffer><silent><leader><M-\> :call LanguageClient#textDocument_definition({'gotoCmd': IsWide() ? 'vsp' : 'sp'})<CR>
     nmap <buffer><silent><leader>rf :call LanguageClient#textDocument_references()<CR>
     nmap <buffer><silent><leader>rn :call LanguageClient#textDocument_rename()<CR>
+    nmap <buffer><silent><leader>cl :if IsWide() \| vsp \| else \| sp \| endif \| call LanguageClient#handleCodeLensAction()<CR>
+endfunc
+func! LCSetup()
+    let g:LanguageClient_diagnosticsEnable = 1
+    " HACK: to hide unnecessarily overengineered and very annoying LC sign stuff
+    augroup FixLcSigns | au!
+        au CursorMoved * if len(getloclist(0)) > 0 | set signcolumn=yes | else | set signcolumn< | endif
+    augroup END
+    map <buffer> ]a :lne<CR>
+    map <buffer> [a :lN<CR>
 endfunc
 
 " open tag in a new tab/split, (preview: <c-w>}). <C-w>] is affected by switchbuf
@@ -296,7 +309,7 @@ let g:rust_fold = 1
 let g:rust_keep_autopairs_default = 1
 if executable('rust-analyzer')
     let g:ale_rust_rls_config = { 'rust': { 'racer_completion': v:false } }
-    let g:LanguageClient_serverCommands = { 'rust': ['rust-analyzer'] }
+    let g:LanguageClient_serverCommands.rust = ['rust-analyzer']
 endif
 " NOTE: External crate completion doesn't work without extern crate declaration
 " }}}
@@ -345,6 +358,17 @@ func! Zathura(file, ...)
         call jobstart(['zathura', a:file, '--fork'])
     endif
 endfunc
+" }}}
+
+" ocaml {{{
+let g:ale_ocaml_ocamlformat_options = '--enable-outside-detected-project'
+let g:LanguageClient_serverCommands.ocaml = ['ocamllsp']
+" TODO ocamllsp uses ocaml code for hover. need to set hover ft=ocaml. how?
+augroup SetupOCaml | au!
+    au FileType ocaml setl tabstop=2 shiftwidth=2
+    au FileType ocaml call LCMaps() | call LCSetup()
+    au FileType ocaml if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({}, ["'"]) | endif
+augroup END
 " }}}
 
 " search & fzf {{{
