@@ -1,0 +1,10 @@
+digraph mt 8614
+digraph ** 8727
+digraph oo 9679
+digraph OO 9711
+digraph mt 8614
+digraph \|- 8866
+digraph \|= 8872
+digraph ~> 8669
+digraph [\| 10214
+digraph \|] 10215

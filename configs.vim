@@ -83,7 +83,7 @@ call plug#end()
 
 " Basic {{{
 set mouse=a
-set number ruler
+set number ruler cursorline
 set foldcolumn=1 foldnestmax=5
 set scrolloff=2
 set showtabline=1
@@ -91,7 +91,7 @@ set showtabline=1
 set tabstop=4 shiftwidth=4
 set expandtab smarttab
 set autoindent smartindent
-" TODO: insert indents at InsertEnter
+" TODO: insert indents at InsertEnter or emacs-like tab
 
 " indent the wrapped line, w/ `> ` at the start
 set wrap linebreak breakindent showbreak=>\ 
@@ -192,6 +192,7 @@ else
     hi Special guifg=#735050 | hi Conceal guifg=#735050
     hi Statement gui=bold
     let g:lightline.colorscheme = 'solarized'
+    " TODO: fzf themes
 endif
 " }}}
 
@@ -344,15 +345,17 @@ let g:ale_python_pyls_config = {
 " Markdown, Pandoc, Tex {{{
 let g:tex_flavor = "latex"
 let g:tex_noindent_env = '\v\w+.?'
-" use PandocHighlight or TODO: stuff from gabrielelana/vim-markdown
 let g:pandoc#syntax#codeblocks#embeds#langs = ["python", "cpp", "rust"]
-let g:pandoc#modules#enabled = ["formatting", "keyboard", "toc", "hypertext"]
+let g:pandoc#modules#enabled = ["formatting", "keyboard", "hypertext"]
 let g:pandoc#folding#level = 99
 let g:pandoc#hypertext#use_default_mappings = 0
 let g:pandoc#syntax#use_definition_lists = 0
 let g:pandoc#syntax#protect#codeblocks = 0
 let g:vimtex_fold_enabled = 1
+" TODO: don't fold embedded code. something enables folding
 let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_auto_insert_bullets = 0
+let g:vim_markdown_new_list_item_indent = 0
 func! Zathura(file, ...)
     if get(a:, 1, 1)
         call jobstart(['zathura', a:file, '--fork'])
@@ -395,7 +398,7 @@ func! VisualStar()
 endfunc
 nnoremap / :let g:search_mode='/'<CR>/
 
-let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1, 'border': 'top', 'highlight': 'VertSplit' } }
+let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.5, 'yoffset': 1, 'border': 'top', 'highlight': 'VertSplit' } }
 
 " TODO: cycle between Grepf and Grep
 nnoremap <C-g>      :<C-u>Grep<space>
@@ -472,7 +475,9 @@ endfunc
 " }}}
 
 " Motion, insert mode, ... {{{
-" HJKL for wrapped lines. <leader>J for joins
+" just set nowrap instead of explicit linewise ops
+noremap j gj
+noremap k gk
 noremap <S-j> gj
 noremap <S-k> gk
 noremap <S-h> h
@@ -488,6 +493,7 @@ nnoremap <M-0> ^w
 vnoremap <M-0> ^w
 
 let g:sneak#s_next = 1
+let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
 map f <Plug>Sneak_f
 map F <Plug>Sneak_F
@@ -665,7 +671,9 @@ nmap <silent><leader>gg :GitGutterToggle<cr>
 let g:EditorConfig_exclude_patterns = ['.*[.]git/.*', 'fugitive://.*', 'scp://.*']
 
 let g:mkdp_auto_close = 0
-let g:mkdp_preview_options = { 'disable_sync_scroll': 1 }
+let g:mkdp_preview_options = {
+            \ 'mkit': { 'typographer': v:false },
+            \ 'disable_sync_scroll': 1 }
 
 let g:float_preview#winhl = 'Normal:PmenuSel,NormalNC:PmenuSel'
 
