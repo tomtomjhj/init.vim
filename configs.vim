@@ -75,10 +75,12 @@ Plug 'lervag/vimtex'
 " Plug 'LumaKernel/coquille' (see issue)
 " Plug 'https://framagit.org/tyreunom/coquille', { 'do': ':UpdateRemotePlugins' }
 " NOTE: doesn't work in nvim, not async
-Plug 'let-def/vimbufsync' | Plug 'whonore/Coqtail'
+Plug 'let-def/vimbufsync' | Plug 'whonore/Coqtail' | let g:coqtail_nomap = 1
 " Plug 'puremourning/vimspector'
 Plug 'cespare/vim-toml'
 Plug 'rhysd/vim-llvm'
+Plug 'fatih/vim-go'
+" Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] }
 
 call plug#end()
 " }}}
@@ -96,14 +98,16 @@ set autoindent smartindent
 " TODO: insert indents at InsertEnter or emacs-like tab
 
 " indent the wrapped line, w/ `> ` at the start
-" TODO: showbreak randomly disappears maybe because of coc
+" TODO: coc resets showbreak on hover.
+" showbreak is not local in nvim!
+" https://github.com/vim/vim/commit/ee85702c10495041791f728e977b86005c4496e8
 set wrap linebreak breakindent showbreak=>\ 
 set backspace=eol,start,indent
 set whichwrap+=<,>,[,],h,l
 
 let mapleader = ","
-set timeoutlen=420
-set updatetime=1500
+set timeoutlen=432
+set updatetime=1234
 
 let $LANG='en'
 set langmenu=en
@@ -238,7 +242,7 @@ hi ALEInfo term=NONE cterm=NONE gui=NONE
 
 let g:coc_config_home = '~/.vim'
 let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab']
-hi! link CocFloating PmenuSel
+" NOTE: stuff highlighted as Normal -> bg doesn't match in floatwin
 
 " NOTE: <M- maps are broken in vim
 " TODO: Don't use ale map by default. First use stuff like K and C-] as
@@ -293,7 +297,7 @@ endif
 
 " C,C++ {{{
 " TODO: this should be based on tabstop and shiftwidth, see editorconfig doc
-let g:ale_c_clangformat_options = '-style="{BasedOnStyle: llvm, IndentWidth: 4, AccessModifierOffset: -4}"'
+" let g:ale_c_clangformat_options = '-style="{BasedOnStyle: llvm, IndentWidth: 4, AccessModifierOffset: -4}"'
 augroup SetupCCpp | au!
     au FileType c,cpp setl tabstop=2 shiftwidth=2
     au FileType c,cpp nmap <buffer>zM :set foldmethod=syntax foldlevel=99\|unmap <lt>buffer>zM<CR>zM
@@ -349,6 +353,13 @@ let g:ale_ocaml_ocamlformat_options = '--enable-outside-detected-project'
 let g:ocaml_highlight_operators = 1
 " }}}
 
+" go {{{
+let g:go_highlight_operators = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_types = 1
+" }}}
+
 " search & fzf {{{
 " search_mode: which command last set @/?
 " `*`, `v_*` without moving the cursor. Reserve @c for the raw original text
@@ -375,10 +386,11 @@ nnoremap / :let g:search_mode='/'<CR>/
 
 let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.5, 'yoffset': 1, 'border': 'top', 'highlight': 'VertSplit' } }
 
-" TODO: cycle between Grepf and Grep
+" TODO: start from Grepf and switch to Grep
+" TODO context search: context format is different, format parsing is done by preview.sh
 nnoremap <C-g>      :<C-u>Grep<space>
 nnoremap <leader>g/ :<C-u>Grep <C-r>=RgInput(@/)<CR>
-nnoremap <leader>gw :<C-u>Grep <C-r>=expand("<cword>")<CR>
+nnoremap <leader>gw :<C-u>Grep \b<C-r>=expand("<cword>")<CR>\b
 nnoremap <leader>gf :<C-u>Grepf<space>
 noremap  <leader>b  :<C-u>Buffers<CR>
 noremap  <C-f>      :<C-u>Files<CR>
@@ -401,6 +413,7 @@ command! -bang -nargs=? -complete=dir Files call Files(<q-args>)
 
 func! FzfOpts(arg, spec)
     " TODO: use merge()?
+    " TODO: ask the directory to run (double 3)
     let l:opts = string(a:arg)
     " fullscreen
     if l:opts =~ '2' | let a:spec['window'] = { 'width': 1, 'height': (&lines-(tabpagenr()>1)-1.0)/&lines, 'yoffset': 1, 'border': 'top', 'highlight': 'VertSplit' } | endif
@@ -655,6 +668,7 @@ let g:float_preview#winhl = 'Normal:PmenuSel,NormalNC:PmenuSel'
 func! SynStackName()
     return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunc
+nmap <leader>st :echo SynStackName()<CR>
 func! InSynStack(type)
     for i in synstack(line('.'), col('.'))
         if synIDattr(i, 'name') =~ a:type

@@ -108,6 +108,7 @@ augroup end
 * <https://superuser.com/a/1454131/1089985>
 * <https://blog.antoyo.xyz/vim-tips>
 * `/_CTRL-L`, `/_CTRL-G`, `/_CTRL-T`
+* yank matching lines <https://stackoverflow.com/a/1475069>
 
 # pitfalls
 * `:h map-bar`

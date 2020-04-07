@@ -188,31 +188,31 @@ syntax clear
     syn keyword pythonBuiltinFunc   print
 
     " Builtin exceptions and warnings
-    " syn keyword pythonExClass   BaseException
-    " syn keyword pythonExClass   Exception StandardError ArithmeticError
-    " syn keyword pythonExClass   LookupError EnvironmentError
-    " syn keyword pythonExClass   AssertionError AttributeError BufferError EOFError
-    " syn keyword pythonExClass   FloatingPointError GeneratorExit IOError
-    " syn keyword pythonExClass   ImportError IndexError KeyError
-    " syn keyword pythonExClass   KeyboardInterrupt MemoryError NameError
-    " syn keyword pythonExClass   NotImplementedError OSError OverflowError
-    " syn keyword pythonExClass   ReferenceError RuntimeError StopIteration
-    " syn keyword pythonExClass   SyntaxError IndentationError TabError
-    " syn keyword pythonExClass   SystemError SystemExit TypeError
-    " syn keyword pythonExClass   UnboundLocalError UnicodeError
-    " syn keyword pythonExClass   UnicodeEncodeError UnicodeDecodeError
-    " syn keyword pythonExClass   UnicodeTranslateError ValueError VMSError
-    " syn keyword pythonExClass   BlockingIOError ChildProcessError ConnectionError
-    " syn keyword pythonExClass   BrokenPipeError ConnectionAbortedError
-    " syn keyword pythonExClass   ConnectionRefusedError ConnectionResetError
-    " syn keyword pythonExClass   FileExistsError FileNotFoundError InterruptedError
-    " syn keyword pythonExClass   IsADirectoryError NotADirectoryError PermissionError
-    " syn keyword pythonExClass   ProcessLookupError TimeoutError
-    " syn keyword pythonExClass   WindowsError ZeroDivisionError
-    " syn keyword pythonExClass   Warning UserWarning BytesWarning DeprecationWarning
-    " syn keyword pythonExClass   PendingDepricationWarning SyntaxWarning
-    " syn keyword pythonExClass   RuntimeWarning FutureWarning
-    " syn keyword pythonExClass   ImportWarning UnicodeWarning
+    syn keyword pythonExClass   BaseException
+    syn keyword pythonExClass   Exception StandardError ArithmeticError
+    syn keyword pythonExClass   LookupError EnvironmentError
+    syn keyword pythonExClass   AssertionError AttributeError BufferError EOFError
+    syn keyword pythonExClass   FloatingPointError GeneratorExit IOError
+    syn keyword pythonExClass   ImportError IndexError KeyError
+    syn keyword pythonExClass   KeyboardInterrupt MemoryError NameError
+    syn keyword pythonExClass   NotImplementedError OSError OverflowError
+    syn keyword pythonExClass   ReferenceError RuntimeError StopIteration
+    syn keyword pythonExClass   SyntaxError IndentationError TabError
+    syn keyword pythonExClass   SystemError SystemExit TypeError
+    syn keyword pythonExClass   UnboundLocalError UnicodeError
+    syn keyword pythonExClass   UnicodeEncodeError UnicodeDecodeError
+    syn keyword pythonExClass   UnicodeTranslateError ValueError VMSError
+    syn keyword pythonExClass   BlockingIOError ChildProcessError ConnectionError
+    syn keyword pythonExClass   BrokenPipeError ConnectionAbortedError
+    syn keyword pythonExClass   ConnectionRefusedError ConnectionResetError
+    syn keyword pythonExClass   FileExistsError FileNotFoundError InterruptedError
+    syn keyword pythonExClass   IsADirectoryError NotADirectoryError PermissionError
+    syn keyword pythonExClass   ProcessLookupError TimeoutError
+    syn keyword pythonExClass   WindowsError ZeroDivisionError
+    syn keyword pythonExClass   Warning UserWarning BytesWarning DeprecationWarning
+    syn keyword pythonExClass   PendingDepricationWarning SyntaxWarning
+    syn keyword pythonExClass   RuntimeWarning FutureWarning
+    syn keyword pythonExClass   ImportWarning UnicodeWarning
 
 " }}}
 
@@ -226,10 +226,10 @@ syn sync minlines=400
     hi def link  pythonInclude      Include
     hi def link  pythonFunction     Function
     hi def link  pythonClass        Type
-    hi def link  pythonParameters   Normal
-    hi def link  pythonParam        Normal
-    hi def link  pythonBrackets     Normal
-    hi def link  pythonClassParameters Normal
+    " hi def link  pythonParameters   Normal
+    " hi def link  pythonParam        Normal
+    " hi def link  pythonBrackets     Normal
+    " hi def link  pythonClassParameters Normal
     hi def link  pythonSelf         Constant
 
     hi def link  pythonConditional  Conditional
@@ -284,6 +284,6 @@ syn sync minlines=400
     hi def link  pythonBuiltinObj   Constant
     hi def link  pythonBuiltinFunc  Function
 
-    hi def link  pythonExClass      Structure
+    hi def link  pythonExClass      pythonClass
 
 " }}}
