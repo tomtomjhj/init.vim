@@ -8,3 +8,5 @@ digraph \|= 8872
 digraph ~> 8669
 digraph [\| 10214
 digraph \|] 10215
+digraph bt 8869
+digraph tp 8868

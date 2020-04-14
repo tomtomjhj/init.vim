@@ -10,7 +10,9 @@ Plug 'lifepillar/vim-solarized8'
 Plug 'tomtomjhj/zenbruh.vim'
 
 " general
-if !has('nvim') | Plug 'tpope/vim-sensible' | endif
+if !has('nvim')
+    Plug 'tpope/vim-sensible'
+endif
 Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
@@ -42,23 +44,23 @@ augroup END
 
 " completion
 Plug 'ervandew/supertab'
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-  Plug 'ncm2/float-preview.nvim' | set completeopt-=preview
-else
-  Plug 'roxma/nvim-yarp' | Plug 'roxma/vim-hug-neovim-rpc'
-  Plug 'Shougo/deoplete.nvim'
-endif
+" if has('nvim')
+"   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"   Plug 'ncm2/float-preview.nvim' | set completeopt-=preview
+" else
+"   Plug 'roxma/nvim-yarp' | Plug 'roxma/vim-hug-neovim-rpc'
+"   Plug 'Shougo/deoplete.nvim'
+" endif
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 
-augroup Completions | au!
-  au InsertEnter * call deoplete#enable() | au! Completions
-augroup END
+" augroup Completions | au!
+"   au InsertEnter * call deoplete#enable() | au! Completions
+" augroup END
 
 " lanauges
 " TODO: pandoc-syntax, ocaml, haskell -> just use after/syntax
 Plug 'dense-analysis/ale'
-Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh', 'for': ['rust', 'ocaml'] }
+Plug 'neoclide/coc.nvim', { 'branch': 'release' } | Plug 'neoclide/jsonc.vim'
 Plug 'tomtomjhj/vim-markdown'
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
 Plug 'tomtomjhj/vim-pandoc-syntax'
@@ -67,7 +69,7 @@ Plug 'tomtomjhj/vim-ocaml'
 Plug 'tomtomjhj/haskell-vim'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'lervag/vimtex'
-Plug 'Shougo/deoplete-clangx'
+" Plug 'Shougo/deoplete-clangx'
 " Plug 'parsonsmatt/intero-neovim'
 " Plug 'tomlion/vim-solidity'
 " Plug 'LumaKernel/coquille' (see issue)
@@ -94,12 +96,14 @@ set autoindent smartindent
 " TODO: insert indents at InsertEnter or emacs-like tab
 
 " indent the wrapped line, w/ `> ` at the start
+" TODO: showbreak randomly disappears maybe because of coc
 set wrap linebreak breakindent showbreak=>\ 
 set backspace=eol,start,indent
 set whichwrap+=<,>,[,],h,l
 
 let mapleader = ","
 set timeoutlen=420
+set updatetime=1500
 
 let $LANG='en'
 set langmenu=en
@@ -116,6 +120,7 @@ set ignorecase smartcase
 set hlsearch incsearch
 
 set noerrorbells novisualbell t_vb=
+set shortmess+=c
 
 set nobackup nowritebackup noswapfile
 set undofile undodir=~/.vim/undodir
@@ -139,6 +144,7 @@ augroup BasicSetup | au!
     au BufRead,BufNewFile *.k set filetype=k
     au BufRead,BufNewFile *.mir set filetype=rust
     au FileType lisp if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({}, ["'"]) | endif
+    au FileType help nnoremap <silent><buffer> <M-.> :h <C-R>=expand('<cword>')<CR><CR>
     au VimResized * let &pumheight = min([&window/4, 20])
 augroup END
 
@@ -197,17 +203,14 @@ endif
 " }}}
 
 " Completion {{{
-
 let g:SuperTabDefaultCompletionType = '<c-n>'
 let g:SuperTabClosePreviewOnPopupClose = 1
 
-let g:deoplete#enable_at_startup = 0
-call deoplete#custom#source('around', 'min_pattern_length', 1)
-call deoplete#custom#source('ale', { 'max_info_width': 0, 'max_menu_width': 0 })
-call deoplete#custom#source('LanguageClient', { 'max_info_width': 0, 'max_menu_width': 0 })
-call deoplete#custom#var('omni', 'input_patterns', { 'tex': g:vimtex#re#deoplete })
-call deoplete#custom#var('around', { 'mark_above': '[↑]', 'mark_below': '[↓]', 'mark_changes': '[*]' })
-" set ignore_case false
+" let g:deoplete#enable_at_startup = 0
+" call deoplete#custom#source('around', 'min_pattern_length', 1)
+" call deoplete#custom#source('ale', { 'max_info_width': 0, 'max_menu_width': 0 })
+" call deoplete#custom#var('omni', 'input_patterns', { 'tex': g:vimtex#re#deoplete })
+" call deoplete#custom#var('around', { 'mark_above': '[↑]', 'mark_below': '[↓]', 'mark_changes': '[*]' })
 
 let g:UltiSnipsExpandTrigger = '<c-l>'
 " }}}
@@ -216,9 +219,7 @@ let g:UltiSnipsExpandTrigger = '<c-l>'
 let g:ale_linters = {
             \ 'c': ['clang'],
             \ 'cpp': ['clang'],
-            \ 'python': ['pyls'],
             \ 'rust': ['rls'],
-            \ 'tex': ['texlab'],
             \ }
 let g:ale_fixers = {
             \ 'c': ['clang-format'],
@@ -231,23 +232,19 @@ let g:ale_fixers = {
             \ }
 let g:ale_set_highlights = 1
 let g:ale_linters_explicit = 1
-let g:LanguageClient_serverCommands = {}
-let g:LanguageClient_diagnosticsEnable = 0
-let g:LanguageClient_diagnosticsList = 'Location'
-let g:LanguageClient_diagnosticsDisplay =
-\{ 1: { 'name': 'Error', 'texthl': 'ALEError', 'signText': '>>', 'signTexthl': 'error', 'virtualTexthl': 'Error', },
-\  2: { 'name': 'Warning', 'texthl': 'ALEWarning', 'signText': '--', 'signTexthl': 'Todo', 'virtualTexthl': 'Todo', },
-\  3: { 'name': 'Information', 'texthl': 'ALEInfo', 'signText': '--', 'signTexthl': 'Todo', 'virtualTexthl': 'Todo', },
-\  4: { 'name': 'Hint', 'texthl': 'ALEInfo', 'signText': '--', 'signTexthl': 'Todo', 'virtualTexthl': 'Todo', }, }
-let g:LanguageClient_virtualTextPrefix = '[𝑖] '
-let g:LanguageClient_useVirtualText = 'CodeLens'
 hi ALEError term=underline cterm=underline gui=undercurl
 hi ALEWarning term=NONE cterm=NONE gui=NONE
 hi ALEInfo term=NONE cterm=NONE gui=NONE
 
-" TODO: <M- maps are broken in vim
+let g:coc_config_home = '~/.vim'
+let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab']
+hi! link CocFloating PmenuSel
+
+" NOTE: <M- maps are broken in vim
+" TODO: Don't use ale map by default. First use stuff like K and C-] as
+" default and map ale stuff manually
 nmap <leader>ad <Plug>(ale_detail)<C-W>p
-nmap <leader>af <Plug>(ale_fix)
+nmap <leader>fm <Plug>(ale_fix)
 nmap <M-.> <Plug>(ale_hover)
 nmap <M-]> <Plug>(ale_go_to_definition)
 nmap <silent><M-\> <Plug>(ale_go_to_definition_in_tab)
@@ -262,25 +259,6 @@ nmap [a <Plug>(ale_previous_wrap)
 nmap [A <Plug>(ale_prevous_wrap_error)
 nmap <M-o> <C-o>
 nmap <M-i> <C-i>
-
-func! LCMaps()
-    nmap <buffer><silent><M-.> :call LanguageClient#textDocument_hover()<CR>
-    nmap <buffer><silent><M-]> :call LanguageClient#textDocument_definition()<CR>
-    nmap <buffer><silent><M-\> :call LanguageClient#textDocument_definition({'gotoCmd': 'tab split'})<CR>
-    nmap <buffer><silent><leader><M-\> :call LanguageClient#textDocument_definition({'gotoCmd': IsWide() ? 'vsp' : 'sp'})<CR>
-    nmap <buffer><silent><leader>rf :call LanguageClient#textDocument_references()<CR>
-    nmap <buffer><silent><leader>rn :call LanguageClient#textDocument_rename()<CR>
-    nmap <buffer><silent><leader>cl :if IsWide() \| vsp \| else \| sp \| endif \| call LanguageClient#handleCodeLensAction()<CR>
-endfunc
-func! LCSetup()
-    let g:LanguageClient_diagnosticsEnable = 1
-    " HACK: to hide unnecessarily overengineered and very annoying LC sign stuff
-    augroup FixLcSigns | au!
-        au CursorMoved * if len(getloclist(0)) > 0 | set signcolumn=yes | else | set signcolumn< | endif
-    augroup END
-    map <buffer> ]a :lne<CR>
-    map <buffer> [a :lN<CR>
-endfunc
 
 " open tag in a new tab/split, (preview: <c-w>}). <C-w>] is affected by switchbuf
 noremap <silent><C-\> :tab split<CR><C-]>
@@ -310,15 +288,14 @@ let g:rust_fold = 1
 let g:rust_keep_autopairs_default = 1
 if executable('rust-analyzer')
     let g:ale_rust_rls_config = { 'rust': { 'racer_completion': v:false } }
-    let g:LanguageClient_serverCommands.rust = ['rust-analyzer']
 endif
-" NOTE: External crate completion doesn't work without extern crate declaration
 " }}}
 
 " C,C++ {{{
 " TODO: this should be based on tabstop and shiftwidth, see editorconfig doc
 let g:ale_c_clangformat_options = '-style="{BasedOnStyle: llvm, IndentWidth: 4, AccessModifierOffset: -4}"'
 augroup SetupCCpp | au!
+    au FileType c,cpp setl tabstop=2 shiftwidth=2
     au FileType c,cpp nmap <buffer>zM :set foldmethod=syntax foldlevel=99\|unmap <lt>buffer>zM<CR>zM
 augroup END
 " }}}
@@ -340,6 +317,9 @@ let g:ale_python_pyls_config = {
             \   }
             \ }
             \}
+augroup SetupPython | au!
+    au FileType python call SetupCoc()
+augroup END
 " }}}
 
 " Markdown, Pandoc, Tex {{{
@@ -356,6 +336,7 @@ let g:vimtex_fold_enabled = 1
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_auto_insert_bullets = 0
 let g:vim_markdown_new_list_item_indent = 0
+let g:vim_markdown_frontmatter = 1
 func! Zathura(file, ...)
     if get(a:, 1, 1)
         call jobstart(['zathura', a:file, '--fork'])
@@ -365,13 +346,7 @@ endfunc
 
 " ocaml {{{
 let g:ale_ocaml_ocamlformat_options = '--enable-outside-detected-project'
-let g:LanguageClient_serverCommands.ocaml = ['ocamllsp']
-" TODO ocamllsp uses ocaml code for hover. need to set hover ft=ocaml. how?
-augroup SetupOCaml | au!
-    au FileType ocaml setl tabstop=2 shiftwidth=2
-    au FileType ocaml call LCMaps() | call LCSetup()
-    au FileType ocaml if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({}, ["'"]) | endif
-augroup END
+let g:ocaml_highlight_operators = 1
 " }}}
 
 " search & fzf {{{

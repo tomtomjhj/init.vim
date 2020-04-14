@@ -1,0 +1,29 @@
+{
+    "coc.preferences.extensionUpdateCheck": "never", // :CocUpdate
+	"list.insertMappings": {
+		"<C-q>": "feedkeys:\\<ESC>"
+    },
+	"list.normalMappings": {
+		"<C-q>": "feedkeys:\\<ESC>"
+    },
+    "diagnostic.displayByAle": true,
+    "codeLens.enable": true,
+    "languageserver": {
+        "ocaml-lsp": {
+            "command": "opam",
+            "args": ["config", "exec", "--", "ocamllsp"],
+            "filetypes": ["ocaml"]
+        },
+    },
+    "rust-analyzer": {
+        "serverPath": "~/.cargo/bin/rust-analyzer",
+        "diagnostics.enable": false
+    },
+    "python": {
+        "linting": {
+            "pylintArgs":  ["-dR", "-dC", "-dW0614", "-dW0621"]
+        }
+
+    },
+    "coc.source.ultisnips.priority": 80, // "coc.source": {...} didn't work
+}

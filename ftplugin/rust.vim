@@ -2,9 +2,6 @@ if !exists('b:AutoPairs')
     let b:AutoPairs = AutoPairsDefine({'|': '|'}, ["'"])
 endif
 
-if executable('rust-analyzer')
-    call LCMaps()
-endif
-
+call SetupCoc()
 nmap <buffer><leader>C :AsyncRun -program=make -post=OQ test --no-run<CR>
-vmap <buffer><leader>af :RustFmtRange<CR>
+vmap <buffer><leader>fm :RustFmtRange<CR>
