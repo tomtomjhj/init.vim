@@ -6,7 +6,9 @@
 	"list.normalMappings": {
 		"<C-q>": "feedkeys:\\<ESC>"
     },
-    "diagnostic.displayByAle": true,
+    "diagnostic.displayByAle": false, // setting this true makes signs keep appear/disappearing
+    "diagnostic.enableHighlightLineNumber": false,
+    "diagnostic.warningSign": ">>",
     "codeLens.enable": true,
     "languageserver": {
         "ocaml-lsp": {
@@ -23,7 +25,7 @@
         "linting": {
             "pylintArgs":  ["-dR", "-dC", "-dW0614", "-dW0621"]
         }
-
     },
     "coc.source.ultisnips.priority": 80, // "coc.source": {...} didn't work
+    "coc.source.word.shortcut": "W",
 }

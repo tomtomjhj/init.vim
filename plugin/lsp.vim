@@ -1,3 +1,12 @@
+function! SetupALELSP()
+  nmap <M-.> <Plug>(ale_hover)
+  nmap <M-]> <Plug>(ale_go_to_definition)
+  nmap <silent><M-\> <Plug>(ale_go_to_definition_in_tab)
+  nmap <silent><leader><M-\> :if IsWide() \| ALEGoToDefinitionInVSplit \| else \| ALEGoToDefinitionInSplit \| endif<CR>
+  nmap <leader>rn :ALERename<CR>
+  nmap <leader>rf <Plug>(ale_find_references)
+endfunction
+
 function! SetupCoc()
   nmap     <silent><buffer>        <M-]> <Plug>(coc-definition)
   nmap     <silent><buffer>        <M-\> :call CocAction('jumpDefinition', 'tabe')<CR>
@@ -15,6 +24,8 @@ function! SetupCoc()
   omap             <buffer>        af    <Plug>(coc-funcobj-a)
   nmap             <buffer><leader>ac    <Plug>(coc-codelens-action)
   nmap             <buffer><leader>cl    :<C-u>CocList | " commands, outline, actions, ...
+  nmap     <silent><buffer>        [a    <Plug>(coc-diagnostic-prev)
+  nmap     <silent><buffer>        ]a    <Plug>(coc-diagnostic-next)
 endfunction
 " TODO: how does CocList preview stuff work? so wow.
 
@@ -26,6 +37,7 @@ augroup CocStuff
   " Highlight the symbol and its references when holding the cursor.
   " autocmd CursorHold * silent call CocActionAsync('highlight')
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+  autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
 augroup end
 
 " xmap <leader>a  <Plug>(coc-codeaction-selected)

@@ -145,6 +145,7 @@ augroup BasicSetup | au!
     " Return to last edit position when opening files
     au BufWinEnter * if line("'\"") > 1 && line("'\"") <= line("$") | exec "norm! g'\"" | endif
     au BufWritePost ~/.vim/configs.vim source ~/.vim/configs.vim
+    au FileType json call SetupCoc()
     au BufRead,BufNewFile *.k set filetype=k
     au BufRead,BufNewFile *.mir set filetype=rust
     au FileType lisp if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({}, ["'"]) | endif
@@ -162,7 +163,7 @@ let g:lightline = {
       \ 'active': {
       \   'left': [ ['mode', 'paste'],
       \             ['git', 'readonly', 'shortrelpath', 'modified'] ],
-      \   'right': [ ['lineinfo'], ['percent'], ['linter_checking', 'linter_errors', 'linter_warnings'], ['asyncrun'] ]
+      \   'right': [ ['lineinfo'], ['percent'], ['coc', 'ale_checking', 'ale_errors', 'ale_warnings'], ['asyncrun'] ]
       \ },
       \ 'component': {
       \   'readonly': '%{&filetype=="help"?"":&readonly?"🔒":""}',
@@ -171,17 +172,20 @@ let g:lightline = {
       \   'git': '%{GitStatusline()}',
       \   'asyncrun': '%{g:asyncrun_status}',
       \ },
+      \ 'component_function': {
+      \   'coc': 'coc#status'
+      \ },
       \ 'component_expand': {
-      \  'linter_checking': 'lightline#ale#checking',
-      \  'linter_warnings': 'lightline#ale#warnings',
-      \  'linter_errors': 'lightline#ale#errors',
-      \  'linter_ok': 'lightline#ale#ok',
+      \  'ale_checking': 'lightline#ale#checking',
+      \  'ale_warnings': 'lightline#ale#warnings',
+      \  'ale_errors': 'lightline#ale#errors',
+      \  'ale_ok': 'lightline#ale#ok',
       \ },
       \ 'component_type': {
-      \     'linter_checking': 'left',
-      \     'linter_warnings': 'warning',
-      \     'linter_errors': 'error',
-      \     'linter_ok': 'left',
+      \     'ale_checking': 'left',
+      \     'ale_warnings': 'warning',
+      \     'ale_errors': 'error',
+      \     'ale_ok': 'left',
       \ },
       \ 'component_visible_condition': {
       \   'readonly': '(&filetype!="help"&& &readonly)',
@@ -241,28 +245,26 @@ hi ALEWarning term=NONE cterm=NONE gui=NONE
 hi ALEInfo term=NONE cterm=NONE gui=NONE
 
 let g:coc_config_home = '~/.vim'
-let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab']
+let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab', 'coc-word']
 " NOTE: stuff highlighted as Normal -> bg doesn't match in floatwin
+hi! link CocErrorSign ZenbruhErrorLine
+hi! link CocWarningSign ZenbruhWarnLine
+hi! link CocInfoSign ZenbruhInfoLine
+hi! link CocHintSign ZenbruhInfoLine
+hi! link CocErrorFloat NONE
+hi! link CocWarningFloat CocErrorFloat
+hi! link CocInfoFloat CocErrorFloat
+hi! link CocHintFloat CocErrorFloat
 
 " NOTE: <M- maps are broken in vim
-" TODO: Don't use ale map by default. First use stuff like K and C-] as
-" default and map ale stuff manually
-nmap <leader>ad <Plug>(ale_detail)<C-W>p
 nmap <leader>fm <Plug>(ale_fix)
-nmap <M-.> <Plug>(ale_hover)
-nmap <M-]> <Plug>(ale_go_to_definition)
-nmap <silent><M-\> <Plug>(ale_go_to_definition_in_tab)
-nmap <silent><leader><M-\> :if IsWide() \| ALEGoToDefinitionInVSplit \| else \| ALEGoToDefinitionInSplit \| endif<CR>
-nmap <leader>ah <Plug>(ale_hover)
-nmap <leader>aj <Plug>(ale_go_to_definition)
-nmap <leader>rn :ALERename<CR>
-nmap <leader>rf <Plug>(ale_find_references)
+nmap <leader>ad <Plug>(ale_detail)<C-W>p
 nmap ]a <Plug>(ale_next_wrap)
-nmap ]A <Plug>(ale_next_wrap_error)
 nmap [a <Plug>(ale_previous_wrap)
-nmap [A <Plug>(ale_prevous_wrap_error)
-nmap <M-o> <C-o>
-nmap <M-i> <C-i>
+noremap  <M-.> K
+noremap  <M-]> <C-]>
+nnoremap <M-o> <C-o>
+nnoremap <M-i> <C-i>
 
 " open tag in a new tab/split, (preview: <c-w>}). <C-w>] is affected by switchbuf
 noremap <silent><C-\> :tab split<CR><C-]>
