@@ -10,3 +10,6 @@ digraph [\| 10214
 digraph \|] 10215
 digraph bt 8869
 digraph tp 8868
+" override crappy angle bracket
+digraph </ 10216
+digraph /> 10217

@@ -18,14 +18,13 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter', { 'on': 'GitGutterToggle' }
 Plug 'preservim/nerdcommenter', { 'on': ['<plug>NERDCommenterComment', '<plug>NERDCommenterToggle', '<plug>NERDCommenterInsert', '<plug>NERDCommenterSexy'] }
 Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'tomtomjhj/auto-pairs'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': { -> fzf#install() }}
 Plug 'junegunn/fzf.vim'
-Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment'
+Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment' | Plug 'michaeljsmith/vim-indent-object'
 Plug 'rhysd/git-messenger.vim'
 Plug 'Konfekt/FastFold'
 
@@ -58,7 +57,6 @@ Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 " augroup END
 
 " lanauges
-" TODO: pandoc-syntax, ocaml, haskell -> just use after/syntax
 Plug 'dense-analysis/ale'
 Plug 'neoclide/coc.nvim', { 'branch': 'release' } | Plug 'neoclide/jsonc.vim'
 Plug 'tomtomjhj/vim-markdown'
@@ -66,7 +64,7 @@ let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
 Plug 'tomtomjhj/vim-pandoc-syntax'
 Plug 'rust-lang/rust.vim' | Plug 'tomtomjhj/vim-rust-syntax-ext'
 Plug 'tomtomjhj/vim-ocaml'
-Plug 'tomtomjhj/haskell-vim'
+Plug 'tomtomjhj/haskell-vim', { 'branch': 'custom' }
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'lervag/vimtex'
 " Plug 'Shougo/deoplete-clangx'
@@ -79,7 +77,7 @@ Plug 'let-def/vimbufsync' | Plug 'whonore/Coqtail' | let g:coqtail_nomap = 1
 " Plug 'puremourning/vimspector'
 Plug 'cespare/vim-toml'
 Plug 'rhysd/vim-llvm'
-Plug 'fatih/vim-go'
+Plug 'fatih/vim-go', { 'for': 'go' }
 " Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] }
 
 call plug#end()
@@ -206,7 +204,7 @@ else
     hi Special guifg=#735050 | hi Conceal guifg=#735050
     hi Statement gui=bold
     let g:lightline.colorscheme = 'solarized'
-    " TODO: fzf themes
+    " TODO: fzf/bat themes
 endif
 " }}}
 
@@ -655,9 +653,6 @@ let g:NERDTreeWinPos = "right"
 nmap <leader>nn :NERDTreeToggle<cr>
 nmap <leader>nf :NERDTreeFind<cr>
 
-let g:gitgutter_enabled=0
-nmap <silent><leader>gg :GitGutterToggle<cr>
-
 let g:EditorConfig_exclude_patterns = ['.*[.]git/.*', 'fugitive://.*', 'scp://.*']
 
 let g:mkdp_auto_close = 0
@@ -683,6 +678,9 @@ func! IsWide()
     return winwidth(0) > 170
 endfunc
 
+let s:url_regex = '\c\<\(\%([a-z][0-9A-Za-z_-]\+:\%(\/\{1,3}\|[a-z0-9%]\)\|www\d\{0,3}[.]\|[a-z0-9.\-]\+[.][a-z]\{2,4}\/\)\%([^ \t()<>]\+\|(\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\)\+\%((\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\|[^ \t`!()[\]{};:'."'".'".,<>?«»“”‘’]\)\)'
+call textobj#user#plugin('url', { 'url': { 'pattern': s:url_regex, 'select': ['au', 'iu'] } })
+call textobj#user#plugin('path', { 'path': { 'pattern': '\f\+', 'select': ['aP', 'iP'] } })
 " see :help [range], &, g&
 " :%s/pat/\r&/g.
 " marks
