@@ -12,6 +12,7 @@ function! SetupCoc()
   nmap     <silent><buffer>        <M-\> :call CocAction('jumpDefinition', 'tabe')<CR>
   nmap     <silent><buffer><leader><M-\> :call CocAction('jumpDefinition', winwidth(0)>170 ? 'vsplit' : 'split')<CR>
   nmap     <silent><buffer>        <M-.> :call CocAction('doHover')<CR>
+  nmap     <silent><buffer>        <M-,> :call CocAction('diagnosticInfo')<CR>
   nmap     <silent><buffer><leader>gy    <Plug>(coc-type-definition)
   nmap     <silent><buffer><leader>gi    <Plug>(coc-implementation)
   nmap     <silent><buffer><leader>rf    <Plug>(coc-references)
@@ -38,6 +39,8 @@ augroup CocStuff
   " autocmd CursorHold * silent call CocActionAsync('highlight')
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
   autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
+  " TODO: nvim local showbreak
+  autocmd User CocOpenFloat set showbreak=>\ 
 augroup end
 
 " xmap <leader>a  <Plug>(coc-codeaction-selected)

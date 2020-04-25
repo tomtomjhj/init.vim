@@ -123,6 +123,7 @@ augroup end
 * `<C-w>]` doesn't open in new tab if `switchbuf=useopen` which is useful for quickfix stuff.
 * `<ESC>` is somewhat different from `CTRL-C`: c (`/`, `?`), i, v, ..
 * `<Up>` is slightly different from `<C-p>`
+* after/indent doesn't work as expected?
 
 # hmm..
 * I don't want to rely on `set whichwrap+=]` for quick jump but this doesn't

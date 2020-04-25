@@ -70,7 +70,7 @@ Plug 'lervag/vimtex'
 " Plug 'Shougo/deoplete-clangx'
 " Plug 'parsonsmatt/intero-neovim'
 " Plug 'tomlion/vim-solidity'
-" Plug 'LumaKernel/coquille' (see issue)
+" Plug 'LumaKernel/coqpit.vim'
 " Plug 'https://framagit.org/tyreunom/coquille', { 'do': ':UpdateRemotePlugins' }
 " NOTE: doesn't work in nvim, not async
 Plug 'let-def/vimbufsync' | Plug 'whonore/Coqtail' | let g:coqtail_nomap = 1
@@ -238,21 +238,21 @@ let g:ale_fixers = {
             \ }
 let g:ale_set_highlights = 1
 let g:ale_linters_explicit = 1
-hi ALEError term=underline cterm=underline gui=undercurl
-hi ALEWarning term=NONE cterm=NONE gui=NONE
-hi ALEInfo term=NONE cterm=NONE gui=NONE
 
 let g:coc_config_home = '~/.vim'
 let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab', 'coc-word']
 " NOTE: stuff highlighted as Normal -> bg doesn't match in floatwin
-hi! link CocErrorSign ZenbruhErrorLine
-hi! link CocWarningSign ZenbruhWarnLine
-hi! link CocInfoSign ZenbruhInfoLine
-hi! link CocHintSign ZenbruhInfoLine
-hi! link CocErrorFloat NONE
+hi! link CocWarningHighlight NONE
+hi! link CocInfoHighlight    NONE
+hi! link CocHintHighlight    NONE
+hi! link CocErrorSign   ALEErrorSign
+hi! link CocWarningSign ALEWarningSign
+hi! link CocInfoSign    ALEInfoSign
+hi! link CocHintSign    ALEInfoSign
+hi! link CocErrorFloat   NONE
 hi! link CocWarningFloat CocErrorFloat
-hi! link CocInfoFloat CocErrorFloat
-hi! link CocHintFloat CocErrorFloat
+hi! link CocInfoFloat    CocErrorFloat
+hi! link CocHintFloat    CocErrorFloat
 
 " NOTE: <M- maps are broken in vim
 nmap <leader>fm <Plug>(ale_fix)
@@ -358,6 +358,9 @@ let g:go_highlight_operators = 1
 let g:go_highlight_functions = 1
 let g:go_highlight_function_calls = 1
 let g:go_highlight_types = 1
+augroup SetupGo | au!
+    au FileType go call SetupCoc()
+augroup END
 " }}}
 
 " search & fzf {{{
@@ -660,7 +663,7 @@ let g:mkdp_preview_options = {
             \ 'mkit': { 'typographer': v:false },
             \ 'disable_sync_scroll': 1 }
 
-let g:float_preview#winhl = 'Normal:PmenuSel,NormalNC:PmenuSel'
+let g:float_preview#winhl = 'Normal:NormalFloat,NormalNC:NormalFloat'
 
 func! SynStackName()
     return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')

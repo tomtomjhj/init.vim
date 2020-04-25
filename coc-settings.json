@@ -8,6 +8,7 @@
     },
     "diagnostic.displayByAle": false, // setting this true makes signs keep appear/disappearing
     "diagnostic.enableHighlightLineNumber": false,
+    "diagnostic.enableMessage": "jump", // manually by CocAction('diagnosticInfo')
     "diagnostic.warningSign": ">>",
     "codeLens.enable": true,
     "languageserver": {
