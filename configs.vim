@@ -264,9 +264,9 @@ nnoremap <M-i> <C-i>
 
 " open tag in a new tab/split, (preview: <c-w>}). <C-w>] is affected by switchbuf
 noremap <silent><C-\> :tab split<CR><C-]>
-noremap <silent><leader><C-\> :if IsWide() \| vsp \| else \| sp \| endif<CR><C-]>
+noremap <silent><leader><C-\> :if IsWinWide() \| vsp \| else \| sp \| endif<CR><C-]>
 noremap g<Bslash> :tab split<CR>g]
-noremap <leader>g<Bslash> :if IsWide() \| vsp \| else \| sp \| endif<CR>g]
+noremap <leader>g<Bslash> :if IsWinWide() \| vsp \| else \| sp \| endif<CR>g]
 map ]t :tn<CR>
 map [t :tN<CR>
 " }}}
@@ -387,6 +387,7 @@ endfunc
 nnoremap / :let g:search_mode='/'<CR>/
 
 let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.5, 'yoffset': 1, 'border': 'top', 'highlight': 'VertSplit' } }
+let g:fzf_preview_window = 'right:50%'
 
 " TODO: start from Grepf and switch to Grep
 " TODO context search: context format is different, format parsing is done by preview.sh
@@ -414,13 +415,21 @@ command! -nargs=* -bang Grepf call RipgrepFly(<q-args>)
 command! -bang -nargs=? -complete=dir Files call Files(<q-args>)
 
 func! FzfOpts(arg, spec)
-    " TODO: use merge()?
     " TODO: ask the directory to run (double 3)
     let l:opts = string(a:arg)
+    " Preview on right if ¬fullscreen & wide
     " fullscreen
-    if l:opts =~ '2' | let a:spec['window'] = { 'width': 1, 'height': (&lines-(tabpagenr()>1)-1.0)/&lines, 'yoffset': 1, 'border': 'top', 'highlight': 'VertSplit' } | endif
+    if l:opts =~ '2'
+        let a:spec['window'] = { 'width': 1, 'height': (&lines-(tabpagenr()>1)-1.0)/&lines, 'yoffset': 1, 'border': 'top', 'highlight': 'VertSplit' }
+        let l:preview_window = 'up'
+    else
+        let l:preview_window = IsVimWide() ? 'right' : 'up'
+    endif
     " from project root
-    if l:opts =~ '3' | let a:spec['dir'] = asyncrun#get_root("%") | endif
+    if l:opts =~ '3'
+        let a:spec['dir'] = asyncrun#get_root("%")
+    endif
+    return fzf#vim#with_preview(a:spec, l:preview_window)
 endfunc
 func! RgInput(raw)
     if g:search_mode == 'n'
@@ -437,21 +446,18 @@ endfunc
 let g:rg_cmd_base = 'rg --column --line-number --no-heading --color=always --colors path:fg:218 --colors match:fg:116 --smart-case '
 func! Ripgrep(query)
     let cmd = g:rg_cmd_base . shellescape(a:query)
-    let spec = {'options': ['--info=inline']}
-    call FzfOpts(v:count, spec)
-    call fzf#vim#grep(cmd, 1, fzf#vim#with_preview(spec, 'up'))
+    let spec = FzfOpts(v:count, {'options': ['--info=inline']})
+    call fzf#vim#grep(cmd, 1, spec)
 endfunc
 func! RipgrepFly(query)
     let command_fmt = g:rg_cmd_base . '%s || true'
     let initial_command = printf(command_fmt, shellescape(a:query))
     let reload_command = printf(command_fmt, '{q}')
-    let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command, '--info=inline']}
-    call FzfOpts(v:count, spec)
-    call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec, 'up'))
+    let spec = FzfOpts(v:count, {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command, '--info=inline']})
+    call fzf#vim#grep(initial_command, 1, spec)
 endfunc
 func! Files(query)
-    let spec = {}
-    call FzfOpts(v:count, spec)
+    let spec = FzfOpts(v:count, {})
     if empty(a:query) && !empty(get(spec, 'dir', ''))
         let l:query = spec['dir']
         unlet spec['dir']
@@ -640,11 +646,11 @@ map <leader>M :Make<space>
 " quickfix, loclist, ...
 command! CV exec 'vert copen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p
 command! CO belowright copen 12 | winc p
-command! OQ if IsWide() | exec 'CV' | else | exec 'CO' | endif
+command! OQ if IsWinWide() | exec 'CV' | else | exec 'CO' | endif
 map <leader>oq :OQ<CR>
 command! LV exec 'vert lopen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p
 command! LO belowright lopen 12 | winc p
-command! OL if IsWide() | exec 'LV' | else | exec 'LO' | endif
+command! OL if IsWinWide() | exec 'LV' | else | exec 'LO' | endif
 map <leader>ol :OL<CR>
 map ]q :cn<CR>
 map [q :cN<CR>
@@ -677,8 +683,11 @@ func! InSynStack(type)
     endfor
     return 0
 endfunc
-func! IsWide()
+func! IsWinWide()
     return winwidth(0) > 170
+endfunc
+func! IsVimWide()
+    return &columns > 170
 endfunc
 
 let s:url_regex = '\c\<\(\%([a-z][0-9A-Za-z_-]\+:\%(\/\{1,3}\|[a-z0-9%]\)\|www\d\{0,3}[.]\|[a-z0-9.\-]\+[.][a-z]\{2,4}\/\)\%([^ \t()<>]\+\|(\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\)\+\%((\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\|[^ \t`!()[\]{};:'."'".'".,<>?«»“”‘’]\)\)'
