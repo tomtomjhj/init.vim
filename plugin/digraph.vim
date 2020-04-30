@@ -13,3 +13,34 @@ digraph tp 8868
 " override crappy angle bracket
 digraph </ 10216
 digraph /> 10217
+exec 'digraph (> 8618' | " ↪
+digraph [U 8851 " ⊓
+digraph ]U 8852 " ⊔
+digraph =[ 8849 " ⊑
+" 𝔸
+" 𝔹
+" ℂ
+" 𝔻
+" 𝔼
+" 𝔽
+" 𝔾
+" ℍ
+" 𝕀
+" 𝕁
+" 𝕂
+digraph bL 120131
+digraph bM 120132
+digraph bN 8469
+" 𝕆
+" ℙ
+" ℚ
+digraph bR 8477
+" 𝕊
+digraph bS 120138
+" 𝕋
+" 𝕌
+" 𝕍
+" 𝕎
+" 𝕏
+" 𝕐
+digraph bZ 8484

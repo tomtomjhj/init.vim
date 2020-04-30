@@ -9,7 +9,9 @@
     "diagnostic.displayByAle": false, // setting this true makes signs keep appear/disappearing
     "diagnostic.enableHighlightLineNumber": false,
     "diagnostic.enableMessage": "jump", // manually by CocAction('diagnosticInfo')
-    "diagnostic.warningSign": ">>",
+    "diagnostic.warningSign": "--",
+    "diagnostic.infoSign": "--",
+    "diagnostic.hintSign": "--",
     "codeLens.enable": true,
     "languageserver": {
         "ocaml-lsp": {
@@ -17,6 +19,16 @@
             "args": ["config", "exec", "--", "ocamllsp"],
             "filetypes": ["ocaml"]
         },
+        "ccls": {
+            "command": "ccls",
+            "filetypes": ["c", "cpp"],
+            "rootPatterns": [".ccls", "compile_commands.json", ".git/"],
+            "initializationOptions": {
+                "cache": {
+                    "directory": "/tmp/ccls"
+                }
+            }
+        }
     },
     "rust-analyzer": {
         "serverPath": "~/.cargo/bin/rust-analyzer",

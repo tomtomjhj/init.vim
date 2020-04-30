@@ -90,13 +90,7 @@ augroup end
     * reset `indentexpr` just before running `=k` in auto-pairs
 * Restore default `iskeyword` inside pandoc code block: it's impossible.
 * rust-analyzer provides better completion but doesn't have proper diagnostics
-    - rust-analyzer source for deoplete? adapt vim-racer?
-    - nvim lsp with rust-analyzer, use omnifunc only
-    - ale rust-analyzer + cargo check (can't check unsaved buffer)
-    * ✓ use LC for rust-analyzer completion only.
-        * NOTE: rust-analyzer [adds unecessary `(…)` after
-          method](https://github.com/rust-analyzer/rust-analyzer/blob/9712889ee4c6cffa37c2ace5da9b00bf29adab56/crates/ra_ide/src/completion/presentation.rs#L228).
-          ALE somehow removes this but LC doesn't
+    * use coc-rust-analyzer
 
 # Tips
 * `dw`: to remove whitespace from current position.
@@ -110,6 +104,7 @@ augroup end
 * `/_CTRL-L`, `/_CTRL-G`, `/_CTRL-T`
 * yank matching lines <https://stackoverflow.com/a/1475069>
 * <https://vi.stackexchange.com/questions/17227/>
+* sub-replace-expression
 
 # pitfalls
 * `:h map-bar`

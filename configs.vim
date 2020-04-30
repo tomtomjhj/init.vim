@@ -223,8 +223,6 @@ let g:UltiSnipsExpandTrigger = '<c-l>'
 
 " ALE, LSP, tags, ... global settings {{{
 let g:ale_linters = {
-            \ 'c': ['clang'],
-            \ 'cpp': ['clang'],
             \ 'rust': ['rls'],
             \ }
 let g:ale_fixers = {
@@ -299,6 +297,7 @@ endif
 " TODO: this should be based on tabstop and shiftwidth, see editorconfig doc
 " let g:ale_c_clangformat_options = '-style="{BasedOnStyle: llvm, IndentWidth: 4, AccessModifierOffset: -4}"'
 augroup SetupCCpp | au!
+    au FileType c,cpp call SetupCoc()
     au FileType c,cpp setl tabstop=2 shiftwidth=2
     au FileType c,cpp nmap <buffer>zM :set foldmethod=syntax foldlevel=99\|unmap <lt>buffer>zM<CR>zM
 augroup END
@@ -587,6 +586,7 @@ map <leader>ss :setlocal spell!\|setlocal spell?<cr>
 map <leader>sc :if &spc == "" \| setl spc< \| else \| setl spc= \| endif \| setl spc?<CR>
 map <leader>pp :setlocal paste!\|setlocal paste?<cr>
 map <leader>sw :set wrap!\|set wrap?<CR>
+map <leader>ic :set ignorecase! smartcase!\|set ignorecase?<CR>
 
 map <leader>dp :diffput<CR>
 map <leader>do :diffget<CR>
