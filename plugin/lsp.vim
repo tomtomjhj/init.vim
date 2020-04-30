@@ -23,8 +23,12 @@ function! SetupCoc()
   xmap             <buffer>        af    <Plug>(coc-funcobj-a)
   omap             <buffer>        if    <Plug>(coc-funcobj-i)
   omap             <buffer>        af    <Plug>(coc-funcobj-a)
+  nmap     <silent><buffer><leader><tab> v<Plug>(coc-range-select)
+  xmap     <silent><buffer><leader><tab> <Plug>(coc-range-select)
+  xmap     <silent><buffer>      <S-tab> <Plug>(coc-range-select-backward)
   nmap             <buffer><leader>ac    <Plug>(coc-codelens-action)
-  nmap             <buffer><leader>cl    :<C-u>CocList | " commands, outline, actions, ...
+  nmap     <silent><buffer><leader>O     :<C-u>CocList outline<CR>
+  nmap     <silent><buffer><leader>sb    :<C-u>CocList -I symbols<CR>
   nmap     <silent><buffer>        [a    <Plug>(coc-diagnostic-prev)
   nmap     <silent><buffer>        ]a    <Plug>(coc-diagnostic-next)
 endfunction
@@ -41,6 +45,8 @@ augroup CocStuff
   autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
   " TODO: nvim local showbreak
   autocmd User CocOpenFloat set showbreak=>\ 
+  autocmd BufLeave list://* hi! CursorLine cterm=NONE gui=NONE
+  autocmd BufEnter list://* hi! CursorLine cterm=underline gui=underline
 augroup end
 
 " xmap <leader>a  <Plug>(coc-codeaction-selected)
