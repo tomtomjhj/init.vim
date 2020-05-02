@@ -42,5 +42,33 @@ function! s:MarkdownSetupFolding()
     setlocal foldmethod=expr
 endfunction
 
+function! Surrounder(type, ends) abort
+    let sel_save = &selection
+    let &selection = 'old'
+    let reg_save = getreg('"')
+    if a:type ==# 'v'
+        " handle the cursor on eol
+        let l:p = (col("$") - col("'>") <= 1) ? 'p' : 'P'
+        execute 'normal! `<v`>x'
+    elseif a:type ==# 'char'
+        let l:p = (col("$") - col("']") <= 1) ? 'p' : 'P'
+        execute 'normal! `[v`]x'
+    else
+        return
+    endif
+    call setreg('"', a:ends.getreg('"').a:ends)
+    execute 'normal!' l:p
+    call setreg('"', reg_save)
+    let &selection = sel_save
+endfunction
+
+function! SurroundStrong(type)
+    return Surrounder(a:type, '**')
+endfunction
+
 nmap <buffer>zM :call <SID>MarkdownSetupFolding()\|unmap <lt>buffer>zM<CR>zM
 nmap <buffer><leader>pd :set ft=pandoc\|unmap <lt>buffer><lt>leader>pd<CR>
+noremap  <buffer><silent><localleader>b :set opfunc=SurroundStrong<cr>g@
+vnoremap <buffer><silent><localleader>b  :<C-U>call SurroundStrong(visualmode())<CR>
+nmap <MiddleMouse> <LeftMouse><localleader>biw
+vmap <MiddleMouse> <localleader>b
