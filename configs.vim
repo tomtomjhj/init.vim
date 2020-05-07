@@ -77,7 +77,7 @@ Plug 'let-def/vimbufsync' | Plug 'whonore/Coqtail' | let g:coqtail_nomap = 1
 " Plug 'puremourning/vimspector'
 Plug 'cespare/vim-toml'
 Plug 'rhysd/vim-llvm'
-Plug 'fatih/vim-go', { 'for': 'go' }
+Plug 'fatih/vim-go'
 " Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] }
 
 call plug#end()
@@ -450,7 +450,7 @@ func! Ripgrep(query)
     call fzf#vim#grep(cmd, 1, spec)
 endfunc
 func! RipgrepFly(query)
-    let command_fmt = g:rg_cmd_base . '%s || true'
+    let command_fmt = g:rg_cmd_base . '-- %s || true'
     let initial_command = printf(command_fmt, shellescape(a:query))
     let reload_command = printf(command_fmt, '{q}')
     let spec = FzfOpts(v:count, {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command, '--info=inline']})
@@ -465,7 +465,7 @@ func! Files(query)
     else
         let l:query = a:query
     endif
-    call fzf#vim#files(l:query, spec)
+    call fzf#vim#files(l:query, fzf#vim#with_preview(spec, 'right'))
 endfunc
 
 " }}}

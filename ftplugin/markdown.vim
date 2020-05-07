@@ -1,5 +1,5 @@
 func! MkdFencedCodeBlocka()
-    if !InSynStack('mkdSnippet')
+    if !InSynStack('mkdSnippet') && !InSynStack('mkdCode')
         return 0
     endif
     if !search('```\w*', 'bW') | return 0 | endif
@@ -10,7 +10,7 @@ func! MkdFencedCodeBlocka()
     return ['v', head_pos, tail_pos]
 endfunc
 func! MkdFencedCodeBlocki()
-    if !InSynStack('mkdSnippet')
+    if !InSynStack('mkdSnippet') && !InSynStack('mkdCode')
         return 0
     endif
     if !search('```\w*', 'bW') | return 0 | endif

@@ -17,30 +17,32 @@ exec 'digraph (> 8618' | " ↪
 digraph [U 8851 " ⊓
 digraph ]U 8852 " ⊔
 digraph =[ 8849 " ⊑
-" 𝔸
-" 𝔹
-" ℂ
-" 𝔻
-" 𝔼
-" 𝔽
-" 𝔾
-" ℍ
-" 𝕀
-" 𝕁
-" 𝕂
+
+" use <c-a> and set nrformats+=alpha to increment stuff
+digraph bA 120120
+digraph bB 120121
+digraph bC 8450
+digraph bD 120123
+digraph bE 120124
+digraph bF 120125
+digraph bG 120126
+digraph bH 8461
+digraph bI 120128
+digraph bJ 120129
+digraph bK 120130
 digraph bL 120131
 digraph bM 120132
 digraph bN 8469
-" 𝕆
-" ℙ
-" ℚ
+digraph bO 120134
+digraph bP 8473
+digraph bQ 8474
 digraph bR 8477
-" 𝕊
 digraph bS 120138
-" 𝕋
-" 𝕌
-" 𝕍
-" 𝕎
-" 𝕏
-" 𝕐
+digraph bT 120139
+digraph bU 120140
+digraph bV 120141
+digraph bW 120142
+digraph bX 120143
+digraph bY 120144
 digraph bZ 8484
+" ♯ MX
