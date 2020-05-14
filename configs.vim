@@ -17,6 +17,7 @@ Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'justinmk/vim-sneak'
+" TODO: easymotion `s` looks good but https://github.com/easymotion/vim-easymotion/issues/402
 Plug 'tpope/vim-fugitive'
 Plug 'preservim/nerdcommenter', { 'on': ['<plug>NERDCommenterComment', '<plug>NERDCommenterToggle', '<plug>NERDCommenterInsert', '<plug>NERDCommenterSexy'] }
 Plug 'skywind3000/asyncrun.vim'
@@ -27,6 +28,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment' | Plug 'michaeljsmith/vim-indent-object'
 Plug 'rhysd/git-messenger.vim'
 Plug 'Konfekt/FastFold'
+Plug 'romainl/vim-qf'
 
 Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
 augroup SetupNerdTree | au!
@@ -58,6 +60,7 @@ Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 
 " lanauges
 Plug 'dense-analysis/ale'
+" TODO: sometimes node remains alive even after exiting
 Plug 'neoclide/coc.nvim', { 'branch': 'release' } | Plug 'neoclide/jsonc.vim'
 Plug 'tomtomjhj/vim-markdown'
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
@@ -96,9 +99,6 @@ set autoindent smartindent
 " TODO: insert indents at InsertEnter or emacs-like tab
 
 " indent the wrapped line, w/ `> ` at the start
-" TODO: coc resets showbreak on hover.
-" showbreak is not local in nvim!
-" https://github.com/vim/vim/commit/ee85702c10495041791f728e977b86005c4496e8
 set wrap linebreak breakindent showbreak=>\ 
 set backspace=eol,start,indent
 set whichwrap+=<,>,[,],h,l
@@ -367,13 +367,15 @@ augroup END
 " `*`, `v_*` without moving the cursor. Reserve @c for the raw original text
 " NOTE: Can't repeat properly if ins-special-special is used. Use q-recording.
 " -> wrapper for qrcgn...q ?
-nnoremap <silent>* :call Star()\|set hlsearch<CR>
+nnoremap <silent>* :call Star(0)\|set hlsearch<CR>
+nnoremap <silent>g* :call Star(1)\|set hlsearch<CR>
 vnoremap <silent>* :<C-u>call VisualStar()\|set hlsearch<CR>
 " set hlsearch inside the function doesn't work? Maybe :h function-search-undo?
-func! Star()
+" NOTE: word boundary is syntax property -> may not match in other ft buffers
+func! Star(g)
     let g:search_mode = 'n'
     let @c = expand('<cword>')
-    let @/ = '\<' . @c . '\>'
+    let @/ = a:g ? @c : '\<' . @c . '\>'
 endfunc
 func! VisualStar()
     let g:search_mode = 'v'
@@ -443,6 +445,7 @@ func! RgInput(raw)
         return substitute(a:raw[2:], '\v\\([~/])', '\1', 'g')
     endif
 endfunc
+" NOTE: -U (multiline): \s includes \n.
 let g:rg_cmd_base = 'rg --column --line-number --no-heading --color=always --colors path:fg:218 --colors match:fg:116 --smart-case '
 func! Ripgrep(query)
     let cmd = g:rg_cmd_base . shellescape(a:query)
@@ -479,6 +482,7 @@ noremap <S-k> gk
 noremap <S-h> h
 noremap <S-l> l
 noremap <leader>J J
+" tip: zL, zH
 
 " space to navigate
 nnoremap <space> <C-d>
@@ -488,6 +492,7 @@ nnoremap <c-space> <C-u>
 nnoremap <M-0> ^w
 vnoremap <M-0> ^w
 
+" NOTE: vertical scope, label_esc
 let g:sneak#s_next = 1
 let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
@@ -495,7 +500,7 @@ map f <Plug>Sneak_f
 map F <Plug>Sneak_F
 map t <Plug>Sneak_t
 map T <Plug>Sneak_T
-hi Sneak guifg=black guibg=#afff00 ctermfg=black ctermbg=154
+hi! Sneak guifg=black guibg=#afff00 gui=bold ctermfg=black ctermbg=154 cterm=bold
 
 " TODO: (speicial char -> non-blank, non-keyword), user-defined (paren -> pair?)
 " s-word: (a keyword | repetition of non-paren speicial char | a paren | whitespace)
@@ -504,7 +509,6 @@ let g:sword = '\v(\k+|([^[:alnum:]_[:blank:](){}[\]<>$])\2*|[(){}[\]<>$]|\s+)'
 " Jump past a sword. Assumes `set whichwrap+=]` for i_<Right>
 inoremap <silent><C-j> <C-\><C-O>:call SwordJumpRight()<CR><Right><C-\><C-o><ESC>
 inoremap <silent><C-k> <C-\><C-O>:call SwordJumpLeft()<CR>
-noremap! <C-space> <C-k>
 " TODO: `e` replacement
 nnoremap <silent><M-e> :call search(g:sword, 'eW')<CR>
 func! SwordJumpRight()
@@ -624,7 +628,10 @@ noremap x "_x
 noremap <M-y> "py
 noremap <M-p> "pp
 
-map Y y$
+nnoremap Y y$
+onoremap <silent> ge :execute "normal! " . v:count1 . "ge<space>"<cr>
+nnoremap <silent> & :&&<cr>
+xnoremap <silent> & :&&<cr>
 
 " auto-pairs
 let g:AutoPairsMapSpace = 0
@@ -643,21 +650,33 @@ map <leader>S :AsyncStop<CR>
 command! -bang -nargs=* -complete=file Make AsyncRun -program=make @ <args>
 map <leader>M :Make<space>
 
-" quickfix, loclist, ...
+" quickfix, loclist, ... {{{
+" TODO: quickfix length in statusline?
+" TODO: manually adding lines to qf?
+let g:qf_window_bottom = 0
+let g:qf_loclist_window_bottom = 0
+let g:qf_auto_open_quickfix = 0
+let g:qf_auto_open_loclist = 0
+let g:qf_auto_resize = 0
+let g:qf_max_height = 12
+let g:qf_auto_quit = 0
+
 command! CV exec 'vert copen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p
 command! CO belowright copen 12 | winc p
 command! OQ if IsWinWide() | exec 'CV' | else | exec 'CO' | endif
-map <leader>oq :OQ<CR>
 command! LV exec 'vert lopen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p
 command! LO belowright lopen 12 | winc p
 command! OL if IsWinWide() | exec 'LV' | else | exec 'LO' | endif
-map <leader>ol :OL<CR>
-map ]q :cn<CR>
-map [q :cN<CR>
-map ]l :lne<CR>
-map [l :lN<CR>
-map <silent><leader>x :pc\|ccl\|lcl<CR>
+nmap <leader>oq :OQ<CR>
+nmap <leader>ol :OL<CR>
+nmap ]q <Plug>(qf_qf_next)
+nmap [q <Plug>(qf_qf_previous)
+nmap ]l <Plug>(qf_loc_next)
+nmap [l <Plug>(qf_loc_previous)
+nmap <silent><leader>x :pc\|ccl\|lcl<CR>
+" }}}
 
+" etc plugin settings {{{
 let g:NERDTreeWinPos = "right"
 nmap <leader>nn :NERDTreeToggle<cr>
 nmap <leader>nf :NERDTreeFind<cr>
@@ -670,6 +689,7 @@ let g:mkdp_preview_options = {
             \ 'disable_sync_scroll': 1 }
 
 let g:float_preview#winhl = 'Normal:NormalFloat,NormalNC:NormalFloat'
+" }}}
 
 func! SynStackName()
     return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')

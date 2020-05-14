@@ -43,7 +43,9 @@ augroup CocStuff
   " autocmd CursorHold * silent call CocActionAsync('highlight')
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
   autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
-  " TODO: nvim local showbreak
+  " TODO: coc resets showbreak on hover.
+  " showbreak is not local in nvim!
+  " https://github.com/vim/vim/commit/ee85702c10495041791f728e977b86005c4496e8
   autocmd User CocOpenFloat set showbreak=>\ 
   autocmd BufLeave list://* hi! CursorLine cterm=NONE gui=NONE
   autocmd BufEnter list://* hi! CursorLine cterm=underline gui=underline
@@ -61,4 +63,22 @@ command! -nargs=? Fold   :call CocAction('fold', <f-args>)
 " nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 " " Resume latest coc list.
 " nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
+" TODO: nvim lsp stuff
+" Plug 'haorenW1025/diagnostic-nvim'
+" Plug 'haorenW1025/completion-nvim'
+" lua << EOF
+" local nvim_lsp = require'nvim_lsp'
+" nvim_lsp.ocamllsp.setup{}
+" EOF
+" nnoremap <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
+" nnoremap <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
+" nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
+" nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
+" nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
+" nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
+" nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
+" nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
+" nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+
 " vim: set sw=2 ts=2:
