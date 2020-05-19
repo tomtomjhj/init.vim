@@ -13,7 +13,6 @@ Plug 'tomtomjhj/zenbruh.vim'
 if !has('nvim')
     Plug 'tpope/vim-sensible'
 endif
-Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'justinmk/vim-sneak'
@@ -29,6 +28,7 @@ Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment' | Plug 'michaeljs
 Plug 'rhysd/git-messenger.vim'
 Plug 'Konfekt/FastFold'
 Plug 'romainl/vim-qf'
+Plug 'markonm/traces.vim'
 
 Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
 augroup SetupNerdTree | au!
@@ -147,7 +147,7 @@ augroup BasicSetup | au!
     au BufRead,BufNewFile *.k set filetype=k
     au BufRead,BufNewFile *.mir set filetype=rust
     au FileType lisp if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({}, ["'"]) | endif
-    au FileType help nnoremap <silent><buffer> <M-.> :h <C-R>=expand('<cword>')<CR><CR>
+    au FileType help nnoremap <silent><buffer> <M-.> :h <C-r><C-w><CR>
     au VimResized * let &pumheight = min([&window/4, 20])
 augroup END
 
@@ -395,7 +395,7 @@ let g:fzf_preview_window = 'right:50%'
 " TODO context search: context format is different, format parsing is done by preview.sh
 nnoremap <C-g>      :<C-u>Grep<space>
 nnoremap <leader>g/ :<C-u>Grep <C-r>=RgInput(@/)<CR>
-nnoremap <leader>gw :<C-u>Grep \b<C-r>=expand("<cword>")<CR>\b
+nnoremap <leader>gw :<C-u>Grep \b<C-r><C-w>\b
 nnoremap <leader>gf :<C-u>Grepf<space>
 noremap  <leader>b  :<C-u>Buffers<CR>
 noremap  <C-f>      :<C-u>Files<CR>
@@ -531,7 +531,7 @@ inoremap <CR> <C-G>u<CR>
 inoremap <C-u> <C-\><C-o><ESC><C-g>u<C-u>
 " Delete a single character of other non-blank chars
 " TODO: delete sword
-inoremap <expr><C-w> FineGrainedICtrlW()
+inoremap <silent><expr><C-w> FineGrainedICtrlW()
 func! FineGrainedICtrlW()
     let l:col = col('.')
     if l:col == 1 | return "\<BS>" | endif
@@ -547,19 +547,15 @@ func! FineGrainedICtrlW()
         if l:idx == l:len || l:chars[-(l:idx + 1)] =~ '\k'
             return "\<C-\>\<C-o>\<ESC>\<C-w>"
         endif
-        let b:sts = &softtabstop
+        let l:sts = &softtabstop
         setlocal softtabstop=0
-        return repeat("\<BS>", l:idx) . "\<C-R>=ResetSTS()\<CR>\<BS>"
+        return repeat("\<BS>", l:idx) . "\<C-R>=execute('setl sts=".l:sts."')\<CR>\<BS>"
     " TODO: [paren] only
     elseif l:chars[-1] !~ '\k'
         return "\<BS>"
     else
         return "\<C-\>\<C-o>\<ESC>\<C-w>"
     endif
-endfunc
-func! ResetSTS()
-    let &sts = b:sts
-    return ''
 endfunc
 
 " extend visual block up to pair opener/closer
@@ -632,6 +628,12 @@ nnoremap Y y$
 onoremap <silent> ge :execute "normal! " . v:count1 . "ge<space>"<cr>
 nnoremap <silent> & :&&<cr>
 xnoremap <silent> & :&&<cr>
+
+" set nrformats+=alpha
+noremap + <C-a>
+vnoremap + g<C-a>
+noremap - <C-x>
+vnoremap - g<C-x>
 
 " auto-pairs
 let g:AutoPairsMapSpace = 0
@@ -787,26 +789,6 @@ func! OnTabClosed(closed)
         let l:target = g:last_tab != g:last_viewed ? g:last_tab : 0
     endif
     if l:target | exec 'tabn' l:target | endif
-endfunc
-
-" ctrl-shift-t of chrome. bug: non-existent buf
-map <silent><leader><C-t> :call PopQuitBufs()<CR>
-" works only for buffers of windows closed by :q, not :tabc
-augroup RestoreTab | au!
-    au QuitPre * call PushQuitBufs(expand("<abuf>"))
-augroup END
-" push if clean and empty. remove preceding one if exists
-let g:quitbufs = []
-func! PushQuitBufs(buf)
-    if !IsCleanEmptyBuf(a:buf)
-        call tlib#list#Remove(g:quitbufs, a:buf)
-        call add(g:quitbufs, a:buf)
-    endif
-endfunc
-func! PopQuitBufs()
-    if len(g:quitbufs) > 0
-        exec "tabnew +".(remove(g:quitbufs, -1))."buf"
-    endif
 endfunc
 
 " Garbage buffers

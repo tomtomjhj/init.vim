@@ -54,4 +54,4 @@ function s:SetupDigraph()
     return ''
 endfunction
 
-noremap! <silent> <C-space> <C-R>=<SID>SetupDigraph()<CR><C-R>=execute("delfunction <SID>SetupDigraph")<CR><C-K>
+noremap! <C-space> <C-R>=<SID>SetupDigraph()<CR><C-K>

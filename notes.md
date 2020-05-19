@@ -144,12 +144,13 @@ augroup end
   Probably the output should be buffered.
 * Terminals can't distinguish some keys e.g. `<ESC>` and `<C-[>`, .. . `<M-[>` is prefix of `<PageUp>`, ...
     * vim won't receive `<C-q>` if `<C-q>`,`<C-s>` is enabled in the terminal
-* `inoremap <C-w> <C-R>={-> execute("norm db")}()<CR><C-R>=col('.')==col('$')-1?"\<lt>C-G>U\<lt>Right>":""<CR>`
+* `inoremap <C-w> <C-R>=execute("norm db")<CR><C-R>=col('.')==col('$')-1?"\<lt>C-G>U\<lt>Right>":""<CR>`
   This still breaks undo after ins-special-special and is still broken at the line end.
 * `<C-w>]` doesn't open in new tab if `switchbuf=useopen` which is useful for quickfix stuff.
 * `<ESC>` is somewhat different from `CTRL-C`: c (`/`, `?`), i, v, ..
 * `<Up>` is slightly different from `<C-p>`
 * after/indent doesn't work as expected?
+* function without `return` returns 0. insert explicit `return ''` for side-effect only function for `<C-R>=` trick.
 
 # hmm..
 * I don't want to rely on `set whichwrap+=]` for quick jump but this doesn't
