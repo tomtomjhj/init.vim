@@ -221,7 +221,7 @@ let g:SuperTabClosePreviewOnPopupClose = 1
 let g:UltiSnipsExpandTrigger = '<c-l>'
 " }}}
 
-" ALE, LSP, tags, ... global settings {{{
+" ALE, LSP, ... global settings {{{
 let g:ale_linters = {
             \ 'rust': ['rls'],
             \ }
@@ -261,14 +261,6 @@ noremap  <M-.> K
 noremap  <M-]> <C-]>
 nnoremap <M-o> <C-o>
 nnoremap <M-i> <C-i>
-
-" open tag in a new tab/split, (preview: <c-w>}). <C-w>] is affected by switchbuf
-noremap <silent><C-\> :tab split<CR><C-]>
-noremap <silent><leader><C-\> :if IsWinWide() \| vsp \| else \| sp \| endif<CR><C-]>
-noremap g<Bslash> :tab split<CR>g]
-noremap <leader>g<Bslash> :if IsWinWide() \| vsp \| else \| sp \| endif<CR>g]
-map ]t :tn<CR>
-map [t :tN<CR>
 " }}}
 
 " Haskell {{{
@@ -400,6 +392,8 @@ nnoremap <leader>gf :<C-u>Grepf<space>
 noremap  <leader>b  :<C-u>Buffers<CR>
 noremap  <C-f>      :<C-u>Files<CR>
 noremap  <leader>hh :<C-u>History<CR>
+" tag with fzf. TODO preview. (preview: <c-w>}). <C-w>] is affected by switchbuf
+nnoremap <leader><C-t> :Tags ^<C-r><C-w>\  <CR>
 
 augroup fzf | au!
     if has('nvim')
@@ -415,6 +409,8 @@ augroup END
 command! -nargs=* -bang Grep  call Ripgrep(<q-args>)
 command! -nargs=* -bang Grepf call RipgrepFly(<q-args>)
 command! -bang -nargs=? -complete=dir Files call Files(<q-args>)
+" allow search on the full tag info, excluding the appended tagfile name
+command! -bang -nargs=* Tags call fzf#vim#tags(<q-args>, { 'options': ['-d', '\t', '--nth', '..-2'] })
 
 func! FzfOpts(arg, spec)
     " TODO: ask the directory to run (double 3)
