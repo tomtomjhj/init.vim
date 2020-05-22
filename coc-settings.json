@@ -1,5 +1,8 @@
 {
     "coc.preferences.extensionUpdateCheck": "never", // :CocUpdate
+    "coc.preferences.hoverTarget": "preview",
+    "coc.preferences.previewAutoClose": false,
+    "coc.preferences.previewMaxHeight": 20,
 	"list.insertMappings": {
 		"<C-q>": "feedkeys:\\<ESC>"
     },

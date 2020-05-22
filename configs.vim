@@ -238,7 +238,7 @@ let g:ale_set_highlights = 1
 let g:ale_linters_explicit = 1
 
 let g:coc_config_home = '~/.vim'
-let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab', 'coc-word']
+let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab', 'coc-word', 'coc-tag']
 " NOTE: stuff highlighted as Normal -> bg doesn't match in floatwin
 hi! link CocWarningHighlight NONE
 hi! link CocInfoHighlight    NONE
@@ -349,8 +349,10 @@ let g:go_highlight_operators = 1
 let g:go_highlight_functions = 1
 let g:go_highlight_function_calls = 1
 let g:go_highlight_types = 1
+let g:go_fold_enable = ['block']
 augroup SetupGo | au!
     au FileType go call SetupCoc()
+    au FileType go nmap <buffer>zM :set foldmethod=syntax foldlevel=99\|unmap <lt>buffer>zM<CR>zM
 augroup END
 " }}}
 

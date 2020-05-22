@@ -11,6 +11,7 @@ function! SetupCoc()
   nmap     <silent><buffer>        <M-]> <Plug>(coc-definition)
   nmap     <silent><buffer>        <M-\> :call CocAction('jumpDefinition', 'tabe')<CR>
   nmap     <silent><buffer><leader><M-\> :call CocAction('jumpDefinition', winwidth(0)>170 ? 'vsplit' : 'split')<CR>
+  nmap     <silent><buffer>       <M-\|> :call CocAction('jumpDefinition', 'pedit')<CR>
   nmap     <silent><buffer>        <M-.> :call CocAction('doHover')<CR>
   nmap     <silent><buffer>        <M-,> :call CocAction('diagnosticInfo')<CR>
   nmap     <silent><buffer><leader>gy    <Plug>(coc-type-definition)
@@ -19,10 +20,6 @@ function! SetupCoc()
   nmap             <buffer><leader>rn    <Plug>(coc-rename)
   nmap     <silent><buffer><leader>fm    <Plug>(coc-format)
   vmap     <silent><buffer><leader>fm    <Plug>(coc-format-selected)
-  xmap             <buffer>        if    <Plug>(coc-funcobj-i)
-  xmap             <buffer>        af    <Plug>(coc-funcobj-a)
-  omap             <buffer>        if    <Plug>(coc-funcobj-i)
-  omap             <buffer>        af    <Plug>(coc-funcobj-a)
   nmap     <silent><buffer><leader><tab> v<Plug>(coc-range-select)
   xmap     <silent><buffer><leader><tab> <Plug>(coc-range-select)
   xmap     <silent><buffer>      <S-tab> <Plug>(coc-range-select-backward)
