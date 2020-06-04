@@ -108,35 +108,8 @@ augroup end
 * `c_<C-R>_<C-W>`
 * https://vim.fandom.com/wiki/Search_across_multiple_lines#Searching_over_multiple_lines_with_a_user_command
 * http://karolis.koncevicius.lt/posts/porn_zen_and_vimrc/
-    ```vim
-    nnoremap <silent> J :<c-u>call <sid>Move(0, 0)<cr>
-    nnoremap <silent> K :<c-u>call <sid>Move(1, 0)<cr>
-    vnoremap <silent> J :<c-u>call <sid>Move(0, 1)<cr>
-    vnoremap <silent> K :<c-u>call <sid>Move(1, 1)<cr>
-    onoremap J V:call <sid>Move(0, 0)<cr>
-    onoremap K V:call <sid>Move(1, 0)<cr>
-    " paragraph edge
-    func! s:Move(isUp, isInVisual)
-      if a:isInVisual
-        normal! gv
-      end
-      let curpos = getcurpos()
-      let firstline='\(^\s*\n\)\zs\s*\S\+'
-      let lastline ='\s*\S\+\ze\n\s*$'
-      let flags = 'Wn'. (a:isUp ? 'b' : '')
-      " Move to first or last line of paragraph, or to the beginning/end of file
-      let pat = '\('.firstline.'\|'.lastline.'\)\|\%^\|\%$'
-      " make sure cursor moves and search does not get stuck on current line
-      call cursor(line('.'), a:isUp ? 1 : col('$'))
-      let target=search(pat, flags)
-      if target > 0
-        let curpos[1]=target
-        let curpos[2]=curpos[4]
-      end
-      call setpos('.', curpos)
-    endfunc
-    ```
 * alternate file
+* (neovim only) `:h map-cmd` probably better than `<C-\><C-o>:`
 
 # pitfalls
 * `:h map-bar`

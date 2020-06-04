@@ -62,6 +62,7 @@ command! -nargs=? Fold   :call CocAction('fold', <f-args>)
 " nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 
 " TODO: nvim lsp stuff
+" https://www.reddit.com/r/neovim/comments/grrxli/start_to_finish_example_of_setting_up_built_in/fs17mxy
 " Plug 'haorenW1025/diagnostic-nvim'
 " Plug 'haorenW1025/completion-nvim'
 " lua << EOF

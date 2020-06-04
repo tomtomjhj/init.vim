@@ -1,5 +1,6 @@
 " https://github.com/junegunn/fzf.vim/pull/733#issuecomment-559720813
 function! s:list_buffers()
+  call WipeGarbageBufs()
   redir => bufs
   silent ls
   redir END
@@ -15,6 +16,16 @@ command! Bdelete call fzf#run(fzf#wrap({
   \ 'sink*': { lines -> s:delete_buffers(lines) },
   \ 'options': '--multi --bind ctrl-a:select-all+accept'
 \ }))
+
+" bw, bd, setlocal bufhidden=delete don't work on the buf being hidden
+" https://stackoverflow.com/questions/6552295.`+` signs??
+func! WipeGarbageBufs()
+    " NOTE: getbufinfo bufmodified != getbufvar(.., '&mod') for new No Name buffer
+    let garbages = map(filter(getbufinfo({'buflisted': 1}), 'empty(v:val.name) && v:val.hidden && !v:val.changed'), 'v:val.bufnr')
+    if !empty(garbages)
+        exe 'bw' join(garbages, ' ')
+    endif
+endfunc
 
 " Delete buffer while keeping window layout (don't close buffer's windows).
 " Version 2008-11-18 from http://vim.wikia.com/wiki/VimTip165
@@ -83,3 +94,4 @@ function! s:Bclose(bang, buffer)
 endfunction
 command! -bang -complete=buffer -nargs=? Bclose call <SID>Bclose(<q-bang>, <q-args>)
 nnoremap <silent> <Leader>cb :Bclose<CR>
+" vim: set ts=2 sw=2:

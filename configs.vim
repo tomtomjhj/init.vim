@@ -21,6 +21,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'preservim/nerdcommenter', { 'on': ['<plug>NERDCommenterComment', '<plug>NERDCommenterToggle', '<plug>NERDCommenterInsert', '<plug>NERDCommenterSexy'] }
 Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
+" TODO: Raimondi/delimitMate?
 Plug 'tomtomjhj/auto-pairs'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': { -> fzf#install() }}
 Plug 'junegunn/fzf.vim'
@@ -44,6 +45,7 @@ augroup SetupNerdTree | au!
 augroup END
 
 " completion
+" TODO: remove this
 Plug 'ervandew/supertab'
 " if has('nvim')
 "   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -92,6 +94,7 @@ set number ruler cursorline
 set foldcolumn=1 foldnestmax=5
 set scrolloff=2
 set showtabline=1
+set laststatus=2
 
 set tabstop=4 shiftwidth=4
 set expandtab smarttab
@@ -217,6 +220,7 @@ let g:SuperTabClosePreviewOnPopupClose = 1
 " call deoplete#custom#source('ale', { 'max_info_width': 0, 'max_menu_width': 0 })
 " call deoplete#custom#var('omni', 'input_patterns', { 'tex': g:vimtex#re#deoplete })
 " call deoplete#custom#var('around', { 'mark_above': '[↑]', 'mark_below': '[↓]', 'mark_changes': '[*]' })
+" let g:float_preview#winhl = 'Normal:NormalFloat,NormalNC:NormalFloat'
 
 let g:UltiSnipsExpandTrigger = '<c-l>'
 " }}}
@@ -238,6 +242,7 @@ let g:ale_set_highlights = 1
 let g:ale_linters_explicit = 1
 
 let g:coc_config_home = '~/.vim'
+" TODO: per-filetype source priority? lower ultisnips in .md
 let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab', 'coc-word', 'coc-tag']
 " NOTE: stuff highlighted as Normal -> bg doesn't match in floatwin
 hi! link CocWarningHighlight NONE
@@ -247,6 +252,7 @@ hi! link CocErrorSign   ALEErrorSign
 hi! link CocWarningSign ALEWarningSign
 hi! link CocInfoSign    ALEInfoSign
 hi! link CocHintSign    ALEInfoSign
+hi! CocRustChainingHint ctermfg=Grey guifg=#999999
 hi! link CocErrorFloat   NONE
 hi! link CocWarningFloat CocErrorFloat
 hi! link CocInfoFloat    CocErrorFloat
@@ -363,7 +369,8 @@ augroup END
 " -> wrapper for qrcgn...q ?
 nnoremap <silent>* :call Star(0)\|set hlsearch<CR>
 nnoremap <silent>g* :call Star(1)\|set hlsearch<CR>
-vnoremap <silent>* :<C-u>call VisualStar()\|set hlsearch<CR>
+vnoremap <silent>* :<C-u>call VisualStar(0)\|set hlsearch<CR>
+vnoremap <silent>g* :<C-u>call VisualStar(1)\|set hlsearch<CR>
 " set hlsearch inside the function doesn't work? Maybe :h function-search-undo?
 " NOTE: word boundary is syntax property -> may not match in other ft buffers
 func! Star(g)
@@ -371,13 +378,13 @@ func! Star(g)
     let @c = expand('<cword>')
     let @/ = a:g ? @c : '\<' . @c . '\>'
 endfunc
-func! VisualStar()
+func! VisualStar(g)
     let g:search_mode = 'v'
     let l:reg_save = @"
     exec "norm! gvy"
     let @c = @"
     let l:pattern = escape(@", '\.*$^~[]')
-    let @/ = l:pattern
+    let @/ = a:g ? '\<' . l:pattern . '\>' : l:pattern " reversed
     let @" = l:reg_save
 endfunc
 nnoremap / :let g:search_mode='/'<CR>/
@@ -386,14 +393,15 @@ let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.5, 'yoffset': 1, 'borde
 let g:fzf_preview_window = 'right:50%'
 
 " TODO: start from Grepf and switch to Grep
-" TODO context search: context format is different, format parsing is done by preview.sh
+" TODO: context search: context format is different, format parsing is done by preview.sh
+" TODO: vmap using range. BLines?
 nnoremap <C-g>      :<C-u>Grep<space>
 nnoremap <leader>g/ :<C-u>Grep <C-r>=RgInput(@/)<CR>
 nnoremap <leader>gw :<C-u>Grep \b<C-r><C-w>\b
 nnoremap <leader>gf :<C-u>Grepf<space>
-noremap  <leader>b  :<C-u>Buffers<CR>
-noremap  <C-f>      :<C-u>Files<CR>
-noremap  <leader>hh :<C-u>History<CR>
+nnoremap <leader>b  :<C-u>Buffers<CR>
+nnoremap <C-f>      :<C-u>Files<CR>
+nnoremap <leader>hh :<C-u>History<CR>
 " tag with fzf. TODO preview. (preview: <c-w>}). <C-w>] is affected by switchbuf
 nnoremap <leader><C-t> :Tags ^<C-r><C-w>\  <CR>
 
@@ -518,13 +526,6 @@ func! SwordJumpLeft()
     call search(col('.') != 1 ? g:sword : '\v$', 'bW')
 endfunc
 
-let s:sword_textobj = { 'sword': {
-            \ 'pattern': g:sword,
-            \ 'select': ['ir', 'ar'],
-            \ 'move-p': '<M-b>'
-            \ } }
-call textobj#user#plugin('sword', s:sword_textobj)
-
 inoremap <CR> <C-G>u<CR>
 inoremap <C-u> <C-\><C-o><ESC><C-g>u<C-u>
 " Delete a single character of other non-blank chars
@@ -587,6 +588,7 @@ endfunc
 " etc {{{
 map <silent><leader><CR> :noh<CR>
 map <leader>ss :setlocal spell!\|setlocal spell?<cr>
+" TODO: make spc ignore "..."
 map <leader>sc :if &spc == "" \| setl spc< \| else \| setl spc= \| endif \| setl spc?<CR>
 map <leader>pp :setlocal paste!\|setlocal paste?<cr>
 map <leader>sw :set wrap!\|set wrap?<CR>
@@ -651,7 +653,6 @@ command! -bang -nargs=* -complete=file Make AsyncRun -program=make @ <args>
 map <leader>M :Make<space>
 
 " quickfix, loclist, ... {{{
-" TODO: quickfix length in statusline?
 " TODO: manually adding lines to qf?
 let g:qf_window_bottom = 0
 let g:qf_loclist_window_bottom = 0
@@ -661,19 +662,25 @@ let g:qf_auto_resize = 0
 let g:qf_max_height = 12
 let g:qf_auto_quit = 0
 
-command! CV exec 'vert copen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p
-command! CO belowright copen 12 | winc p
-command! OQ if IsWinWide() | exec 'CV' | else | exec 'CO' | endif
-command! LV exec 'vert lopen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p
-command! LO belowright lopen 12 | winc p
-command! OL if IsWinWide() | exec 'LV' | else | exec 'LO' | endif
-nmap <leader>oq :OQ<CR>
-nmap <leader>ol :OL<CR>
-nmap ]q <Plug>(qf_qf_next)
-nmap [q <Plug>(qf_qf_previous)
-nmap ]l <Plug>(qf_loc_next)
-nmap [l <Plug>(qf_loc_previous)
-nmap <silent><leader>x :pc\|ccl\|lcl<CR>
+command! CW
+            \ if IsWinWide() |
+            \   exec 'vert copen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p |
+            \ else |
+            \   belowright copen 12 | winc p |
+            \ endif
+command! LW
+            \ if IsWinWide() |
+            \   exec 'vert lopen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p |
+            \ else |
+            \   belowright lopen 12 | winc p |
+            \ endif
+nmap <silent><leader>cw :CW<CR>
+nmap <silent><leader>lw :LW<CR>
+nmap <silent><leader>x  :pc\|ccl\|lcl<CR>
+nmap <silent>]q <Plug>(qf_qf_next)
+nmap <silent>[q <Plug>(qf_qf_previous)
+nmap <silent>]l <Plug>(qf_loc_next)
+nmap <silent>[l <Plug>(qf_loc_previous)
 " }}}
 
 " etc plugin settings {{{
@@ -687,8 +694,6 @@ let g:mkdp_auto_close = 0
 let g:mkdp_preview_options = {
             \ 'mkit': { 'typographer': v:false },
             \ 'disable_sync_scroll': 1 }
-
-let g:float_preview#winhl = 'Normal:NormalFloat,NormalNC:NormalFloat'
 " }}}
 
 func! SynStackName()
@@ -787,31 +792,5 @@ func! OnTabClosed(closed)
         let l:target = g:last_tab != g:last_viewed ? g:last_tab : 0
     endif
     if l:target | exec 'tabn' l:target | endif
-endfunc
-
-" Garbage buffers
-" bw, bd, setlocal bufhidden=delete don't work on the buf being hidden
-" defer it until BufEnter to another buf
-let g:lasthidden = 0
-augroup GarbageBuf | au!
-    au BufHidden * let g:lasthidden = expand("<abuf>")
-    au BufEnter * call CheckAndBW(g:lasthidden)
-augroup END
-func! CheckAndBW(buf)
-    if IsCleanEmptyBuf(a:buf)
-        exec "bw" a:buf
-    endif
-endfunc
-
-" https://stackoverflow.com/questions/6552295.`+` signs??
-func! IsCleanEmptyBuf(buf)
-    return a:buf > 0 && buflisted(+a:buf) && empty(bufname(+a:buf)) && !getbufvar(+a:buf, "&mod")
-endfunc
-
-func! CleanGarbageBufs()
-    let bufs = filter(range(1, bufnr('$')), 'IsCleanEmptyBuf(v:val) && bufwinnr(v:val)<0')
-    if !empty(bufs)
-        exec 'bw' join(bufs, ' ')
-    endif
 endfunc
 " }}}

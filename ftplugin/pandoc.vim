@@ -94,7 +94,9 @@ let s:pandoc_textobj = {
             \ }
 call textobj#user#plugin('pandoc', s:pandoc_textobj)
 
-let b:AutoPairs = AutoPairsDefine({'$':'$', '$$':'$$'})
+if !exists('b:AutoPairs')
+    let b:AutoPairs = AutoPairsDefine({'$':'$', '$$':'$$'})
+endif
 
 " set to notoplevel in haskell.vim
 syntax spell toplevel
