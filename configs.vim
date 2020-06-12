@@ -113,8 +113,9 @@ set updatetime=1234
 let $LANG='en'
 set langmenu=en
 set encoding=utf8
-" TODO: project spell file
 set spellfile=~/.vim/spell/en.utf-8.add
+" TODO: project spell file, modeline spelllang, spell directory?
+set spelllang=en,cjk
 
 set wildmenu wildmode=longest:full,full
 set wildignore=*.o,*~,*.pyc,*.pdf,*.v.d,*.vo,*.glob

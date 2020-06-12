@@ -104,7 +104,11 @@ syntax spell toplevel
 func! RunPandoc(open)
     let src = expand("%:p")
     let out = expand("%:p:h") . '/' . expand("%:t:r") . '.pdf'
-    let params = '-Vurlcolor=cyan --highlight-style=kate'
+    " need to pass --filter=pandoc-citeproc here in order to specify bibliography in yaml
+    let params = '-Vurlcolor=blue --highlight-style=kate'
+    if executable('pandoc-citeproc')
+        let params .= ' --filter=pandoc-citeproc'
+    endif
     let post = "exec 'au! pandoc_quickfix'"
     let post .= a:open ? "|call Zathura('" . l:out . "',!g:asyncrun_code)" : ''
     let post = escape(post, ' ')
@@ -124,5 +128,5 @@ nmap <buffer><silent><leader>C :call RunPandoc(0)<CR>
 nmap <buffer><silent><leader>O :call RunPandoc(1)<CR>
 nmap <buffer><silent><leader>oo :call Zathura("<C-r>=expand("%:p:h") . '/' . expand("%:t:r") . '.pdf'<CR>")<CR>
 nmap <buffer><silent>gx <Plug>(pandoc-hypertext-open-system)
-nmap <buffer><silent><leader>py vid:AsyncRun python3<CR>:OQ<CR>
+nmap <buffer><silent><leader>py vid:AsyncRun python3<CR>:CW<CR>
 nmap <buffer>zM :call pandoc#folding#Init()\|unmap <lt>buffer>zM<CR>zM
