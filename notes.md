@@ -105,7 +105,6 @@ augroup end
 * yank matching lines <https://stackoverflow.com/a/1475069>
 * <https://vi.stackexchange.com/questions/17227/>
 * sub-replace-expression
-* `c_<C-R>_<C-W>`
 * https://vim.fandom.com/wiki/Search_across_multiple_lines#Searching_over_multiple_lines_with_a_user_command
 * http://karolis.koncevicius.lt/posts/porn_zen_and_vimrc/
 * alternate file
@@ -125,6 +124,10 @@ augroup end
 * `<Up>` is slightly different from `<C-p>`
 * after/indent doesn't work as expected?
 * function without `return` returns 0. insert explicit `return ''` for side-effect only function for `<C-R>=` trick.
+* `c_<C-R>_<C-W>`
+  > With CTRL-W the part of the word that was already typed is not inserted again.
+
+  That is not true if it's run manually (not from a mapping)????
 
 # hmm..
 * I don't want to rely on `set whichwrap+=]` for quick jump but this doesn't

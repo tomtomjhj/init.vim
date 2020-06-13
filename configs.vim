@@ -13,15 +13,17 @@ Plug 'tomtomjhj/zenbruh.vim'
 if !has('nvim')
     Plug 'tpope/vim-sensible'
 endif
+" TODO: machakann/vim-sandwich?
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
+" TODO: |,| right after sneak aborts label mode but leave the highlight
+" similar to the result of Sneak_;
 Plug 'justinmk/vim-sneak'
-" TODO: easymotion `s` looks good but https://github.com/easymotion/vim-easymotion/issues/402
 Plug 'tpope/vim-fugitive'
 Plug 'preservim/nerdcommenter', { 'on': ['<plug>NERDCommenterComment', '<plug>NERDCommenterToggle', '<plug>NERDCommenterInsert', '<plug>NERDCommenterSexy'] }
 Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
-" TODO: Raimondi/delimitMate?
+" TODO: Raimondi/delimitMate? tmsvg/pear-tree?
 Plug 'tomtomjhj/auto-pairs'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': { -> fzf#install() }}
 Plug 'junegunn/fzf.vim'
@@ -30,6 +32,7 @@ Plug 'rhysd/git-messenger.vim'
 Plug 'Konfekt/FastFold'
 Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
+Plug 'mbbill/undotree'
 
 Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
 augroup SetupNerdTree | au!
@@ -368,7 +371,6 @@ augroup END
 " search_mode: which command last set @/?
 " `*`, `v_*` without moving the cursor. Reserve @c for the raw original text
 " NOTE: Can't repeat properly if ins-special-special is used. Use q-recording.
-" -> wrapper for qrcgn...q ?
 nnoremap <silent>* :call Star(0)\|set hlsearch<CR>
 nnoremap <silent>g* :call Star(1)\|set hlsearch<CR>
 vnoremap <silent>* :<C-u>call VisualStar(0)\|set hlsearch<CR>
@@ -394,12 +396,9 @@ nnoremap / :let g:search_mode='/'<CR>/
 let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.5, 'yoffset': 1, 'border': 'top', 'highlight': 'VertSplit' } }
 let g:fzf_preview_window = 'right:50%'
 
-" TODO: start from Grepf and switch to Grep
-" TODO: context search: context format is different, format parsing is done by preview.sh
-" TODO: vmap using range. BLines?
 nnoremap <C-g>      :<C-u>Grep<space>
 nnoremap <leader>g/ :<C-u>Grep <C-r>=RgInput(@/)<CR>
-nnoremap <leader>gw :<C-u>Grep \b<C-r><C-w>\b
+nnoremap <leader>gw :<C-u>Grep \b<C-R>=expand('<cword>')<CR>\b
 nnoremap <leader>gf :<C-u>Grepf<space>
 nnoremap <leader>b  :<C-u>Buffers<CR>
 nnoremap <C-f>      :<C-u>Files<CR>
@@ -424,7 +423,7 @@ command! -bang -nargs=? -complete=dir Files call Files(<q-args>)
 command! -bang -nargs=* Tags call fzf#vim#tags(<q-args>, { 'options': ['-d', '\t', '--nth', '..-2'] })
 
 func! FzfOpts(arg, spec)
-    " TODO: ask the directory to run (double 3)
+    " TODO: ask the directory to run (double 3), starting from %:p:h
     let l:opts = string(a:arg)
     " Preview on right if ¬fullscreen & wide
     " fullscreen
@@ -453,14 +452,14 @@ func! RgInput(raw)
     endif
 endfunc
 " NOTE: -U (multiline): \s includes \n.
-let g:rg_cmd_base = 'rg --column --line-number --no-heading --color=always --colors path:fg:218 --colors match:fg:116 --smart-case '
+let s:rg_cmd_base = 'rg --column --line-number --no-heading --color=always --colors path:fg:218 --colors match:fg:116 --smart-case '
 func! Ripgrep(query)
-    let cmd = g:rg_cmd_base . shellescape(a:query)
+    let cmd = s:rg_cmd_base . shellescape(a:query)
     let spec = FzfOpts(v:count, {'options': ['--info=inline']})
     call fzf#vim#grep(cmd, 1, spec)
 endfunc
 func! RipgrepFly(query)
-    let command_fmt = g:rg_cmd_base . '-- %s || true'
+    let command_fmt = s:rg_cmd_base . '-- %s || true'
     let initial_command = printf(command_fmt, shellescape(a:query))
     let reload_command = printf(command_fmt, '{q}')
     let spec = FzfOpts(v:count, {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command, '--info=inline']})
@@ -516,8 +515,6 @@ let g:sword = '\v(\k+|([^[:alnum:]_[:blank:](){}[\]<>$])\2*|[(){}[\]<>$]|\s+)'
 " Jump past a sword. Assumes `set whichwrap+=]` for i_<Right>
 inoremap <silent><C-j> <C-\><C-O>:call SwordJumpRight()<CR><Right><C-\><C-o><ESC>
 inoremap <silent><C-k> <C-\><C-O>:call SwordJumpLeft()<CR>
-" TODO: `e` replacement
-nnoremap <silent><M-e> :call search(g:sword, 'eW')<CR>
 func! SwordJumpRight()
     if col('.') !=  col('$')
         call search(g:sword, 'ceW')
@@ -728,10 +725,10 @@ call textobj#user#plugin('path', { 'path': { 'pattern': '\f\+', 'select': ['aP',
 let g:NERDCreateDefaultMappings = 0
 imap <M-/> <Plug>NERDCommenterInsert
 map <M-/> <Plug>NERDCommenterComment
-xmap ,c<Space> <Plug>NERDCommenterToggle
-nmap ,c<Space> <Plug>NERDCommenterToggle
-xmap ,cs <Plug>NERDCommenterSexy
-nmap ,cs <Plug>NERDCommenterSexy
+xmap <leader>c<Space> <Plug>NERDCommenterToggle
+nmap <leader>c<Space> <Plug>NERDCommenterToggle
+xmap <leader>cs <Plug>NERDCommenterSexy
+nmap <leader>cs <Plug>NERDCommenterSexy
 let g:NERDSpaceDelims = 1
 let g:NERDCustomDelimiters = {
             \ 'python' : { 'left': '#', 'leftAlt': '#' },
