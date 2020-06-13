@@ -64,6 +64,7 @@ Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'dense-analysis/ale'
 " TODO: sometimes node remains alive even after exiting
 Plug 'neoclide/coc.nvim', { 'branch': 'release' } | Plug 'neoclide/jsonc.vim'
+Plug 'antoinemadec/coc-fzf'
 Plug 'tomtomjhj/vim-markdown'
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
 Plug 'tomtomjhj/vim-pandoc-syntax'
@@ -408,10 +409,9 @@ nnoremap <leader><C-t> :Tags ^<C-r><C-w>\  <CR>
 
 augroup fzf | au!
     if has('nvim')
-        au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
-        au TermOpen * tnoremap <buffer> <C-q> <c-\><c-n>
-        au FileType fzf tunmap <buffer> <Esc>
-        au FileType fzf tunmap <buffer> <C-q>
+        " `au TermOpen tnoremap` and `au FileType fzf tunmap` breaks coc-fzf
+        tnoremap <expr> <Esc> (&filetype == 'fzf') ? '<Esc>' : '<c-\><c-n>'
+        tnoremap <expr> <C-q> (&filetype == 'fzf') ? '<C-q>' : '<c-\><c-n>'
     else
         tnoremap <C-q> <Esc>
     endif

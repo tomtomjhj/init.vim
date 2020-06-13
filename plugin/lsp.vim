@@ -7,6 +7,8 @@ function! SetupALELSP()
   nmap <leader>rf <Plug>(ale_find_references)
 endfunction
 
+let g:coc_quickfix_open_command = 'CW'
+let g:coc_fzf_preview = 'up:60%'
 function! SetupCoc()
   nmap     <silent><buffer>        <M-]> <Plug>(coc-definition)
   nmap     <silent><buffer>        <M-\> :call CocAction('jumpDefinition', 'tabe')<CR>
@@ -26,10 +28,10 @@ function! SetupCoc()
   nmap             <buffer><leader>ac    <Plug>(coc-codelens-action)
   nmap     <silent><buffer><leader>O     :<C-u>CocList outline<CR>
   nmap     <silent><buffer><leader>sb    :<C-u>CocList -I symbols<CR>
+  " disgnostics list
   nmap     <silent><buffer>        [a    <Plug>(coc-diagnostic-prev)
   nmap     <silent><buffer>        ]a    <Plug>(coc-diagnostic-next)
 endfunction
-" TODO: how does CocList preview stuff work? so wow.
 
 augroup CocStuff
   autocmd!
