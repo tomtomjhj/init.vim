@@ -333,6 +333,8 @@ let g:tex_flavor = "latex"
 let g:tex_noindent_env = '\v\w+.?'
 let g:pandoc#syntax#codeblocks#embeds#langs = ["python", "cpp", "rust"]
 let g:pandoc#modules#enabled = ["formatting", "hypertext"]
+" Surround triggers equalprg (pandoc -t markdown), which modifies the text a lot
+let g:pandoc#formatting#equalprg = ''
 let g:pandoc#folding#level = 99
 let g:pandoc#hypertext#use_default_mappings = 0
 let g:pandoc#syntax#use_definition_lists = 0
