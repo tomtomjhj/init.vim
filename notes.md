@@ -80,14 +80,14 @@ augroup end
 * `g]`-like commands can't be used in functions etc?
 * fzf: make a feature request for ivy-like actions
 * <https://vimways.org/2018/from-vimrc-to-vim>
+* read cmdline.txt
+    * `[range]`
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
   This breaks non-idempotent operations at `FileType` like `AutoPairsDefine({}, ["'"])`
     * Just disable lazy load as it turns out that loading ultisnip isn't slow.
     * The root cause might be related to loading something that contains filetype plugin.
-* auto-pairs adds weird indent if the previous line ends with `,`. Indent size if the size of the first word in the previous line.
-    * reset `indentexpr` just before running `=k` in auto-pairs
 * Restore default `iskeyword` inside pandoc code block: it's impossible.
 * rust-analyzer provides better completion but doesn't have proper diagnostics
     * use coc-rust-analyzer
@@ -128,6 +128,9 @@ augroup end
   > With CTRL-W the part of the word that was already typed is not inserted again.
 
   That is not true if it's run manually (not from a mapping)????
+* `=` does `C-indenting` when `equalprg` is not set
+    * auto-pairs adds weird indent if the previous line ends with `,`. Indent size if the size of the first word in the previous line.
+        * `<CR><C-c>O` (`nosmartindent`) vs. `<CR><C-c>=ko` (`&indentexpr != ''`)
 
 # hmm..
 * I don't want to rely on `set whichwrap+=]` for quick jump but this doesn't

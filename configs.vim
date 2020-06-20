@@ -23,8 +23,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'preservim/nerdcommenter', { 'on': ['<plug>NERDCommenterComment', '<plug>NERDCommenterToggle', '<plug>NERDCommenterInsert', '<plug>NERDCommenterSexy'] }
 Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
-" TODO: Raimondi/delimitMate? tmsvg/pear-tree?
-Plug 'tomtomjhj/auto-pairs'
+Plug 'tmsvg/pear-tree'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': { -> fzf#install() }}
 Plug 'junegunn/fzf.vim'
 Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment' | Plug 'michaeljsmith/vim-indent-object'
@@ -69,6 +68,7 @@ Plug 'dense-analysis/ale'
 Plug 'neoclide/coc.nvim', { 'branch': 'release' } | Plug 'neoclide/jsonc.vim'
 Plug 'antoinemadec/coc-fzf'
 Plug 'tomtomjhj/vim-markdown'
+" TODO: huge performance hit in nvim after importing tex syntax
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
 Plug 'tomtomjhj/vim-pandoc-syntax'
 Plug 'rust-lang/rust.vim' | Plug 'tomtomjhj/vim-rust-syntax-ext'
@@ -102,7 +102,7 @@ set laststatus=2
 
 set tabstop=4 shiftwidth=4
 set expandtab smarttab
-set autoindent smartindent
+set autoindent " smartindent is unnecessary
 " TODO: insert indents at InsertEnter or emacs-like tab
 
 " indent the wrapped line, w/ `> ` at the start
@@ -154,7 +154,7 @@ augroup BasicSetup | au!
     au FileType json call SetupCoc()
     au BufRead,BufNewFile *.k set filetype=k
     au BufRead,BufNewFile *.mir set filetype=rust
-    au FileType lisp if !exists('b:AutoPairs') | let b:AutoPairs = AutoPairsDefine({}, ["'"]) | endif
+    au FileType lisp let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} })
     au FileType help nnoremap <silent><buffer> <M-.> :h <C-r><C-w><CR>
     au VimResized * let &pumheight = min([&window/4, 20])
 augroup END
@@ -524,7 +524,6 @@ func! SwordJumpLeft()
     call search(col('.') != 1 ? g:sword : '\v$', 'bW')
 endfunc
 
-inoremap <CR> <C-G>u<CR>
 inoremap <C-u> <C-\><C-o><ESC><C-g>u<C-u>
 " Delete a single character of other non-blank chars
 " TODO: delete sword
@@ -633,16 +632,15 @@ vnoremap + g<C-a>
 noremap - <C-x>
 vnoremap - g<C-x>
 
-" auto-pairs
-let g:AutoPairsMapSpace = 0
-let g:AutoPairsCenterLine = 0
-let g:AutoPairsMapCh = 0
-let g:AutoPairsShortcutToggle = ''
-let g:AutoPairsShortcutJump = ''
-inoremap <silent><M-e> <C-R>=AutoPairsFastWrap("e")<CR>
-inoremap <silent><M-E> <C-R>=AutoPairsFastWrap("E")<CR>
-inoremap <silent><M-$> <C-R>=AutoPairsFastWrap("$")<CR>
-inoremap <silent><M-:> <C-R>=AutoPairsFastWrap("t;")<CR>
+" pairs
+let g:pear_tree_map_special_keys = 0
+let g:pear_tree_smart_openers = 1
+let g:pear_tree_smart_backspace = 1
+let g:pear_tree_timeout = 23
+let g:pear_tree_repeatable_expand = 0
+" assumes nosmartindent
+imap <CR> <C-G>u<Plug>(PearTreeExpand)
+imap <BS> <Plug>(PearTreeBackspace)
 
 " asyncrun
 map <leader>R :AsyncRun<space>
