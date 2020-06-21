@@ -302,7 +302,6 @@ endif
 augroup SetupCCpp | au!
     au FileType c,cpp call SetupCoc()
     au FileType c,cpp setl tabstop=2 shiftwidth=2
-    au FileType c,cpp nmap <buffer>zM :set foldmethod=syntax foldlevel=99\|unmap <lt>buffer>zM<CR>zM
 augroup END
 " }}}
 
@@ -365,7 +364,6 @@ let g:go_highlight_types = 1
 let g:go_fold_enable = ['block']
 augroup SetupGo | au!
     au FileType go call SetupCoc()
-    au FileType go nmap <buffer>zM :set foldmethod=syntax foldlevel=99\|unmap <lt>buffer>zM<CR>zM
 augroup END
 " }}}
 
@@ -688,6 +686,9 @@ nmap <leader>nf :NERDTreeFind<cr>
 
 let g:EditorConfig_exclude_patterns = ['.*[.]git/.*', 'fugitive://.*', 'scp://.*']
 
+" let g:mkdp_port = '8080'
+" let g:mkdp_open_to_the_world = 1
+" let g:mkdp_echo_preview_url = 1
 let g:mkdp_auto_close = 0
 let g:mkdp_preview_options = {
             \ 'mkit': { 'typographer': v:false },
@@ -734,7 +735,7 @@ let g:NERDCustomDelimiters = {
             \ 'python' : { 'left': '#', 'leftAlt': '#' },
             \ 'c': { 'left': '//', 'leftAlt': '/*', 'rightAlt': '*/' },
             \}
-let g:NERDDefaultAlign = 'both'
+let g:NERDDefaultAlign = 'left'
 
 map <leader>sf :syn sync fromstart<CR>
 " }}}

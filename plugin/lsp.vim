@@ -9,6 +9,8 @@ endfunction
 
 let g:coc_quickfix_open_command = 'CW'
 let g:coc_fzf_preview = 'up:60%'
+
+" TODO: pass lsp capability and only map that stuff?
 function! SetupCoc()
   nmap     <silent><buffer>        <M-]> <Plug>(coc-definition)
   nmap     <silent><buffer>        <M-\> :call CocAction('jumpDefinition', 'tabe')<CR>
@@ -22,13 +24,16 @@ function! SetupCoc()
   nmap             <buffer><leader>rn    <Plug>(coc-rename)
   nmap     <silent><buffer><leader>fm    <Plug>(coc-format)
   vmap     <silent><buffer><leader>fm    <Plug>(coc-format-selected)
+  nmap     <silent><buffer>        zM    :Fold<CR>
+  " nmap             <buffer>        zM    :set foldmethod=syntax foldlevel=99\|unmap <lt>buffer>zM<CR>zM
   nmap     <silent><buffer><leader><tab> v<Plug>(coc-range-select)
   xmap     <silent><buffer><leader><tab> <Plug>(coc-range-select)
   xmap     <silent><buffer>      <S-tab> <Plug>(coc-range-select-backward)
   nmap             <buffer><leader>ac    <Plug>(coc-codelens-action)
   nmap     <silent><buffer><leader>O     :<C-u>CocList outline<CR>
   nmap     <silent><buffer><leader>sb    :<C-u>CocList -I symbols<CR>
-  " disgnostics list
+  " TODO: this doesn't search on filetype
+  nmap     <silent><buffer><leader>dl    :<C-U>CocFzfList diagnostics<CR>
   nmap     <silent><buffer>        [a    <Plug>(coc-diagnostic-prev)
   nmap     <silent><buffer>        ]a    <Plug>(coc-diagnostic-next)
 endfunction
@@ -50,11 +55,8 @@ augroup CocStuff
   autocmd BufEnter list://* hi! CursorLine cterm=underline gui=underline
 augroup end
 
-" xmap <leader>a  <Plug>(coc-codeaction-selected)
-" nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-command! -nargs=0 Format :call CocAction('format')
-command! -nargs=? Fold   :call CocAction('fold', <f-args>)
+command! -nargs=0 Format call CocAction('format')
+command! -nargs=? Fold   if &foldmethod == 'manual' | exe 'normal! zE' | call CocAction('fold', <f-args>) | endif
 
 " " Do default action for next item.
 " nnoremap <silent> <space>j  :<C-u>CocNext<CR>
