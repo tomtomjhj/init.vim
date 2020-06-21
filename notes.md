@@ -70,6 +70,7 @@ augroup end
 
 # TODO:
 * Better interaction of `hlsearch` and conceal?
+    * disable conceal when hlsearch set?
 * Convert magic to ripgrep regex. Probably impossible.
     - unescape: `\(abc\) -> (abc), \~ -> ~, \/ -> /`
     - escape: `(abc)->\(abc\), {abc} -> \{abc\}`
@@ -109,6 +110,7 @@ augroup end
 * http://karolis.koncevicius.lt/posts/porn_zen_and_vimrc/
 * alternate file
 * (neovim only) `:h map-cmd` probably better than `<C-\><C-o>:`
+* `:g/foo/z=3`
 
 # pitfalls
 * `:h map-bar`
@@ -121,6 +123,7 @@ augroup end
   This still breaks undo after ins-special-special and is still broken at the line end.
 * `<C-w>]` doesn't open in new tab if `switchbuf=useopen` which is useful for quickfix stuff.
 * `<ESC>` is somewhat different from `CTRL-C`: c (`/`, `?`), i, v, ..
+    * `i_CTRL-C` doesn't trigger `InsertLeave`!
 * `<Up>` is slightly different from `<C-p>`
 * after/indent doesn't work as expected?
 * function without `return` returns 0. insert explicit `return ''` for side-effect only function for `<C-R>=` trick.

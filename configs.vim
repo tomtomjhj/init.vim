@@ -68,7 +68,8 @@ Plug 'dense-analysis/ale'
 Plug 'neoclide/coc.nvim', { 'branch': 'release' } | Plug 'neoclide/jsonc.vim'
 Plug 'antoinemadec/coc-fzf'
 Plug 'tomtomjhj/vim-markdown'
-" TODO: huge performance hit in nvim after importing tex syntax
+" TODO: huge performance hit in nvim (not in vim)
+" lightline + cursorline + lazyredraw + large &lines
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
 Plug 'tomtomjhj/vim-pandoc-syntax'
 Plug 'rust-lang/rust.vim' | Plug 'tomtomjhj/vim-rust-syntax-ext'
@@ -603,7 +604,8 @@ noremap <leader>fn 2<C-g>
 
 noremap <F1> <Esc>
 inoremap <F1> <Esc>
-noremap! <C-q> <C-c>
+cnoremap <C-q> <C-c>
+inoremap <C-q> <Esc>
 vnoremap <C-q> <Esc>
 
 cnoremap <M-p> <Up>
