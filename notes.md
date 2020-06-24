@@ -71,18 +71,14 @@ augroup end
 # TODO:
 * Better interaction of `hlsearch` and conceal?
     * disable conceal when hlsearch set?
-* Convert magic to ripgrep regex. Probably impossible.
-    - unescape: `\(abc\) -> (abc), \~ -> ~, \/ -> /`
-    - escape: `(abc)->\(abc\), {abc} -> \{abc\}`
-    - don't touch: `\., \$, \^, \\ `
 * git diff arbitrary commits inside nvim, diff mode usage, git-gutter,...
 * sudoedit settings: undodir, ...
-* deoplete: filter prefix match and extract longest prefix
 * `g]`-like commands can't be used in functions etc?
 * fzf: make a feature request for ivy-like actions
 * <https://vimways.org/2018/from-vimrc-to-vim>
 * read cmdline.txt
     * `[range]`
+* prabirshrestha/asyncomplete.vim
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -111,6 +107,7 @@ augroup end
 * alternate file
 * (neovim only) `:h map-cmd` probably better than `<C-\><C-o>:`
 * `:g/foo/z=3`
+* `:pu =execute('...')`
 
 # pitfalls
 * `:h map-bar`
