@@ -1,3 +1,18 @@
+function! s:MapNotHasmapto(lhs, rhs)
+    if !hasmapto('<Plug>' . a:rhs)
+        execute 'nmap <buffer>' . a:lhs . ' <Plug>' . a:rhs
+        execute 'vmap <buffer>' . a:lhs . ' <Plug>' . a:rhs
+    endif
+endfunction
+call <sid>MapNotHasmapto(']]', 'Markdown_MoveToNextHeader')
+call <sid>MapNotHasmapto('[[', 'Markdown_MoveToPreviousHeader')
+call <sid>MapNotHasmapto('][', 'Markdown_MoveToNextSiblingHeader')
+call <sid>MapNotHasmapto('[]', 'Markdown_MoveToPreviousSiblingHeader')
+call <sid>MapNotHasmapto(']u', 'Markdown_MoveToParentHeader')
+call <sid>MapNotHasmapto(']c', 'Markdown_MoveToCurHeader')
+call <sid>MapNotHasmapto('gx', 'Markdown_OpenUrlUnderCursor')
+delfunction s:MapNotHasmapto
+
 func! MkdFencedCodeBlocka()
     if !InSynStack('mkdSnippet') && !InSynStack('mkdCode')
         return 0

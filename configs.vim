@@ -67,7 +67,7 @@ Plug 'dense-analysis/ale'
 " TODO: sometimes node remains alive even after exiting
 Plug 'neoclide/coc.nvim', { 'branch': 'release' } | Plug 'neoclide/jsonc.vim'
 Plug 'antoinemadec/coc-fzf'
-Plug 'tomtomjhj/vim-markdown'
+Plug 'plasticboy/vim-markdown'
 " TODO: huge performance hit in nvim (not in vim)
 " lightline + cursorline + lazyredraw + large &lines
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
@@ -95,7 +95,7 @@ call plug#end()
 
 " Basic {{{
 set mouse=a
-set number ruler cursorline
+set number ruler " cursorline
 set foldcolumn=1 foldnestmax=5
 set scrolloff=2
 set showtabline=1
@@ -345,6 +345,7 @@ let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_auto_insert_bullets = 0
 let g:vim_markdown_new_list_item_indent = 0
 let g:vim_markdown_frontmatter = 1
+let g:vim_markdown_no_default_key_mappings = 1
 func! Zathura(file, ...)
     if get(a:, 1, 1)
         call jobstart(['zathura', a:file, '--fork'])
