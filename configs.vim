@@ -23,7 +23,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'preservim/nerdcommenter', { 'on': ['<plug>NERDCommenterComment', '<plug>NERDCommenterToggle', '<plug>NERDCommenterInsert', '<plug>NERDCommenterSexy'] }
 Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'tmsvg/pear-tree'
+Plug 'tomtomjhj/pear-tree'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': { -> fzf#install() }}
 Plug 'junegunn/fzf.vim'
 Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment' | Plug 'michaeljsmith/vim-indent-object'
@@ -32,6 +32,7 @@ Plug 'Konfekt/FastFold'
 Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree'
+Plug 'wellle/visual-split.vim'
 
 Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
 augroup SetupNerdTree | au!
@@ -82,8 +83,7 @@ Plug 'lervag/vimtex'
 " Plug 'tomlion/vim-solidity'
 " Plug 'LumaKernel/coqpit.vim'
 " Plug 'https://framagit.org/tyreunom/coquille', { 'do': ':UpdateRemotePlugins' }
-" NOTE: doesn't work in nvim, not async
-Plug 'let-def/vimbufsync' | Plug 'whonore/Coqtail' | let g:coqtail_nomap = 1
+Plug 'whonore/Coqtail' | let g:coqtail_nomap = 1
 " Plug 'puremourning/vimspector'
 Plug 'cespare/vim-toml'
 Plug 'rhysd/vim-llvm'
@@ -242,6 +242,7 @@ let g:ale_fixers = {
             \ 'haskell': ['stylish-haskell'],
             \ 'rust': ['rustfmt'],
             \ 'ocaml': ['ocamlformat'],
+            \ 'go': ['gofmt'],
             \ '*': ['trim_whitespace']
             \ }
 let g:ale_set_highlights = 1
@@ -264,7 +265,6 @@ hi! link CocWarningFloat CocErrorFloat
 hi! link CocInfoFloat    CocErrorFloat
 hi! link CocHintFloat    CocErrorFloat
 
-" NOTE: <M- maps are broken in vim
 nmap <leader>fm <Plug>(ale_fix)
 nmap <leader>ad <Plug>(ale_detail)<C-W>p
 nmap ]a <Plug>(ale_next_wrap)
@@ -290,8 +290,8 @@ let g:intero_start_immediately = 0
 
 " Rust {{{
 " TODO: rust symbol prettyfier: ${GT,LT,C,u20,u7b,u7d}$
-let g:rust_fold = 1
-let g:rust_keep_autopairs_default = 1
+" let g:rust_fold = 1
+" let g:rust_keep_autopairs_default = 1
 if executable('rust-analyzer')
     let g:ale_rust_rls_config = { 'rust': { 'racer_completion': v:false } }
 endif
@@ -363,10 +363,6 @@ let g:go_highlight_operators = 1
 let g:go_highlight_functions = 1
 let g:go_highlight_function_calls = 1
 let g:go_highlight_types = 1
-let g:go_fold_enable = ['block']
-augroup SetupGo | au!
-    au FileType go call SetupCoc()
-augroup END
 " }}}
 
 " search & fzf {{{
@@ -424,6 +420,7 @@ command! -bang -nargs=? -complete=dir Files call Files(<q-args>)
 " allow search on the full tag info, excluding the appended tagfile name
 command! -bang -nargs=* Tags call fzf#vim#tags(<q-args>, { 'options': ['-d', '\t', '--nth', '..-2'] })
 
+" TODO: set g:fzf_layout on VimResized?
 func! FzfOpts(arg, spec)
     " TODO: ask the directory to run (double 3), starting from %:p:h
     let l:opts = string(a:arg)
@@ -684,8 +681,8 @@ nmap <silent>[l <Plug>(qf_loc_previous)
 
 " etc plugin settings {{{
 let g:NERDTreeWinPos = "right"
-nmap <leader>nn :NERDTreeToggle<cr>
-nmap <leader>nf :NERDTreeFind<cr>
+nmap <silent><leader>nn :NERDTreeToggle<cr>
+nmap <silent><leader>nf :NERDTreeFind<cr>
 
 let g:EditorConfig_exclude_patterns = ['.*[.]git/.*', 'fugitive://.*', 'scp://.*']
 

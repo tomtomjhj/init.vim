@@ -79,6 +79,8 @@ augroup end
 * read cmdline.txt
     * `[range]`
 * prabirshrestha/asyncomplete.vim
+* coq highlights covering whole line
+    * how does DiffAdd work?
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -108,6 +110,7 @@ augroup end
 * (neovim only) `:h map-cmd` probably better than `<C-\><C-o>:`
 * `:g/foo/z=3`
 * `:pu =execute('...')`
+* cmdline-completion
 
 # pitfalls
 * `:h map-bar`
