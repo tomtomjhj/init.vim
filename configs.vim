@@ -169,8 +169,11 @@ let g:lightline = {
       \ 'colorscheme': 'wombat',
       \ 'active': {
       \   'left': [ ['mode', 'paste'],
-      \             ['git', 'readonly', 'shortrelpath', 'modified'] ],
-      \   'right': [ ['lineinfo'], ['percent'], ['coc', 'ale_checking', 'ale_errors', 'ale_warnings'], ['asyncrun'] ]
+      \             ['git', 'readonly', 'shortrelpath', 'modified'],
+      \             ['coc_func'] ],
+      \   'right': [ ['lineinfo'], ['percent'],
+      \              ['coc_status', 'ale_checking', 'ale_errors', 'ale_warnings'],
+      \              ['asyncrun'] ]
       \ },
       \ 'component': {
       \   'readonly': '%{&filetype=="help"?"":&readonly?"🔒":""}',
@@ -178,9 +181,10 @@ let g:lightline = {
       \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
       \   'git': '%{GitStatusline()}',
       \   'asyncrun': '%{g:asyncrun_status}',
+      \   'coc_func': '%{get(b:,"coc_current_function","")}'
       \ },
       \ 'component_function': {
-      \   'coc': 'coc#status'
+      \   'coc_status': 'coc#status'
       \ },
       \ 'component_expand': {
       \  'ale_checking': 'lightline#ale#checking',

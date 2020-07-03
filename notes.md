@@ -81,6 +81,7 @@ augroup end
 * prabirshrestha/asyncomplete.vim
 * coq highlights covering whole line
     * how does DiffAdd work?
+* close all folds under the cursor (sub-tree) `zC` doesn't do this
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -111,6 +112,7 @@ augroup end
 * `:g/foo/z=3`
 * `:pu =execute('...')`
 * cmdline-completion
+* `/\{-`
 
 # pitfalls
 * `:h map-bar`

@@ -12,6 +12,9 @@ let g:coc_fzf_preview = 'up:60%'
 
 " TODO: pass lsp capability and only map that stuff?
 function! SetupCoc()
+  augroup CocBufStuff | au!
+    au CursorHold <buffer> call CocAction('getCurrentFunctionSymbol')
+  augroup END
   nmap     <silent><buffer>        <M-]> <Plug>(coc-definition)
   nmap     <silent><buffer>        <M-\> :call CocAction('jumpDefinition', 'tabe')<CR>
   nmap     <silent><buffer><leader><M-\> :call CocAction('jumpDefinition', winwidth(0)>170 ? 'vsplit' : 'split')<CR>
