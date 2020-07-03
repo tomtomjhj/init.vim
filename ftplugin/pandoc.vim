@@ -93,6 +93,7 @@ let s:pandoc_textobj = {
             \   },
             \ }
 call textobj#user#plugin('pandoc', s:pandoc_textobj)
+TextobjPandocDefaultKeyMappings!
 
 " set to notoplevel in haskell.vim
 syntax spell toplevel
