@@ -78,6 +78,7 @@ Plug 'tomtomjhj/vim-ocaml'
 Plug 'tomtomjhj/haskell-vim', { 'branch': 'custom' }
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'lervag/vimtex'
+Plug 'KeitaNakamura/tex-conceal.vim'
 " Plug 'Shougo/deoplete-clangx'
 " Plug 'parsonsmatt/intero-neovim'
 " Plug 'tomlion/vim-solidity'
