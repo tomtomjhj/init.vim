@@ -1,10 +1,12 @@
 source ~/.vim/configs.vim
 
+" fix mappings
 noremap  <ESC><ESC> <ESC>
 inoremap <ESC><ESC> <ESC>
 cnoremap <ESC><ESC> <C-c>
-" <M-O> conflicts with arrows
-for c in map(range(65,78) + range(80,90) + range(97,122), 'nr2char(v:val)') + [',', '.', ']', '0']
+" NOTE: :h 'termcap'.
+" map only necessary stuff
+for c in [',', '.', '/', '0', '\', ']', 'i', 'j', 'k', 'l', 'o', 'p', 'y', '\|']
     exec 'map  <ESC>'.c '<M-'.c.'>'
     exec 'map! <ESC>'.c '<M-'.c.'>'
 endfor
@@ -24,7 +26,11 @@ endfunction
 imap <silent> <C-v> <C-R>=<SID>InitClipboard()<CR><C-v>
 vmap <silent> <C-c> <ESC>:call <SID>InitClipboard()<CR>gv"+y
 
+" set to xterm in tmux, which doesn't support window resizing with mouse
+set ttymouse=sgr
+
+" TODO: visual mode <ESC>
 augroup VimSpecificSetup | au!
-    au InsertEnter,CmdlineEnter * set timeoutlen=32
+    au InsertEnter,CmdlineEnter * set timeoutlen=23
     au InsertLeave,CmdlineLeave * set timeoutlen=432
 augroup END
