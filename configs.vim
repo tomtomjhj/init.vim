@@ -591,7 +591,7 @@ map <silent><leader><CR> :noh<CR>
 map <leader>ss :setlocal spell!\|setlocal spell?<cr>
 " TODO: make spc ignore "..."
 map <leader>sc :if &spc == "" \| setl spc< \| else \| setl spc= \| endif \| setl spc?<CR>
-map <leader>pp :setlocal paste!\|setlocal paste?<cr>
+map <leader>sp :setlocal paste!\|setlocal paste?<cr>
 map <leader>sw :set wrap!\|set wrap?<CR>
 map <leader>ic :set ignorecase! smartcase!\|set ignorecase?<CR>
 
