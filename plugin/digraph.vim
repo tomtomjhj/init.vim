@@ -20,6 +20,8 @@ function s:SetupDigraph()
     digraph =[ 8849 " ⊑
     digraph v^ 8652 " ⇌
 
+    exec 'digraph (+ 8713 " ∉'
+
     " tip: use <c-a> and set nrformats+=alpha to increment stuff
     digraph bA 120120
     digraph bB 120121

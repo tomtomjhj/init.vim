@@ -134,8 +134,9 @@ set hlsearch incsearch
 set noerrorbells novisualbell t_vb=
 set shortmess+=c
 
-set nobackup nowritebackup noswapfile
-set undofile undodir=~/.vim/undodir
+set noswapfile " set directory=~/.vim/swap//
+set backup backupdir=~/.vim/backup//
+set undofile undodir=~/.vim/undo//
 set history=500
 if has('nvim') | set shada=!,'150,<50,s30,h | endif
 

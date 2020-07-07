@@ -1,4 +1,7 @@
-undodir/*
+undo/*
+backup/*
+swap/*
+undo/*
 spell/*
 tags
 .DS_Store
