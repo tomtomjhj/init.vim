@@ -6,7 +6,7 @@ inoremap <ESC><ESC> <ESC>
 cnoremap <ESC><ESC> <C-c>
 " NOTE: :h 'termcap'.
 " map only necessary stuff
-for c in [',', '.', '/', '0', '\', ']', 'i', 'j', 'k', 'l', 'o', 'p', 'y', '\|']
+for c in [',', '.', '/', '0', '\', ']', 'i', 'j', 'k', 'l', 'n', 'o', 'p', 'y', '\|']
     exec 'map  <ESC>'.c '<M-'.c.'>'
     exec 'map! <ESC>'.c '<M-'.c.'>'
 endfor

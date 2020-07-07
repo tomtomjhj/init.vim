@@ -20,11 +20,12 @@ Plug 'tpope/vim-repeat'
 " similar to the result of Sneak_;
 Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-fugitive'
-Plug 'preservim/nerdcommenter', { 'on': ['<plug>NERDCommenterComment', '<plug>NERDCommenterToggle', '<plug>NERDCommenterInsert', '<plug>NERDCommenterSexy'] }
+Plug 'preservim/nerdcommenter', { 'on': '<Plug>NERDCommenter' }
 Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'tomtomjhj/pear-tree'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': { -> fzf#install() }}
+Plug 'andymass/vim-matchup'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment' | Plug 'michaeljsmith/vim-indent-object'
 Plug 'rhysd/git-messenger.vim'
@@ -562,6 +563,7 @@ endfunc
 " extend visual block up to pair opener/closer
 let g:pair_opener = '\v("|\[|''|\(|\{|\$)'
 let g:pair_closer = '\v("|\]|''|\)|\}|\$)'
+" TODO: integrate this with matchup
 vnoremap <silent> <C-j> <ESC>:call VisualJump(1)<CR>
 vnoremap <silent> <C-k> <ESC>:call VisualJump(0)<CR>
 func! VisualJump(forward)
@@ -611,6 +613,7 @@ inoremap <F1> <Esc>
 cnoremap <C-q> <C-c>
 inoremap <C-q> <Esc>
 vnoremap <C-q> <Esc>
+onoremap <C-q> <Esc>
 
 cnoremap <M-p> <Up>
 cnoremap <M-n> <Down>
