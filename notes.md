@@ -83,6 +83,7 @@ augroup end
     * how does DiffAdd work?
 * close all folds under the cursor (sub-tree) `zC` doesn't do this
 * clear undo,backup,swap
+* sneak digraph? alias?
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????

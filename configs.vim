@@ -388,6 +388,7 @@ func! Star(g)
     let @/ = a:g ? @c : '\<' . @c . '\>'
 endfunc
 func! VisualStar(g)
+    " TODO separate out the functionality get the selected text
     let g:search_mode = 'v'
     let l:reg_save = @"
     exec "norm! gvy"
@@ -501,8 +502,7 @@ nnoremap <space> <C-d>
 nnoremap <c-space> <C-u>
 " <s-space> does not work
 
-nnoremap <M-0> ^w
-vnoremap <M-0> ^w
+noremap <M-0> ^w
 
 " NOTE: vertical scope, label_esc
 let g:sneak#s_next = 1
