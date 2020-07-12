@@ -1,3 +1,5 @@
+setlocal matchpairs-=<:>
+
 function! s:MapNotHasmapto(lhs, rhs)
     if !hasmapto('<Plug>' . a:rhs)
         execute 'nmap <buffer>' . a:lhs . ' <Plug>' . a:rhs
@@ -19,6 +21,7 @@ func! MkdFencedCodeBlocka()
     endif
     if !search('```\w*', 'bW') | return 0 | endif
     let head_pos = getpos('.')
+    let head_pos[2] = 1
     if !search('```', 'W') | return 0 | endif
     exec 'norm! E'
     let tail_pos = getpos('.')
@@ -31,6 +34,7 @@ func! MkdFencedCodeBlocki()
     if !search('```\w*', 'bW') | return 0 | endif
     exec 'norm! W'
     let head_pos = getpos('.')
+    let head_pos[2] = 1
     if !search('```', 'W') | return 0 | endif
     call search('\v\S', 'bW')
     let tail_pos = getpos('.')

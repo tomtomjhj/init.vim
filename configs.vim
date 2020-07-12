@@ -614,6 +614,7 @@ cnoremap <C-q> <C-c>
 inoremap <C-q> <Esc>
 vnoremap <C-q> <Esc>
 onoremap <C-q> <Esc>
+noremap! <C-M-q> <C-q>
 
 cnoremap <M-p> <Up>
 cnoremap <M-n> <Down>
