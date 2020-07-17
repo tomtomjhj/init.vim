@@ -1,19 +1,17 @@
 setlocal matchpairs-=<:>
 
-function! s:MapNotHasmapto(lhs, rhs)
-    if !hasmapto('<Plug>' . a:rhs)
-        execute 'nmap <buffer>' . a:lhs . ' <Plug>' . a:rhs
-        execute 'vmap <buffer>' . a:lhs . ' <Plug>' . a:rhs
-    endif
+function! s:nvmap(lhs, rhs)
+    execute 'nmap <buffer>' . a:lhs . ' <Plug>' . a:rhs
+    execute 'vmap <buffer>' . a:lhs . ' <Plug>' . a:rhs
 endfunction
-call <sid>MapNotHasmapto(']]', 'Markdown_MoveToNextHeader')
-call <sid>MapNotHasmapto('[[', 'Markdown_MoveToPreviousHeader')
-call <sid>MapNotHasmapto('][', 'Markdown_MoveToNextSiblingHeader')
-call <sid>MapNotHasmapto('[]', 'Markdown_MoveToPreviousSiblingHeader')
-call <sid>MapNotHasmapto(']u', 'Markdown_MoveToParentHeader')
-call <sid>MapNotHasmapto(']c', 'Markdown_MoveToCurHeader')
-call <sid>MapNotHasmapto('gx', 'Markdown_OpenUrlUnderCursor')
-delfunction s:MapNotHasmapto
+call s:nvmap(']]', 'Markdown_MoveToNextHeader')
+call s:nvmap('[[', 'Markdown_MoveToPreviousHeader')
+call s:nvmap('][', 'Markdown_MoveToNextSiblingHeader')
+call s:nvmap('[]', 'Markdown_MoveToPreviousSiblingHeader')
+call s:nvmap(']u', 'Markdown_MoveToParentHeader')
+call s:nvmap(']c', 'Markdown_MoveToCurHeader')
+call s:nvmap('gx', 'Markdown_OpenUrlUnderCursor')
+delfunction s:nvmap
 
 func! MkdFencedCodeBlocka()
     if !InSynStack('mkdSnippet') && !InSynStack('mkdCode')
@@ -67,10 +65,10 @@ function! Surrounder(type, ends) abort
     let reg_save = getreg('"')
     if a:type ==# 'v'
         " handle the cursor on eol
-        let l:p = (col("$") - col("'>") <= 1) ? 'p' : 'P'
+        let l:p = (col([line("'>"), "$"]) - col("'>") <= 1) ? 'p' : 'P'
         execute 'normal! `<v`>x'
     elseif a:type ==# 'char'
-        let l:p = (col("$") - col("']") <= 1) ? 'p' : 'P'
+        let l:p = (col([line("']"), "$"]) - col("']") <= 1) ? 'p' : 'P'
         execute 'normal! `[v`]x'
     else
         return
