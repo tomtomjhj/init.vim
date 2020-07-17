@@ -82,7 +82,8 @@ augroup end
 * coq highlights covering whole line
     * how does DiffAdd work?
 * close all folds under the cursor (sub-tree) `zC` doesn't do this
-* clear undo,backup,swap
+* clear undo,backup,swap, view
+    * TODO: `:mkview`
 * sneak digraph? alias?
 
 ## Done

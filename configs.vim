@@ -125,7 +125,7 @@ set spellfile=~/.vim/spell/en.utf-8.add
 set spelllang=en,cjk
 
 set wildmenu wildmode=longest:full,full
-set wildignore=*.o,*~,*.pyc,*.pdf,*.v.d,*.vo,*.glob
+set wildignore=*.o,*~,*.pyc,*.pdf,*.v.d,*.vo,*.vos,*.vok,*.glob
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
 
 set magic
@@ -691,6 +691,8 @@ nmap <silent>[l <Plug>(qf_loc_previous)
 
 " etc plugin settings {{{
 let g:NERDTreeWinPos = "right"
+let g:NERDTreeIgnore=['\~$', '\.glob$', '\v\.vo[sk]?$']
+let g:NERDTreeStatusline = -1
 nmap <silent><leader>nn :NERDTreeToggle<cr>
 nmap <silent><leader>nf :NERDTreeFind<cr>
 
