@@ -25,7 +25,7 @@ Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'tomtomjhj/pear-tree'
 Plug 'andymass/vim-matchup'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': has('unix') ? './install --all' : { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment' | Plug 'michaeljsmith/vim-indent-object'
 Plug 'rhysd/git-messenger.vim'
@@ -100,7 +100,7 @@ call plug#end()
 set mouse=a
 set number ruler " cursorline
 set foldcolumn=1 foldnestmax=5
-set scrolloff=2
+set scrolloff=2 " sidescrolloff
 set showtabline=1
 set laststatus=2
 
@@ -164,8 +164,10 @@ augroup BasicSetup | au!
     au VimResized * let &pumheight = min([&window/4, 20])
 augroup END
 
-let g:python_host_prog  = '/usr/bin/python2'
-let g:python3_host_prog = '/usr/bin/python3'
+if has('unix')
+    let g:python_host_prog  = '/usr/bin/python2'
+    let g:python3_host_prog = '/usr/bin/python3'
+endif
 " }}}
 
 " Themes {{{
@@ -286,6 +288,9 @@ let g:ale_set_highlights = 1
 let g:ale_linters_explicit = 1
 
 let g:coc_config_home = '~/.vim'
+if has('win')
+    let g:coc_node_path = 'node.exe'
+endif
 " TODO: per-filetype source priority? lower ultisnips in .md
 let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab', 'coc-word', 'coc-tag']
 " NOTE: stuff highlighted as Normal -> bg doesn't match in floatwin
