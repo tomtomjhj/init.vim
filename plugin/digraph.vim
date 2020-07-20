@@ -1,3 +1,4 @@
+" search ^I..^I
 function s:SetupDigraph()
     digraph mt 8614
     digraph ** 8727
@@ -21,6 +22,19 @@ function s:SetupDigraph()
     digraph v^ 8652 " ⇌
     exec 'digraph (+ 8713 " ∉'
     digraph ^= 8796 " ≜
+
+    digraph _l 8343 " ₗ
+    digraph ^a 7491 " ᵃ
+    digraph ^c 7580 " ᶜ
+    digraph ^e 7497 " ᵉ
+    digraph ^l 737  " ˡ
+    digraph ^r 691  " ʳ
+    digraph ^x 739  " ˣ
+    digraph OX 9760 " ☠
+    digraph tl 8988 " ⌜ top left corner
+    digraph tr 8989 " ⌝
+    digraph lu 9121 " ⎡ left square bracket upper corner
+    digraph ru 9124 " ⎤
 
     " tip: use <c-a> and set nrformats+=alpha to increment stuff
     digraph bA 120120

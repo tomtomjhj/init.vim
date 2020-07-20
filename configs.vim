@@ -630,6 +630,7 @@ noremap x "_x
 " repetitive pastes using designated register @p
 noremap <M-y> "py
 noremap <M-p> "pp
+noremap <M-P> "pP
 
 nnoremap Y y$
 onoremap <silent> ge :execute "normal! " . v:count1 . "ge<space>"<cr>
@@ -767,13 +768,13 @@ command! -bang Wq  exec 'wq<bang>'
 command! -bang Wqa exec 'wqa<bang>'
 command! -bang Qa  exec 'qa<bang>'
 
-map <leader>cx :tabclose<cr>
-map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
-map <leader>td :tab split<CR>
-map <leader>tt :tabedit<CR>
-map <leader>cd :cd %:p:h<cr>:pwd<cr>
-map <leader>e :e! <c-r>=expand("%:p:h")<cr>/
-map <leader>fe :e!<CR>
+nmap <leader>cx :tabclose<cr>
+nmap <leader>td :tab split<CR>
+nmap <leader>tt :tabedit<CR>
+nmap <leader>cd :cd %:p:h<cr>:pwd<cr>
+nmap <leader>e  :e! <c-r>=expand("%:p:h")<cr>/
+nmap <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
+nmap <leader>fe :e!<CR>
 
 " switch/return to last tab
 " NOTE: breaks/broken by :tabmove

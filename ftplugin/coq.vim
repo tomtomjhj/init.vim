@@ -3,9 +3,9 @@ function! g:CoqtailHighlight()
     hi def CoqtailSent ctermbg=60
 endfunction
 
-" TODO: this should be mapped on goal/info window and it must designate the source buffer
-" nmap <buffer> <Plug>CoqStart :CoqStart<CR>
-" nmap <buffer> <Plug>CoqStop :CoqStop<CR>
+" TODO: :bd → error
+" TODO: goal/info needs similar mappings and it should be aware of the source buffer
+nmap <buffer>   <C-c>s     <Plug>CoqStop
 " NOTE: use [count]
 nmap <buffer><leader><C-c> <Plug>CoqInterrupt
 nmap <buffer>        <M-j> <Plug>CoqNext
@@ -28,6 +28,7 @@ nmap <buffer>   <C-c><C-l> <Plug>CoqToLine
 imap <buffer>   <C-c><C-j> <Plug>CoqNext
 imap <buffer>   <C-c><C-k> <Plug>CoqUndo
 imap <buffer>   <C-c><C-l> <Plug>CoqToLine
+" TODO: consistent mappings for word version and ex command version
 " TODO this populates quickfix, tagfunc --> fzf?
 nmap <buffer>        <M-]> <Plug>CoqGotoDef
 
@@ -47,3 +48,7 @@ nmap <buffer><leader>ll    <Plug>CoqRestorePanels
 " nmap <buffer> <Plug>CoqGotoGoalNextEnd :CoqGotoGoalNext!<CR>
 " nmap <buffer> <Plug>CoqGotoGoalPrevStart :CoqGotoGoalPrev<CR>
 " nmap <buffer> <Plug>CoqGotoGoalPrevEnd :CoqGotoGoalPrev!<CR>
+
+nmap <buffer><C-c><C-Leftmouse> <Leftmouse>zf%
+
+" TODO , t p
