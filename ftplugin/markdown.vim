@@ -13,37 +13,11 @@ call s:nvmap(']c', 'Markdown_MoveToCurHeader')
 call s:nvmap('gx', 'Markdown_OpenUrlUnderCursor')
 delfunction s:nvmap
 
-func! MkdFencedCodeBlocka()
-    if !InSynStack('mkdSnippet') && !InSynStack('mkdCode')
-        return 0
-    endif
-    if !search('```\w*', 'bW') | return 0 | endif
-    let head_pos = getpos('.')
-    let head_pos[2] = 1
-    if !search('```', 'W') | return 0 | endif
-    exec 'norm! E'
-    let tail_pos = getpos('.')
-    return ['v', head_pos, tail_pos]
-endfunc
-func! MkdFencedCodeBlocki()
-    if !InSynStack('mkdSnippet') && !InSynStack('mkdCode')
-        return 0
-    endif
-    if !search('```\w*', 'bW') | return 0 | endif
-    exec 'norm! W'
-    let head_pos = getpos('.')
-    let head_pos[2] = 1
-    if !search('```', 'W') | return 0 | endif
-    call search('\v\S', 'bW')
-    let tail_pos = getpos('.')
-    return ['v', head_pos, tail_pos]
-endfunc
-
 let s:mkd_textobj = {
             \   'code': {
-            \     'select-a-function': 'MkdFencedCodeBlocka',
+            \     'select-a-function': 'tomtomjhj#markdown#MkdFencedCodeBlocka',
             \     'select-a': 'ad',
-            \     'select-i-function': 'MkdFencedCodeBlocki',
+            \     'select-i-function': 'tomtomjhj#markdown#MkdFencedCodeBlocki',
             \     'select-i': 'id',
             \   },
             \ }
