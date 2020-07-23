@@ -89,7 +89,7 @@ Plug 'whonore/Coqtail' | let g:coqtail_nomap = 1
 " Plug 'puremourning/vimspector'
 Plug 'cespare/vim-toml'
 Plug 'rhysd/vim-llvm'
-Plug 'fatih/vim-go'
+Plug 'fatih/vim-go', { 'do': 'rm -r plugin ftplugin' }
 " Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] }
 
 call plug#end()
@@ -488,12 +488,20 @@ endfunc
 
 " Motion, insert mode, ... {{{
 " just set nowrap instead of explicit linewise ops
-noremap j gj
-noremap k gk
-noremap <S-j> gj
-noremap <S-k> gk
-noremap <S-h> h
-noremap <S-l> l
+nnoremap j gj
+nnoremap k gk
+nnoremap J gj
+nnoremap K gk
+vnoremap <expr> j mode() ==# 'v' ? 'gj' : 'j'
+vnoremap <expr> k mode() ==# 'v' ? 'gk' : 'k'
+onoremap <expr> j mode() ==# 'v' ? 'gj' : 'j'
+onoremap <expr> k mode() ==# 'v' ? 'gk' : 'k'
+vnoremap <expr> J mode() ==# 'v' ? 'gj' : 'j'
+vnoremap <expr> K mode() ==# 'v' ? 'gk' : 'k'
+onoremap <expr> J mode() ==# 'v' ? 'gj' : 'j'
+onoremap <expr> K mode() ==# 'v' ? 'gk' : 'k'
+noremap H h
+noremap L l
 noremap <leader>J J
 " tip: zL, zH
 
@@ -563,7 +571,7 @@ endfunc
 " extend visual block up to pair opener/closer
 let g:pair_opener = '\v("|\[|''|\(|\{|\$)'
 let g:pair_closer = '\v("|\]|''|\)|\}|\$)'
-" TODO: integrate this with matchup
+" TODO: integrate this with matchup → a lot of stuff in the doc
 vnoremap <silent> <C-j> <ESC>:call VisualJump(1)<CR>
 vnoremap <silent> <C-k> <ESC>:call VisualJump(0)<CR>
 func! VisualJump(forward)

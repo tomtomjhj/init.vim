@@ -19,9 +19,11 @@ function s:SetupDigraph()
     digraph [U 8851 " ⊓
     digraph ]U 8852 " ⊔
     digraph =[ 8849 " ⊑
+    digraph ]= 8850 " ⊒
     digraph v^ 8652 " ⇌
     exec 'digraph (+ 8713 " ∉'
     digraph ^= 8796 " ≜
+    digraph U+ 8846 " ⊎
 
     digraph _l 8343 " ₗ
     digraph ^a 7491 " ᵃ
@@ -63,7 +65,33 @@ function s:SetupDigraph()
     digraph bX 120143
     digraph bY 120144
     digraph bZ 8484
-    " ♯ MX
+
+    " 𝓐
+    " 𝓑
+    " 𝓒
+    " 𝓓
+    " 𝓔
+    " 𝓕
+    " 𝓖
+    " 𝓗
+    " 𝓘
+    " 𝓙
+    " 𝓚
+    digraph sL 120027
+    " 𝓜
+    " 𝓝
+    " 𝓞
+    digraph sP 120031
+    " 𝓠
+    " 𝓡
+    digraph sS 120034
+    digraph sT 120035
+    " 𝓤
+    " 𝓥
+    " 𝓦
+    " 𝓧
+    " 𝓨
+    " 𝓩
 
     unmap! <C-space>
     noremap! <C-space> <C-k>
