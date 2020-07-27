@@ -55,19 +55,6 @@ This doesn't work as expected.
 
 <https://vi.stackexchange.com/questions/4530/moving-over-conceal>
 
-# local `.nvimrc`
-
-```vim
-fun s:c()
-    " ....
-endfun
-
-augroup ft_c
-  autocmd!
-  autocmd Syntax c call s:c()
-augroup end
-```
-
 # TODO:
 * Better interaction of `hlsearch` and conceal?
     * disable conceal when hlsearch set?
@@ -96,9 +83,6 @@ augroup end
     * use coc-rust-analyzer
 
 # Tips
-* `dw`: to remove whitespace from current position.
-* `q.push(\w\+\w\@!,\@!`: enforce `\w\+` to consume all `\w`
-    * `\@<!`
 * `strcharpart(strpart(line, col - 1), 0, 1)`
 * `<C-\><C-o><ESC>` to reset insert starting point after ins-special-special
 * cmdline-completion
@@ -113,9 +97,9 @@ augroup end
 * alternate file
 * (neovim only) `:h map-cmd` probably better than `<C-\><C-o>:`
 * `:g/foo/z=3`
-* `:pu =execute('...')`
 * cmdline-completion
-* `/\{-`
+* `\{-`, `\@>`, `\@=`, `\@!`, `\@<=`, `\@<!`
+    * `if \(\(then\)\@!.\)*$` "if " not followed by "then"
 
 # pitfalls
 * `:h map-bar`

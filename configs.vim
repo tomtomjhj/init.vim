@@ -707,13 +707,13 @@ let g:qf_auto_resize = 0
 let g:qf_max_height = 12
 let g:qf_auto_quit = 0
 
-command! CW
+command! -bar CW
             \ if IsWinWide() |
             \   exec 'vert copen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p |
             \ else |
             \   belowright copen 12 | winc p |
             \ endif
-command! LW
+command! -bar LW
             \ if IsWinWide() |
             \   exec 'vert lopen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p |
             \ else |
@@ -768,6 +768,11 @@ endfunc
 let s:url_regex = '\c\<\(\%([a-z][0-9A-Za-z_-]\+:\%(\/\{1,3}\|[a-z0-9%]\)\|www\d\{0,3}[.]\|[a-z0-9.\-]\+[.][a-z]\{2,4}\/\)\%([^ \t()<>]\+\|(\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\)\+\%((\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\|[^ \t`!()[\]{};:'."'".'".,<>?«»“”‘’]\)\)'
 call textobj#user#plugin('url', { 'url': { 'pattern': s:url_regex, 'select': ['au', 'iu'] } })
 call textobj#user#plugin('path', { 'path': { 'pattern': '\f\+', 'select': ['aP', 'iP'] } })
+
+" :put is a :comment command
+command! -nargs=* -complete=command Execute
+            \ new | let s:res = execute(<q-args>) | put=s:res | unlet s:res
+
 " see :help [range], &, g&
 " :%s/pat/\r&/g.
 " marks
