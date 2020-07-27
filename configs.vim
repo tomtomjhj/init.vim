@@ -34,6 +34,7 @@ Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree'
 Plug 'wellle/visual-split.vim'
+" TODO https://github.com/lambdalisue/suda.vim
 
 Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
 augroup SetupNerdTree | au!
@@ -172,22 +173,28 @@ let g:lightline = {
       \ 'colorscheme': 'wombat',
       \ 'active': {
       \   'left': [ ['mode', 'paste'],
-      \             ['git', 'readonly', 'shortrelpath', 'modified'],
-      \             ['coc_func'] ],
+      \             ['readonly', 'speicialbuf', 'shortrelpath', 'modified'],
+      \             ['coc_func', 'git'] ],
       \   'right': [ ['lineinfo'], ['percent'],
       \              ['coc_status', 'ale_checking', 'ale_errors', 'ale_warnings'],
       \              ['asyncrun'] ]
       \ },
+      \ 'inactive': {
+      \   'left': [ ['speicialbuf', 'shortrelpath'] ],
+      \   'right': [ ['lineinfo'], ['percent'],
+      \              ['coc_status', 'ale_checking', 'ale_errors', 'ale_warnings'] ]
+      \ },
       \ 'component': {
-      \   'readonly': '%{&filetype=="help"?"":&readonly?"🔒":""}',
-      \   'shortrelpath': '%{pathshorten(fnamemodify(expand("%"), ":~:."))}',
-      \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
-      \   'git': '%{GitStatusline()}',
-      \   'asyncrun': '%{g:asyncrun_status}',
-      \   'coc_func': '%{get(b:,"coc_current_function","")}'
+      \   'readonly': '%{&readonly && &filetype !=# "help" ? "🔒" : ""}',
+      \   'speicialbuf': '%q%w',
+      \   'modified': '%{&filetype==#"help"?"":&modified?"+":&modifiable?"":"-"}',
+      \   'asyncrun': '%{g:asyncrun_status[:3]}',
+      \   'coc_func': '%{get(b:,"coc_current_function","")}',
       \ },
       \ 'component_function': {
-      \   'coc_status': 'coc#status'
+      \   'coc_status': 'coc#status',
+      \   'git': 'GitStatusline',
+      \   'shortrelpath': 'ShortRelPath',
       \ },
       \ 'component_expand': {
       \  'ale_checking': 'lightline#ale#checking',
@@ -202,12 +209,35 @@ let g:lightline = {
       \     'ale_ok': 'left',
       \ },
       \ 'component_visible_condition': {
-      \   'readonly': '(&filetype!="help"&& &readonly)',
-      \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
+      \   'readonly': '(&filetype!=#"help"&& &readonly)',
+      \   'modified': '(&filetype!=#"help"&&(&modified||!&modifiable))',
+      \   'speicialbuf': '&pvw||&buftype==#"quickfix"',
+      \   'coc_func': 'exists("b:coc_current_function")',
       \ },
       \ 'separator': { 'left': ' ', 'right': ' ' },
-      \ 'subseparator': { 'left': ' ', 'right': ' ' }
+      \ 'subseparator': { 'left': '|', 'right': '|' },
+      \ 'mode_map': {
+      \     'n' : 'N ',
+      \     'i' : 'I ',
+      \     'R' : 'R ',
+      \     'v' : 'V ',
+      \     'V' : 'VL',
+      \     "\<C-v>": 'VB',
+      \     'c' : 'C ',
+      \     's' : 'S ',
+      \     'S' : 'SL ',
+      \     "\<C-s>": 'SB',
+      \     't': 'T ',
       \ }
+      \ }
+" TODO: simplify lightline-ale stuff or just remove
+func! ShortRelPath()
+    let name = expand('%')
+    if empty(name)
+        return empty(&buftype) ? '[No Name]' : ''
+    endif
+    return pathshorten(fnamemodify(name, ":~:."))
+endfunc
 " `vil() { nvim "$@" --cmd 'set background=light'; }` for light theme
 if exists('g:colors_name') " loading the color again breaks lightline
 elseif &background == 'dark' || !has('nvim')
@@ -220,7 +250,7 @@ else
     hi Special guifg=#735050 | hi Conceal guifg=#735050
     hi Statement gui=bold
     let g:lightline.colorscheme = 'solarized'
-    " TODO: fzf/bat themes
+    " TODO: fzf/bat themes → just fix terminal window bg?
 endif
 " }}}
 
