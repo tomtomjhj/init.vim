@@ -34,7 +34,8 @@ Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree'
 Plug 'wellle/visual-split.vim'
-" TODO https://github.com/lambdalisue/suda.vim
+" TODO Plug 'justinmk/vim-dirvish'
+" TODO Plug 'tpope/vim-eunuch'
 
 Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
 augroup SetupNerdTree | au!
@@ -245,14 +246,17 @@ if exists('g:colors_name') " loading the color again breaks lightline
 elseif &background == 'dark' || !has('nvim')
     colorscheme zenbruh
 else
+    " TODO: customize Search, IncSearch, MatchParen, Diff*
     let g:solarized_enable_extra_hi_groups = 1
     let g:solarized_italics = 0
     set termguicolors
     colorscheme solarized8_high
+    " TODO: match fzf/bat themes
+    " fix terminal window hl (set winhl=NormalFloat:TermNormal) vs. modify bat theme
+    " hi TermNormal guifg=#eeeeee guibg=#1c1c1c
     hi Special guifg=#735050 | hi Conceal guifg=#735050
     hi Statement gui=bold
     let g:lightline.colorscheme = 'solarized'
-    " TODO: fzf/bat themes → just fix terminal window bg?
 endif
 " }}}
 
@@ -630,12 +634,12 @@ endfunc
 func! SearchPosLE(p1, p2)
     return a:p1[0] < a:p2[0] || (a:p1[0] == a:p2[0] && a:p1[1] <= a:p2[1])
 endfunc
+
 " }}}
 
 " etc {{{
 map <silent><leader><CR> :noh<CR>
 map <leader>ss :setlocal spell!\|setlocal spell?<cr>
-" TODO: make spc ignore "..."
 map <leader>sc :if &spc == "" \| setl spc< \| else \| setl spc= \| endif \| setl spc?<CR>
 map <leader>sp :setlocal paste!\|setlocal paste?<cr>
 map <leader>sw :set wrap!\|set wrap?<CR>
@@ -645,7 +649,7 @@ map <leader>dp :diffput<CR>
 map <leader>do :diffget<CR>
 
 " clipboard.
-inoremap <C-v> <C-\><C-o>:setl paste<CR><C-r>+<C-\><C-o>:setl nopaste<CR>
+inoremap <C-v> <C-g>u<C-\><C-o>:set paste<CR><C-r>+<C-\><C-o>:set nopaste<CR>
 vnoremap <C-c> "+y
 
 " buf/filename
@@ -695,6 +699,14 @@ let g:pear_tree_repeatable_expand = 0
 " assumes nosmartindent
 imap <CR> <C-G>u<Plug>(PearTreeExpand)
 imap <BS> <Plug>(PearTreeBackspace)
+
+" matchup: ]%, z%, g%
+" TODO markdown pairs: ``, '', ""
+" 'a'ny block
+xmap aa a%
+omap aa a%
+xmap ia i%
+omap ia i%
 
 " asyncrun
 map <leader>R :AsyncRun<space>

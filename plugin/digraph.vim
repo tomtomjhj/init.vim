@@ -6,6 +6,7 @@ function s:SetupDigraph()
     digraph OO 9711
     digraph mt 8614
     digraph \|- 8866
+    digraph -\| 8867
     digraph \|= 8872
     digraph ~> 8669
     digraph [\| 10214

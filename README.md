@@ -44,3 +44,4 @@ cargo install ripgrep fd-find bat
 * [ ] win gvim
     * `C-+/-` to zoom in/out
 * [ ] linux vim 7.4
+* [ ] pure vimscript setup

@@ -100,6 +100,9 @@ This doesn't work as expected.
 * cmdline-completion
 * `\{-`, `\@>`, `\@=`, `\@!`, `\@<=`, `\@<!`
     * `if \(\(then\)\@!.\)*$` "if " not followed by "then"
+* marks
+* forced-motion
+* `i_CTRL-D`, `i_CTRL-T`
 
 # pitfalls
 * `:h map-bar`
