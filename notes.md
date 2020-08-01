@@ -127,6 +127,15 @@ This doesn't work as expected.
     * auto-pairs adds weird indent if the previous line ends with `,`. Indent size if the size of the first word in the previous line.
         * `<CR><C-c>O` (`nosmartindent`) vs. `<CR><C-c>=ko` (`&indentexpr != ''`)
 
+# notes
+* macros
+    * `:h 10.1`
+    * record → (jump → execute)*
+    * If there's a *function* to jump (e.g. `gn`), the repetition step can be
+      merged (e.g. `gn@@`) or jump can be part of the macro.
+    * TODO: easier mapping for `@q`, `@@`, ...
+    * TODO: pre-selecting points to run macros like multicursor? (difficult)
+
 # hmm..
 * I don't want to rely on `set whichwrap+=]` for quick jump but this doesn't
   work properly at the column `col('$')-1`

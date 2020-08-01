@@ -39,6 +39,15 @@ cargo install ripgrep fd-find bat
         * https://github.com/vim/vim/issues/2525
         * https://github.com/junegunn/fzf/issues/1191
 
+# compile vim
+```bash
+sudo apt install ...
+./configure \
+    --enable-python3interp=yes \
+    --with-python3-config-dir=$(python3-config --configdir) \
+    --prefix=${HOME}/.local
+```
+
 # TODO
 * [x] linux nvim
 * [ ] win gvim

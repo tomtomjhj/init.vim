@@ -34,9 +34,14 @@ Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree'
 Plug 'wellle/visual-split.vim'
-" TODO Plug 'justinmk/vim-dirvish'
-" TODO Plug 'tpope/vim-eunuch'
+" TODO Plug 'tpope/vim-obsession'
+" TODO Plug 'yuki-ycino/fzf-preview.vim'
+" TODO Plug 'lpinilla/vim-codepainter'
+" TODO Plug 'mg979/vim-visual-multi'
+" TODO Plug 'wellle/targets.vim'
+" TODO Plug 'AndrewRadev/splitjoin.vim'
 
+" use menu!
 Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
 augroup SetupNerdTree | au!
     au VimEnter * silent! au! FileExplorer
@@ -344,8 +349,6 @@ endif
 " }}}
 
 " C,C++ {{{
-" TODO: this should be based on tabstop and shiftwidth, see editorconfig doc
-" let g:ale_c_clangformat_options = '-style="{BasedOnStyle: llvm, IndentWidth: 4, AccessModifierOffset: -4}"'
 augroup SetupCCpp | au!
     au FileType c,cpp call SetupCoc()
     au FileType c,cpp setl tabstop=2 shiftwidth=2
@@ -608,9 +611,9 @@ func! FineGrainedICtrlW()
 endfunc
 
 " extend visual block up to pair opener/closer
+" TODO: remove this and use matchup + targets.vim
 let g:pair_opener = '\v("|\[|''|\(|\{|\$)'
 let g:pair_closer = '\v("|\]|''|\)|\}|\$)'
-" TODO: integrate this with matchup → a lot of stuff in the doc
 vnoremap <silent> <C-j> <ESC>:call VisualJump(1)<CR>
 vnoremap <silent> <C-k> <ESC>:call VisualJump(0)<CR>
 func! VisualJump(forward)
