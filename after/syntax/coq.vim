@@ -20,6 +20,7 @@ syn region coqProofBody  contains=coqString,coqProofPunctuation,coqTactic,coqTac
 
 syn clear coqProofKwd
 syn keyword coqProofKwd contained else end exists exists2 forall fun if in match let struct then where with as return
+syn match coqProofKwd contained "∀\|∃\|λ"
 
 syn region coqDefContents1  contained contains=@coqTerm matchgroup=coqVernacPunctuation start=":=" matchgroup=coqVernacPunctuation end="\.\_s"
 

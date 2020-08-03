@@ -103,6 +103,7 @@ This doesn't work as expected.
 * marks
 * forced-motion
 * `i_CTRL-D`, `i_CTRL-T`
+* `:@`
 
 # pitfalls
 * `:h map-bar`

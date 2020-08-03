@@ -9,26 +9,28 @@ Plug 'maximbaz/lightline-ale'
 Plug 'lifepillar/vim-solarized8'
 Plug 'tomtomjhj/zenbruh.vim'
 
-" general
-if !has('nvim')
-    Plug 'tpope/vim-sensible'
-endif
-" TODO: machakann/vim-sandwich?
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-repeat'
+" editing
 " TODO: |,| right after sneak aborts label mode but leave the highlight
 " similar to the result of Sneak_;
 Plug 'justinmk/vim-sneak'
-Plug 'tpope/vim-fugitive'
+" TODO: machakann/vim-sandwich?
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'tomtomjhj/pear-tree'
+Plug 'andymass/vim-matchup' " i%, a%, ]%, z%, g%
+Plug 'wellle/targets.vim' " multi (e.g. ib, iq), separator, argument
+Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment' | Plug 'michaeljsmith/vim-indent-object'
 Plug 'preservim/nerdcommenter', { 'on': '<Plug>NERDCommenter' }
+" TODO Plug 'AndrewRadev/splitjoin.vim'
+" TODO Plug 'mg979/vim-visual-multi'
+
+" etc
+Plug 'tpope/vim-fugitive'
+Plug 'rhysd/git-messenger.vim'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'tomtomjhj/pear-tree'
-Plug 'andymass/vim-matchup'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': has('unix') ? './install --all' : { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment' | Plug 'michaeljsmith/vim-indent-object'
-Plug 'rhysd/git-messenger.vim'
 Plug 'Konfekt/FastFold'
 Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
@@ -37,9 +39,6 @@ Plug 'wellle/visual-split.vim'
 " TODO Plug 'tpope/vim-obsession'
 " TODO Plug 'yuki-ycino/fzf-preview.vim'
 " TODO Plug 'lpinilla/vim-codepainter'
-" TODO Plug 'mg979/vim-visual-multi'
-" TODO Plug 'wellle/targets.vim'
-" TODO Plug 'AndrewRadev/splitjoin.vim'
 
 " use menu!
 Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
@@ -76,7 +75,7 @@ Plug 'dense-analysis/ale'
 " TODO: sometimes node remains alive even after exiting
 Plug 'neoclide/coc.nvim', { 'branch': 'release' } | Plug 'neoclide/jsonc.vim'
 Plug 'antoinemadec/coc-fzf'
-Plug 'plasticboy/vim-markdown'
+Plug 'plasticboy/vim-markdown' | Plug 'godlygeek/tabular', { 'for': 'markdown' }
 " TODO: huge performance hit in nvim (not in vim)
 " lightline + cursorline + lazyredraw + large &lines
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
@@ -87,9 +86,6 @@ Plug 'tomtomjhj/haskell-vim', { 'branch': 'custom' }
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'lervag/vimtex'
 Plug 'KeitaNakamura/tex-conceal.vim'
-" Plug 'Shougo/deoplete-clangx'
-" Plug 'parsonsmatt/intero-neovim'
-" Plug 'tomlion/vim-solidity'
 " Plug 'LumaKernel/coqpit.vim'
 " Plug 'https://framagit.org/tyreunom/coquille', { 'do': ':UpdateRemotePlugins' }
 Plug 'whonore/Coqtail' | let g:coqtail_nomap = 1
@@ -610,34 +606,6 @@ func! FineGrainedICtrlW()
     endif
 endfunc
 
-" extend visual block up to pair opener/closer
-" TODO: remove this and use matchup + targets.vim
-let g:pair_opener = '\v("|\[|''|\(|\{|\$)'
-let g:pair_closer = '\v("|\]|''|\)|\}|\$)'
-vnoremap <silent> <C-j> <ESC>:call VisualJump(1)<CR>
-vnoremap <silent> <C-k> <ESC>:call VisualJump(0)<CR>
-func! VisualJump(forward)
-    let cur_pos = [line('.'), col('.')]
-    let left_pos = [line("'<"), col("'<")]
-    let right_pos = [line("'>"), col("'>")]
-    let on_right = l:left_pos == l:right_pos ? a:forward : l:cur_pos == l:right_pos
-    " raw target. need to change if flip detected
-    let target = searchpos(l:on_right ? g:pair_closer : g:pair_opener, a:forward ? 'nW' : 'nbW')
-    let flipped = l:on_right ? SearchPosLE(l:target, l:left_pos) : SearchPosLE(l:right_pos, l:target)
-    let cmd = l:flipped ? 'gvo' : 'gv'
-    let cmd .= a:forward ? 'gn' : 'gN'
-    let saved_reg = @/
-    let @/ = (l:on_right != l:flipped) ? g:pair_closer : g:pair_opener
-    let l:wrapscan = &wrapscan
-    set nowrapscan
-    exec 'norm!' l:cmd
-    let &wrapscan = l:wrapscan
-    let @/ = l:saved_reg
-endfunc
-func! SearchPosLE(p1, p2)
-    return a:p1[0] < a:p2[0] || (a:p1[0] == a:p2[0] && a:p1[1] <= a:p2[1])
-endfunc
-
 " }}}
 
 " etc {{{
@@ -702,14 +670,6 @@ let g:pear_tree_repeatable_expand = 0
 " assumes nosmartindent
 imap <CR> <C-G>u<Plug>(PearTreeExpand)
 imap <BS> <Plug>(PearTreeBackspace)
-
-" matchup: ]%, z%, g%
-" TODO markdown pairs: ``, '', ""
-" 'a'ny block
-xmap aa a%
-omap aa a%
-xmap ia i%
-omap ia i%
 
 " asyncrun
 map <leader>R :AsyncRun<space>
