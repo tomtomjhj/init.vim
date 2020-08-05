@@ -155,8 +155,8 @@ set exrc secure
 let &pumheight = min([&window/4, 20])
 
 augroup BasicSetup | au!
-    " Return to last edit position when opening files
-    au BufWinEnter * if line("'\"") > 1 && line("'\"") <= line("$") | exec "norm! g'\"" | endif
+    " Return to last edit position when entering normal buffer
+    au BufWinEnter * if empty(&buftype) && line("'\"") > 1 && line("'\"") <= line("$") | exec "norm! g`\"" | endif
     au BufWritePost ~/.vim/configs.vim source ~/.vim/configs.vim
     au FileType json call SetupCoc()
     au BufRead,BufNewFile *.k set filetype=k
