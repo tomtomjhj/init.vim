@@ -330,6 +330,7 @@ nnoremap <M-o> <C-o>
 nnoremap <M-i> <C-i>
 " }}}
 
+" Languages {{{
 " Haskell {{{
 let g:haskell_classic_highlighting = 1
 let g:haskell_enable_quantification = 1
@@ -399,6 +400,13 @@ let g:vim_markdown_auto_insert_bullets = 0
 let g:vim_markdown_new_list_item_indent = 0
 let g:vim_markdown_frontmatter = 1
 let g:vim_markdown_no_default_key_mappings = 1
+" let g:mkdp_port = '8080'
+" let g:mkdp_open_to_the_world = 1
+" let g:mkdp_echo_preview_url = 1
+let g:mkdp_auto_close = 0
+let g:mkdp_preview_options = {
+            \ 'mkit': { 'typographer': v:false },
+            \ 'disable_sync_scroll': 1 }
 func! Zathura(file, ...)
     if get(a:, 1, 1)
         call jobstart(['zathura', a:file, '--fork'])
@@ -416,6 +424,7 @@ let g:go_highlight_operators = 1
 let g:go_highlight_functions = 1
 let g:go_highlight_function_calls = 1
 let g:go_highlight_types = 1
+" }}}
 " }}}
 
 " search & fzf {{{
@@ -616,13 +625,14 @@ endfunc
 
 " }}}
 
-" etc {{{
+" etc mappings {{{
 map <silent><leader><CR> :noh<CR>
 map <leader>ss :setlocal spell!\|setlocal spell?<cr>
 map <leader>sc :if &spc == "" \| setl spc< \| else \| setl spc= \| endif \| setl spc?<CR>
 map <leader>sp :setlocal paste!\|setlocal paste?<cr>
 map <leader>sw :set wrap!\|set wrap?<CR>
 map <leader>ic :set ignorecase! smartcase!\|set ignorecase?<CR>
+map <leader>sf :syn sync fromstart<CR>
 
 map <leader>dp :diffput<CR>
 map <leader>do :diffget<CR>
@@ -668,8 +678,10 @@ noremap + <C-a>
 vnoremap + g<C-a>
 noremap - <C-x>
 vnoremap - g<C-x>
+" }}}
 
-" pairs
+" etc plugin settings {{{
+" pairs {{{
 let g:pear_tree_map_special_keys = 0
 let g:pear_tree_smart_openers = 1
 let g:pear_tree_smart_backspace = 1
@@ -707,6 +719,7 @@ augroup MyTargets | au!
     \ 'b': {},
     \ })
 augroup END
+" }}}
 
 " asyncrun
 map <leader>R :AsyncRun<space>
@@ -745,7 +758,6 @@ nmap <silent>]l <Plug>(qf_loc_next)
 nmap <silent>[l <Plug>(qf_loc_previous)
 " }}}
 
-" etc plugin settings {{{
 let g:NERDTreeWinPos = "right"
 let g:NERDTreeIgnore=['\~$', '\.glob$', '\v\.vo[sk]?$']
 let g:NERDTreeStatusline = -1
@@ -754,16 +766,8 @@ nmap <silent><leader>nf :NERDTreeFind<cr>
 
 let g:EditorConfig_exclude_patterns = ['.*[.]git/.*', 'fugitive://.*', 'scp://.*']
 
-" let g:mkdp_port = '8080'
-" let g:mkdp_open_to_the_world = 1
-" let g:mkdp_echo_preview_url = 1
-let g:mkdp_auto_close = 0
-let g:mkdp_preview_options = {
-            \ 'mkit': { 'typographer': v:false },
-            \ 'disable_sync_scroll': 1 }
-" }}}
-
-" Firenvim. chrome://extensions/shortcuts
+" firenvim {{{
+" chrome://extensions/shortcuts
 if has('nvim')
     let g:firenvim_config = {
                 \ 'globalSettings': {
@@ -790,40 +794,14 @@ if has('nvim')
         " inoremap <buffer> <M-CR> <Esc>:w<CR>:call firenvim#press_keys("<LT>CR>")<CR>ggdGa
     endfunction
 endif
+" }}}
 
-func! SynStackName()
-    return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
-endfunc
-nmap <leader>st :echo SynStackName()<CR>
-func! InSynStack(type)
-    for i in synstack(line('.'), col('.'))
-        if synIDattr(i, 'name') =~ a:type
-            return 1
-        endif
-    endfor
-    return 0
-endfunc
-func! IsWinWide()
-    return winwidth(0) > 170
-endfunc
-func! IsVimWide()
-    return &columns > 170
-endfunc
-
+" textobj
 let s:url_regex = '\c\<\(\%([a-z][0-9A-Za-z_-]\+:\%(\/\{1,3}\|[a-z0-9%]\)\|www\d\{0,3}[.]\|[a-z0-9.\-]\+[.][a-z]\{2,4}\/\)\%([^ \t()<>]\+\|(\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\)\+\%((\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\|[^ \t`!()[\]{};:'."'".'".,<>?«»“”‘’]\)\)'
 call textobj#user#plugin('url', { 'url': { 'pattern': s:url_regex, 'select': ['au', 'iu'] } })
 call textobj#user#plugin('path', { 'path': { 'pattern': '\f\+', 'select': ['aP', 'iP'] } })
 
-" :put is a :comment command
-command! -nargs=* -complete=command Execute
-            \ new | let s:res = execute(<q-args>) | put=s:res | unlet s:res
-
-" see :help [range], &, g&
-" :%s/pat/\r&/g.
-" marks
-" }}}
-
-" Comments {{{
+" comments
 let g:NERDCreateDefaultMappings = 0
 imap <M-/> <Plug>NERDCommenterInsert
 map <M-/> <Plug>NERDCommenterComment
@@ -837,8 +815,6 @@ let g:NERDCustomDelimiters = {
             \ 'c': { 'left': '//', 'leftAlt': '/*', 'rightAlt': '*/' },
             \}
 let g:NERDDefaultAlign = 'left'
-
-map <leader>sf :syn sync fromstart<CR>
 " }}}
 
 " Tabs, windows, buffers {{{
@@ -893,4 +869,29 @@ func! OnTabClosed(closed)
     endif
     if l:target | exec 'tabn' l:target | endif
 endfunc
+" }}}
+
+" etc util {{{
+func! SynStackName()
+    return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
+nmap <leader>st :echo SynStackName()<CR>
+func! InSynStack(type)
+    for i in synstack(line('.'), col('.'))
+        if synIDattr(i, 'name') =~ a:type
+            return 1
+        endif
+    endfor
+    return 0
+endfunc
+func! IsWinWide()
+    return winwidth(0) > 170
+endfunc
+func! IsVimWide()
+    return &columns > 170
+endfunc
+
+" :put is a :comment command
+command! -nargs=* -complete=command Execute
+            \ new | let s:res = execute(<q-args>) | put=s:res | unlet s:res
 " }}}

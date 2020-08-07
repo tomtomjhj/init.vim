@@ -104,6 +104,7 @@ This doesn't work as expected.
 * forced-motion
 * `i_CTRL-D`, `i_CTRL-T`
 * `:@`
+* `sub-replace-special`
 
 # pitfalls
 * `:h map-bar`
