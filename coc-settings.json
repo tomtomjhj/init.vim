@@ -4,11 +4,11 @@
     "coc.preferences.hoverTarget": "preview",
     "coc.preferences.previewAutoClose": false,
     "coc.preferences.previewMaxHeight": 20,
-	"list.insertMappings": {
-		"<C-q>": "feedkeys:\\<ESC>"
+    "list.insertMappings": {
+        "<C-q>": "feedkeys:\\<ESC>"
     },
-	"list.normalMappings": {
-		"<C-q>": "feedkeys:\\<ESC>"
+    "list.normalMappings": {
+        "<C-q>": "feedkeys:\\<ESC>"
     },
     "list.maxPreviewHeight": 20,
     "diagnostic.displayByAle": false, // setting this true makes signs keep appear/disappearing

@@ -35,7 +35,8 @@ Plug 'Konfekt/FastFold'
 Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree'
-Plug 'wellle/visual-split.vim'
+Plug 'wellle/visual-split.vim' " <C-w>g gr/gss/gsa/gsb
+Plug 'andymass/vim-tradewinds' " <C-w>g h/j/k/l
 " TODO Plug 'tpope/vim-obsession'
 " TODO Plug 'yuki-ycino/fzf-preview.vim'
 " TODO Plug 'lpinilla/vim-codepainter'
@@ -670,6 +671,35 @@ let g:pear_tree_repeatable_expand = 0
 " assumes nosmartindent
 imap <CR> <C-G>u<Plug>(PearTreeExpand)
 imap <BS> <Plug>(PearTreeBackspace)
+
+" 'a'ny block
+xmap aa a%
+omap aa a%
+xmap ia i%
+omap ia i%
+
+augroup MyTargets | au!
+    " Use r for arguments, leave a for matchup any-block, remove b
+    " https://github.com/wellle/targets.vim/issues/175
+    autocmd User targets#mappings#user call targets#mappings#extend({
+    \ '(': {},
+    \ ')': {},
+    \ '{': {},
+    \ '}': {},
+    \ 'B': {},
+    \ '[': {},
+    \ ']': {},
+    \ '<': {},
+    \ '>': {},
+    \ '"': {},
+    \ "'": {},
+    \ '`': {},
+    \ 't': {},
+    \ 'a': {},
+    \ 'r': {'argument': [{'o': '[([]', 'c': '[])]', 's': ','}]},
+    \ 'b': {},
+    \ })
+augroup END
 
 " asyncrun
 map <leader>R :AsyncRun<space>
