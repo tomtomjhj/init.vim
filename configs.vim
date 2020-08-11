@@ -90,7 +90,7 @@ Plug 'KeitaNakamura/tex-conceal.vim'
 " Plug 'LumaKernel/coqpit.vim'
 " Plug 'https://framagit.org/tyreunom/coquille', { 'do': ':UpdateRemotePlugins' }
 Plug 'whonore/Coqtail' | let g:coqtail_nomap = 1
-" Plug 'puremourning/vimspector'
+" Plug 'puremourning/vimspector' | let g:vimspector_enable_mappings = 'HUMAN'
 Plug 'cespare/vim-toml'
 Plug 'rhysd/vim-llvm'
 Plug 'fatih/vim-go', { 'do': 'rm -r plugin ftplugin' }

@@ -105,6 +105,7 @@ This doesn't work as expected.
 * `i_CTRL-D`, `i_CTRL-T`
 * `:@`
 * `sub-replace-special`
+* `i_CTRL-R_CTRL-O` is fast
 
 # pitfalls
 * `:h map-bar`

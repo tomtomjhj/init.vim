@@ -22,6 +22,7 @@ let s:mkd_textobj = {
             \   },
             \ }
 call textobj#user#plugin('markdown', s:mkd_textobj)
+" TODO: markdown-list-aware text objects (paragraph, sentence), gq
 
 function! s:MarkdownSetupFolding()
     if get(g:, "vim_markdown_folding_style_pythonic", 0)
@@ -59,6 +60,7 @@ endfunction
 
 nmap <buffer>zM :call <SID>MarkdownSetupFolding()\|unmap <lt>buffer>zM<CR>zM
 nmap <buffer><leader>pd :set ft=pandoc\|unmap <lt>buffer><lt>leader>pd<CR>
+nmap <buffer><silent><leader>py vid:AsyncRun python3<CR>:CW<CR>
 noremap  <buffer><silent><localleader>b :set opfunc=SurroundStrong<cr>g@
 vnoremap <buffer><silent><localleader>b  :<C-U>call SurroundStrong(visualmode())<CR>
 nmap <MiddleMouse> <LeftMouse><localleader>biw

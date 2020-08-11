@@ -1,5 +1,8 @@
 " vim: ft=vim:fdm=marker
-syntax clear
+if exists("b:current_syntax")
+  finish
+endif
+
 " Keywords {{{
 " ============
 
@@ -287,3 +290,5 @@ syn sync minlines=400
     hi def link  pythonExClass      pythonClass
 
 " }}}
+
+let b:current_syntax = "python"

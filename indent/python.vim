@@ -158,8 +158,8 @@ function! s:find_start_of_block(lnum, types, skip, multiple) abort
     else
       let re_skip = ''
     endif
-    let lnum = a:lnum
-    let last_indent = indent(lnum) + 1
+    let last_indent = indent(a:lnum) + 1
+    let lnum = a:lnum - 1
     while lnum > 0 && last_indent > 0
         let indent = indent(lnum)
         if indent < last_indent
@@ -222,7 +222,12 @@ function! s:indent_like_opening_paren(lnum)
         if starts_with_closing_paren && !hang_closing
             let res = base
         else
-            return base + s:sw()
+            let res = base + s:sw()
+
+            " Special case for parenthesis.
+            if text[paren_col-1] ==# '(' && getline(a:lnum) !~# '\v\)\s*:?\s*$'
+                return res
+            endif
         endif
     else
         " Indent to match position of opening paren.
@@ -255,7 +260,7 @@ function! s:indent_like_block(lnum)
             endif
 
             let [blocks, skip] = blocks_ignore
-            let indents = s:find_start_of_block(a:lnum - 1, blocks, skip, multiple)
+            let indents = s:find_start_of_block(a:lnum, blocks, skip, multiple)
             if empty(indents)
                 return -1
             endif

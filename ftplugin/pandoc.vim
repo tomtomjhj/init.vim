@@ -35,5 +35,4 @@ nmap <buffer><silent><leader>C :Pandoc<CR>
 nmap <buffer><silent><leader>O :Pandoc!<CR>
 nmap <buffer><silent><leader>oo :call Zathura("<C-r>=expand("%:p:h").'/'.expand("%:t:r").'.pdf'<CR>")<CR>
 nmap <buffer><silent>gx <Plug>(pandoc-hypertext-open-system)
-nmap <buffer><silent><leader>py vid:AsyncRun python3<CR>:CW<CR>
 nmap <buffer>zM :call pandoc#folding#Init()\|unmap <lt>buffer>zM<CR>zM
