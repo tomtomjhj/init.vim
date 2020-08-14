@@ -11,8 +11,8 @@ let g:coc_quickfix_open_command = 'CW'
 let g:coc_fzf_preview = 'up:60%'
 
 function! SetupCoc()
-  augroup CocBufStuff | au!
-    au CursorHold <buffer> call CocAction('getCurrentFunctionSymbol')
+  augroup CocCurrentFunction | au!
+    au CursorHold <buffer> call CocActionAsync('getCurrentFunctionSymbol', function('s:DisableCurrentFunctionSymbol'))
   augroup END
   nmap     <silent><buffer>        <M-]> <Plug>(coc-definition)
   nmap     <silent><buffer>        <M-\> :call CocAction('jumpDefinition', 'tabe')<CR>
@@ -65,6 +65,15 @@ command! -nargs=1 -complete=file Pedit call s:Pedit(<f-args>)
 function! s:Pedit(file)
   exe 'pedit' a:file
   wincmd P
+endfunction
+
+function! s:DisableCurrentFunctionSymbol(e, r)
+  if !empty(a:e)
+    au! CocCurrentFunction
+    echohl WarningMsg
+    echom "Disabled:" a:e
+    echohl None
+  endif
 endfunction
 
 " TODO: nvim lsp stuff
