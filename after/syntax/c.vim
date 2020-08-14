@@ -20,10 +20,10 @@ syn keyword cTodo contained BUG NOTE
 
 
 " Highlight function names
-syn match cUserFunction "\<\h\w*\>\(\s\|\n\)*("me=e-1 contains=cParen,cCppParen
+syn match cUserFunction "\<\h\w*\>\ze\_s*(" contains=cParen,cCppParen
 hi def link cUserFunction Function
 
-syn match cUserConstant "\<[A-Z_][A-Z0-9_]*\>\ze\(\(\s\|\n\)*(\)\@!"
+syn match cUserConstant "\<[A-Z_][A-Z0-9_]*\>\ze\(\_s*(\)\@!"
 hi def link cUserConstant Constant
 
 
@@ -73,4 +73,4 @@ syn match cBraces display "[{}]"
 hi def link cBraces Delimiter
 
 
-syn match cType "\<\h\w*_t\>"
+syn match cType "\<\h\w*_t\>\ze\(\_s*(\)\@!"
