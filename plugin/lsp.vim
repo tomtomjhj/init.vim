@@ -10,7 +10,6 @@ endfunction
 let g:coc_quickfix_open_command = 'CW'
 let g:coc_fzf_preview = 'up:60%'
 
-" TODO: pass lsp capability and only map that stuff?
 function! SetupCoc()
   augroup CocBufStuff | au!
     au CursorHold <buffer> call CocAction('getCurrentFunctionSymbol')
@@ -34,7 +33,6 @@ function! SetupCoc()
   nmap             <buffer><leader>ac    <Plug>(coc-codelens-action)
   nmap     <silent><buffer><leader>O     :<C-u>CocList outline<CR>
   nmap     <silent><buffer><leader>sb    :<C-u>CocList -I symbols<CR>
-  " TODO: this doesn't search on filetype
   nmap     <silent><buffer><leader>dl    :<C-U>CocFzfList diagnostics<CR>
   nmap     <silent><buffer>        [a    <Plug>(coc-diagnostic-prev)
   nmap     <silent><buffer>        ]a    <Plug>(coc-diagnostic-next)
@@ -69,17 +67,12 @@ function! s:Pedit(file)
   wincmd P
 endfunction
 
-" " Do default action for next item.
-" nnoremap <silent> <space>j  :<C-u>CocNext<CR>
-" " Do default action for previous item.
-" nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
-" " Resume latest coc list.
-" nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
-
 " TODO: nvim lsp stuff
 " https://www.reddit.com/r/neovim/comments/grrxli/start_to_finish_example_of_setting_up_built_in/fs17mxy
-" Plug 'haorenW1025/diagnostic-nvim'
-" Plug 'haorenW1025/completion-nvim'
+" https://nathansmith.io/posts/neovim-lsp
+" Plug 'nvim-lua/diagnostic-nvim'
+" Plug 'nvim-lua/completion-nvim'
+" Plug 'nvim-lua/lsp-status.nvim'
 " lua << EOF
 " local nvim_lsp = require'nvim_lsp'
 " nvim_lsp.ocamllsp.setup{}

@@ -305,6 +305,8 @@ if has('win')
     let g:coc_node_path = 'node.exe'
 endif
 " TODO: per-filetype source priority? lower ultisnips in .md
+" TODO fork of coc-word with corpus from programming books/documentation, papers
+" NOTE: https://github.com/neoclide/coc.nvim/wiki/Using-coc-extensions#use-vims-plugin-manager-for-coc-extension
 let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab', 'coc-word', 'coc-tag']
 " NOTE: stuff highlighted as Normal -> bg doesn't match in floatwin
 hi! link CocWarningHighlight NONE
@@ -759,7 +761,7 @@ nmap <silent>[l <Plug>(qf_loc_previous)
 " }}}
 
 let g:NERDTreeWinPos = "right"
-let g:NERDTreeIgnore=['\~$', '\.glob$', '\v\.vo[sk]?$']
+let g:NERDTreeIgnore=['\~$', '\.glob$', '\v\.vo[sk]?$', '\.v\.d$', '\.o$']
 let g:NERDTreeStatusline = -1
 nmap <silent><leader>nn :NERDTreeToggle<cr>
 nmap <silent><leader>nf :NERDTreeFind<cr>
@@ -767,7 +769,8 @@ nmap <silent><leader>nf :NERDTreeFind<cr>
 let g:EditorConfig_exclude_patterns = ['.*[.]git/.*', 'fugitive://.*', 'scp://.*']
 
 " firenvim {{{
-" chrome://extensions/shortcuts
+" chrome://extensions/shortcuts -> this may break chrome keymaps like <C-w>
+" TODO: Maybe some edge case in fallback? Just use GhostText?
 if has('nvim')
     let g:firenvim_config = {
                 \ 'globalSettings': {

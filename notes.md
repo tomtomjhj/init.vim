@@ -72,6 +72,7 @@ This doesn't work as expected.
 * clear undo,backup,swap, view
     * TODO: `:mkview`
 * sneak digraph? alias?
+* better understanding of jumplist
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
