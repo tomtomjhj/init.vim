@@ -18,7 +18,7 @@ function! SetupCoc()
   nmap     <silent><buffer>        <M-]> <Plug>(coc-definition)
   nmap     <silent><buffer>        <M-\> :call CocAction('jumpDefinition', 'tabe')<CR>
   nmap     <silent><buffer><leader><M-\> :call CocAction('jumpDefinition', winwidth(0)>170 ? 'vsplit' : 'split')<CR>
-  nmap     <silent><buffer>       <M-\|> :call CocAction('jumpDefinition', 'Pedit')<CR>
+  nmap     <silent><buffer>       <M-\|> :call CocAction('jumpDefinition', 'Pedit')<CR><C-w>p
   nmap     <silent><buffer>        <M-.> :call CocAction('doHover')<CR>
   nmap     <silent><buffer>        <M-,> :call CocAction('diagnosticInfo')<CR>
   nmap     <silent><buffer><leader>gy    <Plug>(coc-type-definition)
@@ -27,8 +27,7 @@ function! SetupCoc()
   nmap             <buffer><leader>rn    <Plug>(coc-rename)
   nmap     <silent><buffer><leader>fm    <Plug>(coc-format)
   vmap     <silent><buffer><leader>fm    <Plug>(coc-format-selected)
-  nmap     <silent><buffer>        zM    :Fold<CR>
-  " nmap             <buffer>        zM    :set foldmethod=syntax foldlevel=99\|unmap <lt>buffer>zM<CR>zM
+  nmap     <silent><buffer>        fd    :exe 'normal! zE'\|Fold<CR>
   nmap     <silent><buffer><leader><tab> v<Plug>(coc-range-select)
   xmap     <silent><buffer><leader><tab> <Plug>(coc-range-select)
   xmap     <silent><buffer>      <S-tab> <Plug>(coc-range-select-backward)
@@ -59,7 +58,8 @@ augroup CocStuff
 augroup end
 
 command! -nargs=0 Format call CocAction('format')
-command! -nargs=? Fold   if &foldmethod == 'manual' | exe 'normal! zE' | call CocAction('fold', <f-args>) | endif
+" TODO fold level too high in some languages (e.g. ccls)
+command! -nargs=? Fold   call CocAction('fold', <f-args>)
 command! -nargs=1 -complete=file Pedit call s:Pedit(<f-args>)
 
 " CocAction jumpDefinition assumes that openCommand changes the current window
