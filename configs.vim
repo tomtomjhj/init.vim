@@ -543,18 +543,18 @@ endfunc
 
 " Motion, insert mode, ... {{{
 " just set nowrap instead of explicit linewise ops
-nnoremap j gj
-nnoremap k gk
-nnoremap J gj
-nnoremap K gk
-vnoremap <expr> j mode() ==# 'v' ? 'gj' : 'j'
-vnoremap <expr> k mode() ==# 'v' ? 'gk' : 'k'
-onoremap <expr> j mode() ==# 'v' ? 'gj' : 'j'
-onoremap <expr> k mode() ==# 'v' ? 'gk' : 'k'
-vnoremap <expr> J mode() ==# 'v' ? 'gj' : 'j'
-vnoremap <expr> K mode() ==# 'v' ? 'gk' : 'k'
-onoremap <expr> J mode() ==# 'v' ? 'gj' : 'j'
-onoremap <expr> K mode() ==# 'v' ? 'gk' : 'k'
+nnoremap <expr> j                     v:count ? 'j' : 'gj'
+nnoremap <expr> k                     v:count ? 'k' : 'gk'
+nnoremap <expr> J                     v:count ? 'j' : 'gj'
+nnoremap <expr> K                     v:count ? 'k' : 'gk'
+vnoremap <expr> j mode() !=# 'v' \|\| v:count ? 'j' : 'gj'
+vnoremap <expr> k mode() !=# 'v' \|\| v:count ? 'k' : 'gk'
+onoremap <expr> j mode() !=# 'v' \|\| v:count ? 'j' : 'gj'
+onoremap <expr> k mode() !=# 'v' \|\| v:count ? 'k' : 'gk'
+vnoremap <expr> J mode() !=# 'v' \|\| v:count ? 'j' : 'gj'
+vnoremap <expr> K mode() !=# 'v' \|\| v:count ? 'k' : 'gk'
+onoremap <expr> J mode() !=# 'v' \|\| v:count ? 'j' : 'gj'
+onoremap <expr> K mode() !=# 'v' \|\| v:count ? 'k' : 'gk'
 noremap H h
 noremap L l
 noremap <leader>J J
