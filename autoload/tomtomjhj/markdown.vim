@@ -1,5 +1,5 @@
-func! tomtomjhj#markdown#MkdFencedCodeBlocka()
-    if !InSynStack('mkdSnippet') && !InSynStack('mkdCode')
+func! tomtomjhj#markdown#FencedCodeBlocka()
+    if !InSynStack('\v(mkdSnippet|mkdCode|pandocDelimitedCodeBlock)')
         return 0
     endif
     if !search('```\w*', 'bW') | return 0 | endif
@@ -10,8 +10,8 @@ func! tomtomjhj#markdown#MkdFencedCodeBlocka()
     let tail_pos = getpos('.')
     return ['V', head_pos, tail_pos]
 endfunc
-func! tomtomjhj#markdown#MkdFencedCodeBlocki()
-    if !InSynStack('mkdSnippet') && !InSynStack('mkdCode')
+func! tomtomjhj#markdown#FencedCodeBlocki()
+    if !InSynStack('\v(mkdSnippet|mkdCode|pandocDelimitedCodeBlock)')
         return 0
     endif
     if !search('```\w*', 'bW') | return 0 | endif
@@ -24,31 +24,6 @@ func! tomtomjhj#markdown#MkdFencedCodeBlocki()
     return ['V', head_pos, tail_pos]
 endfunc
 
-func! tomtomjhj#markdown#PandocFencedCodeBlocka()
-    if !InSynStack('pandocDelimitedCodeBlock')
-        return 0
-    endif
-    if !search('```\w*', 'bW') | return 0 | endif
-    let head_pos = getpos('.')
-    let head_pos[2] = 1
-    if !search('```', 'W') | return 0 | endif
-    exec 'norm! E'
-    let tail_pos = getpos('.')
-    return ['V', head_pos, tail_pos]
-endfunc
-func! tomtomjhj#markdown#PandocFencedCodeBlocki()
-    if !InSynStack('pandocDelimitedCodeBlock')
-        return 0
-    endif
-    if !search('```\w*', 'bW') | return 0 | endif
-    exec 'norm! W'
-    let head_pos = getpos('.')
-    let head_pos[2] = 1
-    if !search('```', 'W') | return 0 | endif
-    call search('\v\S', 'bW')
-    let tail_pos = getpos('.')
-    return ['V', head_pos, tail_pos]
-endfunc
 func! tomtomjhj#markdown#PandocDollarMatha()
     if !InSynStack('pandocLaTeXInlineMath')
         return 0

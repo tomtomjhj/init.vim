@@ -4,12 +4,6 @@ let s:pandoc_textobj = {
             \     'select-a': 'ae',
             \     'select-i': 'ie',
             \   },
-            \   'code': {
-            \     'select-a-function': 'tomtomjhj#markdown#PandocFencedCodeBlocka',
-            \     'select-a': 'ad',
-            \     'select-i-function': 'tomtomjhj#markdown#PandocFencedCodeBlocki',
-            \     'select-i': 'id',
-            \   },
             \  'dollar-math': {
             \     'select-a-function': 'tomtomjhj#markdown#PandocDollarMatha',
             \     'select-a': 'am',

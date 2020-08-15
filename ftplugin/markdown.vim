@@ -15,9 +15,9 @@ delfunction s:nvmap
 
 let s:mkd_textobj = {
             \   'code': {
-            \     'select-a-function': 'tomtomjhj#markdown#MkdFencedCodeBlocka',
+            \     'select-a-function': 'tomtomjhj#markdown#FencedCodeBlocka',
             \     'select-a': 'ad',
-            \     'select-i-function': 'tomtomjhj#markdown#MkdFencedCodeBlocki',
+            \     'select-i-function': 'tomtomjhj#markdown#FencedCodeBlocki',
             \     'select-i': 'id',
             \   },
             \ }

@@ -879,9 +879,9 @@ func! SynStackName()
     return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunc
 nmap <leader>st :echo SynStackName()<CR>
-func! InSynStack(type)
+func! InSynStack(pat)
     for i in synstack(line('.'), col('.'))
-        if synIDattr(i, 'name') =~ a:type
+        if synIDattr(i, 'name') =~# a:pat
             return 1
         endif
     endfor
