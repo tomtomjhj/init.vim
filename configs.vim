@@ -94,6 +94,7 @@ Plug 'whonore/Coqtail' | let g:coqtail_nomap = 1
 Plug 'cespare/vim-toml'
 Plug 'rhysd/vim-llvm'
 Plug 'fatih/vim-go', { 'do': 'rm -r plugin ftplugin' }
+Plug 'vim-python/python-syntax'
 " Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] }
 
 " etc etc
@@ -363,6 +364,8 @@ augroup END
 " }}}
 
 " Python {{{
+let g:python_highlight_all = 1
+let g:python_highlight_builtin_funcs = 0
 " let g:ale_python_mypy_options = '--ignore-missing-imports --check-untyped-defs'
 let g:ale_python_pyls_config = {
             \ 'pyls': {
