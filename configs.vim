@@ -34,7 +34,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'Konfekt/FastFold'
 Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
-Plug 'mbbill/undotree'
+Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'wellle/visual-split.vim' " <C-w>g gr/gss/gsa/gsb
 Plug 'andymass/vim-tradewinds' " <C-w>g h/j/k/l
 " TODO Plug 'tpope/vim-obsession'
@@ -821,6 +821,10 @@ let g:NERDCustomDelimiters = {
             \ 'c': { 'left': '//', 'leftAlt': '/*', 'rightAlt': '*/' },
             \}
 let g:NERDDefaultAlign = 'left'
+
+" undotree
+let g:undotree_WindowLayout = 4
+nnoremap U :UndotreeToggle<CR>
 " }}}
 
 " Tabs, windows, buffers {{{
