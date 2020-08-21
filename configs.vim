@@ -345,6 +345,10 @@ let g:haskell_indent_let_no_in = 0
 let g:haskell_indent_if = 0
 let g:haskell_indent_case_alternative = 1
 let g:intero_start_immediately = 0
+augroup SetupHaskell | au!
+    " au FileType haskell call SetupCoc()
+    au FileType haskell setl tabstop=2 shiftwidth=2
+augroup END
 " }}}
 
 " Rust {{{
@@ -429,6 +433,16 @@ let g:go_highlight_operators = 1
 let g:go_highlight_functions = 1
 let g:go_highlight_function_calls = 1
 let g:go_highlight_types = 1
+" }}}
+
+" Coq {{{
+function! g:CoqtailHighlight()
+    hi def CoqtailChecked ctermbg=237
+    hi def CoqtailSent ctermbg=60
+endfunction
+augroup SetupCoq | au!
+    au FileType coq,coq-goals,coq-infos call tomtomjhj#coq#mappings()
+augroup END
 " }}}
 " }}}
 

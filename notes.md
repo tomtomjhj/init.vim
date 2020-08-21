@@ -72,7 +72,7 @@ This doesn't work as expected.
 * clear undo,backup,swap, view
     * TODO: `:mkview`
 * sneak digraph? alias?
-* better understanding of jumplist
+* `<C-r><C-v>` to getvisual in cmap
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -107,6 +107,7 @@ This doesn't work as expected.
 * `:@`
 * `sub-replace-special`
 * `i_CTRL-R_CTRL-O` is fast
+* `scroll-cursor`
 
 # pitfalls
 * `:h map-bar`
