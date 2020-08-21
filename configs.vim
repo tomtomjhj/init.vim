@@ -788,7 +788,7 @@ let g:EditorConfig_exclude_patterns = ['.*[.]git/.*', 'fugitive://.*', 'scp://.*
 " firenvim {{{
 " chrome://extensions/shortcuts -> this may break chrome keymaps like <C-w>
 " TODO: Maybe some edge case in fallback? Just use GhostText?
-if has('nvim')
+if exists('g:started_by_firenvim')
     let g:firenvim_config = {
                 \ 'globalSettings': {
                 \     'alt': 'all',
@@ -813,6 +813,8 @@ if has('nvim')
         if !s:IsFirenvimActive(a:event) | return | endif
         " inoremap <buffer> <M-CR> <Esc>:w<CR>:call firenvim#press_keys("<LT>CR>")<CR>ggdGa
     endfunction
+else
+    let g:firenvim_loaded = 1
 endif
 " }}}
 
