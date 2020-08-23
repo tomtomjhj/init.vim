@@ -55,27 +55,12 @@ augroup SetupNerdTree | au!
                 \ endif |
 augroup END
 
-" completion
-" TODO: remove this
-Plug 'ervandew/supertab'
-" if has('nvim')
-"   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-"   Plug 'ncm2/float-preview.nvim' | set completeopt-=preview
-" else
-"   Plug 'roxma/nvim-yarp' | Plug 'roxma/vim-hug-neovim-rpc'
-"   Plug 'Shougo/deoplete.nvim'
-" endif
-Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-
-" augroup Completions | au!
-"   au InsertEnter * call deoplete#enable() | au! Completions
-" augroup END
-
 " lanauges
 Plug 'dense-analysis/ale'
 " TODO: sometimes node remains alive even after exiting
 Plug 'neoclide/coc.nvim', { 'branch': 'release' } | Plug 'neoclide/jsonc.vim'
 Plug 'antoinemadec/coc-fzf'
+Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'plasticboy/vim-markdown' | Plug 'godlygeek/tabular', { 'for': 'markdown' }
 " TODO: huge performance hit in nvim (not in vim)
 " lightline + cursorline + lazyredraw + large &lines
@@ -271,15 +256,16 @@ endif
 " }}}
 
 " Completion {{{
-let g:SuperTabDefaultCompletionType = '<c-n>'
-let g:SuperTabClosePreviewOnPopupClose = 1
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-" let g:deoplete#enable_at_startup = 0
-" call deoplete#custom#source('around', 'min_pattern_length', 1)
-" call deoplete#custom#source('ale', { 'max_info_width': 0, 'max_menu_width': 0 })
-" call deoplete#custom#var('omni', 'input_patterns', { 'tex': g:vimtex#re#deoplete })
-" call deoplete#custom#var('around', { 'mark_above': '[↑]', 'mark_below': '[↓]', 'mark_changes': '[*]' })
-" let g:float_preview#winhl = 'Normal:NormalFloat,NormalNC:NormalFloat'
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
 
 let g:UltiSnipsExpandTrigger = '<c-l>'
 " }}}
