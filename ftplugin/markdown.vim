@@ -65,3 +65,4 @@ noremap  <buffer><silent><localleader>b :set opfunc=SurroundStrong<cr>g@
 vnoremap <buffer><silent><localleader>b  :<C-U>call SurroundStrong(visualmode())<CR>
 nmap <MiddleMouse> <LeftMouse><localleader>biw
 vmap <MiddleMouse> <localleader>b
+nmap <buffer><silent><leader>tf :TableFormat<CR>

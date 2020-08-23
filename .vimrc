@@ -124,9 +124,4 @@ if has('clipboard') && !has('gui_running')
 endif
 " }}}
 
-augroup VimSpecificSetup | au!
-  au BufWritePost ~/.vimrc source ~/.vimrc | set sw=2 ts=2
-  au BufWritePost ~/.vim/.vimrc source ~/.vim/.vimrc | set sw=2 ts=2
-augroup END
-
-" vim: set sw=2 ts=2 fdm=marker fdl=0 nomodeline:
+" vim: set sw=2 ts=2 fdm=marker fdl=0 noml:

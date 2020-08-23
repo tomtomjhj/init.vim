@@ -904,4 +904,19 @@ endfunc
 " :put is a :comment command
 command! -nargs=* -complete=command Execute
             \ new | let s:res = execute(<q-args>) | put=s:res | unlet s:res
+
+function! GotoJump()
+  jumps
+  let j = input("Jump to ([+]N): ")
+  if j != ''
+    let plus = '\v\c^\+'
+    if j =~ plus
+      let j = substitute(j, plus, '', 'g')
+      execute "normal!" j."\<C-i>"
+    else
+      execute "normal!" j."\<C-o>"
+    endif
+  endif
+endfunction
+command! Jumps call GotoJump()
 " }}}
