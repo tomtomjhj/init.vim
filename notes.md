@@ -73,6 +73,9 @@ This doesn't work as expected.
     * TODO: `:mkview`
 * sneak digraph? alias?
 * `<C-r><C-v>` to getvisual in cmap
+* better 'paragraph'
+    * markdown list
+    * code commend
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -101,6 +104,7 @@ This doesn't work as expected.
 * cmdline-completion
 * `\{-`, `\@>`, `\@=`, `\@!`, `\@<=`, `\@<!`
     * `if \(\(then\)\@!.\)*$` "if " not followed by "then"
+    * `\(\/\/.*\)\@<!in` "in" which is not after "//"
 * marks
 * forced-motion
 * `i_CTRL-D`, `i_CTRL-T`

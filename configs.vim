@@ -31,7 +31,7 @@ Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': has('unix') ? './install --all' : { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'Konfekt/FastFold'
+Plug 'Konfekt/FastFold' " only useful for non-manual folds
 Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
@@ -78,7 +78,7 @@ Plug 'whonore/Coqtail' | let g:coqtail_nomap = 1
 " Plug 'puremourning/vimspector' | let g:vimspector_enable_mappings = 'HUMAN'
 Plug 'cespare/vim-toml'
 Plug 'rhysd/vim-llvm'
-Plug 'fatih/vim-go', { 'do': 'rm -r plugin ftplugin' }
+Plug 'fatih/vim-go', { 'do': 'rm -r plugin ftplugin \|\| true' }
 Plug 'vim-python/python-syntax'
 " Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] }
 
@@ -154,7 +154,7 @@ augroup BasicSetup | au!
     au BufWritePost ~/.vim/configs.vim source ~/.vim/configs.vim
     au FileType json call SetupCoc()
     au BufRead,BufNewFile *.k set filetype=k
-    au BufRead,BufNewFile *.mir set filetype=rust
+    au BufRead,BufNewFile *.mir set syntax=rust
     au FileType lisp let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} })
     au FileType help nnoremap <silent><buffer> <M-.> :h <C-r><C-w><CR>
     au VimResized * let &pumheight = min([&window/4, 20])
@@ -381,7 +381,7 @@ augroup END
 let g:tex_flavor = "latex"
 let g:tex_noindent_env = '\v\w+.?'
 let g:pandoc#syntax#codeblocks#embeds#langs = ["python", "cpp", "rust"]
-let g:pandoc#modules#enabled = ["formatting", "hypertext"]
+let g:pandoc#modules#enabled = ["formatting", "hypertext", "yaml"]
 " Surround triggers equalprg (pandoc -t markdown), which modifies the text a lot
 let g:pandoc#formatting#equalprg = ''
 let g:pandoc#folding#level = 99
