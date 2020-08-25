@@ -41,19 +41,8 @@ Plug 'andymass/vim-tradewinds' " <C-w>g h/j/k/l
 " TODO Plug 'yuki-ycino/fzf-preview.vim'
 " TODO Plug 'lpinilla/vim-codepainter'
 
-" use menu!
-Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
-augroup SetupNerdTree | au!
-    au VimEnter * silent! au! FileExplorer
-    au BufEnter,VimEnter *
-                \ if get(g:, 'loaded_nerd_tree', 0) |
-                \   exec 'au! SetupNerdTree' |
-                \ elseif isdirectory(expand("<amatch>")) |
-                \   call plug#load('nerdtree') |
-                \   call nerdtree#checkForBrowse(expand("<amatch>")) |
-                \   exec 'au! SetupNerdTree' |
-                \ endif |
-augroup END
+Plug 'justinmk/vim-dirvish'
+Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] } " use menu!
 
 " lanauges
 Plug 'dense-analysis/ale'
@@ -167,6 +156,7 @@ endif
 " }}}
 
 " Themes {{{
+" TODO: display winnr()?
 let g:lightline = {
       \ 'colorscheme': 'wombat',
       \ 'active': {
@@ -234,6 +224,7 @@ func! ShortRelPath()
     if empty(name)
         return empty(&buftype) ? '[No Name]' : ''
     endif
+    " TODO: use short abspath if isdirectory
     return pathshorten(fnamemodify(name, ":~:."))
 endfunc
 " `vil() { nvim "$@" --cmd 'set background=light'; }` for light theme
@@ -395,6 +386,7 @@ let g:vim_markdown_auto_insert_bullets = 0
 let g:vim_markdown_new_list_item_indent = 0
 let g:vim_markdown_frontmatter = 1
 let g:vim_markdown_no_default_key_mappings = 1
+" TODO host on real server
 " let g:mkdp_port = '8080'
 " let g:mkdp_open_to_the_world = 1
 " let g:mkdp_echo_preview_url = 1
@@ -763,11 +755,28 @@ nmap <silent>]l <Plug>(qf_loc_next)
 nmap <silent>[l <Plug>(qf_loc_previous)
 " }}}
 
+" Explorers {{{
+let g:loaded_netrwPlugin = 1
+nnoremap <silent> <Plug>NetrwBrowseX :call netrw#BrowseX(expand((exists("g:netrw_gx")? g:netrw_gx : '<cfile>')),netrw#CheckIfRemote())<cr>
+vnoremap <silent> <Plug>NetrwBrowseXVis :<c-u>call netrw#BrowseXVis()<cr>
+nmap gx <Plug>NetrwBrowseX
+vmap gx <Plug>NetrwBrowseXVis
+
+let NERDTreeHijackNetrw = 0
 let g:NERDTreeWinPos = "right"
 let g:NERDTreeIgnore=['\~$', '\.glob$', '\v\.vo[sk]?$', '\.v\.d$', '\.o$']
 let g:NERDTreeStatusline = -1
 nmap <silent><leader>nn :NERDTreeToggle<cr>
 nmap <silent><leader>nf :NERDTreeFind<cr>
+
+" TODO: lightline buf name for dirvish
+" TODO: make preview should use preview window https://github.com/justinmk/vim-dirvish/pull/65/commits/9e3f16aa5413479919b540e1f0db594d3f997f15
+command! -nargs=? -complete=dir Sexplore split | silent Dirvish <args>
+command! -nargs=? -complete=dir Vexplore vsplit | silent Dirvish <args>
+nmap <silent><C-w>es :Sexplore<CR>
+nmap <silent><C-w>ev :Vexplore<CR>
+hi! link DirvishSuffix Special
+" }}}
 
 let g:EditorConfig_exclude_patterns = ['.*[.]git/.*', 'fugitive://.*', 'scp://.*']
 
