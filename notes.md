@@ -45,15 +45,6 @@ To fix this, manually reset all of the relevant settings in `Filetype pandoc`.
 
 The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 
-# cursor movement on concealed string
-
-```
-setlocal concealcursor=n
-```
-
-This doesn't work as expected.
-
-<https://vi.stackexchange.com/questions/4530/moving-over-conceal>
 
 # TODO:
 * Better interaction of `hlsearch` and conceal?
@@ -83,38 +74,43 @@ This doesn't work as expected.
     * Just disable lazy load as it turns out that loading ultisnip isn't slow.
     * The root cause might be related to loading something that contains filetype plugin.
 * Restore default `iskeyword` inside pandoc code block: it's impossible.
-* rust-analyzer provides better completion but doesn't have proper diagnostics
-    * use coc-rust-analyzer
 
 # Tips
 * `strcharpart(strpart(line, col - 1), 0, 1)`
 * `<C-\><C-o><ESC>` to reset insert starting point after ins-special-special
-* cmdline-completion
-* <https://superuser.com/a/1454131/1089985>
+* absolute n/N <https://superuser.com/a/1454131/1089985>
 * <https://blog.antoyo.xyz/vim-tips>
-* `/_CTRL-L`, `/_CTRL-G`, `/_CTRL-T`
-* yank matching lines <https://stackoverflow.com/a/1475069>
-* <https://vi.stackexchange.com/questions/17227/>
+* editing shada <https://vi.stackexchange.com/questions/17227/>
 * sub-replace-expression
 * https://vim.fandom.com/wiki/Search_across_multiple_lines#Searching_over_multiple_lines_with_a_user_command
 * http://karolis.koncevicius.lt/posts/porn_zen_and_vimrc/
-* alternate file
-* (neovim only) `:h map-cmd` probably better than `<C-\><C-o>:`
-* `:g/foo/z=3`
-* cmdline-completion
+* `cmdline-completion`, `/_CTRL-L`, `/_CTRL-G`, `/_CTRL-T`
 * `\{-`, `\@>`, `\@=`, `\@!`, `\@<=`, `\@<!`
     * `if \(\(then\)\@!.\)*$` "if " not followed by "then"
     * `\(\/\/.*\)\@<!in` "in" which is not after "//"
-* marks
 * forced-motion
-* `i_CTRL-D`, `i_CTRL-T`
-* `:@`
 * `sub-replace-special`
 * `i_CTRL-R_CTRL-O` is fast
-* `scroll-cursor`
+
+# things that I should make more use of
+* marks
+* `:global`
+    * `:g/foo/z=3`
+    * yank matching lines <https://stackoverflow.com/a/1475069>
 * `zi`
+* `i_CTRL-D`, `i_CTRL-T`
+* `:@`, `@:`
+* `scroll-cursor`
+* macros
+    * `:h 10.1`
+    * record → (jump → execute)*
+    * If there's a *function* to jump (e.g. `gn`), the repetition step can be
+      merged (e.g. `gn@@`) or jump can be part of the macro.
+    * TODO: easier mapping for `@q`, `@@`, ...
+    * TODO: pre-selecting points to run macros like multicursor? (difficult)
 
 # pitfalls
+* Cursor movement on concealed string: `set concealcursor=n` doesn't work as expected. <https://vi.stackexchange.com/questions/4530/moving-over-conceal>
 * `:h map-bar`
 * Wrap `autocmd`s with `exec 'au ...'`: may not work as expected because of the interaction w/ `|`
 * Matching `errorformat` may fail if the output from `:AsyncRun ...` is complex & quickfix is already open.
@@ -136,25 +132,8 @@ This doesn't work as expected.
 * `=` does `C-indenting` when `equalprg` is not set
     * auto-pairs adds weird indent if the previous line ends with `,`. Indent size if the size of the first word in the previous line.
         * `<CR><C-c>O` (`nosmartindent`) vs. `<CR><C-c>=ko` (`&indentexpr != ''`)
+* stuff highlighted as `Normal` -> bg doesn't match in floatwin
+
 
 # notes
-* macros
-    * `:h 10.1`
-    * record → (jump → execute)*
-    * If there's a *function* to jump (e.g. `gn`), the repetition step can be
-      merged (e.g. `gn@@`) or jump can be part of the macro.
-    * TODO: easier mapping for `@q`, `@@`, ...
-    * TODO: pre-selecting points to run macros like multicursor? (difficult)
-
-# hmm..
-* I don't want to rely on `set whichwrap+=]` for quick jump but this doesn't
-  work properly at the column `col('$')-1`
-    ```vim
-    inoremap <silent><C-j> <C-R>=QuickJumpRightKey()<CR>
-    func! QuickJumpRightKey()
-        return col('.') ==  col('$')
-                    \ ? "\<C-\>\<C-O> "
-                    \ : "\<C-\>\<C-O>:call search(g:quick_jump, 'ceW')\<CR>\<Right>"
-    endfunc
-    ```
-    * use `<expr>`?
+* terminal reflow https://github.com/neovim/neovim/issues/2514

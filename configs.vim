@@ -286,7 +286,6 @@ endif
 " TODO fork of coc-word with corpus from programming books/documentation, papers
 " NOTE: https://github.com/neoclide/coc.nvim/wiki/Using-coc-extensions#use-vims-plugin-manager-for-coc-extension
 let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab', 'coc-word', 'coc-tag']
-" NOTE: stuff highlighted as Normal -> bg doesn't match in floatwin
 hi! link CocWarningHighlight NONE
 hi! link CocInfoHighlight    NONE
 hi! link CocHintHighlight    NONE
