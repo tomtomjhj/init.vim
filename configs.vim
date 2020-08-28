@@ -382,6 +382,8 @@ let g:pandoc#syntax#protect#codeblocks = 0
 let g:vimtex_fold_enabled = 1
 " TODO: don't fold embedded code. something enables folding
 let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_folding_level = 6
+let g:vim_markdown_folding_style_pythonic = 1
 let g:vim_markdown_auto_insert_bullets = 0
 let g:vim_markdown_new_list_item_indent = 0
 let g:vim_markdown_frontmatter = 1

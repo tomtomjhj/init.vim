@@ -58,7 +58,7 @@ function! SurroundStrong(type)
     return Surrounder(a:type, '**')
 endfunction
 
-nmap <buffer>zM :call <SID>MarkdownSetupFolding()\|unmap <lt>buffer>zM<CR>zM
+command! -buffer Fold call s:MarkdownSetupFolding()
 nmap <buffer><leader>pd :set ft=pandoc\|unmap <lt>buffer><lt>leader>pd<CR>
 nmap <buffer><silent><leader>py vid:AsyncRun python3<CR>:CW<CR>
 noremap  <buffer><silent><localleader>b :set opfunc=SurroundStrong<cr>g@

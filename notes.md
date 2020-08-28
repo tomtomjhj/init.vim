@@ -112,6 +112,7 @@ This doesn't work as expected.
 * `sub-replace-special`
 * `i_CTRL-R_CTRL-O` is fast
 * `scroll-cursor`
+* `zi`
 
 # pitfalls
 * `:h map-bar`
