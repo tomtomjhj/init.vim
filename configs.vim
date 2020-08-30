@@ -156,7 +156,7 @@ endif
 " }}}
 
 " Themes {{{
-" TODO: display winnr()?
+" TODO: display winnr()? w:quickfix_title?
 let g:lightline = {
       \ 'colorscheme': 'wombat',
       \ 'active': {
@@ -223,8 +223,9 @@ func! ShortRelPath()
     let name = expand('%')
     if empty(name)
         return empty(&buftype) ? '[No Name]' : ''
+    elseif isdirectory(name)
+        return pathshorten(fnamemodify(name[:-2], ":~")) . '/'
     endif
-    " TODO: use short abspath if isdirectory
     return pathshorten(fnamemodify(name, ":~:."))
 endfunc
 " `vil() { nvim "$@" --cmd 'set background=light'; }` for light theme
@@ -770,7 +771,6 @@ let g:NERDTreeStatusline = -1
 nmap <silent><leader>nn :NERDTreeToggle<cr>
 nmap <silent><leader>nf :NERDTreeFind<cr>
 
-" TODO: lightline buf name for dirvish
 " TODO: make preview should use preview window https://github.com/justinmk/vim-dirvish/pull/65/commits/9e3f16aa5413479919b540e1f0db594d3f997f15
 command! -nargs=? -complete=dir Sexplore split | silent Dirvish <args>
 command! -nargs=? -complete=dir Vexplore vsplit | silent Dirvish <args>
