@@ -38,6 +38,7 @@
     "rust-analyzer.serverPath":"~/.cargo/bin/rust-analyzer",
     "rust-analyzer.diagnostics.enable": false,
     "rust-analyzer.checkOnSave.enable": false,
+    "rust.racer_completion": false,
     "python.linting.pylintArgs": ["-dR", "-dC", "-dW0614", "-dW0621"],
     "coc.source.ultisnips.priority": 80,
     "coc.source.word.shortcut": "W",

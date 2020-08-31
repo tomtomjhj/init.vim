@@ -249,9 +249,7 @@ let g:UltiSnipsExpandTrigger = '<c-l>'
 " }}}
 
 " ALE, LSP, ... global settings {{{
-let g:ale_linters = {
-            \ 'rust': ['rls'],
-            \ }
+let g:ale_linters = {}
 let g:ale_fixers = {
             \ 'c': ['clang-format'],
             \ 'cpp': ['clang-format'],
@@ -272,7 +270,7 @@ endif
 " TODO: per-filetype source priority? lower ultisnips in .md
 " TODO fork of coc-word with corpus from programming books/documentation, papers
 " NOTE: https://github.com/neoclide/coc.nvim/wiki/Using-coc-extensions#use-vims-plugin-manager-for-coc-extension
-let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab', 'coc-word', 'coc-tag']
+let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-rls', 'coc-python', 'coc-texlab', 'coc-word', 'coc-tag']
 hi! link CocWarningHighlight NONE
 hi! link CocInfoHighlight    NONE
 hi! link CocHintHighlight    NONE
@@ -318,9 +316,9 @@ augroup END
 " TODO: rust symbol prettyfier: ${GT,LT,C,u20,u7b,u7d}$
 " let g:rust_fold = 1
 " let g:rust_keep_autopairs_default = 1
-if executable('rust-analyzer')
-    let g:ale_rust_rls_config = { 'rust': { 'racer_completion': v:false } }
-endif
+" TODO: add completion in cargo command
+let g:cargo_shell_command_runner = 'AsyncRun -post=CW'
+command! -nargs=* Cclippy call cargo#cmd("clippy " . <q-args>)
 " }}}
 
 " C,C++ {{{
