@@ -38,17 +38,30 @@ function! SetupCoc()
   nmap     <silent><buffer>        ]a    <Plug>(coc-diagnostic-next)
 endfunction
 
+function! CheckerStatus()
+  return get(g:, 'coc_status', '')
+endfunction
+function! CheckerErrors()
+  if has_key(b:, 'coc_diagnostic_info')
+    let errors = b:coc_diagnostic_info['error']
+    return errors ? 'E' . errors : ''
+  endif
+  return ''
+endfunction
+function! CheckerWarnings()
+  if has_key(b:, 'coc_diagnostic_info')
+    let warnings = b:coc_diagnostic_info['warning']
+    return warnings ? 'W' . warnings : ''
+  endif
+  return ''
+endfunction
+
 augroup CocStuff
   autocmd!
-  " Setup formatexpr specified filetype(s).
   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder.
-  " Highlight the symbol and its references when holding the cursor.
-  " autocmd CursorHold * silent call CocActionAsync('highlight')
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
   autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
-  " TODO: coc resets showbreak on hover.
-  " showbreak is not local in nvim!
+  " TODO: coc resets showbreak on flotwin hover. showbreak is not local in nvim!
   " https://github.com/vim/vim/commit/ee85702c10495041791f728e977b86005c4496e8
   autocmd User CocOpenFloat set showbreak=>\ 
   autocmd BufLeave list://* hi! CursorLine cterm=NONE gui=NONE

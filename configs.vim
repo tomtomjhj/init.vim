@@ -161,27 +161,36 @@ let g:lightline = {
       \ 'active': {
       \   'left': [ ['mode', 'paste'],
       \             ['readonly', 'speicialbuf', 'shortrelpath', 'modified'],
-      \             ['coc_func', 'git'] ],
+      \             ['curr_func', 'git'] ],
       \   'right': [ ['lineinfo'], ['percent'],
-      \              ['coc_status'],
+      \              ['checker_errors', 'checker_warnings', 'checker_status'],
       \              ['asyncrun'] ]
       \ },
       \ 'inactive': {
       \   'left': [ ['speicialbuf', 'shortrelpath'] ],
       \   'right': [ ['lineinfo'], ['percent'],
-      \              ['coc_status'] ]
+      \              ['checker_errors', 'checker_warnings', 'checker_status'] ]
       \ },
       \ 'component': {
       \   'readonly': '%{&readonly && &filetype !=# "help" ? "🔒" : ""}',
       \   'speicialbuf': '%q%w',
       \   'modified': '%{&filetype==#"help"?"":&modified?"+":&modifiable?"":"-"}',
       \   'asyncrun': '%{g:asyncrun_status[:3]}',
-      \   'coc_func': '%{get(b:,"coc_current_function","")}',
+      \   'curr_func': '%{get(b:,"coc_current_function","")}',
       \ },
       \ 'component_function': {
       \   'coc_status': 'coc#status',
       \   'git': 'GitStatusline',
       \   'shortrelpath': 'ShortRelPath',
+      \ },
+      \ 'component_expand': {
+      \  'checker_errors': 'CheckerErrors',
+      \  'checker_warnings': 'CheckerWarnings',
+      \  'checker_status': 'CheckerStatus',
+      \ },
+      \ 'component_type': {
+      \     'checker_errors': 'error',
+      \     'checker_warnings': 'warning',
       \ },
       \ 'component_visible_condition': {
       \   'readonly': '(&filetype!=#"help"&& &readonly)',
@@ -313,6 +322,7 @@ augroup END
 " }}}
 
 " Rust {{{
+" RLS hover info is more accurate than rust-analyzer!
 " TODO: rust symbol prettyfier: ${GT,LT,C,u20,u7b,u7d}$
 " let g:rust_fold = 1
 " let g:rust_keep_autopairs_default = 1
