@@ -5,7 +5,6 @@ call plug#begin('~/.vim/plugged')
 
 " appearance
 Plug 'itchyny/lightline.vim'
-Plug 'maximbaz/lightline-ale'
 Plug 'lifepillar/vim-solarized8'
 Plug 'tomtomjhj/zenbruh.vim'
 
@@ -164,13 +163,13 @@ let g:lightline = {
       \             ['readonly', 'speicialbuf', 'shortrelpath', 'modified'],
       \             ['coc_func', 'git'] ],
       \   'right': [ ['lineinfo'], ['percent'],
-      \              ['coc_status', 'ale_checking', 'ale_errors', 'ale_warnings'],
+      \              ['coc_status'],
       \              ['asyncrun'] ]
       \ },
       \ 'inactive': {
       \   'left': [ ['speicialbuf', 'shortrelpath'] ],
       \   'right': [ ['lineinfo'], ['percent'],
-      \              ['coc_status', 'ale_checking', 'ale_errors', 'ale_warnings'] ]
+      \              ['coc_status'] ]
       \ },
       \ 'component': {
       \   'readonly': '%{&readonly && &filetype !=# "help" ? "🔒" : ""}',
@@ -183,18 +182,6 @@ let g:lightline = {
       \   'coc_status': 'coc#status',
       \   'git': 'GitStatusline',
       \   'shortrelpath': 'ShortRelPath',
-      \ },
-      \ 'component_expand': {
-      \  'ale_checking': 'lightline#ale#checking',
-      \  'ale_warnings': 'lightline#ale#warnings',
-      \  'ale_errors': 'lightline#ale#errors',
-      \  'ale_ok': 'lightline#ale#ok',
-      \ },
-      \ 'component_type': {
-      \     'ale_checking': 'left',
-      \     'ale_warnings': 'warning',
-      \     'ale_errors': 'error',
-      \     'ale_ok': 'left',
       \ },
       \ 'component_visible_condition': {
       \   'readonly': '(&filetype!=#"help"&& &readonly)',
@@ -218,7 +205,6 @@ let g:lightline = {
       \     't': 'T ',
       \ }
       \ }
-" TODO: simplify lightline-ale stuff or just remove
 func! ShortRelPath()
     let name = expand('%')
     if empty(name)
