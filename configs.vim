@@ -54,7 +54,7 @@ Plug 'plasticboy/vim-markdown' | Plug 'godlygeek/tabular', { 'for': 'markdown' }
 " lightline + cursorline + lazyredraw + large &lines
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
 Plug 'tomtomjhj/vim-pandoc-syntax'
-Plug 'rust-lang/rust.vim' | Plug 'tomtomjhj/vim-rust-syntax-ext'
+Plug 'tomtomjhj/vim-rust-syntax-ext'| Plug 'rust-lang/rust.vim'
 Plug 'tomtomjhj/vim-ocaml'
 Plug 'tomtomjhj/haskell-vim', { 'branch': 'custom' }
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
@@ -770,6 +770,7 @@ command! -nargs=? -complete=dir Sexplore split | silent Dirvish <args>
 command! -nargs=? -complete=dir Vexplore vsplit | silent Dirvish <args>
 nmap <silent><C-w>es :Sexplore<CR>
 nmap <silent><C-w>ev :Vexplore<CR>
+nmap <leader>D <Plug>(dirvish_up)
 hi! link DirvishSuffix Special
 " }}}
 
