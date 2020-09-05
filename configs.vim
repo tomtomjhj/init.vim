@@ -92,7 +92,9 @@ set laststatus=2
 set tabstop=4 shiftwidth=4
 set expandtab smarttab
 set autoindent " smartindent is unnecessary
-" TODO: insert indents at InsertEnter or emacs-like tab
+" set indentkeys+=!<M-i> " doesn't work, maybe i_META? just use i_CTRL-F
+set formatoptions+=n " this may interfere with 'comment'?
+set formatlistpat=\\C^\\s*[\\[({]\\\?\\([0-9]\\+\\\|[iIvVxXlLcCdDmM]\\+\\\|[a-zA-Z]\\)[\\]:.)}]\\s\\+\\\|^\\s*[-+o*]\\s\\+
 
 " indent the wrapped line, w/ `> ` at the start
 set wrap linebreak breakindent showbreak=>\ 
@@ -672,6 +674,13 @@ noremap + <C-a>
 vnoremap + g<C-a>
 noremap - <C-x>
 vnoremap - g<C-x>
+
+" <C-b> <C-e>
+cnoremap <C-j> <S-Right>
+cnoremap <C-k> <S-Left>
+
+noremap < <gv
+noremap > >gv
 " }}}
 
 " etc plugin settings {{{
