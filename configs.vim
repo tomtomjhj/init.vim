@@ -30,6 +30,7 @@ Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': has('unix') ? './install --all' : { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'fszymanski/fzf-quickfix', { 'on': 'Quickfix' } " TODO: multi select and re-send to quickfix
 Plug 'Konfekt/FastFold' " only useful for non-manual folds
 Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
@@ -910,7 +911,7 @@ endfunc
 
 " :put is a :comment command
 command! -nargs=* -complete=command Execute
-            \ new | let s:res = execute(<q-args>) | put=s:res | unlet s:res
+            \ new | let s:res = execute(<q-args>) | put=s:res | unlet s:res | set nomodified
 
 function! GotoJump()
   jumps

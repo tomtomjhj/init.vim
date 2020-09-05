@@ -31,8 +31,8 @@ function! SetupCoc()
   xmap     <silent><buffer><leader><tab> <Plug>(coc-range-select)
   xmap     <silent><buffer>      <S-tab> <Plug>(coc-range-select-backward)
   nmap             <buffer><leader>ac    <Plug>(coc-codelens-action)
-  nmap     <silent><buffer><leader>O     :<C-u>CocList outline<CR>
-  nmap     <silent><buffer><leader>sb    :<C-u>CocList -I symbols<CR>
+  nmap     <silent><buffer><leader>O     :<C-u>CocFzfList outline<CR>
+  nmap     <silent><buffer><leader>sb    :<C-u>CocFzfList symbols<CR>
   nmap     <silent><buffer><leader>dl    :<C-U>CocFzfList diagnostics<CR>
   nmap     <silent><buffer>        [a    <Plug>(coc-diagnostic-prev)
   nmap     <silent><buffer>        ]a    <Plug>(coc-diagnostic-next)
