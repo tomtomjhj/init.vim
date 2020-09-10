@@ -20,6 +20,7 @@ Plug 'andymass/vim-matchup' " i%, a%, ]%, z%, g%
 Plug 'wellle/targets.vim' " multi (e.g. ib, iq), separator, argument
 Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment' | Plug 'michaeljsmith/vim-indent-object'
 Plug 'preservim/nerdcommenter', { 'on': '<Plug>NERDCommenter' }
+Plug 'godlygeek/tabular', { 'on': 'Tabularize' }
 " TODO Plug 'AndrewRadev/splitjoin.vim'
 " TODO Plug 'mg979/vim-visual-multi'
 
@@ -40,19 +41,16 @@ Plug 'andymass/vim-tradewinds' " <C-w>g h/j/k/l
 " TODO Plug 'tpope/vim-obsession'
 " TODO Plug 'yuki-ycino/fzf-preview.vim'
 " TODO Plug 'lpinilla/vim-codepainter'
-
 Plug 'justinmk/vim-dirvish'
 Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] } " use menu!
 
 " lanauges
-Plug 'dense-analysis/ale'
+Plug 'dense-analysis/ale', { 'on': '<Plug>(ale_' } ")
 " TODO: sometimes node remains alive even after exiting
-Plug 'neoclide/coc.nvim', { 'branch': 'release' } | Plug 'neoclide/jsonc.vim'
+Plug 'neoclide/coc.nvim', { 'branch': 'release' }
 Plug 'antoinemadec/coc-fzf'
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-Plug 'plasticboy/vim-markdown' | Plug 'godlygeek/tabular', { 'for': 'markdown' }
-" TODO: huge performance hit in nvim (not in vim)
-" lightline + cursorline + lazyredraw + large &lines
+Plug 'plasticboy/vim-markdown'
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
 Plug 'tomtomjhj/vim-pandoc-syntax'
 Plug 'tomtomjhj/vim-rust-syntax-ext'| Plug 'rust-lang/rust.vim'
@@ -66,6 +64,7 @@ Plug 'KeitaNakamura/tex-conceal.vim'
 Plug 'whonore/Coqtail' | let g:coqtail_nomap = 1
 " Plug 'puremourning/vimspector' | let g:vimspector_enable_mappings = 'HUMAN'
 Plug 'cespare/vim-toml'
+Plug 'neoclide/jsonc.vim'
 Plug 'rhysd/vim-llvm'
 Plug 'fatih/vim-go', { 'do': 'rm -r plugin ftplugin \|\| true' }
 Plug 'vim-python/python-syntax'
@@ -73,8 +72,8 @@ Plug 'vim-python/python-syntax'
 
 " etc etc
 if has('nvim')
-    " if :lua bit.band(1,1) doesn't work, luarocks install luabitop
-    " → luajit not enabled in PPA version?
+    " https://gitter.im/neovim/neovim?at=5de6bca7829929122844a025
+    " Do `luarocks install luabitop` if luajit isn't enabled.
     Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 endif
 
@@ -279,9 +278,7 @@ let g:coc_config_home = '~/.vim'
 if has('win')
     let g:coc_node_path = 'node.exe'
 endif
-" TODO: per-filetype source priority? lower ultisnips in .md
 " TODO fork of coc-word with corpus from programming books/documentation, papers
-" NOTE: https://github.com/neoclide/coc.nvim/wiki/Using-coc-extensions#use-vims-plugin-manager-for-coc-extension
 let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-rls', 'coc-python', 'coc-texlab', 'coc-word', 'coc-tag']
 hi! link CocWarningHighlight NONE
 hi! link CocInfoHighlight    NONE
@@ -377,7 +374,6 @@ let g:pandoc#hypertext#use_default_mappings = 0
 let g:pandoc#syntax#use_definition_lists = 0
 let g:pandoc#syntax#protect#codeblocks = 0
 let g:vimtex_fold_enabled = 1
-" TODO: don't fold embedded code. something enables folding
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_folding_level = 6
 let g:vim_markdown_folding_style_pythonic = 1

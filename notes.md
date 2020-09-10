@@ -133,7 +133,12 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
     * auto-pairs adds weird indent if the previous line ends with `,`. Indent size if the size of the first word in the previous line.
         * `<CR><C-c>O` (`nosmartindent`) vs. `<CR><C-c>=ko` (`&indentexpr != ''`)
 * stuff highlighted as `Normal` -> bg doesn't match in floatwin
+* lightline + cursorline + lazyredraw + large &lines = performance drop
 
 
 # notes
 * terminal reflow https://github.com/neovim/neovim/issues/2514
+
+# stuff
+* https://arxiv.org/abs/2006.03103
+* https://teukka.tech/vimloop.html
