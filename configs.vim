@@ -198,7 +198,7 @@ let g:lightline = {
       \   'readonly': '(&filetype!=#"help"&& &readonly)',
       \   'modified': '(&filetype!=#"help"&&(&modified||!&modifiable))',
       \   'speicialbuf': '&pvw||&buftype==#"quickfix"',
-      \   'coc_func': 'exists("b:coc_current_function")',
+      \   'curr_func': '!empty(get(b:,"coc_current_function",""))',
       \ },
       \ 'separator': { 'left': ' ', 'right': ' ' },
       \ 'subseparator': { 'left': '|', 'right': '|' },

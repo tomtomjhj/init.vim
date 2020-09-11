@@ -52,5 +52,5 @@ sudo apt install ...
 * [x] linux nvim
 * [ ] win gvim
     * `C-+/-` to zoom in/out
-* [ ] linux vim 7.4
-* [ ] pure vimscript setup
+* [ ] linux vim 7.4: minimal, pure vimscript
+* [ ] nvim vimscript + lua
