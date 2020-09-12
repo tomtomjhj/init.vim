@@ -10,7 +10,7 @@ endfunction
 let g:coc_quickfix_open_command = 'CW'
 let g:coc_fzf_preview = 'up:66%'
 
-function! SetupCoc()
+function! SetupLSP()
   if !get(g:, 'coc_enabled', 0) | return | endif
   augroup CocCurrentFunction | au!
     au CursorHold <buffer> call CocActionAsync('getCurrentFunctionSymbol', { e, r -> 0 })

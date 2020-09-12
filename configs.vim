@@ -144,7 +144,7 @@ augroup BasicSetup | au!
     au BufWinEnter * if empty(&buftype) && line("'\"") > 1 && line("'\"") <= line("$") | exec "norm! g`\"" | endif
     au VimEnter * exec 'tabdo windo clearjumps' | tabnext
     au BufWritePost ~/.vim/configs.vim source ~/.vim/configs.vim
-    au FileType json call SetupCoc()
+    au FileType json call SetupLSP()
     au BufRead,BufNewFile *.k set filetype=k
     au BufRead,BufNewFile *.mir set syntax=rust
     au FileType lisp let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} })
@@ -319,7 +319,7 @@ let g:haskell_indent_if = 0
 let g:haskell_indent_case_alternative = 1
 let g:intero_start_immediately = 0
 augroup SetupHaskell | au!
-    " au FileType haskell call SetupCoc()
+    " au FileType haskell call SetupLSP()
     au FileType haskell setl tabstop=2 shiftwidth=2
 augroup END
 " }}}
@@ -337,7 +337,7 @@ command! -nargs=* Cclippy call cargo#cmd("+nightly clippy -Zunstable-options " .
 
 " C,C++ {{{
 augroup SetupCCpp | au!
-    au FileType c,cpp call SetupCoc()
+    au FileType c,cpp call SetupLSP()
     au FileType c,cpp setl tabstop=2 shiftwidth=2
 augroup END
 " }}}
@@ -362,7 +362,7 @@ let g:ale_python_pyls_config = {
             \ }
             \}
 augroup SetupPython | au!
-    au FileType python call SetupCoc()
+    au FileType python call SetupLSP()
 augroup END
 " }}}
 

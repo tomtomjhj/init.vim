@@ -17,6 +17,6 @@ compiler go
 let &cpo = s:cpo_save
 unlet s:cpo_save
 
-call SetupCoc()
+call SetupLSP()
 nmap <buffer><leader>fm <Plug>(ale_fix)
 " vim: sw=2 ts=2 et
