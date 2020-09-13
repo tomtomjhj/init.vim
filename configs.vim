@@ -47,8 +47,27 @@ Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] } " use me
 " lanauges
 Plug 'dense-analysis/ale', { 'on': ['<Plug>(ale_', 'ALEEnable'] } ")
 " TODO: sometimes node remains alive even after exiting
-Plug 'neoclide/coc.nvim', { 'branch': 'release' }
-Plug 'antoinemadec/coc-fzf'
+let g:coc_node_path = has('win') ? 'node.exe' : 'node'
+let g:use_coc = 0 " executable(g:coc_node_path)
+if g:use_coc
+    Plug 'neoclide/coc.nvim', { 'branch': 'release' }
+    Plug 'antoinemadec/coc-fzf'
+elseif has('nvim')
+    " https://github.com/haorenW1025/config/tree/master/.config/nvim
+    " https://github.com/tjdevries/config_manager/blob/master/xdg_config/nvim/lua/tj/completion.lua
+    " https://github.com/steelsojka/dotfiles2/tree/master/.vim/lua
+    " https://www.reddit.com/r/neovim/comments/grrxli/start_to_finish_example_of_setting_up_built_in/fs17mxy
+    " https://nathansmith.io/posts/neovim-lsp
+    Plug 'neovim/nvim-lspconfig'
+    Plug 'nvim-lua/completion-nvim'
+    Plug 'steelsojka/completion-buffers'
+    " Plug 'nvim-lua/diagnostic-nvim'
+    " Plug 'nvim-lua/lsp-status.nvim'
+    " Plug 'nvim-lua/popup.nvim'
+    " Plug 'nvim-lua/plenary.nvim'
+    " Plug 'nvim-lua/telescope.nvim'
+    " https://github.com/wbthomason/packer.nvim
+endif
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'plasticboy/vim-markdown'
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
@@ -248,10 +267,34 @@ endif
 " }}}
 
 " Completion {{{
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
+if g:use_coc
+    inoremap <silent><expr> <TAB>
+          \ pumvisible() ? "\<C-n>" :
+          \ <SID>check_back_space() ? "\<TAB>" :
+          \ coc#refresh()
+else
+    augroup Completion | au!
+        au BufEnter * lua require'completion'.on_attach()
+    augroup END
+    set completeopt=menuone,noinsert,noselect
+    inoremap <silent><expr> <TAB>
+          \ pumvisible() ? "\<C-n>" :
+          \ <SID>check_back_space() ? "\<TAB>" :
+          \ completion#trigger_completion()
+
+    " TODO: g:completion_confirm_key
+    " TODO
+    let g:completion_chain_complete_list = {
+        \'default' : [
+        \    {'complete_items': ['buffers']},
+        \]
+        \}
+        " \    {'complete_items': ['lsp', 'UltiSnips', 'buffer']},
+        " \    {'mode': '<c-p>'},
+    let g:completion_word_min_length = 2
+    let g:completion_auto_change_source = 1
+    let g:completion_matching_strategy_list = ['exact', 'fuzzy']
+endif
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
@@ -278,9 +321,6 @@ let g:ale_set_highlights = 1
 let g:ale_linters_explicit = 1
 
 let g:coc_config_home = '~/.vim'
-if has('win')
-    let g:coc_node_path = 'node.exe'
-endif
 " TODO fork of coc-word with corpus from programming books/documentation, papers
 let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab', 'coc-word', 'coc-tag']
 hi! link CocWarningHighlight NONE

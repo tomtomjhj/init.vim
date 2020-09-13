@@ -10,6 +10,7 @@ endfunction
 let g:coc_quickfix_open_command = 'CW'
 let g:coc_fzf_preview = 'up:66%'
 
+if g:use_coc " {{{
 function! SetupLSP()
   if !get(g:, 'coc_enabled', 0) | return | endif
   augroup CocCurrentFunction | au!
@@ -77,6 +78,21 @@ command! -nargs=0 Format call CocAction('format')
 " TODO fold level too high in some languages (e.g. ccls)
 command! -nargs=? Fold   call CocAction('fold', <f-args>)
 command! -nargs=1 -complete=file Pedit call s:Pedit(<f-args>)
+" }}}
+elseif has('nvim') " {{{
+function! SetupLSP()
+endfunction
+
+function! CheckerStatus()
+  return ''
+endfunction
+function! CheckerErrors()
+  return ''
+endfunction
+function! CheckerWarnings()
+  return ''
+endfunction
+endif " }}}
 
 " CocAction jumpDefinition assumes that openCommand changes the current window
 " to the target file, but :pedit doesn't.
@@ -85,13 +101,9 @@ function! s:Pedit(file)
   wincmd P
 endfunction
 
-" TODO: nvim lsp stuff
 " https://www.reddit.com/r/neovim/comments/grrxli/start_to_finish_example_of_setting_up_built_in/fs17mxy
 " https://nathansmith.io/posts/neovim-lsp
 " https://sharksforarms.dev/posts/neovim-rust/
-" Plug 'nvim-lua/diagnostic-nvim'
-" Plug 'nvim-lua/completion-nvim'
-" Plug 'nvim-lua/lsp-status.nvim'
 " lua << EOF
 " local nvim_lsp = require'nvim_lsp'
 " nvim_lsp.ocamllsp.setup{}
@@ -106,4 +118,4 @@ endfunction
 " nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
 " nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
 
-" vim: set sw=2 ts=2:
+" vim: set sw=2 ts=2 fdm=marker fdl=0:
