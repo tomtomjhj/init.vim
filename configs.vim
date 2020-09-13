@@ -68,6 +68,7 @@ Plug 'neoclide/jsonc.vim'
 Plug 'rhysd/vim-llvm'
 Plug 'fatih/vim-go', { 'do': 'rm -r plugin ftplugin \|\| true' }
 Plug 'vim-python/python-syntax'
+Plug 'tbastos/vim-lua'
 " Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] }
 
 " etc etc
@@ -426,6 +427,10 @@ augroup SetupCoq | au!
                 " \ setl comments=sr:(*,mb:*,ex:*) formatoptions=tcroqnj
     let g:coqtail_noindent_comment = 1
 augroup END
+" }}}
+
+" lua {{{
+let g:lua_syntax_noextendedstdlib = 1
 " }}}
 
 let g:lisp_rainbow = 1
