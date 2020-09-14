@@ -62,7 +62,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * close all folds under the cursor (sub-tree) `zC` doesn't do this
 * clear undo,backup,swap, view
     * TODO: `:mkview`
-* sneak digraph? alias?
+* sneak digraph? alias? timeout?
 * `<C-r><C-v>` to getvisual in cmap
 * better 'paragraph'
     * markdown list

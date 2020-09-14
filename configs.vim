@@ -674,9 +674,6 @@ vnoremap - g<C-x>
 " <C-b> <C-e>
 cnoremap <C-j> <S-Right>
 cnoremap <C-k> <S-Left>
-
-noremap < <gv
-noremap > >gv
 " }}}
 
 " etc plugin settings {{{
@@ -858,7 +855,7 @@ command! -bang Qa  exec 'qa<bang>'
 nmap <leader>cx :tabclose<cr>
 nmap <leader>td :tab split<CR>
 nmap <leader>tt :tabedit<CR>
-nmap <leader>cd :cd %:p:h<cr>:pwd<cr>
+nmap <leader>cd :cd <c-r>=expand("%:p:h")<cr>/
 nmap <leader>e  :e! <c-r>=expand("%:p:h")<cr>/
 nmap <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 nmap <leader>fe :e!<CR>

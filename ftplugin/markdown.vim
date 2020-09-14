@@ -22,7 +22,9 @@ let s:mkd_textobj = {
             \   },
             \ }
 call textobj#user#plugin('markdown', s:mkd_textobj)
-" TODO: markdown-list-aware text objects (paragraph, sentence), gq
+" TODO:
+" * list item text object
+" * make paragraph, sentence text object list-aware
 
 function! s:MarkdownSetupFolding()
     if get(g:, "vim_markdown_folding_style_pythonic", 0)
