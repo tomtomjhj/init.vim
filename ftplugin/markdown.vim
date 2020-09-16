@@ -26,12 +26,13 @@ call textobj#user#plugin('markdown', s:mkd_textobj)
 " * list item text object
 " * make paragraph, sentence text object list-aware
 
-function! s:MarkdownSetupFolding()
-    if get(g:, "vim_markdown_folding_style_pythonic", 0)
-        if get(g:, "vim_markdown_override_foldtext", 1)
-            setlocal foldtext=Foldtext_markdown()
-        endif
-    endif
+" Reset the internal states and compute folds again.
+" Assumes g:vim_markdown_folding_style_pythonic && g:vim_markdown_override_foldtext.
+" TODO: Foldtext_markdown uses s:is_mkdCode which isn't compatible with pandoc.
+function! s:ResetFold()
+    let b:fenced_block = 0
+    let b:front_matter = 0
+    setlocal foldtext=Foldtext_markdown()
     setlocal foldexpr=Foldexpr_markdown(v:lnum)
     setlocal foldmethod=expr
 endfunction
@@ -60,7 +61,7 @@ function! SurroundStrong(type)
     return Surrounder(a:type, '**')
 endfunction
 
-command! -buffer Fold call s:MarkdownSetupFolding()
+command! -buffer Fold call s:ResetFold()
 
 nmap     <buffer>             <leader>pd :set ft=pandoc\|unmap <lt>buffer><lt>leader>pd<CR>
 nmap     <buffer><silent>     <leader>py vid:AsyncRun python3<CR>:CW<CR>
@@ -68,4 +69,5 @@ nnoremap <buffer><silent><localleader>b  :set opfunc=SurroundStrong<cr>g@
 vnoremap <buffer><silent><localleader>b  :<C-U>call SurroundStrong(visualmode())<CR>
 nmap     <buffer>          <MiddleMouse> <LeftMouse><localleader>biw
 vmap     <buffer>          <MiddleMouse> <localleader>b
-nmap     <buffer><silent>     <leader>tf :TableFormat<CR>
+nnoremap <buffer><silent>     <leader>tf :TableFormat<CR>
+nnoremap <buffer><silent>     <leader>fd :Fold<CR>
