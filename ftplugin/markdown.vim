@@ -1,5 +1,6 @@
 setlocal matchpairs-=<:>
 
+" vim-markdown-mappings {{{1
 function! s:nvmap(lhs, rhs)
     execute 'nmap <buffer>' . a:lhs . ' <Plug>' . a:rhs
     execute 'vmap <buffer>' . a:lhs . ' <Plug>' . a:rhs
@@ -13,6 +14,7 @@ call s:nvmap(']c', 'Markdown_MoveToCurHeader')
 call s:nvmap('gx', 'Markdown_OpenUrlUnderCursor')
 delfunction s:nvmap
 
+" text object {{{1
 let s:mkd_textobj = {
             \   'code': {
             \     'select-a-function': 'tomtomjhj#markdown#FencedCodeBlocka',
@@ -26,17 +28,48 @@ call textobj#user#plugin('markdown', s:mkd_textobj)
 " * list item text object
 " * make paragraph, sentence text object list-aware
 
-" Reset the internal states and compute folds again.
-" Assumes g:vim_markdown_folding_style_pythonic && g:vim_markdown_override_foldtext.
-" TODO: Foldtext_markdown uses s:is_mkdCode which isn't compatible with pandoc.
-function! s:ResetFold()
-    let b:fenced_block = 0
-    let b:front_matter = 0
-    setlocal foldtext=Foldtext_markdown()
-    setlocal foldexpr=Foldexpr_markdown(v:lnum)
-    setlocal foldmethod=expr
+
+" folding {{{1
+" adapted tpope/vim-markdown/ftplugin/markdown.vim + plasticboy/vim-markdown pythonic foldtext
+" NOTE: doesn't handle yaml front matter
+
+function! s:NotCodeBlock(lnum) abort
+    return synIDattr(synID(v:lnum, 1, 1), 'name') !=# '\v%(mkdSnippet|mkdCode|pandocDelimitedCodeBlock)'
 endfunction
 
+function! MarkdownFold() abort
+    let line = getline(v:lnum)
+    if line =~# '^#\+ ' && s:NotCodeBlock(v:lnum)
+        return ">" . match(line, ' ')
+    endif
+    let nextline = getline(v:lnum + 1)
+    if (line =~ '^.\+$') && (nextline =~ '^=\+$') && s:NotCodeBlock(v:lnum + 1)
+        return ">1"
+    endif
+    if (line =~ '^.\+$') && (nextline =~ '^-\+$') && s:NotCodeBlock(v:lnum + 1)
+        return ">2"
+    endif
+    return "="
+endfunction
+
+function! MarkdownFoldText()
+    let line = getline(v:foldstart)
+    let has_numbers = &number || &relativenumber
+    let nucolwidth = &fdc + has_numbers * &numberwidth
+    let windowwidth = winwidth(0) - nucolwidth - 6
+    let foldedlinecount = v:foldend - v:foldstart
+    let line = strpart(line, 0, windowwidth - 2 -len(foldedlinecount))
+    let line = substitute(line, '\%("""\|''''''\)', '', '')
+    let fillcharcount = windowwidth - strdisplaywidth(line) - len(foldedlinecount) + 1
+    return line . ' ' . repeat("-", fillcharcount) . ' ' . foldedlinecount
+endfunction
+
+setlocal foldexpr=MarkdownFold()
+setlocal foldmethod=expr
+setlocal foldtext=MarkdownFoldText()
+" let b:undo_ftplugin .= " foldexpr< foldmethod< foldtext<"
+
+" surrounders {{{1
 function! Surrounder(type, ends) abort
     let sel_save = &selection
     let &selection = 'old'
@@ -61,8 +94,7 @@ function! SurroundStrong(type)
     return Surrounder(a:type, '**')
 endfunction
 
-command! -buffer Fold call s:ResetFold()
-
+" mappings {{{1
 nmap     <buffer>             <leader>pd :set ft=pandoc\|unmap <lt>buffer><lt>leader>pd<CR>
 nmap     <buffer><silent>     <leader>py vid:AsyncRun python3<CR>:CW<CR>
 nnoremap <buffer><silent><localleader>b  :set opfunc=SurroundStrong<cr>g@
@@ -70,4 +102,4 @@ vnoremap <buffer><silent><localleader>b  :<C-U>call SurroundStrong(visualmode())
 nmap     <buffer>          <MiddleMouse> <LeftMouse><localleader>biw
 vmap     <buffer>          <MiddleMouse> <localleader>b
 nnoremap <buffer><silent>     <leader>tf :TableFormat<CR>
-nnoremap <buffer><silent>     <leader>fd :Fold<CR>
+" vim: set fdm=marker fdl=0:
