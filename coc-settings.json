@@ -18,6 +18,7 @@
     "diagnostic.infoSign": "--",
     "diagnostic.hintSign": "--",
     "codeLens.enable": true,
+    "codeLens.subseparator": " | ",
     "languageserver": {
         "ocaml-lsp": {
             "command": "opam",

@@ -61,10 +61,11 @@ function! SurroundStrong(type)
 endfunction
 
 command! -buffer Fold call s:MarkdownSetupFolding()
-nmap <buffer><leader>pd :set ft=pandoc\|unmap <lt>buffer><lt>leader>pd<CR>
-nmap <buffer><silent><leader>py vid:AsyncRun python3<CR>:CW<CR>
-noremap  <buffer><silent><localleader>b :set opfunc=SurroundStrong<cr>g@
+
+nmap     <buffer>             <leader>pd :set ft=pandoc\|unmap <lt>buffer><lt>leader>pd<CR>
+nmap     <buffer><silent>     <leader>py vid:AsyncRun python3<CR>:CW<CR>
+nnoremap <buffer><silent><localleader>b  :set opfunc=SurroundStrong<cr>g@
 vnoremap <buffer><silent><localleader>b  :<C-U>call SurroundStrong(visualmode())<CR>
-nmap <MiddleMouse> <LeftMouse><localleader>biw
-vmap <MiddleMouse> <localleader>b
-nmap <buffer><silent><leader>tf :TableFormat<CR>
+nmap     <buffer>          <MiddleMouse> <LeftMouse><localleader>biw
+vmap     <buffer>          <MiddleMouse> <localleader>b
+nmap     <buffer><silent>     <leader>tf :TableFormat<CR>

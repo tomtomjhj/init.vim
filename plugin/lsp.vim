@@ -26,7 +26,7 @@ function! SetupCoc()
   nmap             <buffer><leader>rn    <Plug>(coc-rename)
   nmap     <silent><buffer><leader>fm    <Plug>(coc-format)
   vmap     <silent><buffer><leader>fm    <Plug>(coc-format-selected)
-  nmap     <silent><buffer>        fd    :exe 'normal! zE'\|Fold<CR>
+  nmap     <silent><buffer><leader>fd    :exe 'normal! zE'\|Fold<CR>
   nmap     <silent><buffer><leader><tab> v<Plug>(coc-range-select)
   xmap     <silent><buffer><leader><tab> <Plug>(coc-range-select)
   xmap     <silent><buffer>      <S-tab> <Plug>(coc-range-select-backward)

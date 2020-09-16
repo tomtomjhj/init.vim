@@ -60,13 +60,13 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * coq highlights covering whole line
     * how does DiffAdd work?
 * close all folds under the cursor (sub-tree) `zC` doesn't do this
-* clear undo,backup,swap, view
-    * TODO: `:mkview`
+* clear undo,backup,swap,view
 * sneak digraph? alias? timeout?
 * `<C-r><C-v>` to getvisual in cmap
 * better 'paragraph'
     * markdown list
     * code commend
+* fzf preview: <S-down> slow -> key code 분해됨
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -74,6 +74,11 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
     * Just disable lazy load as it turns out that loading ultisnip isn't slow.
     * The root cause might be related to loading something that contains filetype plugin.
 * Restore default `iskeyword` inside pandoc code block: it's impossible.
+* width of unicode characters: 가(2) vs ◯(1)
+    * ambiguous width characters
+        * gnome-terminal -> compatibility -> ambiguous-width characters = wide, and `set ambiwidth=double`
+        * how to do this in emacs?
+        * too intrusive
 
 # Tips
 * `strcharpart(strpart(line, col - 1), 0, 1)`
@@ -98,7 +103,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
     * `:g/foo/z=3`
     * yank matching lines <https://stackoverflow.com/a/1475069>
 * `zi`
-* `i_CTRL-D`, `i_CTRL-T`
+* `i_CTRL-D`, `i_CTRL-T`, `i_CTRL-F`
 * `:@`, `@:`
 * `scroll-cursor`
 * macros
@@ -108,6 +113,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
       merged (e.g. `gn@@`) or jump can be part of the macro.
     * TODO: easier mapping for `@q`, `@@`, ...
     * TODO: pre-selecting points to run macros like multicursor? (difficult)
+    * editing macros: use digraph to input control characters? <BS> is not ^H
 
 # pitfalls
 * Cursor movement on concealed string: `set concealcursor=n` doesn't work as expected. <https://vi.stackexchange.com/questions/4530/moving-over-conceal>

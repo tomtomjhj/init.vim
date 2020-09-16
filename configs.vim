@@ -72,8 +72,6 @@ Plug 'vim-python/python-syntax'
 
 " etc etc
 if has('nvim')
-    " https://gitter.im/neovim/neovim?at=5de6bca7829929122844a025
-    " Do `luarocks install luabitop` if luajit isn't enabled.
     Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 endif
 
@@ -846,11 +844,11 @@ nnoremap <C-l> <C-W>l
 map <leader>q :<C-u>q<CR>
 map q, :<C-u>q<CR>
 nmap <leader>w :<C-u>w!<cr>
-command! -bang W   exec 'w<bang>'
-command! -bang Q   exec 'q<bang>'
-command! -bang Wq  exec 'wq<bang>'
-command! -bang Wqa exec 'wqa<bang>'
-command! -bang Qa  exec 'qa<bang>'
+command! -bang W   w<bang>
+command! -bang Q   q<bang>
+command! -bang Wq  wq<bang>
+command! -bang Wqa wqa<bang>
+command! -bang Qa  qa<bang>
 
 nmap <leader>cx :tabclose<cr>
 nmap <leader>td :tab split<CR>
