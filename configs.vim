@@ -685,15 +685,17 @@ let g:pear_tree_repeatable_expand = 0
 imap <CR> <C-G>u<Plug>(PearTreeExpand)
 imap <BS> <Plug>(PearTreeBackspace)
 
-" 'a'ny block
+" 'a'ny block from matchup
 xmap aa a%
 omap aa a%
 xmap ia i%
 omap ia i%
 
 augroup MyTargets | au!
-    " Use r for arguments, leave a for matchup any-block, remove b
+    " NOTE: can't expand by repeating → use builtin for simple objects
     " https://github.com/wellle/targets.vim/issues/175
+    " - a'r'guments, any 'q'uote, any 'b'lock, separators + 'n'ext,'l'ast
+    " - Leave a for matchup any-block.
     autocmd User targets#mappings#user call targets#mappings#extend({
     \ '(': {},
     \ ')': {},
@@ -710,7 +712,6 @@ augroup MyTargets | au!
     \ 't': {},
     \ 'a': {},
     \ 'r': {'argument': [{'o': '[([]', 'c': '[])]', 's': ','}]},
-    \ 'b': {},
     \ })
 augroup END
 " }}}
