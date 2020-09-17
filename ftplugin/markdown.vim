@@ -34,7 +34,7 @@ call textobj#user#plugin('markdown', s:mkd_textobj)
 " NOTE: doesn't handle yaml front matter
 
 function! s:NotCodeBlock(lnum) abort
-    return synIDattr(synID(v:lnum, 1, 1), 'name') !=# '\v%(mkdSnippet|mkdCode|pandocDelimitedCodeBlock)'
+    return synIDattr(synID(a:lnum, 1, 1), 'name') !=# '\v%(mkdSnippet|mkdCode|pandocDelimitedCodeBlock)'
 endfunction
 
 function! MarkdownFold() abort
