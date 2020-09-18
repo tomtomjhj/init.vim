@@ -277,7 +277,7 @@ if has('win')
     let g:coc_node_path = 'node.exe'
 endif
 " TODO fork of coc-word with corpus from programming books/documentation, papers
-let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-rls', 'coc-python', 'coc-texlab', 'coc-word', 'coc-tag']
+let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab', 'coc-word', 'coc-tag']
 hi! link CocWarningHighlight NONE
 hi! link CocInfoHighlight    NONE
 hi! link CocHintHighlight    NONE
