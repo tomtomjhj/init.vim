@@ -292,7 +292,7 @@ hi! link CocInfoFloat    CocErrorFloat
 hi! link CocHintFloat    CocErrorFloat
 
 nmap <leader>fm <Plug>(ale_fix)
-nmap <leader>ad <Plug>(ale_detail)<C-W>p
+nmap <M-,> <Plug>(ale_detail)<C-W>p
 nmap ]a <Plug>(ale_next_wrap)
 nmap [a <Plug>(ale_previous_wrap)
 noremap  <M-.> K
@@ -545,10 +545,9 @@ vnoremap <expr> J mode() !=# 'v' \|\| v:count ? 'j' : 'gj'
 vnoremap <expr> K mode() !=# 'v' \|\| v:count ? 'k' : 'gk'
 onoremap <expr> J mode() !=# 'v' \|\| v:count ? 'j' : 'gj'
 onoremap <expr> K mode() !=# 'v' \|\| v:count ? 'k' : 'gk'
-noremap H h
-noremap L l
 noremap <leader>J J
-" tip: zL, zH
+noremap <expr> H v:count ? 'H' : 'h'
+noremap <expr> L v:count ? 'L' : 'l'
 
 " space to navigate
 nnoremap <space> <C-d>

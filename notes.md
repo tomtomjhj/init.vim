@@ -67,6 +67,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
     * markdown list
     * code commend
 * fzf preview: <S-down> slow -> key code 분해됨
+* make jumplist modification by n/N behave like `sneak-clever-s`
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -89,13 +90,15 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * sub-replace-expression
 * https://vim.fandom.com/wiki/Search_across_multiple_lines#Searching_over_multiple_lines_with_a_user_command
 * http://karolis.koncevicius.lt/posts/porn_zen_and_vimrc/
-* `cmdline-completion`, `/_CTRL-L`, `/_CTRL-G`, `/_CTRL-T`
+* `cmdline-completion`, `c_CTRL-D`
+* `/_CTRL-L`, `/_CTRL-G`, `/_CTRL-T`
 * `\{-`, `\@>`, `\@=`, `\@!`, `\@<=`, `\@<!`
     * `if \(\(then\)\@!.\)*$` "if " not followed by "then"
     * `\(\/\/.*\)\@<!in` "in" which is not after "//"
 * forced-motion
 * `sub-replace-special`
 * `i_CTRL-R_CTRL-O` is fast
+* equalalways
 
 # things that I should make more use of
 * marks
@@ -106,6 +109,9 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * `i_CTRL-D`, `i_CTRL-T`, `i_CTRL-F`
 * `:@`, `@:`
 * `scroll-cursor`
+* `g0`, `g$`, `zH`, `zL`
+* `g;`, `g,`
+* `complete_CTRL-Y`, `complete_CTRL-E"`
 * macros
     * `:h 10.1`
     * record → (jump → execute)*
