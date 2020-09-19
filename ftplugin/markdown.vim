@@ -28,19 +28,19 @@ call textobj#user#plugin('markdown', s:mkd_textobj)
 " * list item text object
 " * make paragraph, sentence text object list-aware
 
-
 " folding {{{1
 " adapted tpope/vim-markdown/ftplugin/markdown.vim + plasticboy/vim-markdown pythonic foldtext
 " NOTE: doesn't handle yaml front matter
 
 function! s:NotCodeBlock(lnum) abort
-    return synIDattr(synID(a:lnum, 1, 1), 'name') !=# '\v%(mkdSnippet|mkdCode|pandocDelimitedCodeBlock)'
+    return synIDattr(synID(a:lnum, 1, 1), 'name') !~# '\v%(mkdSnippet|mkdCode)'
 endfunction
 
-function! MarkdownFold() abort
+function! MarkdownFoldExpr() abort
     let line = getline(v:lnum)
-    if line =~# '^#\+ ' && s:NotCodeBlock(v:lnum)
-        return ">" . match(line, ' ')
+    let hashes = matchstr(line, '^\s\{,3}\zs#\+') 
+    if !empty(hashes) && s:NotCodeBlock(v:lnum)
+        return ">" . len(hashes)
     endif
     let nextline = getline(v:lnum + 1)
     if (line =~ '^.\+$') && (nextline =~ '^=\+$') && s:NotCodeBlock(v:lnum + 1)
@@ -64,7 +64,7 @@ function! MarkdownFoldText()
     return line . ' ' . repeat("-", fillcharcount) . ' ' . foldedlinecount
 endfunction
 
-setlocal foldexpr=MarkdownFold()
+setlocal foldexpr=MarkdownFoldExpr()
 setlocal foldmethod=expr
 setlocal foldtext=MarkdownFoldText()
 " let b:undo_ftplugin .= " foldexpr< foldmethod< foldtext<"
