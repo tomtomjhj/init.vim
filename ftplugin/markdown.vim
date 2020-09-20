@@ -33,12 +33,12 @@ call textobj#user#plugin('markdown', s:mkd_textobj)
 " NOTE: doesn't handle yaml front matter
 
 function! s:NotCodeBlock(lnum) abort
-    return synIDattr(synID(a:lnum, 1, 1), 'name') !~# '\v%(mkdSnippet|mkdCode)'
+    return !InSynStack('^mkd\%(Code\|Snippet\)', synstack(a:lnum, 1))
 endfunction
 
 function! MarkdownFoldExpr() abort
     let line = getline(v:lnum)
-    let hashes = matchstr(line, '^\s\{,3}\zs#\+') 
+    let hashes = matchstr(line, '^\s\{,3}\zs#\+')
     if !empty(hashes) && s:NotCodeBlock(v:lnum)
         return ">" . len(hashes)
     endif
