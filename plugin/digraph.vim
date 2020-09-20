@@ -91,7 +91,7 @@ function s:SetupDigraph()
     digraph sS 120034
     digraph sT 120035
     " 𝓤
-    " 𝓥
+    digraph sV 120037
     " 𝓦
     " 𝓧
     " 𝓨

@@ -635,6 +635,7 @@ noremap <leader>fn 2<C-g>
 
 noremap <F1> <Esc>
 inoremap <F1> <Esc>
+nmap     <C-q> <Esc>
 cnoremap <C-q> <C-c>
 inoremap <C-q> <Esc>
 vnoremap <C-q> <Esc>

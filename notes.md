@@ -67,7 +67,8 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
     * markdown list
     * code commend
 * fzf preview: <S-down> slow -> key code 분해됨
-* make jumplist modification by n/N behave like `sneak-clever-s`
+* make repetitive jump commands' jumplist modification behave like `sneak-clever-s`
+    * "n", "N", "(", ")", "[[", "]]", "{", "}", "L", "H"
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -99,6 +100,15 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * `sub-replace-special`
 * `i_CTRL-R_CTRL-O` is fast
 * equalalways
+* [profiling](https://stackoverflow.com/a/8347244)
+  ```
+  vim --cmd 'profile start profile.log' \
+      --cmd 'profile func *' \
+      --cmd 'profile file *' \
+      -c 'profdel func *' \
+      -c 'profdel file *' \
+      -c 'qa!'
+  ```
 
 # things that I should make more use of
 * marks
@@ -112,6 +122,8 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * `g0`, `g$`, `zH`, `zL`
 * `g;`, `g,`
 * `complete_CTRL-Y`, `complete_CTRL-E"`
+* `(`, `)`, `{`, `}`
+* `/\C`
 * macros
     * `:h 10.1`
     * record → (jump → execute)*
