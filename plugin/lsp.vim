@@ -11,6 +11,7 @@ let g:coc_quickfix_open_command = 'CW'
 let g:coc_fzf_preview = 'up:60%'
 
 function! SetupCoc()
+  if !get(g:, 'coc_enabled', 0) | return | endif
   augroup CocCurrentFunction | au!
     au CursorHold <buffer> call CocActionAsync('getCurrentFunctionSymbol', { e, r -> 0 })
   augroup END
@@ -56,6 +57,9 @@ function! CheckerWarnings()
   return ''
 endfunction
 
+if !get(g:, 'coc_enabled', 0)
+  finish
+endif
 augroup CocStuff
   autocmd!
   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')

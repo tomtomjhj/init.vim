@@ -45,7 +45,7 @@ Plug 'justinmk/vim-dirvish'
 Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] } " use menu!
 
 " lanauges
-Plug 'dense-analysis/ale', { 'on': '<Plug>(ale_' } ")
+Plug 'dense-analysis/ale', { 'on': ['<Plug>(ale_', 'ALEEnable'] } ")
 " TODO: sometimes node remains alive even after exiting
 Plug 'neoclide/coc.nvim', { 'branch': 'release' }
 Plug 'antoinemadec/coc-fzf'
@@ -99,7 +99,7 @@ set backspace=eol,start,indent
 set whichwrap+=<,>,[,],h,l
 
 let mapleader = ","
-set timeoutlen=432
+set timeoutlen=567
 set updatetime=1234
 
 let $LANG='en'
@@ -179,7 +179,6 @@ let g:lightline = {
       \   'curr_func': '%{get(b:,"coc_current_function","")}',
       \ },
       \ 'component_function': {
-      \   'coc_status': 'coc#status',
       \   'git': 'GitStatusline',
       \   'shortrelpath': 'ShortRelPath',
       \ },

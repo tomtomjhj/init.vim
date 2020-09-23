@@ -109,6 +109,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
       -c 'profdel file *' \
       -c 'qa!'
   ```
+* `arglist`
 
 # things that I should make more use of
 * marks
@@ -119,7 +120,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * `i_CTRL-D`, `i_CTRL-T`, `i_CTRL-F`
 * `:@`, `@:`
 * `scroll-cursor`
-* `g0`, `g$`, `zH`, `zL`
+* `g0`, `g$`, `g_`, `zH`, `zL`
 * `g;`, `g,`
 * `complete_CTRL-Y`, `complete_CTRL-E"`
 * `(`, `)`, `{`, `}`

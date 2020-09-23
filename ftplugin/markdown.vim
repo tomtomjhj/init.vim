@@ -10,7 +10,7 @@ call s:nvmap('[[', 'Markdown_MoveToPreviousHeader')
 call s:nvmap('][', 'Markdown_MoveToNextSiblingHeader')
 call s:nvmap('[]', 'Markdown_MoveToPreviousSiblingHeader')
 call s:nvmap(']u', 'Markdown_MoveToParentHeader')
-call s:nvmap(']c', 'Markdown_MoveToCurHeader')
+call s:nvmap(']h', 'Markdown_MoveToCurHeader')
 call s:nvmap('gx', 'Markdown_OpenUrlUnderCursor')
 delfunction s:nvmap
 
