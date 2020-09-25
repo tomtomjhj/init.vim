@@ -28,9 +28,9 @@ function! SetupCoc()
   nmap     <silent><buffer><leader>fm    <Plug>(coc-format)
   vmap     <silent><buffer><leader>fm    <Plug>(coc-format-selected)
   nmap     <silent><buffer><leader>fd    :exe 'normal! zE'\|Fold<CR>
-  nmap     <silent><buffer><leader><tab> v<Plug>(coc-range-select)
-  xmap     <silent><buffer><leader><tab> <Plug>(coc-range-select)
-  xmap     <silent><buffer>      <S-tab> <Plug>(coc-range-select-backward)
+  nnoremap <silent><buffer><leader><tab> v:<C-u>call CocAction('rangeSelect', visualmode(),  v:true)<CR>
+  xnoremap <silent><buffer><leader><tab>  :<C-u>call CocAction('rangeSelect', visualmode(),  v:true)<CR>
+  xnoremap <silent><buffer>      <S-tab>  :<C-u>call CocAction('rangeSelect', visualmode(), v:false)<CR>
   nmap             <buffer><leader>ac    <Plug>(coc-codelens-action)
   nmap     <silent><buffer><leader>O     :<C-u>CocFzfList outline<CR>
   nmap     <silent><buffer><leader>sb    :<C-u>CocFzfList symbols<CR>
@@ -87,6 +87,7 @@ endfunction
 " TODO: nvim lsp stuff
 " https://www.reddit.com/r/neovim/comments/grrxli/start_to_finish_example_of_setting_up_built_in/fs17mxy
 " https://nathansmith.io/posts/neovim-lsp
+" https://sharksforarms.dev/posts/neovim-rust/
 " Plug 'nvim-lua/diagnostic-nvim'
 " Plug 'nvim-lua/completion-nvim'
 " Plug 'nvim-lua/lsp-status.nvim'
