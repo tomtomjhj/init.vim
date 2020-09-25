@@ -57,9 +57,6 @@ function! CheckerWarnings()
   return ''
 endfunction
 
-if !get(g:, 'coc_enabled', 0)
-  finish
-endif
 augroup CocStuff
   autocmd!
   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')

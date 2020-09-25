@@ -181,11 +181,11 @@ let g:lightline = {
       \ 'component_function': {
       \   'git': 'GitStatusline',
       \   'shortrelpath': 'ShortRelPath',
+      \   'checker_status': 'CheckerStatus',
       \ },
       \ 'component_expand': {
       \  'checker_errors': 'CheckerErrors',
       \  'checker_warnings': 'CheckerWarnings',
-      \  'checker_status': 'CheckerStatus',
       \ },
       \ 'component_type': {
       \     'checker_errors': 'error',
