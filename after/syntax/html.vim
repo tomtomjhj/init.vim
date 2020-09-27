@@ -23,6 +23,7 @@ syn region htmlTag start=+<[[:alnum:]]+ end=+>+ fold contains=htmlTagN,htmlStrin
 syn clear htmlComment htmlCommentPart htmlCommentError
 syn region htmlComment matchgroup=htmlCommentStart start=+<!--\%(>\|->\|#\)\@!+ matchgroup=htmlCommentEnd end=+-->+ contains=htmlCommentError,@Spell
 syn match htmlCommentError contained "\%(<!-\ze-->\|<!-->\@!\|--!>\)"
+syn region htmlComment start=+<!DOCTYPE+ keepend end=+>+
 hi link htmlCommentStart Comment
 hi link htmlCommentEnd Comment
 
