@@ -1,6 +1,3 @@
-" added coqString
-syn cluster coqTerm contains=coqString,coqKwd,coqTermPunctuation,coqKwdMatch,coqKwdLet,coqKwdParen
-
 " remove non-alphanumeric
 syn clear coqKwd
 syn keyword coqKwd contained else end exists2 fix cofix forall fun if in struct then as return
@@ -14,9 +11,6 @@ syn keyword coqLtac contained do info progress repeat try
 syn keyword coqLtac contained abstract constr context end external eval fail first fresh fun goal
 syn keyword coqLtac contained idtac in let ltac lazymatch multimatch match of rec reverse solve type with
 syn keyword coqLtac contained have congr last done
-
-" added coqString
-syn region coqProofBody  contains=coqString,coqProofPunctuation,coqTactic,coqTacticKwd,coqProofComment,coqProofKwd,coqProofEnder,coqProofDelim,coqLtac matchgroup=coqProofDelim start="\<P\zeroof\>" start="\<\%(O\zebligation\_s\+\d\+\)\|\%(N\zeext\_s\+Obligation\)\>" matchgroup=NONE end="\<\%(Qed\|Defined\|Admitted\|Abort\)\.\_s" end="\<Save\>.*\.\_s" keepend
 
 syn clear coqProofKwd
 syn keyword coqProofKwd contained else end exists exists2 forall fun if in match let struct then where with as return
