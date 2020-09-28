@@ -323,6 +323,7 @@ augroup END
 " TODO: rust symbol prettyfier: ${GT,LT,C,u20,u7b,u7d}$
 " let g:rust_fold = 1
 " let g:rust_keep_autopairs_default = 1
+" let g:termdebugger = 'rust-gdb'
 " TODO: add completion in cargo command
 let g:cargo_shell_command_runner = 'AsyncRun -post=CW'
 command! -nargs=* Cclippy call cargo#cmd("clippy " . <q-args>)

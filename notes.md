@@ -69,6 +69,30 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * fzf preview: <S-down> slow -> key code 분해됨
 * make repetitive jump commands' jumplist modification behave like `sneak-clever-s`
     * "n", "N", "(", ")", "[[", "]]", "{", "}", "L", "H"
+* Make prefix of built-in and user map time out <https://stackoverflow.com/questions/12089482>. 
+  ```vim
+  " breaks built in
+  noremap <C-w> <C-w>
+  noremap <C-w><C-q> <C-w><C-q>
+  noremap g g
+  noremap z z
+  noremap [ [
+  noremap ] ]
+  " maybe it requires a whole new *mode*
+  function s:CtrlW()
+      let extra = ''
+      while 1
+          " TODO: timeout? set of built-in and mappings
+          let c = getchar()
+          if c == 0
+              break
+          endif
+          let extra .= nr2char(c)
+      endwhile
+      return "\<C-w>" . extra
+  endfunction
+  nnoremap <expr> <C-w> <SID>CtrlW()
+  ```
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
