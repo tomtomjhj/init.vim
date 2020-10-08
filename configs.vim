@@ -767,11 +767,11 @@ let g:NERDTreeStatusline = -1
 nmap <silent><leader>nn :NERDTreeToggle<cr>
 nmap <silent><leader>nf :NERDTreeFind<cr>
 
-" TODO: make preview should use preview window https://github.com/justinmk/vim-dirvish/pull/65/commits/9e3f16aa5413479919b540e1f0db594d3f997f15
+" TODO: make preview use preview window https://github.com/justinmk/vim-dirvish/pull/65/commits/9e3f16aa5413479919b540e1f0db594d3f997f15
 command! -nargs=? -complete=dir Sexplore split | silent Dirvish <args>
 command! -nargs=? -complete=dir Vexplore vsplit | silent Dirvish <args>
-nmap <silent><C-w>es :Sexplore<CR>
-nmap <silent><C-w>ev :Vexplore<CR>
+nmap <silent><C-w>es :Sexplore %<CR>
+nmap <silent><C-w>ev :Vexplore %<CR>
 nmap <leader>D <Plug>(dirvish_up)
 hi! link DirvishSuffix Special
 " }}}
@@ -842,14 +842,12 @@ nnoremap <C-k> <C-W>k
 nnoremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
 
-map <leader>q :<C-u>q<CR>
-map q, :<C-u>q<CR>
-nmap <leader>w :<C-u>w!<cr>
+noremap <leader>q :<C-u>q<CR>
+noremap q, :<C-u>q<CR>
+nnoremap <leader>w :<C-u>w!<CR>
+noremap ZAQ :<C-u>qa!<CR>
 command! -bang W   w<bang>
 command! -bang Q   q<bang>
-command! -bang Wq  wq<bang>
-command! -bang Wqa wqa<bang>
-command! -bang Qa  qa<bang>
 
 nmap <leader>cx :tabclose<cr>
 nmap <leader>td :tab split<CR>
