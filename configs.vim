@@ -326,7 +326,8 @@ augroup END
 " let g:termdebugger = 'rust-gdb'
 " TODO: add completion in cargo command
 let g:cargo_shell_command_runner = 'AsyncRun -post=CW'
-command! -nargs=* Cclippy call cargo#cmd("clippy " . <q-args>)
+" https://github.com/rust-lang/rust-clippy/issues/4612
+command! -nargs=* Cclippy call cargo#cmd("+nightly clippy -Zunstable-options " . <q-args>)
 " }}}
 
 " C,C++ {{{
