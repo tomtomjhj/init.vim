@@ -19,6 +19,8 @@
     "diagnostic.hintSign": "--",
     "codeLens.enable": true,
     "codeLens.subseparator": " | ",
+    "suggest.maxPreviewWidth": 100,
+    "diagnostic.maxWindowWidth": 100,
     "languageserver": {
         "ocaml-lsp": {
             "command": "opam",

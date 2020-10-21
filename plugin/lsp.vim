@@ -15,6 +15,7 @@ function! SetupCoc()
   augroup CocCurrentFunction | au!
     au CursorHold <buffer> call CocActionAsync('getCurrentFunctionSymbol', { e, r -> 0 })
   augroup END
+  nmap     <silent><buffer>        <M-[> <Plug>(coc-definition)
   nmap     <silent><buffer>        <M-]> <Plug>(coc-definition)
   nmap     <silent><buffer>        <M-\> :call CocAction('jumpDefinition', 'tabe')<CR>
   nmap     <silent><buffer><leader><M-\> :call CocAction('jumpDefinition', winwidth(0)>170 ? 'vsplit' : 'split')<CR>
@@ -23,7 +24,7 @@ function! SetupCoc()
   nmap     <silent><buffer>        <M-,> :call CocAction('diagnosticInfo')<CR>
   nmap     <silent><buffer><leader>gy    <Plug>(coc-type-definition)
   nmap     <silent><buffer><leader>gi    <Plug>(coc-implementation)
-  nmap     <silent><buffer><leader>rf    <Plug>(coc-references)
+  nmap     <silent><buffer><leader>rf    <Plug>(coc-references-used)
   nmap             <buffer><leader>rn    <Plug>(coc-rename)
   nmap     <silent><buffer><leader>fm    <Plug>(coc-format)
   vmap     <silent><buffer><leader>fm    <Plug>(coc-format-selected)
