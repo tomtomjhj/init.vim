@@ -133,6 +133,7 @@ set hidden
 set lazyredraw
 
 set exrc secure
+set diffopt+=algorithm:histogram
 
 let &pumheight = min([&window/4, 20])
 
