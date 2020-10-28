@@ -446,7 +446,7 @@ func! VisualStar(g)
 endfunc
 nnoremap / :let g:search_mode='/'<CR>/
 
-let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.5, 'yoffset': 1, 'border': 'top', 'highlight': 'VertSplit' } }
+let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.5, 'yoffset': 1, 'border': 'top' } }
 let g:fzf_preview_window = 'right:50%'
 
 nnoremap <C-g>      :<C-u>Grep<space>
@@ -482,7 +482,7 @@ func! FzfOpts(arg, spec)
     " Preview on right if ¬fullscreen & wide
     " fullscreen
     if l:opts =~ '2'
-        let a:spec['window'] = { 'width': 1, 'height': (&lines-(tabpagenr()>1)-1.0)/&lines, 'yoffset': 1, 'border': 'top', 'highlight': 'VertSplit' }
+        let a:spec['window'] = { 'width': 1, 'height': 1, 'yoffset': 1, 'border': 'top' }
         let l:preview_window = 'up'
     else
         let l:preview_window = IsVimWide() ? 'right' : 'up'
