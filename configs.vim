@@ -846,7 +846,7 @@ nnoremap <C-l> <C-W>l
 
 noremap <leader>q :<C-u>q<CR>
 noremap q, :<C-u>q<CR>
-nnoremap <leader>w :<C-u>w!<CR>
+nnoremap <leader>w :<C-u>up<CR>
 noremap ZAQ :<C-u>qa!<CR>
 command! -bang W   w<bang>
 command! -bang Q   q<bang>
