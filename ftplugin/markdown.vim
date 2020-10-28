@@ -29,44 +29,9 @@ call textobj#user#plugin('markdown', s:mkd_textobj)
 " * make paragraph, sentence text object list-aware
 
 " folding {{{1
-" adapted tpope/vim-markdown/ftplugin/markdown.vim + plasticboy/vim-markdown pythonic foldtext
-" NOTE: doesn't handle yaml front matter
-
-function! s:NotCodeBlock(lnum) abort
-    return !InSynStack('^mkd\%(Code\|Snippet\)', synstack(a:lnum, 1))
-endfunction
-
-function! MarkdownFoldExpr() abort
-    let line = getline(v:lnum)
-    let hashes = matchstr(line, '^\s\{,3}\zs#\+')
-    if !empty(hashes) && s:NotCodeBlock(v:lnum)
-        return ">" . len(hashes)
-    endif
-    let nextline = getline(v:lnum + 1)
-    if (line =~ '^.\+$') && (nextline =~ '^=\+$') && s:NotCodeBlock(v:lnum + 1)
-        return ">1"
-    endif
-    if (line =~ '^.\+$') && (nextline =~ '^-\+$') && s:NotCodeBlock(v:lnum + 1)
-        return ">2"
-    endif
-    return "="
-endfunction
-
-function! MarkdownFoldText()
-    let line = getline(v:foldstart)
-    let has_numbers = &number || &relativenumber
-    let nucolwidth = &fdc + has_numbers * &numberwidth
-    let windowwidth = winwidth(0) - nucolwidth - 6
-    let foldedlinecount = v:foldend - v:foldstart
-    let line = strpart(line, 0, windowwidth - 2 -len(foldedlinecount))
-    let line = substitute(line, '\%("""\|''''''\)', '', '')
-    let fillcharcount = windowwidth - strdisplaywidth(line) - len(foldedlinecount) + 1
-    return line . ' ' . repeat("-", fillcharcount) . ' ' . foldedlinecount
-endfunction
-
-setlocal foldexpr=MarkdownFoldExpr()
+setlocal foldexpr=tomtomjhj#markdown#foldexpr()
 setlocal foldmethod=expr
-setlocal foldtext=MarkdownFoldText()
+setlocal foldtext=tomtomjhj#markdown#foldtext()
 " let b:undo_ftplugin .= " foldexpr< foldmethod< foldtext<"
 
 " surrounders {{{1

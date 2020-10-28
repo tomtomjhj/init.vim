@@ -1,3 +1,4 @@
+" text object {{{1
 func! tomtomjhj#markdown#FencedCodeBlocka()
     if !InSynStack('\v(mkdSnippet|mkdCode|pandocDelimitedCodeBlock)')
         return 0
@@ -71,6 +72,43 @@ func! tomtomjhj#markdown#PandocDollarMathMathi()
     return ['v', head_pos, tail_pos]
 endfunc
 
+" folding {{{1
+" adapted tpope/vim-markdown/ftplugin/markdown.vim + plasticboy/vim-markdown pythonic foldtext
+" NOTE: doesn't handle yaml front matter
+
+function! s:NotCodeBlock(lnum) abort
+    return !InSynStack('^mkd\%(Code\|Snippet\)', synstack(a:lnum, 1))
+endfunction
+
+function! tomtomjhj#markdown#foldexpr() abort
+    let line = getline(v:lnum)
+    let hashes = matchstr(line, '^\s\{,3}\zs#\+')
+    if !empty(hashes) && s:NotCodeBlock(v:lnum)
+        return ">" . len(hashes)
+    endif
+    let nextline = getline(v:lnum + 1)
+    if (line =~ '^.\+$') && (nextline =~ '^=\+$') && s:NotCodeBlock(v:lnum + 1)
+        return ">1"
+    endif
+    if (line =~ '^.\+$') && (nextline =~ '^-\+$') && s:NotCodeBlock(v:lnum + 1)
+        return ">2"
+    endif
+    return "="
+endfunction
+
+function! tomtomjhj#markdown#foldtext()
+    let line = getline(v:foldstart)
+    let has_numbers = &number || &relativenumber
+    let nucolwidth = &fdc + has_numbers * &numberwidth
+    let windowwidth = winwidth(0) - nucolwidth - 6
+    let foldedlinecount = v:foldend - v:foldstart
+    let line = strpart(line, 0, windowwidth - 2 -len(foldedlinecount))
+    let line = substitute(line, '\%("""\|''''''\)', '', '')
+    let fillcharcount = windowwidth - strdisplaywidth(line) - len(foldedlinecount) + 1
+    return line . ' ' . repeat("-", fillcharcount) . ' ' . foldedlinecount
+endfunction
+
+" etc {{{1
 func! tomtomjhj#markdown#RunPandoc(open)
     let src = expand("%:p")
     let out = expand("%:p:h") . '/' . expand("%:t:r") . '.pdf'
@@ -94,4 +132,4 @@ func! tomtomjhj#markdown#RunPandoc(open)
     augroup END
     exec 'AsyncRun -save=1 -cwd=' . expand("%:p:h") '-post=' . l:post l:cmd
 endfunc
-
+" vim: set fdm=marker fdl=0:
