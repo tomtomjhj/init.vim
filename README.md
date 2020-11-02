@@ -8,7 +8,7 @@ git clone https://github.com/tomtomjhj/init.vim ~/.vim
 git clone https://github.com/neovim/pynvim && cd pynvim && pip install .
 
 # -nix
-mkdir ~/.config/nvim
+mkdir ~/.config/nvim -p
 cd ~/.config/nvim && ln -s ~/.vim/init.vim && ln -s ~/.vim/ginit.vim
 cd && ln -s ~/.vim/.vimrc && ln -s ~/.vim/.gvimrc
 
