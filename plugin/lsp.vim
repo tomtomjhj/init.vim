@@ -62,7 +62,7 @@ augroup CocStuff
   autocmd!
   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-  autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
+  autocmd User CocStatusChange call lightline#update()
   " TODO: coc resets showbreak on flotwin hover. showbreak is not local in nvim!
   " https://github.com/vim/vim/commit/ee85702c10495041791f728e977b86005c4496e8
   autocmd User CocOpenFloat set showbreak=>\ 
