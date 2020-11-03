@@ -139,6 +139,7 @@ let &pumheight = min([&window/4, 20])
 
 augroup BasicSetup | au!
     " Return to last edit position when entering normal buffer
+    " TODO: this addes jump? manually running is ok. maybe autocmd problem?
     au BufWinEnter * if empty(&buftype) && line("'\"") > 1 && line("'\"") <= line("$") | exec "norm! g`\"" | endif
     au VimEnter * exec 'tabdo windo clearjumps' | tabnext
     au BufWritePost ~/.vim/configs.vim source ~/.vim/configs.vim
@@ -158,6 +159,7 @@ endif
 
 " Themes {{{
 " TODO: display winnr()? w:quickfix_title?
+" TODO: checker_* for inactive window doesn't use the buffer of that window?
 let g:lightline = {
       \ 'colorscheme': 'wombat',
       \ 'active': {
@@ -821,6 +823,7 @@ call textobj#user#plugin('path', { 'path': { 'pattern': '\f\+', 'select': ['aP',
 
 " comments
 let g:NERDCreateDefaultMappings = 0
+" NOTE: indentation is incorrect sometimes. Use i_CTRL-f
 imap <M-/> <Plug>NERDCommenterInsert
 map <M-/> <Plug>NERDCommenterComment
 xmap <leader>c<Space> <Plug>NERDCommenterToggle

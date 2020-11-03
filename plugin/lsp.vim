@@ -68,6 +68,8 @@ augroup CocStuff
   autocmd User CocOpenFloat set showbreak=>\ 
   autocmd BufLeave list://* hi! CursorLine cterm=NONE gui=NONE
   autocmd BufEnter list://* hi! CursorLine cterm=underline gui=underline
+  " https://github.com/neoclide/coc.nvim/issues/2043
+  autocmd VimLeave * call coc#rpc#kill()
 augroup end
 
 command! -nargs=0 Format call CocAction('format')
