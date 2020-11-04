@@ -20,7 +20,7 @@ function! SetupCoc()
   nmap     <silent><buffer>        <M-\> :call CocAction('jumpDefinition', 'tabe')<CR>
   nmap     <silent><buffer><leader><M-\> :call CocAction('jumpDefinition', winwidth(0)>170 ? 'vsplit' : 'split')<CR>
   nmap     <silent><buffer>       <M-\|> :call CocAction('jumpDefinition', 'Pedit')<CR><C-w>p
-  nmap     <silent><buffer>        <M-.> :call CocAction('doHover')<CR>
+  nmap     <silent><buffer>        <M-.> :call CocActionAsync('doHover', { e, r -> execute('pedit coc://document') })<CR>
   nmap     <silent><buffer>        <M-,> :call CocAction('diagnosticInfo')<CR>
   nmap     <silent><buffer><leader>gy    <Plug>(coc-type-definition)
   nmap     <silent><buffer><leader>gi    <Plug>(coc-implementation)
@@ -62,7 +62,7 @@ augroup CocStuff
   autocmd!
   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-  autocmd User CocStatusChange call lightline#update()
+  autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
   " TODO: coc resets showbreak on flotwin hover. showbreak is not local in nvim!
   " https://github.com/vim/vim/commit/ee85702c10495041791f728e977b86005c4496e8
   autocmd User CocOpenFloat set showbreak=>\ 
