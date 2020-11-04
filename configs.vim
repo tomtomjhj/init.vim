@@ -888,9 +888,13 @@ func! IsVimWide()
     return &columns > 170
 endfunc
 
-" :put is a :comment command
-command! -nargs=* -complete=command Execute
-            \ new | let s:res = execute(<q-args>) | put=s:res | unlet s:res | set nomodified
+func! Execute(cmd) abort
+    let output = execute(a:cmd)
+    tabnew
+    setlocal nobuflisted buftype=nofile bufhidden=wipe noswapfile
+    call setline(1, split(output, "\n"))
+endfunc
+command! -nargs=* -complete=command Execute silent call Execute(<q-args>)
 
 function! GotoJump()
   jumps
