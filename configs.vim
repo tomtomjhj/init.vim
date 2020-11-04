@@ -868,7 +868,10 @@ nmap <leader>fe :e!<CR>
 func! SynStackName()
     return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunc
-nmap <leader>st :echo SynStackName()<CR>
+func! SynGroup()
+    return synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name')
+endfunc
+nmap <leader>st :echo SynStackName() '->' SynGroup()<CR>
 func! InSynStack(pat, ...)
     let synstack = a:0 ? a:1 : synstack(line('.'), col('.'))
     for i in synstack
