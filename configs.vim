@@ -418,6 +418,8 @@ function! g:CoqtailHighlight()
 endfunction
 augroup SetupCoq | au!
     au FileType coq,coq-goals,coq-infos call tomtomjhj#coq#mappings()
+    " NOTE: 'r', 'o' flags don't distinguish bullet '*' and comment leader '*'
+    au FileType coq setl comments=sr:(*,mb:*,ex:*) formatoptions=tjncqor
 augroup END
 " }}}
 " }}}
