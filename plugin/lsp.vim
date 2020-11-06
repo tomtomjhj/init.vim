@@ -17,8 +17,8 @@ function! SetupCoc()
   augroup END
   nmap     <silent><buffer>        <M-[> <Plug>(coc-definition)
   nmap     <silent><buffer>        <M-]> <Plug>(coc-definition)
-  nmap     <silent><buffer>        <M-\> :call CocAction('jumpDefinition', 'tabe')<CR>
-  nmap     <silent><buffer><leader><M-\> :call CocAction('jumpDefinition', winwidth(0)>170 ? 'vsplit' : 'split')<CR>
+  nmap     <silent><buffer><leader><M-\> :call CocAction('jumpDefinition', 'tabe')<CR>
+  nmap     <silent><buffer>        <M-\> :call CocAction('jumpDefinition', winwidth(0)>170 ? 'vsplit' : 'split')<CR>
   nmap     <silent><buffer>       <M-\|> :call CocAction('jumpDefinition', 'Pedit')<CR><C-w>p
   nmap     <silent><buffer>        <M-.> :call CocActionAsync('doHover', { e, r -> execute('pedit coc://document') })<CR>
   nmap     <silent><buffer>        <M-,> :call CocAction('diagnosticInfo')<CR>

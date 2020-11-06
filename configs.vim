@@ -768,7 +768,6 @@ nmap gx <Plug>NetrwBrowseX
 vmap gx <Plug>NetrwBrowseXVis
 
 let NERDTreeHijackNetrw = 0
-let g:NERDTreeWinPos = "right"
 let g:NERDTreeIgnore=['\~$', '\.glob$', '\v\.vo[sk]?$', '\.v\.d$', '\.o$']
 let g:NERDTreeStatusline = -1
 nmap <silent><leader>nn :NERDTreeToggle<cr>

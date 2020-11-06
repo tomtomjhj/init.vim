@@ -1,3 +1,5 @@
+syntax cluster coqVernac add=coqTopLevel
+
 " Fix `Program Definition`s.
 syn clear coqDef
   syn region coqDef          contains=coqDefName matchgroup=coqVernacCmd start="\<\%(Program\_s\+\)\?\%(Definition\|Let\|Example\)\>" matchgroup=coqVernacPunctuation                end="\.$"me=e-1 end="\.\_s"me=e-2 nextgroup=coqDefContents1,coqProofBody keepend skipnl skipwhite skipempty
@@ -80,8 +82,8 @@ HiLink coqProofComment      coqComment
 HiLink coqTodo              Todo
 
 " Errors
-HiLink coqError             Error
-HiLink coqProofAdmit        coqError
+HiLink coqError             NONE
+HiLink coqProofAdmit        Error
 
 " Strings
 HiLink coqString            String

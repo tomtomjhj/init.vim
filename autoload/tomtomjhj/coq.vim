@@ -1,3 +1,7 @@
+" TODO: queries: if no session for current buffer, use existing one
+" TODO , t p
+" TODO: auto layout breaks nerdtree
+
 function! tomtomjhj#coq#mappings()
     " TODO: :bd → error
     nmap <buffer>   <C-c>s     <Plug>CoqStop
@@ -28,7 +32,7 @@ function! tomtomjhj#coq#mappings()
     " TODO this populates quickfix, tagfunc --> fzf?
     nmap <buffer>        <M-]> <Plug>CoqGotoDef
 
-    nmap <buffer><leader>cs    <Plug>CoqSearch
+    nmap <buffer><leader>cs    :<C-u>Coq Search<space>
     xmap <buffer><leader>cs    <Plug>CoqSearch
 
     nmap <buffer>        <M-.> <Plug>CoqCheck
@@ -50,5 +54,4 @@ function! tomtomjhj#coq#mappings()
     nmap <buffer><C-c><C-Leftmouse> <Leftmouse>zf%
 
     cmap <buffer><C-r><C-w> <C-r>=coqtail#util#getcurword()<CR>
-    " TODO , t p
 endfunction
