@@ -2,10 +2,7 @@
 
 ```sh
 git clone https://github.com/tomtomjhj/init.vim ~/.vim
-
-# https://github.com/neovim/pynvim/issues/438
-# pip3 install --user pynvim
-git clone https://github.com/neovim/pynvim && cd pynvim && pip install .
+pip3 install --user pynvim
 
 # -nix
 mkdir ~/.config/nvim -p
@@ -28,7 +25,7 @@ cargo install ripgrep fd-find bat
 * `~/.config/bat/config`
   ```
   --theme="zenburn"
-  --map-syntax "*.v:OCaml"
+  --map-syntax "*.v:SML"
   ```
 * windows vim
     * https://github.com/vim/vim-win32-installer

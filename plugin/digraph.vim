@@ -4,7 +4,6 @@ function s:SetupDigraph()
     digraph ** 8727
     digraph oo 9679
     digraph OO 9711
-    digraph mt 8614
     digraph \|- 8866
     digraph -\| 8867
     digraph \|= 8872
@@ -17,6 +16,7 @@ function s:SetupDigraph()
     digraph </ 10216
     digraph /> 10217
     exec 'digraph (> 8618' | " ↪
+    digraph fm 8640 " ⇀
     digraph [U 8851 " ⊓
     digraph ]U 8852 " ⊔
     digraph =[ 8849 " ⊑
@@ -28,6 +28,7 @@ function s:SetupDigraph()
     digraph U+ 8846 " ⊎
     digraph =v 8659 " ⇓
     digraph ZV 8623 " ↯
+    digraph \\ 8726 " ∖
 
     digraph _l 8343 " ₗ
     digraph ^a 7491 " ᵃ

@@ -3,6 +3,8 @@
 " https://groups.google.com/g/vim_dev/c/k9wRhNMNIFc/m/vpFvud0mo9UJ?pli=1
 call sneak#util#strlen('')
 
+" TODO extensible sneaking: alias? digraph? (digraph works for built-in f)
+
 func! sneak#util#getc() abort
   let c = getchar()
   " hijack <C-q>

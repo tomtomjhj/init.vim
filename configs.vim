@@ -99,7 +99,7 @@ set backspace=eol,start,indent
 set whichwrap+=<,>,[,],h,l
 
 let mapleader = ","
-set timeoutlen=567
+set timeoutlen=987
 set updatetime=1234
 
 let $LANG='en'
@@ -325,8 +325,7 @@ augroup END
 " Rust {{{
 " RLS hover info is more accurate than rust-analyzer!
 " TODO: rust symbol prettyfier: ${GT,LT,C,u20,u7b,u7d}$
-" let g:rust_fold = 1
-" let g:rust_keep_autopairs_default = 1
+" https://doc.ecoscentric.com/gnutools/doc/gdb/Rust.html
 " let g:termdebugger = 'rust-gdb'
 " TODO: add completion in cargo command
 let g:cargo_shell_command_runner = 'AsyncRun -post=CW'
@@ -700,6 +699,7 @@ omap ia i%
 
 augroup MyTargets | au!
     " NOTE: can't expand by repeating → use builtin for simple objects
+    " NOTE: can't select **text <newline> text** using i*
     " https://github.com/wellle/targets.vim/issues/175
     " - a'r'guments, any 'q'uote, any 'b'lock, separators + 'n'ext,'l'ast
     " - Leave a for matchup any-block.

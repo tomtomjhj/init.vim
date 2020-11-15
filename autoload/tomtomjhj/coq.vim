@@ -1,6 +1,12 @@
+" TODO: To upstream
+" * bufwipe aux buffers
+" * comment indent is broken in Section, Context
+
 " TODO: queries: if no session for current buffer, use existing one
 " TODO , t p
 " TODO: auto layout breaks nerdtree
+" TODO: statusline e.g. current point
+" TODO: show a buffer with session in split without switching to its location
 
 function! tomtomjhj#coq#mappings()
     " TODO: :bd → error

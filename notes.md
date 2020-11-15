@@ -149,6 +149,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * `complete_CTRL-Y`, `complete_CTRL-E"`
 * `(`, `)`, `{`, `}`
 * `/\C`
+* `g<Tab>`
 * macros
     * `:h 10.1`
     * record → (jump → execute)*
@@ -185,7 +186,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * lightline + cursorline + lazyredraw + large &lines = performance drop
 
 
-# notes
+# (n)vim problem
 * terminal reflow https://github.com/neovim/neovim/issues/2514
 
 # stuff
