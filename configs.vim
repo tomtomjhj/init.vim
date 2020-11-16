@@ -11,7 +11,7 @@ Plug 'tomtomjhj/zenbruh.vim'
 " editing
 " TODO: |,| right after sneak aborts label mode but leave the highlight
 " similar to the result of Sneak_;
-Plug 'justinmk/vim-sneak'
+Plug 'tomtomjhj/vim-sneak'
 " TODO: machakann/vim-sandwich?
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
@@ -571,6 +571,8 @@ map F <Plug>Sneak_F
 map t <Plug>Sneak_t
 map T <Plug>Sneak_T
 hi! Sneak guifg=black guibg=#afff00 gui=bold ctermfg=black ctermbg=154 cterm=bold
+" NOTE: my fork
+let g:sneak_alias = {'*': '\v%(\*|∗)'}
 
 " TODO: (speicial char -> non-blank, non-keyword), user-defined (paren -> pair?)
 " s-word: (a keyword | repetition of non-paren speicial char | a paren | whitespace)

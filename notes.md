@@ -134,6 +134,15 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
       -c 'qa!'
   ```
 * `arglist`
+* overriding autoload
+    ```vim
+    " .vim/plugin/sneak/util.vim
+    call sneak#util#strlen('')
+    ...
+    ```
+  Maybe this is the only way to override autoload function. `:runtime` doesn't
+  register the file as autoload file (?), so the file will be sourced again.
+  https://groups.google.com/g/vim_dev/c/k9wRhNMNIFc/m/vpFvud0mo9UJ?pli=1
 
 # things that I should make more use of
 * marks
@@ -150,6 +159,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * `(`, `)`, `{`, `}`
 * `/\C`
 * `g<Tab>`
+* `gJ`
 * macros
     * `:h 10.1`
     * record → (jump → execute)*
