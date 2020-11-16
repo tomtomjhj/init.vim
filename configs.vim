@@ -92,6 +92,7 @@ set autoindent " smartindent is unnecessary
 " set indentkeys+=!<M-i> " doesn't work, maybe i_META? just use i_CTRL-F
 set formatoptions+=n " this may interfere with 'comment'?
 set formatlistpat=\\C^\\s*[\\[({]\\\?\\([0-9]\\+\\\|[iIvVxXlLcCdDmM]\\+\\\|[a-zA-Z]\\)[\\]:.)}]\\s\\+\\\|^\\s*[-+o*]\\s\\+
+set nojoinspaces
 
 " indent the wrapped line, w/ `> ` at the start
 set wrap linebreak breakindent showbreak=>\ 
@@ -418,7 +419,11 @@ endfunction
 augroup SetupCoq | au!
     au FileType coq,coq-goals,coq-infos call tomtomjhj#coq#mappings()
     " NOTE: 'r', 'o' flags don't distinguish bullet '*' and comment leader '*'
-    au FileType coq setl comments=sr:(*,mb:*,ex:*) formatoptions=tjncqor
+    au FileType coq
+                \ let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} }) |
+                \ setl comments=s0:(*,e:*) formatoptions=tcqnj " no middle piece & comment leader
+                " \ setl comments=sr:(*,mb:*,ex:*) formatoptions=tcroqnj
+    let g:coqtail_noindent_comment = 1
 augroup END
 " }}}
 " }}}
@@ -827,16 +832,19 @@ call textobj#user#plugin('path', { 'path': { 'pattern': '\f\+', 'select': ['aP',
 " comments
 let g:NERDCreateDefaultMappings = 0
 " NOTE: indentation is incorrect sometimes. Use i_CTRL-f
-imap <M-/> <Plug>NERDCommenterInsert
+imap <M-/> <C-G>u<Plug>NERDCommenterInsert
 map <M-/> <Plug>NERDCommenterComment
 xmap <leader>c<Space> <Plug>NERDCommenterToggle
 nmap <leader>c<Space> <Plug>NERDCommenterToggle
 xmap <leader>cs <Plug>NERDCommenterSexy
 nmap <leader>cs <Plug>NERDCommenterSexy
+xmap <leader>cm <Plug>NERDCommenterMinimal
+nmap <leader>cm <Plug>NERDCommenterMinimal
 let g:NERDSpaceDelims = 1
 let g:NERDCustomDelimiters = {
             \ 'python' : { 'left': '#', 'leftAlt': '#' },
             \ 'c': { 'left': '//', 'leftAlt': '/*', 'rightAlt': '*/' },
+            \ 'coq': { 'left': '(*', 'right': '*)', 'nested': 1 },
             \}
 let g:NERDDefaultAlign = 'left'
 

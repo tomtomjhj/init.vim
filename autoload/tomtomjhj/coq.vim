@@ -1,6 +1,7 @@
 " TODO: To upstream
 " * bufwipe aux buffers
 " * comment indent is broken in Section, Context
+" * removing error highlight
 
 " TODO: queries: if no session for current buffer, use existing one
 " TODO , t p
