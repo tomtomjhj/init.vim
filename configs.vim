@@ -162,7 +162,7 @@ endif
 " TODO: display winnr()? w:quickfix_title?
 " TODO: checker_* for inactive window doesn't use the buffer of that window?
 let g:lightline = {
-      \ 'colorscheme': 'wombat',
+      \ 'colorscheme': 'powerwombat',
       \ 'active': {
       \   'left': [ ['mode', 'paste'],
       \             ['readonly', 'speicialbuf', 'shortrelpath', 'modified'],
@@ -173,8 +173,8 @@ let g:lightline = {
       \ },
       \ 'inactive': {
       \   'left': [ ['speicialbuf', 'shortrelpath'] ],
-      \   'right': [ ['lineinfo'], ['percent'],
-      \              ['checker_errors', 'checker_warnings', 'checker_status'] ]
+      \   'right': [ ['lineinfo'],
+      \              ['percent'] ]
       \ },
       \ 'component': {
       \   'readonly': '%{&readonly && &filetype !=# "help" ? "🔒" : ""}',
@@ -213,7 +213,7 @@ let g:lightline = {
       \     "\<C-v>": 'VB',
       \     'c' : 'C ',
       \     's' : 'S ',
-      \     'S' : 'SL ',
+      \     'S' : 'SL',
       \     "\<C-s>": 'SB',
       \     't': 'T ',
       \ }
