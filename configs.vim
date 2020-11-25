@@ -426,6 +426,8 @@ augroup SetupCoq | au!
     let g:coqtail_noindent_comment = 1
 augroup END
 " }}}
+
+let g:lisp_rainbow = 1
 " }}}
 
 " search & fzf {{{

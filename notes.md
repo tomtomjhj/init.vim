@@ -93,6 +93,8 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
   endfunction
   nnoremap <expr> <C-w> <SID>CtrlW()
   ```
+* make 𝓥 a word char? <https://github.com/vim/vim/commit/d489c9801b3aaf284d42643507bbfb9ce3bc0f2f>
+    * if spellcheck is the problem, do something similar to `set spelllang=cjk`
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -198,6 +200,24 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 
 # (n)vim problem
 * terminal reflow https://github.com/neovim/neovim/issues/2514
+* showbreak breaks many things: blockwise paste, ..?
+* copying window-local variables on split is not synchronous??
+* jumplist is crazy
+    ```vim
+    0
+    let [lnum, col] = searchpos('^\s*\zsProof\.', 'cnW')
+    while lnum
+        " this creates jumps????
+        exe lnum
+        exe 'normal! ' . col . '|'
+        normal zf%
+        normal! $
+        let [lnum, col] = searchpos('^\s*\zsProof\.', 'cnW')
+        " This prevents creating jumps ???????
+        ju
+    endwhile
+    ```
+  (just use `:global` for this specific task)
 
 # stuff
 * https://arxiv.org/abs/2006.03103

@@ -2,6 +2,9 @@
 " * bufwipe aux buffers
 " * comment indent is broken in Section, Context
 " * removing error highlight
+" * error highlight is broken for multibyte
+" * <Plug>CoqJumpToEnd blocks while processing
+" * how to hide a buffer without error? (+ bdelete)
 
 " TODO: queries: if no session for current buffer, use existing one
 " TODO , t p
@@ -10,7 +13,8 @@
 " TODO: show a buffer with session in split without switching to its location
 
 function! tomtomjhj#coq#mappings()
-    " TODO: :bd → error
+    command! -buffer -bang -nargs=1 CoqGotoDefSplit call tomtomjhj#coq#goto_def('split', <f-args>, <bang>0)
+
     nmap <buffer>   <C-c>s     <Plug>CoqStop
     " NOTE: [count]
     nmap <buffer><leader><C-c> <Plug>CoqInterrupt
@@ -34,10 +38,17 @@ function! tomtomjhj#coq#mappings()
     imap <buffer>   <C-c><C-j> <Plug>CoqNext
     imap <buffer>   <C-c><C-k> <Plug>CoqUndo
     imap <buffer>   <C-c><C-l> <Plug>CoqToLine
+    nmap <buffer>      <C-M-j> <Plug>CoqNext
+    nmap <buffer>      <C-M-k> <Plug>CoqUndo
+    nmap <buffer>      <C-M-l> <Plug>CoqToLine
+    imap <buffer>      <C-M-j> <Plug>CoqNext
+    imap <buffer>      <C-M-k> <Plug>CoqUndo
+    imap <buffer>      <C-M-l> <Plug>CoqToLine
 
-    " TODO: consistent mappings for word version and ex command version
-    " TODO this populates quickfix, tagfunc --> fzf?
+    nmap <buffer>       <C-w>s :<C-u>call tomtomjhj#coq#split('split')<CR>
+
     nmap <buffer>        <M-]> <Plug>CoqGotoDef
+    nmap <buffer>        <M-\> :<C-u>CoqGotoDefSplit <C-r>=coqtail#util#getcurword()<CR><CR>
 
     nmap <buffer><leader>cs    :<C-u>Coq Search<space>
     xmap <buffer><leader>cs    <Plug>CoqSearch
@@ -61,4 +72,42 @@ function! tomtomjhj#coq#mappings()
     nmap <buffer><C-c><C-Leftmouse> <Leftmouse>zf%
 
     cmap <buffer><C-r><C-w> <C-r>=coqtail#util#getcurword()<CR>
+
+    nmap <buffer><leader>fd    :<C-u>exe 'normal! zE'\|call tomtomjhj#coq#folds()<CR>
+endfunction
+
+" TODO: normal gotodef-ing in aux buf makes aux buf listed
+" TODO case when the target's source file already has a session
+function! tomtomjhj#coq#goto_def(split, target, bang) abort
+    call coqtail#panels#switch(g:coqtail#panels#main)
+    call tomtomjhj#coq#split(a:split)
+    call coqtail#gotodef(a:target, a:bang)
+endfunction
+
+" NOTE: split inherits winvar → weird residual highlight
+" TODO: clearhl should be called when a coq buf without coqtail session is
+" attached to window. BufWinEnter might not work! Maybe WinEnter?
+" On FileType, register and manually trigger once?
+function! tomtomjhj#coq#split(split)
+    exe a:split
+    call tomtomjhj#coq#clearhl()
+endfunction
+
+function! tomtomjhj#coq#clearhl()
+    " TODO: timing-sensitive???? when does window-local variables get copied???
+    sleep 21ms
+    let win = winnr()
+    for l:var in ['coqtail_checked', 'coqtail_sent', 'coqtail_error']
+        let l:val = getwinvar(win, l:var, -1)
+        if l:val != -1
+            call matchdelete(l:val)
+            call setwinvar(win, l:var, -1)
+        endif
+    endfor
+endfunction
+
+function! tomtomjhj#coq#folds()
+    let save_cursor = getcurpos()
+    keepjumps global/^\s*\zsProof\./normal zf%
+    call setpos('.', save_cursor)
 endfunction
