@@ -579,7 +579,13 @@ map t <Plug>Sneak_t
 map T <Plug>Sneak_T
 hi! Sneak guifg=black guibg=#afff00 gui=bold ctermfg=black ctermbg=154 cterm=bold
 " NOTE: my fork
-let g:sneak_alias = {'*': '\v%(\*|∗)'}
+let g:sneak#alias = {
+            \ 'a': '[aα]', 'b': '[bβ]', 'c': '[cξ]', 'd': '[dδ]', 'e': '[eε]', 'f': '[fφ]', 'g': '[gγ]', 'h': '[hθ]', 'i': '[iι]', 'j': '[jϊ]', 'k': '[kκ]', 'l': '[lλ]', 'm': '[mμ]', 'n': '[nν]', 'o': '[oο]', 'p': '[pπ]', 'q': '[qψ]', 'r': '[rρ]', 's': '[sσ]', 't': '[tτ]', 'u': '[uυ]', 'v': '[vϋ𝓥]', 'w': '[wω]', 'x': '[xχ]', 'y': '[yη]', 'z': '[zζ]',
+            \ '*': '[*∗]',
+            \ '/': '[/∧]', '\': '[\∨]',
+            \ '>': '[>↦→⇒⇝]',
+            \ '[': '[[⌜⎡⊑⊓]', ']': '[\]⌝⎤⊒⊔]',
+            \}
 
 " TODO: (speicial char -> non-blank, non-keyword), user-defined (paren -> pair?)
 " s-word: (a keyword | repetition of non-paren speicial char | a paren | whitespace)
