@@ -200,6 +200,8 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 
 # (n)vim problem
 * terminal reflow https://github.com/neovim/neovim/issues/2514
+* nvim creates empty undo when editorconfig TrimTrailingWhitespace is used (https://github.com/neovim/neovim/issues/11987)
+* nvim's `CursorMoved` is differrent from vim's. This makes `vimtex_matchparen` wrongly hightlight fzf floatwin.
 * showbreak breaks many things: blockwise paste, ..?
 * copying window-local variables on split is not synchronous??
 * jumplist is crazy

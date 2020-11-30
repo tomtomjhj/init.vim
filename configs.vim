@@ -384,7 +384,6 @@ let g:vim_markdown_auto_insert_bullets = 0
 let g:vim_markdown_new_list_item_indent = 0
 let g:vim_markdown_frontmatter = 1
 let g:vim_markdown_no_default_key_mappings = 1
-" TODO host on real server
 " let g:mkdp_port = '8080'
 " let g:mkdp_open_to_the_world = 1
 " let g:mkdp_echo_preview_url = 1
@@ -441,9 +440,15 @@ vnoremap <silent>g* :<C-u>call VisualStar(1)\|set hlsearch<CR>
 " set hlsearch inside the function doesn't work? Maybe :h function-search-undo?
 " NOTE: word boundary is syntax property -> may not match in other ft buffers
 func! Star(g)
-    let g:search_mode = 'n'
     let @c = expand('<cword>')
-    let @/ = a:g ? @c : '\<' . @c . '\>'
+    " <cword> can be non-keyword
+    if match(@c, '\k') == -1
+        let g:search_mode = 'v'
+        let @/ = escape(@c, '\.*$^~[]')
+    else
+        let g:search_mode = 'n'
+        let @/ = a:g ? @c : '\<' . @c . '\>'
+    endif
 endfunc
 func! VisualStar(g)
     " TODO separate out the functionality get the selected text
@@ -470,6 +475,7 @@ nnoremap <leader>hh :<C-u>History<CR>
 " tag with fzf. TODO preview. (preview: <c-w>}). <C-w>] is affected by switchbuf
 nnoremap <leader><C-t> :Tags ^<C-r><C-w>\  <CR>
 
+" TODO: fzf multi-select quickfix list order is reversed
 augroup fzf | au!
     if has('nvim')
         " `au TermOpen tnoremap` and `au FileType fzf tunmap` breaks coc-fzf
@@ -583,6 +589,7 @@ let g:sneak#alias = {
             \ 'a': '[aα]', 'b': '[bβ]', 'c': '[cξ]', 'd': '[dδ]', 'e': '[eε]', 'f': '[fφ]', 'g': '[gγ]', 'h': '[hθ]', 'i': '[iι]', 'j': '[jϊ]', 'k': '[kκ]', 'l': '[lλ]', 'm': '[mμ]', 'n': '[nν]', 'o': '[oο]', 'p': '[pπ]', 'q': '[qψ]', 'r': '[rρ]', 's': '[sσ]', 't': '[tτ]', 'u': '[uυ]', 'v': '[vϋ𝓥]', 'w': '[wω]', 'x': '[xχ]', 'y': '[yη]', 'z': '[zζ]',
             \ '*': '[*∗]',
             \ '/': '[/∧]', '\': '[\∨]',
+            \ '<': '[<≼]',
             \ '>': '[>↦→⇒⇝]',
             \ '[': '[[⌜⎡⊑⊓]', ']': '[\]⌝⎤⊒⊔]',
             \}
@@ -611,6 +618,7 @@ func! FineGrainedICtrlW()
     let l:col = col('.')
     if l:col == 1 | return "\<BS>" | endif
     let l:before = strpart(getline('.'), 0, l:col - 1)
+    " TODO: is this necessary? can \s be suffix of other character?
     let l:chars = split(l:before, '.\zs')
     if l:chars[-1] =~ '\s'
         let l:len = len(l:chars)
@@ -627,6 +635,7 @@ func! FineGrainedICtrlW()
         return repeat("\<BS>", l:idx) . "\<C-R>=execute('setl sts=".l:sts."')\<CR>\<BS>"
     " TODO: [paren] only
     elseif l:chars[-1] !~ '\k'
+        " TODO: "\<Plug>(PearTreeBackspace)"? can't change to imap (loop)
         return "\<BS>"
     else
         return "\<C-\>\<C-o>\<ESC>\<C-w>"
@@ -703,7 +712,7 @@ let g:pear_tree_smart_backspace = 1
 let g:pear_tree_timeout = 23
 let g:pear_tree_repeatable_expand = 0
 " assumes nosmartindent
-imap <CR> <C-G>u<Plug>(PearTreeExpand)
+imap <expr> <CR> match(getline('.'), '\w') >= 0 ? "\<C-G>u\<Plug>(PearTreeExpand)" : "\<Plug>(PearTreeExpand)"
 imap <BS> <Plug>(PearTreeBackspace)
 
 " 'a'ny block from matchup
@@ -929,4 +938,8 @@ function! GotoJump()
   endif
 endfunction
 command! Jumps call GotoJump()
+
+command! -range Unpdf
+            \ keeppatterns <line1>,<line2>substitute/[“”]/"/ge |
+            \ keeppatterns <line1>,<line2>substitute/\w\zs-\n//ge
 " }}}

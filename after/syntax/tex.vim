@@ -5,6 +5,13 @@ hi! link texCmdStyleBoldItal texCmdType
 hi! link texCmdStyleItal     texCmdType
 hi! link texCmdStyleItalBold texCmdType
 
+" conceal inline math only
+syntax clear texMathRegion texMathRegionX texMathRegionXX
+syntax region texMathRegion   matchgroup=texMathDelimRegion concealends contains=@texClusterMath keepend start="\\("  end="\\)"
+syntax region texMathRegion   matchgroup=texMathDelimRegion             contains=@texClusterMath keepend start="\\\[" end="\\]"
+syntax region texMathRegionX  matchgroup=texMathDelimRegion concealends contains=@texClusterMath         start="\$"   skip="\\\\\|\\\$"  end="\$"
+syntax region texMathRegionXX matchgroup=texMathDelimRegion             contains=@texClusterMath keepend start="\$\$" end="\$\$"
+
 " Symbols
 syntax match texMathSymbol "\\Box\>"                 contained conceal cchar=☐
 syntax match texMathSymbol "\\Lleftarrow\>"          contained conceal cchar=⇚
