@@ -614,7 +614,7 @@ endfunc
 
 inoremap <C-u> <C-\><C-o><ESC><C-g>u<C-u>
 " Delete a single character of other non-blank chars
-" TODO: delete sword
+" TODO: delete sword?
 inoremap <silent><expr><C-w> FineGrainedICtrlW()
 func! FineGrainedICtrlW()
     let l:col = col('.')
@@ -628,17 +628,16 @@ func! FineGrainedICtrlW()
         while l:idx < l:len && l:chars[-(l:idx + 1)] =~ '\s'
             let l:idx += 1
         endwhile
-        " TODO: default to <c-w> if \k or [paren]
         if l:idx == l:len || l:chars[-(l:idx + 1)] =~ '\k'
             return "\<C-\>\<C-o>\<ESC>\<C-w>"
         endif
         let l:sts = &softtabstop
         setlocal softtabstop=0
-        return repeat("\<BS>", l:idx) . "\<C-R>=execute('setl sts=".l:sts."')\<CR>\<BS>"
-    " TODO: [paren] only
+        return repeat("\<BS>", l:idx)
+                    \ . "\<C-R>=execute('setl sts=".l:sts."')\<CR>"
+                    \ . "\<C-R>=pear_tree#insert_mode#Backspace()\<CR>"
     elseif l:chars[-1] !~ '\k'
-        " TODO: "\<Plug>(PearTreeBackspace)"? can't change to imap (loop)
-        return "\<BS>"
+        return pear_tree#insert_mode#Backspace()
     else
         return "\<C-\>\<C-o>\<ESC>\<C-w>"
     endif
