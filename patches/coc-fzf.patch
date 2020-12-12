@@ -1,0 +1,12 @@
+diff --git a/autoload/coc_fzf/location.vim b/autoload/coc_fzf/location.vim
+index 9e6e54d..628aaf1 100644
+--- a/autoload/coc_fzf/location.vim
++++ b/autoload/coc_fzf/location.vim
+@@ -13,6 +13,7 @@ function! coc_fzf#location#fzf_run(...) abort
+           \ 'sink*': function('s:location_handler'),
+           \ 'options': ['--multi','--expect='.expect_keys,
+           \ '--ansi', '--prompt=' . s:prompt] + g:coc_fzf_opts,
++          \ 'window': { 'width': 1, 'height': 1, 'yoffset': 1, 'border': 'top' }
+           \ }
+     call coc_fzf#common#fzf_run_with_preview(opts)
+   else

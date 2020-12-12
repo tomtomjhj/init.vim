@@ -1,0 +1,19 @@
+diff --git a/plugin/editorconfig.vim b/plugin/editorconfig.vim
+index 5de5847..ac12819 100644
+--- a/plugin/editorconfig.vim
++++ b/plugin/editorconfig.vim
+@@ -499,11 +499,12 @@ endfunction
+ " }}}1
+ 
+ function! s:TrimTrailingWhitespace() " {{{1
+-    if &l:modifiable
++    if &l:modifiable && search('\s\+$', 'nw')
+         " don't lose user position when trimming trailing whitespace
+         let s:view = winsaveview()
+         try
+-            silent! keeppatterns %s/\s\+$//e
++            " this creates an empty change in nvim
++            exe 'silent! keeppatterns keepjumps %s/\s\+$//e'
+         finally
+             call winrestview(s:view)
+         endtry
