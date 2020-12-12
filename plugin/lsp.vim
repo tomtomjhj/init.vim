@@ -8,7 +8,7 @@ function! SetupALELSP()
 endfunction
 
 let g:coc_quickfix_open_command = 'CW'
-let g:coc_fzf_preview = 'up:60%'
+let g:coc_fzf_preview = 'up:66%'
 
 function! SetupCoc()
   if !get(g:, 'coc_enabled', 0) | return | endif
@@ -20,6 +20,7 @@ function! SetupCoc()
   nmap     <silent><buffer><leader><M-\> :call CocAction('jumpDefinition', 'tabe')<CR>
   nmap     <silent><buffer>        <M-\> :call CocAction('jumpDefinition', winwidth(0)>170 ? 'vsplit' : 'split')<CR>
   nmap     <silent><buffer>       <M-\|> :call CocAction('jumpDefinition', 'Pedit')<CR><C-w>p
+  " TODO: preview hover doesn't use the renderer used for float hover
   nmap     <silent><buffer>        <M-.> :call CocActionAsync('doHover')<CR>
   nmap     <silent><buffer>        <M-,> :call CocAction('diagnosticInfo')<CR>
   nmap     <silent><buffer><leader>gy    <Plug>(coc-type-definition)

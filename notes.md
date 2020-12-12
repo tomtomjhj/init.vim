@@ -200,6 +200,10 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 
 # (n)vim problem
 * terminal reflow https://github.com/neovim/neovim/issues/2514
+    * best: make it work like normal buffer with `nowrap`
+    * running tmux inside the termianl:
+        * reflow works but scrolling is broken
+        * automation? maybe check `$VIM` in bashrc
 * nvim creates empty undo when editorconfig TrimTrailingWhitespace is used (https://github.com/neovim/neovim/issues/11987)
 * nvim's `CursorMoved` is differrent from vim's. This makes `vimtex_matchparen` wrongly hightlight fzf floatwin.
 * showbreak breaks many things: blockwise paste, ..?

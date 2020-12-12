@@ -41,6 +41,8 @@
     "rust-analyzer.serverPath":"~/.cargo/bin/rust-analyzer",
     "rust-analyzer.diagnostics.enable": true,
     "rust-analyzer.checkOnSave.enable": true,
+    "rust-analyzer.inlayHints.typeHintsSeparator": "‣ ",
+    "rust-analyzer.inlayHints.chainingHintsSeparator": "‣ ",
     "rust.racer_completion": false,
     "python.linting.pylintArgs": ["-dR", "-dC", "-dW0614", "-dW0621"],
     "coc.source.ultisnips.priority": 80,

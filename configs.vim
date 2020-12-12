@@ -289,7 +289,8 @@ hi! link CocErrorSign   ALEErrorSign
 hi! link CocWarningSign ALEWarningSign
 hi! link CocInfoSign    ALEInfoSign
 hi! link CocHintSign    ALEInfoSign
-hi! CocRustChainingHint ctermfg=Grey guifg=#999999
+hi! CocRustTypeHint ctermfg=Grey guifg=#999999
+hi! link CocRustChainingHint CocRustTypeHint
 hi! link CocErrorFloat   NONE
 hi! link CocWarningFloat CocErrorFloat
 hi! link CocInfoFloat    CocErrorFloat
@@ -420,6 +421,7 @@ augroup SetupCoq | au!
     " NOTE: 'r', 'o' flags don't distinguish bullet '*' and comment leader '*'
     au FileType coq
                 \ let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} }) |
+                \ setl shiftwidth=2 |
                 \ setl comments=s0:(*,e:*) formatoptions=tcqnj " no middle piece & comment leader
                 " \ setl comments=sr:(*,mb:*,ex:*) formatoptions=tcroqnj
     let g:coqtail_noindent_comment = 1
@@ -941,5 +943,6 @@ command! Jumps call GotoJump()
 
 command! -range Unpdf
             \ keeppatterns <line1>,<line2>substitute/[“”]/"/ge |
+            \ keeppatterns <line1>,<line2>substitute/[‘’]/'/ge |
             \ keeppatterns <line1>,<line2>substitute/\w\zs-\n//ge
 " }}}

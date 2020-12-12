@@ -4,13 +4,14 @@ hi! link texCmdStyleBold     texCmdType
 hi! link texCmdStyleBoldItal texCmdType
 hi! link texCmdStyleItal     texCmdType
 hi! link texCmdStyleItalBold texCmdType
+hi! link texZone Special
 
 " conceal inline math only
-syntax clear texMathRegion texMathRegionX texMathRegionXX
-syntax region texMathRegion   matchgroup=texMathDelimRegion concealends contains=@texClusterMath keepend start="\\("  end="\\)"
-syntax region texMathRegion   matchgroup=texMathDelimRegion             contains=@texClusterMath keepend start="\\\[" end="\\]"
-syntax region texMathRegionX  matchgroup=texMathDelimRegion concealends contains=@texClusterMath         start="\$"   skip="\\\\\|\\\$"  end="\$"
-syntax region texMathRegionXX matchgroup=texMathDelimRegion             contains=@texClusterMath keepend start="\$\$" end="\$\$"
+syntax clear texMathZone texMathZoneX texMathZoneXX
+syntax region texMathZone   matchgroup=texMathDelimZone concealends contains=@texClusterMath keepend start="\\("  end="\\)"
+syntax region texMathZone   matchgroup=texMathDelimZone             contains=@texClusterMath keepend start="\\\[" end="\\]"
+syntax region texMathZoneX  matchgroup=texMathDelimZone concealends contains=@texClusterMath         start="\$"   skip="\\\\\|\\\$"  end="\$"
+syntax region texMathZoneXX matchgroup=texMathDelimZone             contains=@texClusterMath keepend start="\$\$" end="\$\$"
 
 " Symbols
 syntax match texMathSymbol "\\Box\>"                 contained conceal cchar=☐

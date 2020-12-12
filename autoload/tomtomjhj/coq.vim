@@ -5,12 +5,14 @@
 " * error highlight is broken for multibyte
 " * <Plug>CoqJumpToEnd blocks while processing
 " * how to hide a buffer without error? (+ bdelete)
+" * spell
 
 " TODO: queries: if no session for current buffer, use existing one
 " TODO , t p
 " TODO: auto layout breaks nerdtree
 " TODO: statusline e.g. current point
 " TODO: show a buffer with session in split without switching to its location
+" `(` and `)` for sentence movement: not configurable ('sentence')
 
 function! tomtomjhj#coq#mappings()
     command! -buffer -bang -nargs=1 CoqGotoDefSplit call tomtomjhj#coq#goto_def('split', <f-args>, <bang>0)
@@ -108,6 +110,6 @@ endfunction
 
 function! tomtomjhj#coq#folds()
     let save_cursor = getcurpos()
-    keepjumps global/^\s*\zsProof\./normal zf%
+    keepjumps global/^\s*\zsProof.*\.$/normal zf%
     call setpos('.', save_cursor)
 endfunction
