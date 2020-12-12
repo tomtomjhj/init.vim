@@ -1,5 +1,7 @@
 " vim: set foldmethod=marker foldlevel=0 nomodeline:
 
+let g:ide_client = get(g:, 'ide_client', 'coc')
+
 " Plug {{{
 call plug#begin('~/.vim/plugged')
 
@@ -21,7 +23,7 @@ Plug 'wellle/targets.vim' " multi (e.g. ib, iq), separator, argument
 Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment' | Plug 'michaeljsmith/vim-indent-object'
 Plug 'preservim/nerdcommenter', { 'on': '<Plug>NERDCommenter' }
 Plug 'godlygeek/tabular', { 'on': 'Tabularize' }
-" TODO Plug 'AndrewRadev/splitjoin.vim'
+Plug 'AndrewRadev/splitjoin.vim'
 " TODO Plug 'mg979/vim-visual-multi'
 
 " etc
@@ -46,9 +48,18 @@ Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] } " use me
 
 " lanauges
 Plug 'dense-analysis/ale', { 'on': ['<Plug>(ale_', 'ALEEnable'] } ")
-" TODO: sometimes node remains alive even after exiting
-Plug 'neoclide/coc.nvim', { 'branch': 'release' }
-Plug 'antoinemadec/coc-fzf'
+if g:ide_client == 'coc'
+    Plug 'neoclide/coc.nvim', { 'commit': '6b3056d4' }
+    " Plug '~/apps/coc.nvim', { 'branch': 'master', 'do': 'yarn install --frozen-lockfile' }
+    Plug 'antoinemadec/coc-fzf'
+else
+    " TODO: https://github.com/mg979/autocomplete-nvim?
+    Plug 'nvim-lua/completion-nvim'
+    Plug 'steelsojka/completion-buffers'
+    Plug 'neovim/nvim-lspconfig'
+    Plug 'nvim-lua/lsp_extensions.nvim'
+    Plug 'nvim-lua/lsp-status.nvim'
+endif
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'plasticboy/vim-markdown'
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
@@ -68,11 +79,21 @@ Plug 'neoclide/jsonc.vim'
 Plug 'rhysd/vim-llvm'
 Plug 'fatih/vim-go', { 'do': 'rm -r plugin ftplugin \|\| true' }
 Plug 'vim-python/python-syntax'
+Plug 'tbastos/vim-lua' | let g:lua_syntax_noextendedstdlib = 1
+" TODO: Plug 'euclidianAce/BetterLua.vim'
 " Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] }
 
 " etc etc
 if has('nvim')
     Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
+    " https://github.com/wbthomason/packer.nvim
+    " Plug 'nvim-lua/plenary.nvim'
+    " Plug 'nvim-lua/popup.nvim'
+    " Plug 'tjdevries/nlua.nvim'
+    " Plug 'nvim-telescope/telescope.nvim'
+    " Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+    " Plug 'mfussenegger/nvim-dap'
+    " Plug 'mfussenegger/nvim-fzy'
 endif
 
 call plug#end()
@@ -107,7 +128,6 @@ let $LANG='en'
 set langmenu=en
 set encoding=utf8
 set spellfile=~/.vim/spell/en.utf-8.add
-" TODO: project spell file, modeline spelllang, spell directory?
 set spelllang=en,cjk
 
 set wildmenu wildmode=longest:full,full
@@ -144,7 +164,6 @@ augroup BasicSetup | au!
     au BufWinEnter * if empty(&buftype) && line("'\"") > 1 && line("'\"") <= line("$") | exec "norm! g`\"" | endif
     au VimEnter * exec 'tabdo windo clearjumps' | tabnext
     au BufWritePost ~/.vim/configs.vim source ~/.vim/configs.vim
-    au FileType json call SetupCoc()
     au BufRead,BufNewFile *.k set filetype=k
     au BufRead,BufNewFile *.mir set syntax=rust
     au FileType lisp let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} })
@@ -181,11 +200,11 @@ let g:lightline = {
       \   'speicialbuf': '%q%w',
       \   'modified': '%{&filetype==#"help"?"":&modified?"+":&modifiable?"":"-"}',
       \   'asyncrun': '%{g:asyncrun_status[:3]}',
-      \   'curr_func': '%{get(b:,"coc_current_function","")}',
       \ },
       \ 'component_function': {
       \   'git': 'GitStatusline',
       \   'shortrelpath': 'ShortRelPath',
+      \   'curr_func': 'CurrentFunction',
       \   'checker_status': 'CheckerStatus',
       \ },
       \ 'component_expand': {
@@ -200,7 +219,6 @@ let g:lightline = {
       \   'readonly': '(&filetype!=#"help"&& &readonly)',
       \   'modified': '(&filetype!=#"help"&&(&modified||!&modifiable))',
       \   'speicialbuf': '&pvw||&buftype==#"quickfix"',
-      \   'curr_func': '!empty(get(b:,"coc_current_function",""))',
       \ },
       \ 'separator': { 'left': ' ', 'right': ' ' },
       \ 'subseparator': { 'left': '|', 'right': '|' },
@@ -247,16 +265,38 @@ endif
 " }}}
 
 " Completion {{{
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+if g:ide_client == 'coc'
+    inoremap <silent><expr> <TAB>
+          \ pumvisible() ? "\<C-n>" :
+          \ <SID>check_back_space() ? "\<TAB>" :
+          \ coc#refresh()
+    inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
+    function! s:check_back_space() abort
+      let col = col('.') - 1
+      return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
+else " lua
+    set completeopt=menuone,noinsert,noselect
+    augroup Completion | au!
+        au BufEnter * lua require'completion'.on_attach()
+    augroup END
+    imap <tab>   <Plug>(completion_smart_tab)
+    imap <s-tab> <Plug>(completion_smart_s_tab)
+
+    let g:completion_enable_snippet = 'UltiSnips'
+    let g:completion_enable_auto_paren = 1
+    let g:completion_chain_complete_list = {
+                \ 'default' : [
+                \    {'complete_items': ['lsp', 'UltiSnips', 'buffers']},
+                \ ],
+                \}
+    let g:completion_timer_cycle = 234
+    let g:completion_word_min_length = 2
+    let g:completion_auto_change_source = 1
+    let g:completion_matching_strategy_list = ['exact', 'fuzzy']
+    let g:completion_confirm_key = "\<C-y>"
+endif
 
 let g:UltiSnipsExpandTrigger = '<c-l>'
 " }}}
@@ -267,8 +307,6 @@ let g:ale_fixers = {
             \ 'c': ['clang-format'],
             \ 'cpp': ['clang-format'],
             \ 'python': ['yapf'],
-            \ 'haskell': ['stylish-haskell'],
-            \ 'rust': ['rustfmt'],
             \ 'ocaml': ['ocamlformat'],
             \ 'go': ['gofmt'],
             \ '*': ['trim_whitespace']
@@ -277,11 +315,11 @@ let g:ale_set_highlights = 1
 let g:ale_linters_explicit = 1
 
 let g:coc_config_home = '~/.vim'
-if has('win')
-    let g:coc_node_path = 'node.exe'
-endif
-" TODO fork of coc-word with corpus from programming books/documentation, papers
+if has('win') | let g:coc_node_path = 'node.exe' | endif
 let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab', 'coc-word', 'coc-tag']
+let g:coc_quickfix_open_command = 'CW'
+let g:coc_fzf_preview = 'up:66%'
+
 hi! link CocWarningHighlight NONE
 hi! link CocInfoHighlight    NONE
 hi! link CocHintHighlight    NONE
@@ -289,12 +327,15 @@ hi! link CocErrorSign   ALEErrorSign
 hi! link CocWarningSign ALEWarningSign
 hi! link CocInfoSign    ALEInfoSign
 hi! link CocHintSign    ALEInfoSign
-hi! CocRustTypeHint ctermfg=Grey guifg=#999999
-hi! link CocRustChainingHint CocRustTypeHint
 hi! link CocErrorFloat   NONE
 hi! link CocWarningFloat CocErrorFloat
 hi! link CocInfoFloat    CocErrorFloat
 hi! link CocHintFloat    CocErrorFloat
+hi! link CocRustTypeHint TypeHint
+hi! link CocRustChainingHint TypeHint
+
+" TODO: where to put this
+hi! TypeHint ctermfg=Grey guifg=#999999
 
 nmap <leader>fm <Plug>(ale_fix)
 nmap <M-,> <Plug>(ale_detail)<C-W>p
@@ -319,7 +360,6 @@ let g:haskell_indent_if = 0
 let g:haskell_indent_case_alternative = 1
 let g:intero_start_immediately = 0
 augroup SetupHaskell | au!
-    " au FileType haskell call SetupCoc()
     au FileType haskell setl tabstop=2 shiftwidth=2
 augroup END
 " }}}
@@ -337,7 +377,7 @@ command! -range=% PrettifyRustSymbol <line1>,<line2>SubstituteDict { '$SP$': '@'
 
 " C,C++ {{{
 augroup SetupCCpp | au!
-    au FileType c,cpp call SetupCoc()
+    au FileType c,cpp call SetupLSP()
     au FileType c,cpp setl tabstop=2 shiftwidth=2
 augroup END
 " }}}
@@ -362,7 +402,7 @@ let g:ale_python_pyls_config = {
             \ }
             \}
 augroup SetupPython | au!
-    au FileType python call SetupCoc()
+    au FileType python call SetupLSP()
 augroup END
 " }}}
 

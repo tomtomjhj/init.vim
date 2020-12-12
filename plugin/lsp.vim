@@ -1,18 +1,8 @@
-function! SetupALELSP()
-  nmap <M-.> <Plug>(ale_hover)
-  nmap <M-]> <Plug>(ale_go_to_definition)
-  nmap <silent><M-\> <Plug>(ale_go_to_definition_in_tab)
-  nmap <silent><leader><M-\> :if IsWide() \| ALEGoToDefinitionInVSplit \| else \| ALEGoToDefinitionInSplit \| endif<CR>
-  nmap <leader>rn :ALERename<CR>
-  nmap <leader>rf <Plug>(ale_find_references)
-endfunction
-
-let g:coc_quickfix_open_command = 'CW'
-let g:coc_fzf_preview = 'up:66%'
-
-function! SetupCoc()
+if g:ide_client == 'coc' " {{{
+function! SetupLSP()
   if !get(g:, 'coc_enabled', 0) | return | endif
-  augroup CocCurrentFunction | au!
+  augroup LocalCocStuff | au!
+    au User CocJumpPlaceholder <buffer> call CocActionAsync('showSignatureHelp')
     au CursorHold <buffer> call CocActionAsync('getCurrentFunctionSymbol', { e, r -> 0 })
   augroup END
   nmap     <silent><buffer>        <M-[> <Plug>(coc-definition)
@@ -41,6 +31,9 @@ function! SetupCoc()
   nmap     <silent><buffer>        ]a    <Plug>(coc-diagnostic-next)
 endfunction
 
+function! CurrentFunction()
+  return get(b:,'coc_current_function', '')
+endfunction
 function! CheckerStatus()
   return get(g:, 'coc_status', '')
 endfunction
@@ -59,10 +52,9 @@ function! CheckerWarnings()
   return ''
 endfunction
 
-augroup CocStuff
+augroup GlobalCocStuff
   autocmd!
   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
   autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
   " TODO: coc resets showbreak on flotwin hover. showbreak is not local in nvim!
   " https://github.com/vim/vim/commit/ee85702c10495041791f728e977b86005c4496e8
@@ -71,39 +63,98 @@ augroup CocStuff
   autocmd BufEnter list://* hi! CursorLine cterm=underline gui=underline
   " https://github.com/neoclide/coc.nvim/issues/2043
   autocmd VimLeave * call coc#rpc#kill()
+  " NOTE: some langs need to override Coc mappings
+  autocmd FileType json,sh,javascript,typescript,lua call SetupLSP()
 augroup end
 
 command! -nargs=0 Format call CocAction('format')
 " TODO fold level too high in some languages (e.g. ccls)
 command! -nargs=? Fold   call CocAction('fold', <f-args>)
-command! -nargs=1 -complete=file Pedit call s:Pedit(<f-args>)
+" }}}
 
+elseif g:ide_client == 'nvim' " {{{
+lua << EOF
+tomtomjhj.lsp = require('tomtomjhj/lsp')
+EOF
+
+function! SetupLSP()
+  augroup LocalNvimLSPStuff | au!
+    " NOTE: g:completion_enable_auto_signature
+  augroup END
+  nnoremap <buffer><silent>        <M-]> <cmd>lua vim.lsp.buf.definition()<CR>
+  nnoremap <buffer><silent>        <M-.> <cmd>lua vim.lsp.buf.hover()<CR>
+  nnoremap <buffer><silent><leader>gi    <cmd>lua vim.lsp.buf.implementation()<CR>
+  nnoremap <buffer><silent><leader>gy    <cmd>lua vim.lsp.buf.type_definition()<CR>
+  nnoremap <buffer><silent><leader>rf    <cmd>lua vim.lsp.buf.references()<CR>
+  nnoremap <buffer><silent><leader>gd    <cmd>lua vim.lsp.buf.declaration()<CR>
+  nnoremap <buffer><silent><leader>fm    <cmd>lua vim.lsp.buf.formatting()<CR>
+  nnoremap <buffer><silent><leader>rn    <cmd>lua vim.lsp.buf.rename()<CR>
+  nnoremap <buffer><silent>        [a    <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
+  nnoremap <buffer><silent>        ]a    <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
+  " nnoremap <buffer><silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
+  " nnoremap <buffer><silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+  " nnoremap <buffer><silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
+  " TODO: goto def in split, etc
+  " TODO: hover in preview window
+  " TODO: codelens not implemented
+endfunction
+
+function! CurrentFunction()
+  return get(b:,'lsp_current_function', '')
+endfunction
+function! CheckerStatus()
+  return luaeval('tomtomjhj.lsp.status()')
+endfunction
+function! CheckerErrors()
+  if luaeval('#vim.lsp.buf_get_clients() > -1')
+    let errors = luaeval('vim.lsp.diagnostic.get_count(0, "Error")')
+    return errors ? 'E' . errors : ''
+  endif
+  return ''
+endfunction
+function! CheckerWarnings()
+  if luaeval('#vim.lsp.buf_get_clients() > -1')
+    let warnings = luaeval('vim.lsp.diagnostic.get_count(0, "Warning")')
+    return warnings ? 'E' . warnings : ''
+  endif
+  return ''
+endfunction
+
+augroup GlobalNvimLSPStuff | au!
+    au InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *.rs
+                \ lua require'lsp_extensions'.inlay_hints{ prefix = '‣ ', highlight = "TypeHint", enabled = {"ChainingHint"} }
+    au User LspDiagnosticsChanged call lightline#update()
+    au FileType lua call SetupLSP()
+augroup end
+" }}}
+
+else " ale {{{
+function! SetupLSP()
+  nmap <buffer><M-.> <Plug>(ale_hover)
+  nmap <buffer><M-]> <Plug>(ale_go_to_definition)
+  nmap <buffer><silent><M-\> <Plug>(ale_go_to_definition_in_tab)
+  nmap <buffer><silent><leader><M-\> :if IsWide() \| ALEGoToDefinitionInVSplit \| else \| ALEGoToDefinitionInSplit \| endif<CR>
+  nmap <buffer><leader>rn :ALERename<CR>
+  nmap <buffer><leader>rf <Plug>(ale_find_references)
+endfunction
+function! CheckerStatus()
+  return ''
+endfunction
+function! CheckerErrors()
+  return ''
+endfunction
+function! CheckerWarnings()
+  return ''
+endfunction
+endif " }}}
+
+" utils {{{
 " CocAction jumpDefinition assumes that openCommand changes the current window
 " to the target file, but :pedit doesn't.
+command! -nargs=1 -complete=file Pedit call s:Pedit(<f-args>)
 function! s:Pedit(file)
   exe 'pedit' a:file
   wincmd P
 endfunction
-
-" TODO: nvim lsp stuff
-" https://www.reddit.com/r/neovim/comments/grrxli/start_to_finish_example_of_setting_up_built_in/fs17mxy
-" https://nathansmith.io/posts/neovim-lsp
-" https://sharksforarms.dev/posts/neovim-rust/
-" Plug 'nvim-lua/diagnostic-nvim'
-" Plug 'nvim-lua/completion-nvim'
-" Plug 'nvim-lua/lsp-status.nvim'
-" lua << EOF
-" local nvim_lsp = require'nvim_lsp'
-" nvim_lsp.ocamllsp.setup{}
-" EOF
-" nnoremap <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
-" nnoremap <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
-" nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
-" nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
-" nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
-" nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
-" nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
-" nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
-" nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
-
-" vim: set sw=2 ts=2:
+" }}}
+" vim: set fdm=marker fdl=0 et ts=2 sw=2:

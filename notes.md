@@ -204,7 +204,11 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
     * running tmux inside the termianl:
         * reflow works but scrolling is broken
         * automation? maybe check `$VIM` in bashrc
-* nvim creates empty undo when editorconfig TrimTrailingWhitespace is used (https://github.com/neovim/neovim/issues/11987)
+* nvim lsp, completion performance?
+    * need some kind of delay before doing something
+    * <https://github.com/nvim-lua/completion-nvim/issues/203>, <https://github.com/nvim-lua/completion-nvim/issues/231>
+    * https://github.com/neovim/neovim/issues/13049
+* nvim creates empty undo when editorconfig TrimTrailingWhitespace is used (https://github.com/neovim/neovim/issues/11987) (https://github.com/neovim/neovim/pull/11988)
 * nvim's `CursorMoved` is differrent from vim's. This makes `vimtex_matchparen` wrongly hightlight fzf floatwin.
 * showbreak breaks many things: blockwise paste, ..?
 * copying window-local variables on split is not synchronous??
