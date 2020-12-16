@@ -326,13 +326,13 @@ augroup END
 
 " Rust {{{
 " RLS hover info is more accurate than rust-analyzer!
-" TODO: rust symbol prettyfier: ${GT,LT,C,u20,u7b,u7d}$
 " https://doc.ecoscentric.com/gnutools/doc/gdb/Rust.html
 " let g:termdebugger = 'rust-gdb'
 " TODO: add completion in cargo command
 let g:cargo_shell_command_runner = 'AsyncRun -post=CW'
 " https://github.com/rust-lang/rust-clippy/issues/4612
 command! -nargs=* Cclippy call cargo#cmd("+nightly clippy -Zunstable-options " . <q-args>)
+command! -range=% PrettifyRustSymbol <line1>,<line2>SubstituteDict { '$SP$': '@', '$BP$': '*', '$RF$': '&', '$LT$': '<', '$GT$': '>', '$LP$': '(', '$RP$': ')', '$C$' : ',',  '$u20$': ' ', '$u7b$': '{', '$u7d$': '}', }
 " }}}
 
 " C,C++ {{{
@@ -940,8 +940,16 @@ function! GotoJump()
 endfunction
 command! Jumps call GotoJump()
 
-command! -range Unpdf
+command! -range=% Unpdf
             \ keeppatterns <line1>,<line2>substitute/[“”]/"/ge |
             \ keeppatterns <line1>,<line2>substitute/[‘’]/'/ge |
             \ keeppatterns <line1>,<line2>substitute/\w\zs-\n//ge
+
+" :substitute using a dict, where key == submatch (like VisualStar)
+function! SubstituteDict(dict) range
+    exe a:firstline . ',' . a:lastline . 'substitute'
+                \ . '/\C\%(' . join(map(keys(a:dict), 'escape(v:val, ''\.*$^~[]'')'), '\|'). '\)'
+                \ . '/\=' . string(a:dict) . '[submatch(0)]/ge'
+endfunction
+command! -range=% -nargs=1 SubstituteDict :<line1>,<line2>call SubstituteDict(<args>)
 " }}}
