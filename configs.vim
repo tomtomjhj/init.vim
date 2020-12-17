@@ -496,7 +496,8 @@ func! VisualStar(g)
     " TODO separate out the functionality get the selected text
     let g:search_mode = 'v'
     let l:reg_save = @"
-    exec "norm! gvy"
+    " don't trigger TextYankPost
+    noau exec "norm! gvy"
     let @c = @"
     let l:pattern = escape(@", '\.*$^~[]')
     let @/ = a:g ? '\<' . l:pattern . '\>' : l:pattern " reversed
