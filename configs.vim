@@ -743,6 +743,26 @@ vnoremap - g<C-x>
 " <C-b> <C-e>
 cnoremap <C-j> <S-Right>
 cnoremap <C-k> <S-Left>
+
+nnoremap <C-j> <C-W>j
+nnoremap <C-k> <C-W>k
+nnoremap <C-h> <C-W>h
+nnoremap <C-l> <C-W>l
+
+noremap <leader>q :<C-u>q<CR>
+noremap q, :<C-u>q<CR>
+nnoremap <leader>w :<C-u>up<CR>
+noremap ZAQ :<C-u>qa!<CR>
+command! -bang W   w<bang>
+command! -bang Q   q<bang>
+
+nmap <leader>cx :tabclose<cr>
+nmap <leader>td :tab split<CR>
+nmap <leader>tt :tabedit<CR>
+nmap <leader>cd :cd <c-r>=expand("%:p:h")<cr>/
+nmap <leader>e  :e! <c-r>=expand("%:p:h")<cr>/
+nmap <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
+nmap <leader>fe :e!<CR>
 " }}}
 
 " etc plugin settings {{{
@@ -909,28 +929,6 @@ let g:NERDDefaultAlign = 'left'
 " undotree
 let g:undotree_WindowLayout = 4
 nnoremap U :UndotreeToggle<CR>
-" }}}
-
-" Tabs, windows, buffers {{{
-nnoremap <C-j> <C-W>j
-nnoremap <C-k> <C-W>k
-nnoremap <C-h> <C-W>h
-nnoremap <C-l> <C-W>l
-
-noremap <leader>q :<C-u>q<CR>
-noremap q, :<C-u>q<CR>
-nnoremap <leader>w :<C-u>up<CR>
-noremap ZAQ :<C-u>qa!<CR>
-command! -bang W   w<bang>
-command! -bang Q   q<bang>
-
-nmap <leader>cx :tabclose<cr>
-nmap <leader>td :tab split<CR>
-nmap <leader>tt :tabedit<CR>
-nmap <leader>cd :cd <c-r>=expand("%:p:h")<cr>/
-nmap <leader>e  :e! <c-r>=expand("%:p:h")<cr>/
-nmap <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
-nmap <leader>fe :e!<CR>
 " }}}
 
 " etc util {{{
