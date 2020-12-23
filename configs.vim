@@ -25,6 +25,7 @@ Plug 'preservim/nerdcommenter', { 'on': '<Plug>NERDCommenter' }
 Plug 'godlygeek/tabular', { 'on': 'Tabularize' }
 Plug 'AndrewRadev/splitjoin.vim'
 " TODO Plug 'mg979/vim-visual-multi'
+" TODO Plug 'chrisbra/unicode.vim'
 
 " etc
 Plug 'tpope/vim-fugitive'
@@ -34,6 +35,7 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': has('unix') ? './install --all' : { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'fszymanski/fzf-quickfix', { 'on': 'Quickfix' } " TODO: multi select and re-send to quickfix
+" TODO: Plug 'zackhsi/fzf-tags' " taglist(). single select → :tag, multi-select: quickfix (like :Tags)
 Plug 'Konfekt/FastFold' " only useful for non-manual folds
 Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
@@ -43,13 +45,14 @@ Plug 'andymass/vim-tradewinds' " <C-w>g h/j/k/l
 " TODO Plug 'tpope/vim-obsession'
 " TODO Plug 'yuki-ycino/fzf-preview.vim'
 " TODO Plug 'lpinilla/vim-codepainter'
+" TODO Plug https://github.com/pwntester/octo.nvim
 Plug 'justinmk/vim-dirvish'
 Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] } " use menu!
 
 " lanauges
 Plug 'dense-analysis/ale', { 'on': ['<Plug>(ale_', 'ALEEnable'] } ")
 if g:ide_client == 'coc'
-    Plug 'neoclide/coc.nvim', { 'commit': '6b3056d4' }
+    Plug 'neoclide/coc.nvim', { 'branch': 'release' }
     " Plug '~/apps/coc.nvim', { 'branch': 'master', 'do': 'yarn install --frozen-lockfile' }
     Plug 'antoinemadec/coc-fzf'
 else
@@ -77,7 +80,7 @@ Plug 'whonore/Coqtail' | let g:coqtail_nomap = 1
 Plug 'cespare/vim-toml'
 Plug 'neoclide/jsonc.vim'
 Plug 'rhysd/vim-llvm'
-Plug 'fatih/vim-go', { 'do': 'rm -r plugin ftplugin \|\| true' }
+Plug 'fatih/vim-go', { 'do': 'rm -rf plugin ftplugin' }
 Plug 'vim-python/python-syntax'
 Plug 'tbastos/vim-lua' | let g:lua_syntax_noextendedstdlib = 1
 " TODO: Plug 'euclidianAce/BetterLua.vim'
@@ -87,6 +90,7 @@ Plug 'tbastos/vim-lua' | let g:lua_syntax_noextendedstdlib = 1
 if has('nvim')
     Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
     " https://github.com/wbthomason/packer.nvim
+    " https://github.com/fsouza/vimfiles/tree/main/lua/fsouza
     " Plug 'nvim-lua/plenary.nvim'
     " Plug 'nvim-lua/popup.nvim'
     " Plug 'tjdevries/nlua.nvim'
@@ -717,10 +721,10 @@ noremap! <C-M-q> <C-q>
 cnoremap <M-p> <Up>
 cnoremap <M-n> <Down>
 
-" c_CTRL-F: editable cmd/search history, gQ: enter ex mode, Q instead of q for macros
+" disable annoying q and Q (use c_CTRL-F and gQ) and streamline record/execute
 noremap q: :
-noremap q <nop>
-noremap Q q
+noremap <expr> qq empty(reg_recording()) ? 'qq' : 'q'
+noremap Q @q
 
 " delete without clearing regs
 noremap x "_x

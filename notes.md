@@ -167,9 +167,9 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
     * record → (jump → execute)*
     * If there's a *function* to jump (e.g. `gn`), the repetition step can be
       merged (e.g. `gn@@`) or jump can be part of the macro.
-    * TODO: easier mapping for `@q`, `@@`, ...
     * TODO: pre-selecting points to run macros like multicursor? (difficult)
     * editing macros: use digraph to input control characters? <BS> is not ^H
+* `g&`
 
 # pitfalls
 * Cursor movement on concealed string: `set concealcursor=n` doesn't work as expected. <https://vi.stackexchange.com/questions/4530/moving-over-conceal>

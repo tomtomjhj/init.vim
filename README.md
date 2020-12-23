@@ -3,6 +3,7 @@
 ```sh
 git clone https://github.com/tomtomjhj/init.vim ~/.vim
 pip3 install --user pynvim
+# TODO: https://github.com/mhinz/neovim-remote
 
 # -nix
 mkdir ~/.config/nvim -p
