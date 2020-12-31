@@ -657,11 +657,15 @@ func! SwordJumpLeft()
     call search(col('.') != 1 ? g:sword : '\v$', 'bW')
 endfunc
 
+" i_CTRL-W and i_CTRL-U without 'stop once at the start of insert'
+inoremap <M-w> <C-\><C-o><ESC><C-w>
 inoremap <C-u> <C-\><C-o><ESC><C-g>u<C-u>
 " Delete a single character of other non-blank chars
 " TODO: delete sword?
-inoremap <silent><expr><C-w> FineGrainedICtrlW()
-func! FineGrainedICtrlW()
+inoremap <silent><expr><C-w>  FineGrainedICtrlW(0)
+" Like above, but first consume whitespace
+inoremap <silent><expr><M-BS> FineGrainedICtrlW(1)
+func! FineGrainedICtrlW(finer)
     let l:col = col('.')
     if l:col == 1 | return "\<BS>" | endif
     let l:before = strpart(getline('.'), 0, l:col - 1)
@@ -673,21 +677,20 @@ func! FineGrainedICtrlW()
         while l:idx < l:len && l:chars[-(l:idx + 1)] =~ '\s'
             let l:idx += 1
         endwhile
-        if l:idx == l:len || l:chars[-(l:idx + 1)] =~ '\k'
+        if l:idx == l:len || (!a:finer && l:chars[-(l:idx + 1)] =~ '\k')
             return "\<C-\>\<C-o>\<ESC>\<C-w>"
         endif
         let l:sts = &softtabstop
         setlocal softtabstop=0
         return repeat("\<BS>", l:idx)
                     \ . "\<C-R>=execute('setl sts=".l:sts."')\<CR>"
-                    \ . "\<C-R>=pear_tree#insert_mode#Backspace()\<CR>"
+                    \ . (a:finer ? "" : "\<C-R>=pear_tree#insert_mode#Backspace()\<CR>")
     elseif l:chars[-1] !~ '\k'
         return pear_tree#insert_mode#Backspace()
     else
         return "\<C-\>\<C-o>\<ESC>\<C-w>"
     endif
 endfunc
-
 " }}}
 
 " etc mappings {{{
