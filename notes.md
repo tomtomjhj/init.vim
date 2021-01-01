@@ -95,6 +95,8 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
   ```
 * make 𝓥 a word char? <https://github.com/vim/vim/commit/d489c9801b3aaf284d42643507bbfb9ce3bc0f2f>
     * if spellcheck is the problem, do something similar to `set spelllang=cjk`
+* multiple clients for single nvim instance? good for multi-monitor setup. <https://github.com/neovim/neovim/issues/2161>
+* bullet list block textobj, somewhat similar to haskell layout rule
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -157,7 +159,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * `scroll-cursor`
 * `g0`, `g$`, `g_`, `zH`, `zL`
 * `g;`, `g,`
-* `complete_CTRL-Y`, `complete_CTRL-E"`
+* `complete_CTRL-Y`, `complete_CTRL-E`
 * `(`, `)`, `{`, `}`
 * `/\C`
 * `g<Tab>`
@@ -167,9 +169,10 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
     * record → (jump → execute)*
     * If there's a *function* to jump (e.g. `gn`), the repetition step can be
       merged (e.g. `gn@@`) or jump can be part of the macro.
-    * TODO: pre-selecting points to run macros like multicursor? (difficult)
     * editing macros: use digraph to input control characters? <BS> is not ^H
 * `g&`
+* `g<`
+* `_` without count is equivalent to `^`
 
 # pitfalls
 * Cursor movement on concealed string: `set concealcursor=n` doesn't work as expected. <https://vi.stackexchange.com/questions/4530/moving-over-conceal>
@@ -228,6 +231,9 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
     endwhile
     ```
   (just use `:global` for this specific task)
+* shada merging bad https://github.com/neovim/neovim/issues/4295
+    * impossible to wipe marks, registers, jumplist...
+    * `:wshada!` https://vi.stackexchange.com/a/26540
 
 # stuff
 * https://arxiv.org/abs/2006.03103

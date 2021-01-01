@@ -1,5 +1,4 @@
 " TODO
-" * bufwipe aux buffers
 " * removing error highlight
 " * <Plug>CoqJumpToEnd blocks while processing
 " * how to hide a buffer without error? (+ bdelete)

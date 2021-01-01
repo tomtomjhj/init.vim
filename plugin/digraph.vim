@@ -32,12 +32,14 @@ function s:SetupDigraph()
     digraph \\ 8726 " ∖
 
     digraph _l 8343 " ₗ
+    digraph _t 8348 " ₜ
     digraph ^a 7491 " ᵃ
     digraph ^c 7580 " ᶜ
     digraph ^e 7497 " ᵉ
     digraph ^l 737  " ˡ
     digraph ^r 691  " ʳ
     digraph ^x 739  " ˣ
+
     digraph OX 9760 " ☠
     digraph tl 8988 " ⌜ top left corner
     digraph tr 8989 " ⌝

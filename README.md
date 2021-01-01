@@ -2,8 +2,7 @@
 
 ```sh
 git clone https://github.com/tomtomjhj/init.vim ~/.vim
-pip3 install --user pynvim
-# TODO: https://github.com/mhinz/neovim-remote
+pip3 install --user pynvim neovim-remote
 
 # -nix
 mkdir ~/.config/nvim -p
@@ -37,13 +36,19 @@ cargo install ripgrep fd-find bat
         * https://github.com/vim/vim/issues/2525
         * https://github.com/junegunn/fzf/issues/1191
 
-# compile vim
+# compile (n)vim
 ```bash
 sudo apt install ...
 ./configure \
     --enable-python3interp=yes \
     --with-python3-config-dir=$(python3-config --configdir) \
     --prefix=${HOME}/.local
+```
+
+```
+sudo apt-get install ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip
+make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=..
+make install
 ```
 
 # TODO

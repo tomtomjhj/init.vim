@@ -20,7 +20,10 @@ Plug 'tpope/vim-repeat'
 Plug 'tomtomjhj/pear-tree'
 Plug 'andymass/vim-matchup' " i%, a%, ]%, z%, g%
 Plug 'wellle/targets.vim' " multi (e.g. ib, iq), separator, argument
-Plug 'kana/vim-textobj-user' | Plug 'glts/vim-textobj-comment' | Plug 'michaeljsmith/vim-indent-object'
+Plug 'michaeljsmith/vim-indent-object'
+Plug 'kana/vim-textobj-user'
+Plug 'glts/vim-textobj-comment'
+Plug 'pianohacker/vim-textobj-indented-paragraph', { 'do': 'rm -rf plugin' }
 Plug 'preservim/nerdcommenter', { 'on': '<Plug>NERDCommenter' }
 Plug 'godlygeek/tabular', { 'on': 'Tabularize' }
 Plug 'AndrewRadev/splitjoin.vim'
@@ -45,9 +48,11 @@ Plug 'andymass/vim-tradewinds' " <C-w>g h/j/k/l
 " TODO Plug 'tpope/vim-obsession'
 " TODO Plug 'yuki-ycino/fzf-preview.vim'
 " TODO Plug 'lpinilla/vim-codepainter'
+" TODO Plug 'https://github.com/kshenoy/vim-signature'
 " TODO Plug https://github.com/pwntester/octo.nvim
+" TODO: Plug 'https://github.com/lambdalisue/fern.vim'
 Plug 'justinmk/vim-dirvish'
-Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] } " use menu!
+Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
 
 " lanauges
 Plug 'dense-analysis/ale', { 'on': ['<Plug>(ale_', 'ALEEnable'] } ")
@@ -88,6 +93,7 @@ Plug 'tbastos/vim-lua' | let g:lua_syntax_noextendedstdlib = 1
 
 " etc etc
 if has('nvim')
+    Plug 'antoinemadec/FixCursorHold.nvim'
     Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
     " https://github.com/wbthomason/packer.nvim
     " https://github.com/fsouza/vimfiles/tree/main/lua/fsouza
@@ -135,7 +141,7 @@ set spellfile=~/.vim/spell/en.utf-8.add
 set spelllang=en,cjk
 
 set wildmenu wildmode=longest:full,full
-set wildignore=*.o,*~,*.pyc,*.pdf,*.v.d,*.vo,*.vos,*.vok,*.glob
+set wildignore=*.o,*~,*.pyc,*.pdf,*.v.d,*.vo,*.vos,*.vok,*.glob,*.aux
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
 
 set magic
@@ -320,10 +326,12 @@ let g:ale_linters_explicit = 1
 
 let g:coc_config_home = '~/.vim'
 if has('win') | let g:coc_node_path = 'node.exe' | endif
+" TODO: coc-python is not maintained
 let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab', 'coc-word', 'coc-tag']
 let g:coc_quickfix_open_command = 'CW'
 let g:coc_fzf_preview = 'up:66%'
 
+hi! TypeHint ctermfg=Grey guifg=#999999
 hi! link CocWarningHighlight NONE
 hi! link CocInfoHighlight    NONE
 hi! link CocHintHighlight    NONE
@@ -337,9 +345,6 @@ hi! link CocInfoFloat    CocErrorFloat
 hi! link CocHintFloat    CocErrorFloat
 hi! link CocRustTypeHint TypeHint
 hi! link CocRustChainingHint TypeHint
-
-" TODO: where to put this
-hi! TypeHint ctermfg=Grey guifg=#999999
 
 nmap <leader>fm <Plug>(ale_fix)
 nmap <M-,> <Plug>(ale_detail)<C-W>p
@@ -661,7 +666,6 @@ endfunc
 inoremap <M-w> <C-\><C-o><ESC><C-w>
 inoremap <C-u> <C-\><C-o><ESC><C-g>u<C-u>
 " Delete a single character of other non-blank chars
-" TODO: delete sword?
 inoremap <silent><expr><C-w>  FineGrainedICtrlW(0)
 " Like above, but first consume whitespace
 inoremap <silent><expr><M-BS> FineGrainedICtrlW(1)
@@ -669,7 +673,7 @@ func! FineGrainedICtrlW(finer)
     let l:col = col('.')
     if l:col == 1 | return "\<BS>" | endif
     let l:before = strpart(getline('.'), 0, l:col - 1)
-    " TODO: is this necessary? can \s be suffix of other character?
+    " TODO: \s can't be suffix of other character
     let l:chars = split(l:before, '.\zs')
     if l:chars[-1] =~ '\s'
         let l:len = len(l:chars)
@@ -725,7 +729,10 @@ cnoremap <M-p> <Up>
 cnoremap <M-n> <Down>
 
 " disable annoying q and Q (use c_CTRL-F and gQ) and streamline record/execute
+" TODO: q quits hit-enter and *starts recording* unlike q of more-prompt → open a vim issue
 noremap q: :
+noremap q <nop>
+noremap <M-q> q
 noremap <expr> qq empty(reg_recording()) ? 'qq' : 'q'
 noremap Q @q
 
@@ -743,10 +750,10 @@ nnoremap <silent> & :&&<cr>
 xnoremap <silent> & :&&<cr>
 
 " set nrformats+=alpha
-noremap + <C-a>
-vnoremap + g<C-a>
-noremap - <C-x>
-vnoremap - g<C-x>
+noremap  <M-+> <C-a>
+vnoremap <M-+> g<C-a>
+noremap  <M--> <C-x>
+vnoremap <M--> g<C-x>
 
 " <C-b> <C-e>
 cnoremap <C-j> <S-Right>
@@ -910,9 +917,23 @@ else
 endif
 " }}}
 
-" textobj
+" textobj {{{
 let s:url_or_filename_regex = '\c\<\(\%([a-z][0-9A-Za-z_-]\+:\%(\/\{1,3}\|[a-z0-9%]\)\|www\d\{0,3}[.]\|[a-z0-9.\-]\+[.][a-z]\{2,4}\/\)\%([^ \t()<>]\+\|(\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\)\+\%((\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\|[^ \t`!()[\]{};:'."'".'".,<>?«»“”‘’]\)\|\f\+\)'
 call textobj#user#plugin('urlorfilename', { '-': { 'pattern': s:url_or_filename_regex, 'select': ['au', 'iu'] } })
+" override default mapping
+call textobj#user#plugin('indentedparagraph', {
+\   '-': {
+\     'select-a-function': 'indented_paragraph#SelectA',
+\     'select-a': 'aP',
+\     'select-i-function': 'indented_paragraph#SelectI',
+\     'select-i': 'iP',
+\     'move-n-function': 'indented_paragraph#MoveN',
+\     'move-n': 'g)',
+\     'move-p-function': 'indented_paragraph#MoveP',
+\     'move-p': 'g(',
+\   },
+\ })
+" }}}
 
 " comments
 let g:NERDCreateDefaultMappings = 0
@@ -997,4 +1018,6 @@ function! SubstituteDict(dict) range
                 \ . '/\=' . string(a:dict) . '[submatch(0)]/ge'
 endfunction
 command! -range=% -nargs=1 SubstituteDict :<line1>,<line2>call SubstituteDict(<args>)
+
+command! WipeReg for i in range(34,122) | silent! call setreg(nr2char(i), []) | endfor
 " }}}

@@ -44,7 +44,9 @@
     "rust-analyzer.inlayHints.typeHintsSeparator": "‣ ",
     "rust-analyzer.inlayHints.chainingHintsSeparator": "‣ ",
     "rust.racer_completion": false,
-    "python.linting.pylintArgs": ["-dR", "-dC", "-dW0614", "-dW0621"],
+    "python.linting.pylintArgs": ["-dR", "-dC", "-dW0511", "-dW0614", "-dW0621"],
+    "python.linting.mypyEnabled": false,
+    "python.linting.mypyArgs": ["--no-warn-unused-ignores"],
     "coc.source.ultisnips.priority": 80,
     "coc.source.word.shortcut": "W",
 }
