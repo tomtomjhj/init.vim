@@ -1,18 +1,15 @@
-" TODO: To upstream
+" TODO
 " * bufwipe aux buffers
-" * comment indent is broken in Section, Context
 " * removing error highlight
-" * error highlight is broken for multibyte
 " * <Plug>CoqJumpToEnd blocks while processing
 " * how to hide a buffer without error? (+ bdelete)
 " * spell
-
-" TODO: queries: if no session for current buffer, use existing one
-" TODO , t p
-" TODO: auto layout breaks nerdtree
-" TODO: statusline e.g. current point
-" TODO: show a buffer with session in split without switching to its location
-" `(` and `)` for sentence movement: not configurable ('sentence')
+" * something breaks sneak if run while processing
+" * queries: if no session for current buffer, use existing one
+" * auto layout breaks nerdtree
+" * show a buffer with session in split without switching to its location
+" * `(` and `)` for sentence movement: not configurable ('sentence')
+"   * sentence text object
 
 function! tomtomjhj#coq#mappings()
     command! -buffer -bang -nargs=1 CoqGotoDefSplit call tomtomjhj#coq#goto_def('split', <f-args>, <bang>0)
@@ -110,6 +107,12 @@ endfunction
 
 function! tomtomjhj#coq#folds()
     let save_cursor = getcurpos()
-    keepjumps global/^\s*\zsProof.*\.$/normal zf%
+    silent keepjumps keeppatterns global/^\s*\zsModule.*\.$/normal zf%
+    " without this, following `zf`s create deeply nested folds
+    normal! zR
+    silent keepjumps keeppatterns global/^\s*\zsSection.*\.$/normal zf%
+    normal! zR
+    silent keepjumps keeppatterns global/^\s*\zsProof.*\(Qed\)\@<!\.$/normal zf%
+    normal! zM
     call setpos('.', save_cursor)
 endfunction
