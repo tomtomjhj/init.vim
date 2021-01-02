@@ -1,33 +1,64 @@
-" https://github.com/junegunn/fzf.vim/pull/733#issuecomment-559720813
-function! s:list_buffers()
-  call WipeGarbageBufs()
-  redir => bufs
-  silent ls
-  redir END
-  return split(bufs, "\n")
-endfunction
-
-function! s:delete_buffers(lines)
-  execute 'bdelete' join(map(a:lines, {_, line -> split(line)[0]}))
-endfunction
-
-command! Bdelete call fzf#run(fzf#wrap({
-  \ 'source': s:list_buffers(),
-  \ 'sink*': { lines -> s:delete_buffers(lines) },
-  \ 'options': '--multi --bind ctrl-a:select-all+accept'
-\ }))
-
+" buffer list operations {{{
 " bw, bd, setlocal bufhidden=delete don't work on the buf being hidden
 " https://stackoverflow.com/questions/6552295.`+` signs??
-func! WipeGarbageBufs()
+func! s:WipeGarbageBufs()
     " NOTE: getbufinfo bufmodified != getbufvar(.., '&mod') for new No Name buffer
     let garbages = map(filter(getbufinfo({'buflisted': 1}), 'empty(v:val.name) && v:val.hidden && !v:val.changed'), 'v:val.bufnr')
     if !empty(garbages)
-        exe 'bw' join(garbages, ' ')
+        exe 'bwipeout' join(garbages, ' ')
     endif
 endfunc
 
-" Delete buffer while keeping window layout (don't close buffer's windows).
+function! s:format_buffer(b)
+  let l:name = bufname(a:b)
+  let l:name = empty(l:name) ? '[No Name]' : fnamemodify(l:name, ":p:~:.")
+  let l:flag = a:b == bufnr('')  ? '%' :
+          \ (a:b == bufnr('#') ? '#' : ' ')
+  let l:modified = getbufvar(a:b, '&modified') ? ' [+]' : ''
+  let l:readonly = getbufvar(a:b, '&modifiable') ? '' : ' [RO]'
+  let l:extra = join(filter([l:modified, l:readonly], '!empty(v:val)'), '')
+  return substitute(printf("[%s] %s\t%s\t%s", a:b, l:flag, l:name, l:extra), '^\s*\|\s*$', '', 'g')
+endfunction
+
+" https://github.com/junegunn/fzf.vim/pull/733#issuecomment-726526334
+function! s:ls_delete(cmd)
+  call s:WipeGarbageBufs()
+
+  let l:preview_window = get(g:, 'fzf_preview_window', &columns >= 120 ? 'right': '')
+  let l:options = [
+  \   '-m',
+  \   '--tiebreak=index',
+  \   '-d', '\t',
+  \   '--prompt', a:cmd . '> '
+  \ ]
+  if len(l:preview_window)
+    let l:options = extend(l:options, get(fzf#vim#with_preview(
+          \   {"placeholder": "{2}"},
+          \   l:preview_window
+          \ ), 'options', []))
+  endif
+
+  return fzf#run(fzf#wrap({
+  \ 'source':  map(
+  \   filter(
+  \     range(1, bufnr('$')),
+  \     {_, nr -> buflisted(nr) && !getbufvar(nr, "&modified")}
+  \   ),
+  \   {_, nr -> s:format_buffer(nr)}
+  \ ),
+  \ 'sink*': {
+  \   lines -> execute(a:cmd . ' ' . join(map(lines, {
+  \     _, line -> substitute(split(line)[0], '^\[\|\]$', '', 'g')
+  \   })), 'silent!')
+  \ },
+  \ 'options': l:options,
+  \}))
+endfunction
+" }}}
+command! Lsdelete call <SID>ls_delete('bdelete')
+command! Lswipeout call <SID>ls_delete('bwipeout')
+
+" Delete buffer while keeping window layout (don't close buffer's windows). {{{
 " Version 2008-11-18 from http://vim.wikia.com/wiki/VimTip165
 if !exists('bclose_multiple')
   let bclose_multiple = 1
@@ -44,7 +75,7 @@ endfunction
 " or the previous buffer (:bp), or a blank buffer if no previous.
 " Command ':Bclose!' is the same, but executes ':bd!' (discard changes).
 " An optional argument can specify which buffer to close (name or number).
-function! s:Bclose(bang, buffer)
+function! s:Bclose(cmd, bang, buffer)
   if empty(a:buffer)
     let btarget = bufnr('%')
   elseif a:buffer =~ '^\d\+$'
@@ -89,9 +120,11 @@ function! s:Bclose(bang, buffer)
       endif
     endif
   endfor
-  execute 'bdelete'.a:bang.' '.btarget
+  execute a:cmd.a:bang btarget
   execute wcurrent.'wincmd w'
 endfunction
-command! -bang -complete=buffer -nargs=? Bclose call <SID>Bclose(<q-bang>, <q-args>)
-nnoremap <silent> <Leader>cb :Bclose<CR>
-" vim: set ts=2 sw=2:
+" }}}
+command! -bang -complete=buffer -nargs=? Bdelete  call <SID>Bclose('bdelete', <q-bang>, <q-args>)
+command! -bang -complete=buffer -nargs=? Bwipeout call <SID>Bclose('bwipeout', <q-bang>, <q-args>)
+
+" vim: set ts=2 sw=2 fdm=marker fdl=0:
