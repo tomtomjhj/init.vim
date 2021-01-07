@@ -9,6 +9,8 @@
 " * show a buffer with session in split without switching to its location
 " * `(` and `)` for sentence movement: not configurable ('sentence')
 "   * sentence text object
+" * string escape in sentence parsing
+" * CoqGotoDef on id containing `'` is broken
 
 function! tomtomjhj#coq#mappings()
     command! -buffer -bang -nargs=1 CoqGotoDefSplit call tomtomjhj#coq#goto_def('split', <f-args>, <bang>0)

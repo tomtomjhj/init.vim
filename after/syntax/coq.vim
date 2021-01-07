@@ -1,4 +1,6 @@
 syntax cluster coqVernac add=coqTopLevel
+" make multiple "Next Obligation" stuff work
+syntax cluster coqVernac add=coqProofBody
 
 " Fix `Program Definition`s.
 syn clear coqDef
