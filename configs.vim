@@ -63,9 +63,11 @@ else
     " TODO: https://github.com/mg979/autocomplete-nvim?
     Plug 'nvim-lua/completion-nvim'
     Plug 'steelsojka/completion-buffers'
+    Plug 'kristijanhusak/completion-tags'
     Plug 'neovim/nvim-lspconfig'
     Plug 'nvim-lua/lsp_extensions.nvim'
     Plug 'nvim-lua/lsp-status.nvim'
+    " TODO Plug 'https://github.com/RishabhRD/nvim-lsputils'
 endif
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'plasticboy/vim-markdown'
@@ -103,6 +105,7 @@ if has('nvim')
     " Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     " Plug 'mfussenegger/nvim-dap'
     " Plug 'mfussenegger/nvim-fzy'
+    " Plug 'https://github.com/vijaymarupudi/nvim-fzf'
 endif
 
 call plug#end()
@@ -285,6 +288,13 @@ if g:ide_client == 'coc'
       return !col || getline('.')[col - 1]  =~# '\s'
     endfunction
 else " lua
+    " TODO: completion-nvim improvements
+    " * source name abbrev (`complete-items` menu)
+    " * scoring, priority
+    " * per-source trigger character (esp for path)
+    " * somewhat less smooth?
+    " * more sources (words, ...)
+    " * chain completion isn't good because it uses built-in synchronous i_CTRL-X stuff
     set completeopt=menuone,noinsert,noselect
     augroup Completion | au!
         au BufEnter * lua require'completion'.on_attach()
@@ -296,14 +306,17 @@ else " lua
     let g:completion_enable_auto_paren = 1
     let g:completion_chain_complete_list = {
                 \ 'default' : [
-                \    {'complete_items': ['lsp', 'UltiSnips', 'buffers']},
+                \    {'complete_items': ['lsp', 'tags', 'UltiSnips', 'buffers']},
                 \ ],
                 \}
-    let g:completion_timer_cycle = 234
-    let g:completion_word_min_length = 2
-    let g:completion_auto_change_source = 1
+    let g:completion_timer_cycle = 123
+    let g:completion_auto_change_source = 0
     let g:completion_matching_strategy_list = ['exact', 'fuzzy']
     let g:completion_confirm_key = "\<C-y>"
+    let g:completion_matching_ignore_case = 0
+    let g:completion_matching_smart_case = 0
+
+    let g:completion_word_separator = '\%(\k\)\@!.'
 endif
 
 let g:UltiSnipsExpandTrigger = '<c-l>'
