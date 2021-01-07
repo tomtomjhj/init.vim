@@ -40,7 +40,7 @@ if !has('gui_running')
 
   " fix <M- mappings {{{
   " NOTE: :h 'termcap' (e.g. arrows). Map only necessary stuff.
-  for c in [',', '.', '/', '0', '\', ']', 'i', 'j', 'k', 'l', 'n', 'o', 'p', 'y', '\|']
+  for c in ['+', ',', '-', '.', '/', '0', '\', ']', 'i', 'j', 'k', 'l', 'n', 'o', 'p', 'q', 'y', '\|']
     exec 'map  <ESC>'.c '<M-'.c.'>'
     exec 'map! <ESC>'.c '<M-'.c.'>'
   endfor

@@ -97,6 +97,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
     * if spellcheck is the problem, do something similar to `set spelllang=cjk`
 * multiple clients for single nvim instance? good for multi-monitor setup. <https://github.com/neovim/neovim/issues/2161>
 * bullet list block textobj, somewhat similar to haskell layout rule
+* `/` without moving cursor
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -127,7 +128,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * forced-motion
 * `sub-replace-special`
 * `i_CTRL-R_CTRL-O` is fast
-* equalalways
+* `equalalways`, `winfixheight`, ...
 * [profiling](https://stackoverflow.com/a/8347244)
   ```
   vim --cmd 'profile start profile.log' \

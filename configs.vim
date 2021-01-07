@@ -11,7 +11,6 @@ Plug 'lifepillar/vim-solarized8'
 Plug 'tomtomjhj/zenbruh.vim'
 
 " editing
-" TODO: |,| right after sneak aborts label mode but leave the highlight
 " similar to the result of Sneak_;
 Plug 'tomtomjhj/vim-sneak'
 " TODO: machakann/vim-sandwich?
@@ -87,8 +86,8 @@ Plug 'neoclide/jsonc.vim'
 Plug 'rhysd/vim-llvm'
 Plug 'fatih/vim-go', { 'do': 'rm -rf plugin ftplugin' }
 Plug 'vim-python/python-syntax'
-Plug 'tbastos/vim-lua' | let g:lua_syntax_noextendedstdlib = 1
-" TODO: Plug 'euclidianAce/BetterLua.vim'
+Plug 'tbastos/vim-lua'
+Plug 'leafgarland/typescript-vim'
 " Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] }
 
 " etc etc
@@ -166,8 +165,6 @@ set lazyredraw
 set exrc secure
 set diffopt+=algorithm:histogram
 
-let &pumheight = min([&window/4, 20])
-
 augroup BasicSetup | au!
     " Return to last edit position when entering normal buffer
     " TODO: this addes jump? manually running is ok. maybe autocmd problem?
@@ -178,6 +175,7 @@ augroup BasicSetup | au!
     au BufRead,BufNewFile *.mir set syntax=rust
     au FileType lisp let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} })
     au FileType help nnoremap <silent><buffer> <M-.> :h <C-r><C-w><CR>
+    let &pumheight = min([&window/4, 20])
     au VimResized * let &pumheight = min([&window/4, 20])
 augroup END
 
@@ -326,7 +324,7 @@ let g:ale_linters_explicit = 1
 
 let g:coc_config_home = '~/.vim'
 if has('win') | let g:coc_node_path = 'node.exe' | endif
-" TODO: coc-python is not maintained
+" TODO: coc-python is not maintained. coc-zi is better coc-word
 let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab', 'coc-word', 'coc-tag']
 let g:coc_quickfix_open_command = 'CW'
 let g:coc_fzf_preview = 'up:66%'
@@ -394,22 +392,6 @@ augroup END
 " Python {{{
 let g:python_highlight_all = 1
 let g:python_highlight_builtin_funcs = 0
-" let g:ale_python_mypy_options = '--ignore-missing-imports --check-untyped-defs'
-let g:ale_python_pyls_config = {
-            \ 'pyls': {
-            \   'plugins': {
-            \     'rope_completion': { 'enabled': v:false },
-            \     'mccabe': { 'enabled': v:false },
-            \     'pyls_mypy': { 'enabled': v:true, 'live_mode': v:false },
-            \     'preload': { 'enabled': v:false },
-            \     'pycodestyle': { 'enabled': v:false },
-            \     'pydocstyle': { 'enabled': v:false },
-            \     'pyflakes': { 'enabled': v:false },
-            \     'pylint': { 'enabled': v:true, 'args': ['-dR', '-dC', '-dW0614', '-dW0621'] },
-            \     'yapf': { 'enabled': v:false },
-            \   }
-            \ }
-            \}
 augroup SetupPython | au!
     au FileType python call SetupLSP()
 augroup END
@@ -461,6 +443,7 @@ let g:go_highlight_types = 1
 " }}}
 
 " Coq {{{
+" TODO: coq ctags (there's etags generator `coqtags`)
 function! g:CoqtailHighlight()
     hi def CoqtailChecked ctermbg=237
     hi def CoqtailSent ctermbg=60
@@ -474,6 +457,18 @@ augroup SetupCoq | au!
                 \ setl comments=s0:(*,e:*) formatoptions=tcqnj " no middle piece & comment leader
                 " \ setl comments=sr:(*,mb:*,ex:*) formatoptions=tcroqnj
     let g:coqtail_noindent_comment = 1
+augroup END
+" NOTE: gq doesn't join these 3 lines. Maybe feature (fo-table 'q').
+" (* a
+" b
+" *)
+" }}}
+
+" Lua {{{
+let g:lua_syntax_noextendedstdlib = 1
+augroup SetupLua | au!
+    au FileType lua call SetupLSP()
+    au FileType lua setl tabstop=2 shiftwidth=2
 augroup END
 " }}}
 
@@ -544,7 +539,6 @@ command! -bang -nargs=? -complete=dir Files call Files(<q-args>)
 " allow search on the full tag info, excluding the appended tagfile name
 command! -bang -nargs=* Tags call fzf#vim#tags(<q-args>, { 'options': ['-d', '\t', '--nth', '..-2'] })
 
-" TODO: set g:fzf_layout on VimResized?
 func! FzfOpts(arg, spec)
     " TODO: ask the directory to run (double 3), starting from %:p:h
     let l:opts = string(a:arg)
@@ -620,10 +614,8 @@ noremap <leader>J J
 noremap <expr> H v:count ? 'H' : 'h'
 noremap <expr> L v:count ? 'L' : 'l'
 
-" space to navigate
 nnoremap <space> <C-d>
 nnoremap <c-space> <C-u>
-" <s-space> does not work
 
 noremap <M-0> ^w
 
@@ -662,18 +654,18 @@ func! SwordJumpLeft()
     call search(col('.') != 1 ? g:sword : '\v$', 'bW')
 endfunc
 
-" i_CTRL-W and i_CTRL-U without 'stop once at the start of insert'
+" i_CTRL-W and i_CTRL-U without 'stop once at the start of insert' (resolved https://github.com/vim/vim/pull/5940)
 inoremap <M-w> <C-\><C-o><ESC><C-w>
 inoremap <C-u> <C-\><C-o><ESC><C-g>u<C-u>
 " Delete a single character of other non-blank chars
 inoremap <silent><expr><C-w>  FineGrainedICtrlW(0)
 " Like above, but first consume whitespace
+" TODO: more fine-grained like emacs syntax-subword
 inoremap <silent><expr><M-BS> FineGrainedICtrlW(1)
 func! FineGrainedICtrlW(finer)
     let l:col = col('.')
     if l:col == 1 | return "\<BS>" | endif
     let l:before = strpart(getline('.'), 0, l:col - 1)
-    " TODO: \s can't be suffix of other character
     let l:chars = split(l:before, '.\zs')
     if l:chars[-1] =~ '\s'
         let l:len = len(l:chars)
@@ -918,7 +910,7 @@ endif
 " }}}
 
 " textobj {{{
-let s:url_or_filename_regex = '\c\<\(\%([a-z][0-9A-Za-z_-]\+:\%(\/\{1,3}\|[a-z0-9%]\)\|www\d\{0,3}[.]\|[a-z0-9.\-]\+[.][a-z]\{2,4}\/\)\%([^ \t()<>]\+\|(\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\)\+\%((\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\|[^ \t`!()[\]{};:'."'".'".,<>?«»“”‘’]\)\|\f\+\)'
+let s:url_or_filename_regex = '\c\(\<\%([a-z][0-9A-Za-z_-]\+:\%(\/\{1,3}\|[a-z0-9%]\)\|www\d\{0,3}[.]\|[a-z0-9.\-]\+[.][a-z]\{2,4}\/\)\%([^ \t()<>]\+\|(\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\)\+\%((\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\|[^ \t`!()[\]{};:'."'".'".,<>?«»“”‘’]\)\|\f\+\)'
 call textobj#user#plugin('urlorfilename', { '-': { 'pattern': s:url_or_filename_regex, 'select': ['au', 'iu'] } })
 " override default mapping
 call textobj#user#plugin('indentedparagraph', {
@@ -935,7 +927,7 @@ call textobj#user#plugin('indentedparagraph', {
 \ })
 " }}}
 
-" comments
+" comments {{{
 let g:NERDCreateDefaultMappings = 0
 " NOTE: indentation is incorrect sometimes. Use i_CTRL-f
 imap <M-/> <C-G>u<Plug>NERDCommenterInsert
@@ -953,6 +945,7 @@ let g:NERDCustomDelimiters = {
             \ 'coq': { 'left': '(*', 'right': '*)', 'nested': 1 },
             \}
 let g:NERDDefaultAlign = 'left'
+" }}}
 
 " undotree
 let g:undotree_WindowLayout = 4
@@ -1015,7 +1008,7 @@ command! -range=% Unpdf
 function! SubstituteDict(dict) range
     exe a:firstline . ',' . a:lastline . 'substitute'
                 \ . '/\C\%(' . join(map(keys(a:dict), 'escape(v:val, ''\.*$^~[]'')'), '\|'). '\)'
-                \ . '/\=' . string(a:dict) . '[submatch(0)]/ge'
+                \ . '/\=a:dict[submatch(0)]/ge'
 endfunction
 command! -range=% -nargs=1 SubstituteDict :<line1>,<line2>call SubstituteDict(<args>)
 
