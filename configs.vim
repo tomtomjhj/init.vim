@@ -656,15 +656,17 @@ let g:sneak#alias = {
 let g:sword = '\v(\k+|([^[:alnum:]_[:blank:](){}[\]<>$])\2*|[(){}[\]<>$]|\s+)'
 
 " Jump past a sword. Assumes `set whichwrap+=]` for i_<Right>
-inoremap <silent><C-j> <C-\><C-O>:call SwordJumpRight()<CR><Right><C-\><C-o><ESC>
-inoremap <silent><C-k> <C-\><C-O>:call SwordJumpLeft()<CR>
+inoremap <silent><C-j> <C-r>=SwordJumpRight()<CR><Right>
+inoremap <silent><C-k> <C-r>=SwordJumpLeft()<CR>
 func! SwordJumpRight()
     if col('.') !=  col('$')
         call search(g:sword, 'ceW')
     endif
+    return ''
 endfunc
 func! SwordJumpLeft()
     call search(col('.') != 1 ? g:sword : '\v$', 'bW')
+    return ''
 endfunc
 
 " i_CTRL-W and i_CTRL-U without 'stop once at the start of insert' (resolved https://github.com/vim/vim/pull/5940)
