@@ -3,15 +3,6 @@ local lsp_status = require('lsp-status')
 
 lsp_status.register_progress()
 
-lsp_status.config {
-  indicator_errors = "E",
-  indicator_warnings = "W",
-  indicator_info = "I",
-  indicator_hint = "H",
-  indicator_ok = "ok",
-  status_symbol = "",
-}
-
 lspconfig.rust_analyzer.setup {
   on_attach = lsp_status.on_attach,
   capabilities = lsp_status.capabilities

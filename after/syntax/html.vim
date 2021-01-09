@@ -2,7 +2,7 @@ syn clear htmlError
 
 " https://html.spec.whatwg.org/multipage/syntax.html#start-tags
 syn clear htmlTag
-syn region htmlTag start=+<[[:alnum:]]+ end=+>+ fold contains=htmlTagN,htmlString,htmlArg,htmlValue,htmlTagError,htmlEvent,htmlCssDefinition,@htmlPreproc,@htmlArgCluster
+syn region htmlTag start=+<[[:alnum:]]+ end=+>+ fold oneline contains=htmlTagN,htmlString,htmlArg,htmlValue,htmlTagError,htmlEvent,htmlCssDefinition,@htmlPreproc,@htmlArgCluster
 
 " https://html.spec.whatwg.org/#comments
 " The text

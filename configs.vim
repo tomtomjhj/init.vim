@@ -37,7 +37,6 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': has('unix') ? './install --all' : { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'fszymanski/fzf-quickfix', { 'on': 'Quickfix' } " TODO: multi select and re-send to quickfix
-" TODO: Plug 'zackhsi/fzf-tags' " taglist(). single select → :tag, multi-select: quickfix (like :Tags)
 Plug 'Konfekt/FastFold' " only useful for non-manual folds
 Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
@@ -60,7 +59,6 @@ if g:ide_client == 'coc'
     " Plug '~/apps/coc.nvim', { 'branch': 'master', 'do': 'yarn install --frozen-lockfile' }
     Plug 'antoinemadec/coc-fzf'
 else
-    " TODO: https://github.com/mg979/autocomplete-nvim?
     Plug 'nvim-lua/completion-nvim'
     Plug 'steelsojka/completion-buffers'
     Plug 'kristijanhusak/completion-tags'
@@ -79,8 +77,6 @@ Plug 'tomtomjhj/haskell-vim', { 'branch': 'custom' }
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'lervag/vimtex'
 Plug 'KeitaNakamura/tex-conceal.vim'
-" Plug 'LumaKernel/coqpit.vim'
-" Plug 'https://framagit.org/tyreunom/coquille', { 'do': ':UpdateRemotePlugins' }
 Plug 'whonore/Coqtail' | let g:coqtail_nomap = 1
 " Plug 'puremourning/vimspector' | let g:vimspector_enable_mappings = 'HUMAN'
 Plug 'cespare/vim-toml'
@@ -295,6 +291,10 @@ else " lua
     " * somewhat less smooth?
     " * more sources (words, ...)
     " * chain completion isn't good because it uses built-in synchronous i_CTRL-X stuff
+    " * prefix-only completion: e.g. `prefix_suffix` in buffer, input `suffix` and type `pre` and complete.
+    "   Note: https://github.com/neoclide/coc.nvim/blob/8be4f03aff75363818372a755daa8a0dc2071cf0/src/completion/complete.ts#L202-L206
+    " * buffer source: don't add the word currently being inserted e.g. `presuffix` in the above example.
+    "   Note: this only happens when inserting prefix of the word
     set completeopt=menuone,noinsert,noselect
     augroup Completion | au!
         au BufEnter * lua require'completion'.on_attach()
@@ -315,6 +315,7 @@ else " lua
     let g:completion_confirm_key = "\<C-y>"
     let g:completion_matching_ignore_case = 0
     let g:completion_matching_smart_case = 0
+    let g:completion_customize_lsp_label = {'Buffers': '[B]', 'UltiSnips': '[US]'}
 
     let g:completion_word_separator = '\%(\k\)\@!.'
 endif
@@ -337,8 +338,8 @@ let g:ale_linters_explicit = 1
 
 let g:coc_config_home = '~/.vim'
 if has('win') | let g:coc_node_path = 'node.exe' | endif
-" TODO: coc-python is not maintained. coc-zi is better coc-word
-let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab', 'coc-word', 'coc-tag']
+" TODO: coc-python is not maintained.
+let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab', 'coc-tag']
 let g:coc_quickfix_open_command = 'CW'
 let g:coc_fzf_preview = 'up:66%'
 
@@ -421,6 +422,7 @@ let g:pandoc#folding#level = 99
 let g:pandoc#hypertext#use_default_mappings = 0
 let g:pandoc#syntax#use_definition_lists = 0
 let g:pandoc#syntax#protect#codeblocks = 0
+" TODO: inspect some auto-expanded snippets
 let g:vimtex_fold_enabled = 1
 let g:vim_markdown_folding_disabled = 1 " manually control folds: see ftplugin/markdown.vim
 let g:vim_markdown_folding_level = 6
@@ -606,7 +608,6 @@ func! Files(query)
     endif
     call fzf#vim#files(l:query, fzf#vim#with_preview(spec, 'right'))
 endfunc
-
 " }}}
 
 " Motion, insert mode, ... {{{
@@ -811,20 +812,7 @@ augroup MyTargets | au!
     " - a'r'guments, any 'q'uote, any 'b'lock, separators + 'n'ext,'l'ast
     " - Leave a for matchup any-block.
     autocmd User targets#mappings#user call targets#mappings#extend({
-    \ '(': {},
-    \ ')': {},
-    \ '{': {},
-    \ '}': {},
-    \ 'B': {},
-    \ '[': {},
-    \ ']': {},
-    \ '<': {},
-    \ '>': {},
-    \ '"': {},
-    \ "'": {},
-    \ '`': {},
-    \ 't': {},
-    \ 'a': {},
+    \ '(': {}, ')': {}, '{': {}, '}': {}, 'B': {}, '[': {}, ']': {}, '<': {}, '>': {}, '"': {}, "'": {}, '`': {}, 't': {}, 'a': {},
     \ 'r': {'argument': [{'o': '[([]', 'c': '[])]', 's': ','}]},
     \ })
 augroup END
@@ -999,23 +987,8 @@ func! Execute(cmd) abort
 endfunc
 command! -nargs=* -complete=command Execute silent call Execute(<q-args>)
 
-function! GotoJump()
-  jumps
-  let j = input("Jump to ([+]N): ")
-  if j != ''
-    let plus = '\v\c^\+'
-    if j =~ plus
-      let j = substitute(j, plus, '', 'g')
-      execute "normal!" j."\<C-i>"
-    else
-      execute "normal!" j."\<C-o>"
-    endif
-  endif
-endfunction
-command! Jumps call GotoJump()
-
 command! -range=% Unpdf
-            \ keeppatterns <line1>,<line2>substitute/[“”]/"/ge |
+            \ keeppatterns <line1>,<line2>substitute/[“”ł]/"/ge |
             \ keeppatterns <line1>,<line2>substitute/[‘’]/'/ge |
             \ keeppatterns <line1>,<line2>substitute/\w\zs-\n//ge
 
