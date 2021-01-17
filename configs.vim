@@ -51,6 +51,7 @@ Plug 'andymass/vim-tradewinds' " <C-w>g h/j/k/l
 " TODO: Plug 'https://github.com/lambdalisue/fern.vim'
 Plug 'justinmk/vim-dirvish'
 Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
+Plug 'kassio/neoterm'
 
 " lanauges
 Plug 'dense-analysis/ale', { 'on': ['<Plug>(ale_', 'ALEEnable'] } ")
@@ -59,6 +60,7 @@ if g:ide_client == 'coc'
     " Plug '~/apps/coc.nvim', { 'branch': 'master', 'do': 'yarn install --frozen-lockfile' }
     Plug 'antoinemadec/coc-fzf'
 else
+    " https://github.com/hrsh7th/nvim-compe
     Plug 'nvim-lua/completion-nvim'
     Plug 'steelsojka/completion-buffers'
     Plug 'kristijanhusak/completion-tags'
@@ -140,7 +142,7 @@ set spelllang=en,cjk
 
 set wildmenu wildmode=longest:full,full
 set wildignore=*.o,*~,*.pyc,*.pdf,*.v.d,*.vo,*.vos,*.vok,*.glob,*.aux
-set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store,*/__pycache__/
 
 set magic
 set ignorecase smartcase
@@ -328,7 +330,7 @@ let g:ale_linters = {}
 let g:ale_fixers = {
             \ 'c': ['clang-format'],
             \ 'cpp': ['clang-format'],
-            \ 'python': ['yapf'],
+            \ 'python': ['black'],
             \ 'ocaml': ['ocamlformat'],
             \ 'go': ['gofmt'],
             \ '*': ['trim_whitespace']
@@ -338,8 +340,8 @@ let g:ale_linters_explicit = 1
 
 let g:coc_config_home = '~/.vim'
 if has('win') | let g:coc_node_path = 'node.exe' | endif
-" TODO: coc-python is not maintained.
-let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-rust-analyzer', 'coc-python', 'coc-texlab', 'coc-tag']
+" coc-rust-analyzer coc-pyright coc-texlab coc-clangd coc-tsserver coc-go
+let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-tag']
 let g:coc_quickfix_open_command = 'CW'
 let g:coc_fzf_preview = 'up:66%'
 
@@ -408,6 +410,7 @@ let g:python_highlight_all = 1
 let g:python_highlight_builtin_funcs = 0
 augroup SetupPython | au!
     au FileType python call SetupLSP()
+    au FileType python set formatoptions+=ro
 augroup END
 " }}}
 
@@ -483,7 +486,7 @@ augroup END
 let g:lua_syntax_noextendedstdlib = 1
 augroup SetupLua | au!
     au FileType lua call SetupLSP()
-    au FileType lua setl tabstop=2 shiftwidth=2
+    au FileType lua setl shiftwidth=2
 augroup END
 " }}}
 
@@ -953,6 +956,10 @@ let g:NERDDefaultAlign = 'left'
 " undotree
 let g:undotree_WindowLayout = 4
 nnoremap U :UndotreeToggle<CR>
+
+" neoterm
+let g:neoterm_default_mod = 'rightbelow'
+let g:neoterm_automap_keys = '<leader>T'
 " }}}
 
 " etc util {{{

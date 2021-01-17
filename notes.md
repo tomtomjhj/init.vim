@@ -1,39 +1,4 @@
 # Tex & pandoc
-
-## Tex conceal
-
-### do not conceal sub/superscript block
-
-Why?: many math symbols do not have sub/superscript variant unicode.
-
-In `sytax/tex.vim`, around line 981, comment out following lines.
-
-```vim
-   syn region texSuperscript	matchgroup=Delimiter start='\^{'	skip="\\\\\|\\[{}]" end='}'	contained concealends contains=texSpecialChar,texSuperscripts,texStatement,texSubscript,texSuperscript,texMathMatcher
-   syn region texSubscript	matchgroup=Delimiter start='_{'		skip="\\\\\|\\[{}]" end='}'	contained concealends contains=texSpecialChar,texSubscripts,texStatement,texSubscript,texSuperscript,texMathMatcher
-```
-
-### do not conceal `$$` of math block
-Remove `concealends`
-
-```vim
-syn region texMathZoneY	matchgroup=Delimiter start="\$\$" matchgroup=Delimiter	end="\$\$"	end="%stopzone\>"	keepend concealends contains=@texMathZoneGroup
-```
-
-### Note
-
-* correctly conceal things like this: `\sum_n`. Need to ignore `_`. Do this without modifying `s:texMathList=[` if possible.
-    * removing `_` from `syn iskeyword` fixes it.
-
-
-## Tex Begin-End
-
-```vim
- syn match texBadMath		"\\end\s*{\s*\(displaymath\|equation\|eqnarray\|math\|align\)\*\=\s*}"
- ...
- call TexNewMathZone("E","align",1)
-```
-
 ## pandoc math highlight is broken in numbered lists, hard-wrapped lines
 List itself is not broken. Because of the preceding 4 spaces, the line is recognized as a code block.
 `let g:pandoc#syntax#protect#codeblocks = 0` fixes it.
@@ -53,19 +18,10 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * sudoedit settings: undodir, ...
 * `g]`-like commands can't be used in functions etc?
 * fzf: make a feature request for ivy-like actions
-* <https://vimways.org/2018/from-vimrc-to-vim>
-* read cmdline.txt
-    * `[range]`
-* prabirshrestha/asyncomplete.vim
-* coq highlights covering whole line
-    * how does DiffAdd work?
 * close all folds under the cursor (sub-tree) `zC` doesn't do this
-* clear undo,backup,swap,view
-* sneak digraph? alias? timeout?
 * `<C-r><C-v>` to getvisual in cmap
 * better 'paragraph'
     * markdown list
-    * code commend
 * fzf preview: <S-down> slow -> key code 분해됨
 * make repetitive jump commands' jumplist modification behave like `sneak-clever-s`
     * "n", "N", "(", ")", "[[", "]]", "{", "}", "L", "H"
@@ -98,6 +54,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * multiple clients for single nvim instance? good for multi-monitor setup. <https://github.com/neovim/neovim/issues/2161>
 * bullet list block textobj, somewhat similar to haskell layout rule
 * `/` without moving cursor
+* custom command modifier? (`<mods>`) for smart splitting based on current window layout
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -200,6 +157,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
         * `<CR><C-c>O` (`nosmartindent`) vs. `<CR><C-c>=ko` (`&indentexpr != ''`)
 * stuff highlighted as `Normal` -> bg doesn't match in floatwin
 * lightline + cursorline + lazyredraw + large &lines = performance drop
+* recording doesn't work well with async completion
 
 
 # (n)vim problem
@@ -239,3 +197,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 # stuff
 * https://arxiv.org/abs/2006.03103
 * https://teukka.tech/vimloop.html
+
+# new (n)vim stuff
+* (8.2.0590) `backspace+=nostop`
+* (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.
