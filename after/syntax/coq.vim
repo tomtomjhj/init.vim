@@ -36,7 +36,7 @@ syn sync minlines=321
 
 command -nargs=+ HiLink hi! link <args>
 " PROOFS
-HiLink coqTactic            Function " Keyword
+HiLink coqTactic            Function
 HiLink coqLtac              Function
 HiLink coqProofKwd          coqKwd
 HiLink coqProofPunctuation  Operator
@@ -44,6 +44,7 @@ HiLink coqTacticKwd         Function
 " HiLink coqTacNotationKwd    coqTactic
 " HiLink coqEvalFlag          coqTactic
 HiLink coqEqnKwd            Function
+" HiLink coqTacticAdmit       coqProofAdmit
 " Exception
 HiLink coqProofDot          coqVernacular
 

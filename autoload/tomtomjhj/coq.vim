@@ -4,13 +4,18 @@
 " * how to hide a buffer without error? (+ bdelete)
 " * spell
 " * something breaks sneak if run while processing
+"   * can't do anything *interesting* while processing, e.g. visual mode,
+"     editing (nomodiable) git-messenger, ... autocmd stuff??
+"   * how to make it more async? rEWrItE in lua?
 " * queries: if no session for current buffer, use existing one
+"   * one-session mode (like PG)
 " * auto layout breaks nerdtree
-" * show a buffer with session in split without switching to its location
+" * show a buffer with session in split without jumping to its current layout
 " * `(` and `)` for sentence movement: not configurable ('sentence')
 "   * sentence text object
 " * string escape in sentence parsing
 " * CoqGotoDef on id containing `'` is broken
+" * if a job failed, then clear the job queue
 
 function! tomtomjhj#coq#mappings()
     command! -buffer -bang -nargs=1 CoqGotoDefSplit call tomtomjhj#coq#goto_def('split', <f-args>, <bang>0)
@@ -74,6 +79,11 @@ function! tomtomjhj#coq#mappings()
     cmap <buffer><C-r><C-w> <C-r>=coqtail#util#getcurword()<CR>
 
     nmap <buffer><leader>fd    :<C-u>exe 'normal! zE'\|call tomtomjhj#coq#folds()<CR>
+
+    nmap <buffer>gq   <cmd>set opfunc=tomtomjhj#coq#gq<CR>g@
+    nmap <buffer>gqq  <cmd>set opfunc=tomtomjhj#coq#gq<CR>g@l
+    nmap <buffer>gqgq <cmd>set opfunc=tomtomjhj#coq#gq<CR>g@l
+    vmap <buffer>gq   <cmd>call tomtomjhj#coq#gq(visualmode(), 1)<CR>
 endfunction
 
 " TODO: normal gotodef-ing in aux buf makes aux buf listed
@@ -108,12 +118,28 @@ endfunction
 
 function! tomtomjhj#coq#folds()
     let save_cursor = getcurpos()
-    silent keepjumps keeppatterns global/^\s*\zsModule.*\.$/normal zf%
-    " without this, following `zf`s create deeply nested folds
-    normal! zR
-    silent keepjumps keeppatterns global/^\s*\zsSection.*\.$/normal zf%
-    normal! zR
-    silent keepjumps keeppatterns global/^\s*\zsProof.*\(Qed\)\@<!\.$/normal zf%
+    " `zo` prevents unintended nested folds
+    silent keepjumps keeppatterns global/^\s*\zsModule.*\.$/normal zf%zo
+    silent keepjumps keeppatterns global/^\s*\zsSection.*\.$/normal zf%zo
+    silent keepjumps keeppatterns global/^\s*\zsProof.*\(Qed\)\@<!\.$/normal zf%zo
     normal! zM
     call setpos('.', save_cursor)
+endfunction
+
+" prevent indentexpr from breaking gq on comments
+function! tomtomjhj#coq#gq(type, ...)
+    setl indentexpr=
+    let sel_save = &selection
+    let &selection = "inclusive"
+
+    if a:0
+        call feedkeys('gq', 'nx')
+    elseif a:type == 'line'
+        exe "normal! '[V']gq"
+    else
+        exe "normal! `[v`]gq"
+    endif
+
+    let &selection = sel_save
+    setl indentexpr=GetCoqIndent()
 endfunction

@@ -472,14 +472,10 @@ augroup SetupCoq | au!
     au FileType coq
                 \ let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} }) |
                 \ setl shiftwidth=2 |
-                \ setl comments=s0:(*,e:*) formatoptions=tcqnj " no middle piece & comment leader
+                \ setl comments=s:(*,e:*) formatoptions=tcqnj " no middle piece & comment leader
                 " \ setl comments=sr:(*,mb:*,ex:*) formatoptions=tcroqnj
     let g:coqtail_noindent_comment = 1
 augroup END
-" NOTE: gq doesn't join these 3 lines. Maybe feature (fo-table 'q').
-" (* a
-" b
-" *)
 " }}}
 
 " Lua {{{

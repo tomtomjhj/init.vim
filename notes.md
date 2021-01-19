@@ -158,6 +158,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * stuff highlighted as `Normal` -> bg doesn't match in floatwin
 * lightline + cursorline + lazyredraw + large &lines = performance drop
 * recording doesn't work well with async completion
+* `gq` internal formatting uses `indentexpr` (not documented?)
 
 
 # (n)vim problem
@@ -193,6 +194,26 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * shada merging bad https://github.com/neovim/neovim/issues/4295
     * impossible to wipe marks, registers, jumplist...
     * `:wshada!` https://vi.stackexchange.com/a/26540
+* nvim fold click is (sometimes) broken
+* nvim diff sync is broken: do diff (the buffer should be fresh e.g. wiped), jump to other window, enter insert → cursor position is wrong!
+* The line on which a three-piece comment's start/end piece lies is treated specially by `gq`. Not documented in fo-table 'q'. Related? <https://github.com/vim/vim/issues/1696>.
+    * These lines are not joined properly by `gq`.
+      ```coq
+      (* Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
+      invidunt
+      *)
+      (* Lorem
+      ipsum
+      *)
+      (* Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
+      invidunt *)
+      ```
+    * `formatlistpat` is not properly applied if the visual block contains the first line
+      ```coq
+      (* Lorem
+      - ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+      *)
+      ```
 
 # stuff
 * https://arxiv.org/abs/2006.03103
