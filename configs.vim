@@ -124,6 +124,7 @@ set autoindent " smartindent is unnecessary
 set formatoptions+=n " this may interfere with 'comment'?
 set formatlistpat=\\C^\\s*[\\[({]\\\?\\([0-9]\\+\\\|[iIvVxXlLcCdDmM]\\+\\\|[a-zA-Z]\\)[\\]:.)}]\\s\\+\\\|^\\s*[-+o*]\\s\\+
 set nojoinspaces
+set list listchars=tab:\|\ ,trail:-,nbsp:+,extends:>
 
 " indent the wrapped line, w/ `> ` at the start
 set wrap linebreak breakindent showbreak=>\ 
@@ -340,6 +341,8 @@ let g:ale_linters_explicit = 1
 
 let g:coc_config_home = '~/.vim'
 if has('win') | let g:coc_node_path = 'node.exe' | endif
+" TODO: like coc-word or coc-zi but smarter
+" e.g. higher trigger threshold, better corpus (typo-prone, no human name)
 " coc-rust-analyzer coc-pyright coc-texlab coc-clangd coc-tsserver coc-go
 let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-tag']
 let g:coc_quickfix_open_command = 'CW'
@@ -742,6 +745,9 @@ noremap q <nop>
 noremap <M-q> q
 noremap <expr> qq empty(reg_recording()) ? 'qq' : 'q'
 noremap Q @q
+
+" v_u mistake is  hard to notice. Use gu instead (works for visual mode too).
+xnoremap u <nop>
 
 " delete without clearing regs
 noremap x "_x

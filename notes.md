@@ -159,7 +159,9 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * lightline + cursorline + lazyredraw + large &lines = performance drop
 * recording doesn't work well with async completion
 * `gq` internal formatting uses `indentexpr` (not documented?)
-
+* `<C-k><space><space>` is non-break space! Can't disable with
+    * `exe "digraph \<Space>\<Space> 32"`
+    * `exe "inoremap \u00A0 <Space>"`
 
 # (n)vim problem
 * terminal reflow https://github.com/neovim/neovim/issues/2514

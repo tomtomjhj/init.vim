@@ -16,6 +16,8 @@
 " * string escape in sentence parsing
 " * CoqGotoDef on id containing `'` is broken
 " * if a job failed, then clear the job queue
+" * goal/info panel not updated when the main panel is displayed in another tab
+" * tradewind breaks coqtail and nvim
 
 function! tomtomjhj#coq#mappings()
     command! -buffer -bang -nargs=1 CoqGotoDefSplit call tomtomjhj#coq#goto_def('split', <f-args>, <bang>0)
