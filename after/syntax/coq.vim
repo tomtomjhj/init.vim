@@ -12,12 +12,13 @@ syn clear coqDef
 " Adding `nextgroup=coqProofBody` to coqDefContents1 definition didn't work.
 " As a temporary fix, deliberately break the definition of coqDef to make it work like coqIns.
 
-" remove non-alphanumeric
+" tune symbol highlighting
 syn clear coqKwd
 syn keyword coqKwd contained else end exists2 fix cofix forall fun if in struct then as return
 syn match coqKwd contained "\<where\>"
 syn match coqKwd contained "\<exists!\?"
 syn match coqKwd contained "∀\|∃\|λ"
+syn match coqKwd contained "/\\\|∧\|\\/\|∨\|<->\|->\|→\|=>\|<-\|←\|∗"
 
 " remove non-alphanumeric, add some ssr stuff
 syn clear coqLtac
@@ -29,6 +30,7 @@ syn keyword coqLtac contained have congr last done
 syn clear coqProofKwd
 syn keyword coqProofKwd contained else end exists exists2 forall fun if in match let struct then where with as return
 syn match coqProofKwd contained "∀\|∃\|λ"
+syn match coqProofKwd contained "/\\\|∧\|\\/\|∨\|<->\|->\|→\|=>\|<-\|←\|∗"
 
 syn region coqDefContents1  contained contains=@coqTerm matchgroup=coqVernacPunctuation start=":=" matchgroup=coqVernacPunctuation end="\.\_s"
 

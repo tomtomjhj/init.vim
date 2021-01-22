@@ -3,6 +3,7 @@ syn keyword coqKwd             contained else end exists2 fix forall fun if in s
 syn match   coqKwd             contained "\<where\>"
 syn match   coqKwd             contained "\<exists!\?"
 syn match coqKwd contained "∀\|∃\|λ"
+syn match coqKwd contained "/\\\|∧\|\\/\|∨\|<->\|->\|→\|=>\|<-\|←\|∗"
 
 " Define the default highlighting.
 command -nargs=+ HiLink hi def link <args>
