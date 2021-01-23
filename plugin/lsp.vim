@@ -103,7 +103,7 @@ function! CurrentFunction()
   return get(b:,'lsp_current_function', '')
 endfunction
 function! CheckerStatus()
-  return luaeval('tomtomjhj.lsp.status()')
+  return v:lua.tomtomjhj.lsp.status()
 endfunction
 function! CheckerErrors()
   if luaeval('#vim.lsp.buf_get_clients() > -1')

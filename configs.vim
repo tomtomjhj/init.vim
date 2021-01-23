@@ -150,7 +150,7 @@ set ignorecase smartcase
 set hlsearch incsearch
 
 set noerrorbells novisualbell t_vb=
-set shortmess+=c
+set shortmess+=Ic
 
 set noswapfile " set directory=~/.vim/swap//
 set backup backupdir=~/.vim/backup//
@@ -920,10 +920,9 @@ endif
 
 " textobj {{{
 let s:url_or_filename_regex = '\c\(\<\%([a-z][0-9A-Za-z_-]\+:\%(\/\{1,3}\|[a-z0-9%]\)\|www\d\{0,3}[.]\|[a-z0-9.\-]\+[.][a-z]\{2,4}\/\)\%([^ \t()<>]\+\|(\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\)\+\%((\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\|[^ \t`!()[\]{};:'."'".'".,<>?«»“”‘’]\)\|\f\+\)'
-call textobj#user#plugin('urlorfilename', { '-': { 'pattern': s:url_or_filename_regex, 'select': ['au', 'iu'] } })
-" override default mapping
-call textobj#user#plugin('indentedparagraph', {
-\   '-': {
+call textobj#user#plugin('tomtomjhj', {
+\   'url_or_filename': { 'pattern': s:url_or_filename_regex, 'select': ['au', 'iu'] },
+\   'indented_paragraph': {
 \     'select-a-function': 'indented_paragraph#SelectA',
 \     'select-a': 'aP',
 \     'select-i-function': 'indented_paragraph#SelectI',
@@ -932,8 +931,7 @@ call textobj#user#plugin('indentedparagraph', {
 \     'move-n': 'g)',
 \     'move-p-function': 'indented_paragraph#MoveP',
 \     'move-p': 'g(',
-\   },
-\ })
+\    }})
 " }}}
 
 " comments {{{
@@ -947,6 +945,8 @@ xmap <leader>cs <Plug>NERDCommenterSexy
 nmap <leader>cs <Plug>NERDCommenterSexy
 xmap <leader>cm <Plug>NERDCommenterMinimal
 nmap <leader>cm <Plug>NERDCommenterMinimal
+xmap <leader>cu <Plug>NERDCommenterUncomment
+nmap <leader>cu <Plug>NERDCommenterUncomment
 let g:NERDSpaceDelims = 1
 let g:NERDCustomDelimiters = {
             \ 'python' : { 'left': '#', 'leftAlt': '#' },

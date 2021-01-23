@@ -1,3 +1,24 @@
+diff --git a/after/plugin/coc_fzf.vim b/after/plugin/coc_fzf.vim
+index 1619c4d..bda5409 100644
+--- a/after/plugin/coc_fzf.vim
++++ b/after/plugin/coc_fzf.vim
+@@ -1,15 +1,4 @@
+-" test other plugins availability
+-
+-if exists('g:fzf_preview_window') && !len(g:fzf_preview_window)
+-  let g:coc_fzf_preview_available = 0
+-else
+-  let g:coc_fzf_preview_available = 1
+-  try
+-    call fzf#vim#with_preview()
+-  catch
+-    let g:coc_fzf_preview_available = 0
+-  endtry
+-endif
++let g:coc_fzf_preview_available = 1
+ 
+ augroup CocFzfLocation
+   autocmd!
 diff --git a/autoload/coc_fzf/location.vim b/autoload/coc_fzf/location.vim
 index 9e6e54d..628aaf1 100644
 --- a/autoload/coc_fzf/location.vim
