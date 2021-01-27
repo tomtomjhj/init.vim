@@ -340,7 +340,6 @@ let g:ale_set_highlights = 1
 let g:ale_linters_explicit = 1
 
 let g:coc_config_home = '~/.vim'
-if has('win') | let g:coc_node_path = 'node.exe' | endif
 " TODO: like coc-word or coc-zi but smarter
 " e.g. higher trigger threshold, better corpus (typo-prone, no human name)
 " coc-rust-analyzer coc-pyright coc-texlab coc-clangd coc-tsserver coc-go

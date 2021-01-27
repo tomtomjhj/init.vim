@@ -30,11 +30,6 @@ cargo install ripgrep fd-find bat
 * windows vim
     * https://github.com/vim/vim-win32-installer
     * python3: 64bit, install locally, put in PATH
-    * `:h terminal.txt`?
-    * using wsl as terminal?
-        * https://vi.stackexchange.com/q/16386
-        * https://github.com/vim/vim/issues/2525
-        * https://github.com/junegunn/fzf/issues/1191
 
 # compile (n)vim
 ```bash
@@ -52,8 +47,15 @@ make install
 ```
 
 # TODO
-* [x] linux nvim
-* [ ] win gvim
+* win gvim
     * `C-+/-` to zoom in/out
-* [ ] linux vim 7.4: minimal, pure vimscript
-* [ ] nvim vimscript + lua
+    * unnecessary smooth e.g. `z=`
+    * fzf stuff is unusable, cmd.exe bad, `preview.sh: line 2: $'\r': command not found`
+        * `set shell=STUFF` completely breaks fzf (maybe related to `fzf#exec()`)
+    * `:h terminal.txt`?
+    * using wsl for `:terminal`?
+        * https://vi.stackexchange.com/q/16386
+        * https://github.com/vim/vim/issues/2525
+        * https://github.com/junegunn/fzf/issues/1191
+    * powershell?
+* linux vim 7.4: minimal, pure vimscript

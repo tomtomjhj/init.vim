@@ -3,3 +3,4 @@ if has('win32')
 elseif has('unix')
     set guifont=Source\ Code\ Pro\ 13
 endif
+set guicursor+=a:blinkon0
