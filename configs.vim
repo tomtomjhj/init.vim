@@ -28,6 +28,7 @@ Plug 'godlygeek/tabular', { 'on': 'Tabularize' }
 Plug 'AndrewRadev/splitjoin.vim'
 " TODO Plug 'mg979/vim-visual-multi'
 " TODO Plug 'chrisbra/unicode.vim'
+" TODO Plug 'https://github.com/chaoren/vim-wordmotion'
 
 " etc
 Plug 'tpope/vim-fugitive'
@@ -341,8 +342,6 @@ let g:ale_set_highlights = 1
 let g:ale_linters_explicit = 1
 
 let g:coc_config_home = '~/.vim'
-" TODO: like coc-word or coc-zi but smarter
-" e.g. higher trigger threshold, better corpus (typo-prone, no human name)
 " coc-rust-analyzer coc-pyright coc-texlab coc-clangd coc-tsserver coc-go
 let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-tag']
 let g:coc_quickfix_open_command = 'CW'

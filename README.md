@@ -49,7 +49,7 @@ make install
 # TODO
 * win gvim
     * `C-+/-` to zoom in/out
-    * unnecessary smooth e.g. `z=`
+    * `z=` slow (only in win gvim)
     * fzf stuff is unusable, cmd.exe bad, `preview.sh: line 2: $'\r': command not found`
         * `set shell=STUFF` completely breaks fzf (maybe related to `fzf#exec()`)
     * `:h terminal.txt`?

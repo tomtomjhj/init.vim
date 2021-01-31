@@ -107,6 +107,23 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
   https://groups.google.com/g/vim_dev/c/k9wRhNMNIFc/m/vpFvud0mo9UJ?pli=1
 * `:match`
 
+## dictionary (`i_CTRL-X_CTRL-K`)
+```vim
+" e.g. https://github.com/first20hours/google-10000-english/blob/master/20k.txt
+let frequent = {}
+for w in getbufline(bufnr('20k.txt'), 1, '$')
+    let frequent[w] = 1
+endfor
+
+Execute g/^/if get(g:frequent, getline('.'), 0) | echo getline('.') | endif
+
+g/\v(\W|\u|[^ius]s$|ed$)/d
+g!/.\{6,\}/d
+```
+```sh
+fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr ' ' '\n' | sort | uniq -c | sort -rn
+```
+
 # things that I should make more use of
 * marks
 * `:global`
