@@ -104,6 +104,7 @@ if has('nvim')
     " Plug 'mfussenegger/nvim-dap'
     " Plug 'mfussenegger/nvim-fzy'
     " Plug 'https://github.com/vijaymarupudi/nvim-fzf'
+    " Plug 'https://github.com/TimUntersberger/neogit'
 endif
 
 call plug#end()
@@ -953,6 +954,11 @@ let g:NERDCustomDelimiters = {
             \ 'coq': { 'left': '(*', 'right': '*)', 'nested': 1 },
             \}
 let g:NERDDefaultAlign = 'left'
+" TODO: nested comment gets uncommented! e.g.
+" (*
+" (* *)
+" *)
+" → command to remove exactly one layer?
 " }}}
 
 " undotree

@@ -22,6 +22,14 @@
 function! tomtomjhj#coq#mappings()
     command! -buffer -bang -nargs=1 CoqGotoDefSplit call tomtomjhj#coq#goto_def('split', <f-args>, <bang>0)
 
+    " nvim may hang in `-- (insert) --` with `<C-\><C-o>:CoqNext<CR>` (vim somehow recovers).
+    " Use <C-y> to prevent race between CoqNext and <Plug>CocRefresh when pumvisible.
+    inoremap <buffer><expr> <Plug>CoqNext      (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqNext<CR>"
+    inoremap <buffer><expr> <Plug>CoqUndo      (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqUndo<CR>"
+    inoremap <buffer><expr> <Plug>CoqToLine    (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqToLine<CR>"
+    inoremap <buffer><expr> <Plug>CoqToTop     (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqToTop<CR>"
+    inoremap <buffer><expr> <Plug>CoqJumpToEnd (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqJumpToEnd<CR>"
+
     nmap <buffer>   <C-c>s     <Plug>CoqStop
     " NOTE: [count]
     nmap <buffer><leader><C-c> <Plug>CoqInterrupt
@@ -121,9 +129,7 @@ endfunction
 function! tomtomjhj#coq#folds()
     let save_cursor = getcurpos()
     " `zo` prevents unintended nested folds
-    silent keepjumps keeppatterns global/^\s*\zsModule.*\.$/normal zf%zo
-    silent keepjumps keeppatterns global/^\s*\zsSection.*\.$/normal zf%zo
-    silent keepjumps keeppatterns global/^\s*\zsProof.*\(Qed\)\@<!\.$/normal zf%zo
+    silent keepjumps keeppatterns global/\v^\s*\zs(End|Qed|Defined|Abort|Admitted|Save).*\.$/normal zf%zo
     normal! zM
     call setpos('.', save_cursor)
 endfunction

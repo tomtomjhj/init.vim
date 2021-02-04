@@ -115,7 +115,7 @@ endfunction
 function! CheckerWarnings()
   if luaeval('#vim.lsp.buf_get_clients() > -1')
     let warnings = luaeval('vim.lsp.diagnostic.get_count(0, "Warning")')
-    return warnings ? 'E' . warnings : ''
+    return warnings ? 'W' . warnings : ''
   endif
   return ''
 endfunction

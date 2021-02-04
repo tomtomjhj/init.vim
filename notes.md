@@ -141,8 +141,6 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
   Probably the output should be buffered.
 * Terminals can't distinguish some keys e.g. `<ESC>` and `<C-[>`, .. . `<M-[>` is prefix of `<PageUp>`, ...
     * vim won't receive `<C-q>` if `<C-q>`,`<C-s>` is enabled in the terminal
-* `inoremap <C-w> <C-R>=execute("norm db")<CR><C-R>=col('.')==col('$')-1?"\<lt>C-G>U\<lt>Right>":""<CR>`
-  This still breaks undo after ins-special-special and is still broken at the line end.
 * `<C-w>]` doesn't open in new tab if `switchbuf=useopen` which is useful for quickfix stuff.
 * `<ESC>` is somewhat different from `CTRL-C`: c (`/`, `?`), i, v, ..
     * `i_CTRL-C` doesn't trigger `InsertLeave`!
@@ -197,8 +195,9 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * shada merging bad https://github.com/neovim/neovim/issues/4295
     * impossible to wipe marks, registers, jumplist...
     * `:wshada!` https://vi.stackexchange.com/a/26540
-* nvim fold click is (sometimes) broken
+* nvim fold column click is (sometimes) broken https://github.com/neovim/neovim/issues/13872
 * nvim diff sync is broken: do diff (the buffer should be fresh e.g. wiped), jump to other window, enter insert → cursor position is wrong!
+    * only reproducible with `Gdiffsplit?`
 * The line on which a three-piece comment's start/end piece lies is treated specially by `gq`. Not documented in fo-table 'q'. Related? <https://github.com/vim/vim/issues/1696>.
     * These lines are not joined properly by `gq`.
       ```coq
