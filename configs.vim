@@ -536,7 +536,6 @@ nnoremap <leader>gf :<C-u>Grepf<space>
 nnoremap <leader>b  :<C-u>Buffers<CR>
 nnoremap <C-f>      :<C-u>Files<CR>
 nnoremap <leader>hh :<C-u>History<CR>
-" tag with fzf. TODO preview. (preview: <c-w>}). <C-w>] is affected by switchbuf
 nnoremap <leader><C-t> :Tags ^<C-r><C-w>\  <CR>
 
 " TODO: fzf multi-select quickfix list order is reversed
@@ -554,7 +553,7 @@ command! -nargs=* -bang Grep  call Ripgrep(<q-args>)
 command! -nargs=* -bang Grepf call RipgrepFly(<q-args>)
 command! -bang -nargs=? -complete=dir Files call Files(<q-args>)
 " allow search on the full tag info, excluding the appended tagfile name
-command! -bang -nargs=* Tags call fzf#vim#tags(<q-args>, { 'options': ['-d', '\t', '--nth', '..-2'] })
+command! -bang -nargs=* Tags call fzf#vim#tags(<q-args>, fzf#vim#with_preview({ "placeholder": "--tag {2}:{-1}:{3}", 'options': ['-d', '\t', '--nth', '..-2'] }))
 
 func! FzfOpts(arg, spec)
     " TODO: ask the directory to run (double 3), starting from %:p:h
