@@ -1,17 +1,3 @@
-syntax cluster coqVernac add=coqTopLevel
-" make multiple "Next Obligation" stuff work
-syntax cluster coqVernac add=coqProofBody
-
-" Fix `Program Definition`s.
-syn clear coqDef
-  syn region coqDef          contains=coqDefName matchgroup=coqVernacCmd start="\<\%(Program\_s\+\)\?\%(Definition\|Let\|Example\)\>" matchgroup=coqVernacPunctuation                end="\.$"me=e-1 end="\.\_s"me=e-2 nextgroup=coqDefContents1,coqProofBody keepend skipnl skipwhite skipempty
-" syn region coqDef          contains=coqDefName matchgroup=coqVernacCmd start="\<\%(Program\_s\+\)\?\%(Definition\|Let\|Example\)\>" matchgroup=coqVernacPunctuation end=":="me=e-2 end="\.$"me=e-1 end="\.\_s"me=e-2 nextgroup=coqDefContents1,coqProofBody keepend skipnl skipwhite skipempty
-"                                                                                                                                                                     ^^^^^^^^^^^^^^                                   ^^^^^^^^^^^^^^^^^^^^^^^^^
-"                                                                                                                                                                     This is correct but                              after matching coqDefContents1, coqProofBody is not matched.
-" On the other hand, stuff like coqIns somehow doesn't match coqDefContents1 (coqIns continues until the start of coqProofBody!) and directly proceeds to match coqProofBody.
-" Adding `nextgroup=coqProofBody` to coqDefContents1 definition didn't work.
-" As a temporary fix, deliberately break the definition of coqDef to make it work like coqIns.
-
 " tune symbol highlighting
 syn clear coqKwd
 syn keyword coqKwd contained else end exists2 fix cofix forall fun if in struct then as return

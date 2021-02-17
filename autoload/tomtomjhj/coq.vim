@@ -13,6 +13,7 @@
 " * show a buffer with session in split without jumping to its current layout
 " * `(` and `)` for sentence movement: not configurable ('sentence')
 "   * sentence text object
+"   * use coqtail's sentence parser?
 " * string escape in sentence parsing
 " * CoqGotoDef on id containing `'` is broken
 " * if a job failed, then clear the job queue
@@ -129,7 +130,7 @@ endfunction
 function! tomtomjhj#coq#folds()
     let save_cursor = getcurpos()
     " `zo` prevents unintended nested folds
-    silent keepjumps keeppatterns global/\v^\s*\zs(End|Qed|Defined|Abort|Admitted|Save).*\.$/normal zf%zo
+    silent keepjumps keeppatterns global/\v^\s*\zs(End|Qed|Defined|Abort|Admitted|Save).*\./normal zf%zo
     normal! zM
     call setpos('.', save_cursor)
 endfunction
