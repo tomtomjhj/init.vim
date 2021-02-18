@@ -1,5 +1,3 @@
-setlocal matchpairs-=<:>
-
 " vim-markdown-mappings {{{1
 function! s:nvmap(lhs, rhs)
     execute 'nmap <buffer>' . a:lhs . ' <Plug>' . a:rhs
