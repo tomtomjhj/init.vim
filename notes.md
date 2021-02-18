@@ -84,7 +84,6 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
     * `\(\/\/.*\)\@<!in` "in" which is not after "//"
 * forced-motion
 * `sub-replace-special`
-* `i_CTRL-R_CTRL-O` is fast
 * `equalalways`, `winfixheight`, ...
 * [profiling](https://stackoverflow.com/a/8347244)
   ```
@@ -149,6 +148,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * `g&`
 * `g<`
 * `_` without count is equivalent to `^`
+* `i_CTRL-R_CTRL-` `R/O/P`
 
 # pitfalls
 * Cursor movement on concealed string: `set concealcursor=n` doesn't work as expected. <https://vi.stackexchange.com/questions/4530/moving-over-conceal>
@@ -193,22 +193,6 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * nvim's `CursorMoved` is differrent from vim's. This makes `vimtex_matchparen` wrongly hightlight fzf floatwin.
 * showbreak breaks many things: blockwise paste, ..?
 * copying window-local variables on split is not synchronous??
-* jumplist is crazy
-    ```vim
-    0
-    let [lnum, col] = searchpos('^\s*\zsProof\.', 'cnW')
-    while lnum
-        " this creates jumps????
-        exe lnum
-        exe 'normal! ' . col . '|'
-        normal zf%
-        normal! $
-        let [lnum, col] = searchpos('^\s*\zsProof\.', 'cnW')
-        " This prevents creating jumps ???????
-        ju
-    endwhile
-    ```
-  (just use `:global` for this specific task)
 * shada merging bad https://github.com/neovim/neovim/issues/4295
     * impossible to wipe marks, registers, jumplist...
     * `:wshada!` https://vi.stackexchange.com/a/26540
@@ -237,6 +221,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 # stuff
 * https://arxiv.org/abs/2006.03103
 * https://teukka.tech/vimloop.html
+* https://blog.fsouza.dev/prettierd-neovim-format-on-save/
 
 # new (n)vim stuff
 * (8.2.0590) `backspace+=nostop`

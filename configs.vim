@@ -66,9 +66,11 @@ else
     Plug 'steelsojka/completion-buffers'
     Plug 'kristijanhusak/completion-tags'
     Plug 'neovim/nvim-lspconfig'
+    " https://github.com/anott03/nvim-lspinstall
     Plug 'nvim-lua/lsp_extensions.nvim'
     Plug 'nvim-lua/lsp-status.nvim'
-    " TODO Plug 'https://github.com/RishabhRD/nvim-lsputils'
+    " Plug 'https://github.com/RishabhRD/nvim-lsputils'
+    " Plug 'https://github.com/glepnir/lspsaga.nvim'
 endif
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'plasticboy/vim-markdown'
@@ -364,8 +366,8 @@ hi! link CocRustChainingHint TypeHint
 
 nmap <leader>fm <Plug>(ale_fix)
 nmap <M-,> <Plug>(ale_detail)<C-W>p
-nmap ]a <Plug>(ale_next_wrap)
-nmap [a <Plug>(ale_previous_wrap)
+nmap ]d <Plug>(ale_next_wrap)
+nmap [d <Plug>(ale_previous_wrap)
 noremap  <M-.> K
 noremap  <M-]> <C-]>
 nnoremap <M-o> <C-o>
@@ -645,7 +647,7 @@ map T <Plug>Sneak_T
 hi! Sneak guifg=black guibg=#afff00 gui=bold ctermfg=black ctermbg=154 cterm=bold
 " NOTE: my fork
 let g:sneak#alias = {
-            \ 'a': '[aα]', 'b': '[bβ]', 'c': '[cξ]', 'd': '[dδ]', 'e': '[eε]', 'f': '[fφ]', 'g': '[gγ]', 'h': '[hθ]', 'i': '[iι]', 'j': '[jϊ]', 'k': '[kκ]', 'l': '[lλ]', 'm': '[mμ]', 'n': '[nν]', 'o': '[oο]', 'p': '[pπ]', 'q': '[qψ]', 'r': '[rρ]', 's': '[sσ]', 't': '[tτ]', 'u': '[uυ]', 'v': '[vϋ𝓥]', 'w': '[wω]', 'x': '[xχ]', 'y': '[yη]', 'z': '[zζ]',
+            \ 'a': '[aα∀]', 'b': '[bβ]', 'c': '[cξ]', 'd': '[dδ]', 'e': '[eε∃]', 'f': '[fφ]', 'g': '[gγ]', 'h': '[hθ]', 'i': '[iι]', 'j': '[jϊ]', 'k': '[kκ]', 'l': '[lλ]', 'm': '[mμ]', 'n': '[nν]', 'o': '[oο]', 'p': '[pπ]', 'q': '[qψ]', 'r': '[rρ]', 's': '[sσ]', 't': '[tτ]', 'u': '[uυ]', 'v': '[vϋ𝓥]', 'w': '[wω]', 'x': '[xχ]', 'y': '[yη]', 'z': '[zζ]',
             \ '*': '[*∗]',
             \ '/': '[/∧]', '\': '[\∨]',
             \ '<': '[<≼]',
@@ -824,9 +826,11 @@ augroup END
 
 " asyncrun
 map <leader>R :AsyncRun<space>
-map <leader>S :AsyncStop<CR>
+map <leader>ST :AsyncStop\|let g:asyncrun_status = ''<CR>
 command! -bang -nargs=* -complete=file Make AsyncRun -program=make @ <args>
 map <leader>M :Make<space>
+command! -bang -bar -nargs=* -complete=customlist,fugitive#PushComplete Gpush  execute 'AsyncRun<bang> -cwd=' . fnameescape(FugitiveGitDir()) 'git push' <q-args>
+command! -bang -bar -nargs=* -complete=customlist,fugitive#FetchComplete Gfetch execute 'AsyncRun<bang> -cwd=' . fnameescape(FugitiveGitDir()) 'git fetch' <q-args>
 
 " quickfix, loclist, ... {{{
 " TODO: manually adding lines to qf?

@@ -27,8 +27,8 @@ function! SetupLSP()
   nmap     <silent><buffer><leader>O     :<C-u>CocFzfList outline<CR>
   nmap     <silent><buffer><leader>sb    :<C-u>CocFzfList symbols<CR>
   nmap     <silent><buffer><leader>dl    :<C-U>CocFzfList diagnostics<CR>
-  nmap     <silent><buffer>        [a    <Plug>(coc-diagnostic-prev)
-  nmap     <silent><buffer>        ]a    <Plug>(coc-diagnostic-next)
+  nmap     <silent><buffer>        [d    <Plug>(coc-diagnostic-prev)
+  nmap     <silent><buffer>        ]d    <Plug>(coc-diagnostic-next)
 endfunction
 
 function! CurrentFunction()
@@ -89,8 +89,8 @@ function! SetupLSP()
   nnoremap <buffer><silent><leader>gd    <cmd>lua vim.lsp.buf.declaration()<CR>
   nnoremap <buffer><silent><leader>fm    <cmd>lua vim.lsp.buf.formatting()<CR>
   nnoremap <buffer><silent><leader>rn    <cmd>lua vim.lsp.buf.rename()<CR>
-  nnoremap <buffer><silent>        [a    <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
-  nnoremap <buffer><silent>        ]a    <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
+  nnoremap <buffer><silent>        [d    <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
+  nnoremap <buffer><silent>        ]d    <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
   " nnoremap <buffer><silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
   " nnoremap <buffer><silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
   " nnoremap <buffer><silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
