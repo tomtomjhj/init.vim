@@ -24,7 +24,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
     * markdown list
 * fzf preview: <S-down> slow -> key code 분해됨
 * make repetitive jump commands' jumplist modification behave like `sneak-clever-s`
-    * "n", "N", "(", ")", "[[", "]]", "{", "}", "L", "H"
+    * "n", "N" (→ `/_CTRL-G`, `/_CTRL-T`), "(", ")", "[[", "]]", "{", "}", "L", "H"
 * Make prefix of built-in and user map time out <https://stackoverflow.com/questions/12089482>. 
   ```vim
   " breaks built in
@@ -55,6 +55,8 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * bullet list block textobj, somewhat similar to haskell layout rule
 * `/` without moving cursor
 * custom command modifier? (`<mods>`) for smart splitting based on current window layout
+* ignore folded region while searching
+* unified framework for pair matching: surround/sandwich + matchit/matchup + auto-pairs/pear-tree + nvim-ts-rainbow ...
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????

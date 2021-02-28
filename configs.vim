@@ -17,7 +17,7 @@ Plug 'tomtomjhj/vim-sneak'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'tomtomjhj/pear-tree'
-Plug 'andymass/vim-matchup' " i%, a%, ]%, z%, g%
+Plug 'andymass/vim-matchup' " i%, a%, ]%, z%, g% TODO: % that seeks backward https://github.com/andymass/vim-matchup/issues/49#issuecomment-470933348
 Plug 'wellle/targets.vim' " multi (e.g. ib, iq), separator, argument
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'kana/vim-textobj-user'
@@ -91,7 +91,7 @@ Plug 'fatih/vim-go', { 'do': 'rm -rf plugin ftplugin' }
 Plug 'vim-python/python-syntax'
 Plug 'tbastos/vim-lua'
 Plug 'leafgarland/typescript-vim'
-" Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] }
+" Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] } | let g:grammarous#use_location_list = 1
 
 " etc etc
 if has('nvim')
@@ -99,6 +99,7 @@ if has('nvim')
     Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
     " https://github.com/wbthomason/packer.nvim
     " https://github.com/fsouza/vimfiles/tree/main/lua/fsouza
+    " https://github.com/phaazon/hop.nvim/
     " Plug 'nvim-lua/plenary.nvim'
     " Plug 'nvim-lua/popup.nvim'
     " Plug 'tjdevries/nlua.nvim'
@@ -442,6 +443,7 @@ let g:vim_markdown_no_default_key_mappings = 1
 " let g:mkdp_open_to_the_world = 1
 " let g:mkdp_echo_preview_url = 1
 let g:mkdp_auto_close = 0
+let g:mkdp_page_title = '${name}'
 let g:mkdp_preview_options = {
             \ 'mkit': { 'typographer': v:false },
             \ 'disable_sync_scroll': 1 }
@@ -472,7 +474,9 @@ function! g:CoqtailHighlight()
     hi def CoqtailSent ctermbg=60 guibg=#5f5f87
 endfunction
 augroup SetupCoq | au!
-    au FileType coq,coq-goals,coq-infos call tomtomjhj#coq#mappings()
+    au FileType coq,coq-goals,coq-infos
+                \ call tomtomjhj#coq#mappings() |
+                \ set matchpairs+=⌜:⌝,⎡:⎤
     " NOTE: 'r', 'o' flags don't distinguish bullet '*' and comment leader '*'
     au FileType coq
                 \ let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} }) |
@@ -492,6 +496,7 @@ augroup END
 " }}}
 
 let g:lisp_rainbow = 1
+let g:vimsyn_embed = 'l' " TODO: only loads $VIMRUNTIME/syntax/lua.vim
 " }}}
 
 " search & fzf {{{
@@ -655,9 +660,10 @@ let g:sneak#alias = {
             \ '[': '[[⌜⎡⊑⊓]', ']': '[\]⌝⎤⊒⊔]',
             \}
 
-" TODO: (speicial char -> non-blank, non-keyword), user-defined (paren -> pair?)
-" s-word: (a keyword | repetition of non-paren speicial char | a paren | whitespace)
+" TODO: (special char -> non-blank, non-keyword), user-defined (paren -> pair?)
+" s-word: (a keyword | repetition of non-paren special char | a paren | whitespace)
 let g:sword = '\v(\k+|([^[:alnum:]_[:blank:](){}[\]<>$])\2*|[(){}[\]<>$]|\s+)'
+"                     %(\k|[()[\]{}<>[:blank:]$])@!(.)\1*
 
 " Jump past a sword. Assumes `set whichwrap+=]` for i_<Right>
 inoremap <silent><C-j> <C-r>=SwordJumpRight()<CR><Right>
@@ -777,6 +783,8 @@ nnoremap <C-j> <C-W>j
 nnoremap <C-k> <C-W>k
 nnoremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
+
+command! -count Wfh set winfixheight | if <count> | exe "normal! z".<count>."\<CR>" | endif
 
 noremap <leader>q :<C-u>q<CR>
 noremap q, :<C-u>q<CR>
@@ -941,6 +949,7 @@ let g:NERDCreateDefaultMappings = 0
 " NOTE: indentation is incorrect sometimes. Use i_CTRL-f
 imap <M-/> <C-G>u<Plug>NERDCommenterInsert
 map <M-/> <Plug>NERDCommenterComment
+" TODO: <Plug>NERDCommenterComment using block comment on visual block whose last char is unicode (e.g. "a가") breaks up the unicode char
 xmap <leader>c<Space> <Plug>NERDCommenterToggle
 nmap <leader>c<Space> <Plug>NERDCommenterToggle
 xmap <leader>cs <Plug>NERDCommenterSexy

@@ -1,3 +1,6 @@
+" In markdown fenced code block, comments inside terms are not highlighted.
+syn cluster coqTerm add=coqComment
+
 " tune symbol highlighting
 syn clear coqKwd
 syn keyword coqKwd contained else end exists2 fix cofix forall fun if in struct then as return

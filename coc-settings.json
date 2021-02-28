@@ -4,6 +4,7 @@
     "coc.preferences.hoverTarget": "preview",
     "coc.preferences.previewAutoClose": false,
     "coc.preferences.previewMaxHeight": 20,
+    "coc.preferences.currentFunctionSymbolAutoUpdate": true,
     "list.insertMappings": {
         "<C-q>": "feedkeys:\\<ESC>"
     },

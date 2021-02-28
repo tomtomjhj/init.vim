@@ -20,8 +20,10 @@ function s:SetupDigraph()
     digraph <\ 8828 " ≼
     digraph [U 8851 " ⊓
     digraph ]U 8852 " ⊔
-    digraph =[ 8849 " ⊑
-    digraph ]= 8850 " ⊒
+    digraph [C 8847 " ⊏
+    digraph ]C 8848 " ⊐
+    digraph [_ 8849 " ⊑
+    digraph ]_ 8850 " ⊒
     digraph ~< 8818 " ≲
     digraph v^ 8652 " ⇌
     exec 'digraph (+ 8713 " ∉'
@@ -33,6 +35,7 @@ function s:SetupDigraph()
 
     digraph _l 8343 " ₗ
     digraph _t 8348 " ₜ
+    digraph _p 8346 " ₚ
     digraph ^a 7491 " ᵃ
     digraph ^c 7580 " ᶜ
     digraph ^e 7497 " ᵉ
