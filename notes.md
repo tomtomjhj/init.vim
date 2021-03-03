@@ -57,6 +57,9 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * custom command modifier? (`<mods>`) for smart splitting based on current window layout
 * ignore folded region while searching
 * unified framework for pair matching: surround/sandwich + matchit/matchup + auto-pairs/pear-tree + nvim-ts-rainbow ...
+* automatically apply patches for plugins that I don't want to fork
+    * pre-PlugUpdate command
+    * command to checkout,PlugUpdate,patch
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -151,6 +154,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * `g<`
 * `_` without count is equivalent to `^`
 * `i_CTRL-R_CTRL-` `R/O/P`
+* surround `f/F/^F`
 
 # pitfalls
 * Cursor movement on concealed string: `set concealcursor=n` doesn't work as expected. <https://vi.stackexchange.com/questions/4530/moving-over-conceal>
@@ -180,6 +184,9 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * `<C-k><space><space>` is non-break space! Can't disable with
     * `exe "digraph \<Space>\<Space> 32"`
     * `exe "inoremap \u00A0 <Space>"`
+* lightline
+    * separator hightlighting is optimized for fancy stuff like `'separator': { 'left': '', 'right': '' }, 'subseparator': { 'left': '', 'right': '' }` ([issue](https://github.com/itchyny/lightline.vim/issues/85)) → using `' '` for separator results in some odd whitespaces
+    * `component_expand` is not per-window
 
 # (n)vim problem
 * terminal reflow https://github.com/neovim/neovim/issues/2514

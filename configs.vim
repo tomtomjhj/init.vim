@@ -193,26 +193,27 @@ endif
 " }}}
 
 " Themes {{{
-" TODO: display winnr()? w:quickfix_title?
-" TODO: checker_* for inactive window doesn't use the buffer of that window?
+" TODO: buffer_title: merge specialbuf and shortrelpath; and do more fancy stuff for special buffers e.g. w:quickfix_title, term:///, fugitive://, ..
+" TODO: merge readonly and modified
 let g:lightline = {
       \ 'colorscheme': 'powerwombat',
       \ 'active': {
       \   'left': [ ['mode', 'paste'],
-      \             ['readonly', 'speicialbuf', 'shortrelpath', 'modified'],
+      \             ['readonly', 'specialbuf', 'shortrelpath', 'modified'],
       \             ['curr_func', 'git'] ],
       \   'right': [ ['lineinfo'], ['percent'],
       \              ['checker_errors', 'checker_warnings', 'checker_status'],
       \              ['asyncrun'] ]
       \ },
       \ 'inactive': {
-      \   'left': [ ['speicialbuf', 'shortrelpath'] ],
-      \   'right': [ ['lineinfo'],
-      \              ['percent'] ]
+      \   'left': [ ['specialbuf', 'shortrelpath'],
+      \             ['winnr'] ],
+      \   'right': [ ['lineinfo'], ['percent'],
+      \              ['checker_errors_inactive', 'checker_warnings_inactive'] ]
       \ },
       \ 'component': {
       \   'readonly': '%{&readonly && &filetype !=# "help" ? "🔒" : ""}',
-      \   'speicialbuf': '%q%w',
+      \   'specialbuf': '%q%w',
       \   'modified': '%{&filetype==#"help"?"":&modified?"+":&modifiable?"":"-"}',
       \   'asyncrun': '%{g:asyncrun_status[:3]}',
       \ },
@@ -221,6 +222,8 @@ let g:lightline = {
       \   'shortrelpath': 'ShortRelPath',
       \   'curr_func': 'CurrentFunction',
       \   'checker_status': 'CheckerStatus',
+      \   'checker_errors_inactive': 'CheckerErrors',
+      \   'checker_warnings_inactive': 'CheckerWarnings',
       \ },
       \ 'component_expand': {
       \  'checker_errors': 'CheckerErrors',
@@ -233,10 +236,8 @@ let g:lightline = {
       \ 'component_visible_condition': {
       \   'readonly': '(&filetype!=#"help"&& &readonly)',
       \   'modified': '(&filetype!=#"help"&&(&modified||!&modifiable))',
-      \   'speicialbuf': '&pvw||&buftype==#"quickfix"',
+      \   'specialbuf': '&pvw||&buftype==#"quickfix"',
       \ },
-      \ 'separator': { 'left': ' ', 'right': ' ' },
-      \ 'subseparator': { 'left': '|', 'right': '|' },
       \ 'mode_map': {
       \     'n' : 'N ',
       \     'i' : 'I ',
