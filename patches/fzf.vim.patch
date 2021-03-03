@@ -1,0 +1,13 @@
+diff --git a/autoload/fzf/vim.vim b/autoload/fzf/vim.vim
+index 090f9d2..9ab5b23 100644
+--- a/autoload/fzf/vim.vim
++++ b/autoload/fzf/vim.vim
+@@ -350,7 +350,7 @@ endfunction
+ 
+ function! s:fill_quickfix(list, ...)
+   if len(a:list) > 1
+-    call setqflist(a:list)
++    call setqflist(sort(a:list, 'tomtomjhj#qf#compare_quickfix_item'))
+     copen
+     wincmd p
+     if a:0

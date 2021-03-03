@@ -546,7 +546,7 @@ nnoremap <C-f>      :<C-u>Files<CR>
 nnoremap <leader>hh :<C-u>History<CR>
 nnoremap <leader><C-t> :Tags ^<C-r><C-w>\  <CR>
 
-" TODO: fzf multi-select quickfix list order is reversed
+" TODO: https://github.com/jonhoo/proximity-sort
 augroup fzf | au!
     if has('nvim')
         " `au TermOpen tnoremap` and `au FileType fzf tunmap` breaks coc-fzf
@@ -596,14 +596,14 @@ endfunc
 let s:rg_cmd_base = 'rg --column --line-number --no-heading --color=always --colors path:fg:218 --colors match:fg:116 --smart-case '
 func! Ripgrep(query)
     let cmd = s:rg_cmd_base . shellescape(a:query)
-    let spec = FzfOpts(v:count, {'options': ['--info=inline']})
+    let spec = FzfOpts(v:count, {'options': ['--info=inline', '--layout=reverse-list']})
     call fzf#vim#grep(cmd, 1, spec)
 endfunc
 func! RipgrepFly(query)
     let command_fmt = s:rg_cmd_base . '-- %s || true'
     let initial_command = printf(command_fmt, shellescape(a:query))
     let reload_command = printf(command_fmt, '{q}')
-    let spec = FzfOpts(v:count, {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command, '--info=inline']})
+    let spec = FzfOpts(v:count, {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command, '--info=inline', '--layout=reverse-list']})
     call fzf#vim#grep(initial_command, 1, spec)
 endfunc
 func! Files(query)
