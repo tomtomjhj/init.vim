@@ -159,9 +159,13 @@ set shortmess+=Ic
 
 set noswapfile " set directory=~/.vim/swap//
 set backup backupdir=~/.vim/backup//
-set undofile undodir=~/.vim/undo//
+set undofile
 set history=500
-if has('nvim') | set shada=!,'150,<50,s30,h | endif
+if has('nvim')
+    set shada=!,'150,<50,s30,h undodir=~/.vim/undoo//
+else
+    set viminfo=!,'150,<50,s30,h undodir=~/.vim/undo//
+endif
 
 set autoread
 set splitright splitbelow
