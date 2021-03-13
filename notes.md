@@ -60,6 +60,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * automatically apply patches for plugins that I don't want to fork
     * pre-PlugUpdate command
     * command to checkout,PlugUpdate,patch
+* `debug-mode`?
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -179,7 +180,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
         * `<CR><C-c>O` (`nosmartindent`) vs. `<CR><C-c>=ko` (`&indentexpr != ''`)
 * stuff highlighted as `Normal` -> bg doesn't match in floatwin
 * lightline + cursorline + lazyredraw + large &lines = performance drop
-* recording doesn't work well with async completion
+* recording doesn't work well with async completion → **TODO** `wildcharm`?
 * `gq` internal formatting uses `indentexpr` (not documented?)
 * `<C-k><space><space>` is non-break space! Can't disable with
     * `exe "digraph \<Space>\<Space> 32"`
@@ -226,6 +227,9 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
       - ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
       *)
       ```
+* treesitter
+    * typescript: vim syntax and treesitter hightlighting both on??
+    * doesn't highlight `TODO` in comments https://github.com/nvim-treesitter/nvim-treesitter/issues/236
 
 # stuff
 * https://arxiv.org/abs/2006.03103

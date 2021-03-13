@@ -11,7 +11,6 @@ Plug 'lifepillar/vim-solarized8'
 Plug 'tomtomjhj/zenbruh.vim'
 
 " editing
-" similar to the result of Sneak_;
 Plug 'tomtomjhj/vim-sneak'
 " TODO: machakann/vim-sandwich?
 Plug 'tpope/vim-surround'
@@ -104,7 +103,9 @@ if has('nvim')
     " Plug 'nvim-lua/popup.nvim'
     " Plug 'tjdevries/nlua.nvim'
     " Plug 'nvim-telescope/telescope.nvim'
-    " Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+    Plug 'nvim-treesitter/playground'
+    " Plug 'nvim-treesitter/nvim-treesitter-textobjects'
     " Plug 'mfussenegger/nvim-dap'
     " Plug 'mfussenegger/nvim-fzy'
     " Plug 'https://github.com/vijaymarupudi/nvim-fzf'
@@ -987,13 +988,13 @@ let g:neoterm_automap_keys = '<leader>T'
 " }}}
 
 " etc util {{{
-func! SynStackName()
-    return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+func! ShowSyntaxInfo()
+    echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")') '->' synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name')
+    if has('nvim')
+        TSHighlightCapturesUnderCursor
+    endif
 endfunc
-func! SynGroup()
-    return synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name')
-endfunc
-nmap <leader>st :echo SynStackName() '->' SynGroup()<CR>
+nmap <silent><leader>st :<C-u>call ShowSyntaxInfo()<CR>
 func! InSynStack(pat, ...)
     let synstack = a:0 ? a:1 : synstack(line('.'), col('.'))
     for i in synstack

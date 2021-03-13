@@ -32,3 +32,16 @@ hi! link LspDiagnosticsVirtualTextHint TypeHint
 " hi! link LspDiagnosticsFloatingWarning
 " hi! link LspDiagnosticsFloatingInformation
 " hi! link LspDiagnosticsFloatingHint
+
+" TODO: how to customize highlighting queries? → read readme
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = {},
+  highlight = {
+    enable = true
+  },
+  indent = {
+    enable = true
+  }
+}
+EOF
