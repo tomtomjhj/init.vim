@@ -474,11 +474,9 @@ let g:go_highlight_types = 1
 
 " Coq {{{
 " TODO: coq ctags (there's etags generator `coqtags`)
-function! g:CoqtailHighlight()
-    " TODO: interaction with listchar? NonText highlighting disappears when CoqtailChecked is applied
-    hi def CoqtailChecked ctermbg=237 guibg=#3a3a3a
-    hi def CoqtailSent ctermbg=60 guibg=#5f5f87
-endfunction
+" TODO: interaction with listchar? NonText highlighting disappears when CoqtailChecked is applied
+hi CoqtailChecked ctermbg=237 guibg=#3a3a3a
+hi CoqtailSent ctermbg=60 guibg=#5f5f87
 augroup SetupCoq | au!
     au FileType coq,coq-goals,coq-infos
                 \ call tomtomjhj#coq#mappings() |

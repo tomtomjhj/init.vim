@@ -3,10 +3,7 @@
 " * <Plug>CoqJumpToEnd blocks while processing
 " * how to hide a buffer without error? (+ bdelete)
 " * spell
-" * something breaks sneak if run while processing
-"   * can't do anything *interesting* while processing, e.g. visual mode,
-"     editing (nomodiable) git-messenger, ... autocmd stuff??
-"   * how to make it more async? rEWrItE in lua?
+" * something breaks sneak if run while processing → #197
 " * queries: if no session for current buffer, use existing one
 "   * one-session mode (like PG)
 " * auto layout breaks nerdtree
@@ -19,27 +16,30 @@
 " * if a job failed, then clear the job queue
 " * goal/info panel not updated when the main panel is displayed in another tab
 " * tradewind breaks coqtail and nvim
-" * jump to error position
 " * disable coc path completion trigger (`/`)
+" * errorformat: File "%f", line %l, characters 83-90:
+" * show diff of unification error
 
 function! tomtomjhj#coq#mappings()
     command! -buffer -bang -nargs=1 CoqGotoDefSplit call tomtomjhj#coq#goto_def('split', <f-args>, <bang>0)
 
     " nvim may hang in `-- (insert) --` with `<C-\><C-o>:CoqNext<CR>` (vim somehow recovers).
     " Use <C-y> to prevent race between CoqNext and <Plug>CocRefresh when pumvisible.
-    inoremap <buffer><expr> <Plug>CoqNext      (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqNext<CR>"
-    inoremap <buffer><expr> <Plug>CoqUndo      (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqUndo<CR>"
-    inoremap <buffer><expr> <Plug>CoqToLine    (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqToLine<CR>"
-    inoremap <buffer><expr> <Plug>CoqToTop     (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqToTop<CR>"
-    inoremap <buffer><expr> <Plug>CoqJumpToEnd (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqJumpToEnd<CR>"
+    inoremap <buffer><expr> <Plug>CoqNext        (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqNext<CR>"
+    inoremap <buffer><expr> <Plug>CoqUndo        (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqUndo<CR>"
+    inoremap <buffer><expr> <Plug>CoqToLine      (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqToLine<CR>"
+    inoremap <buffer><expr> <Plug>CoqToTop       (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqToTop<CR>"
+    inoremap <buffer><expr> <Plug>CoqJumpToEnd   (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqJumpToEnd<CR>"
+    inoremap <buffer><expr> <Plug>CoqJumpToError (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqJumpToError<CR>"
 
-    nmap <buffer>   <C-c>s     <Plug>CoqStop
+    nmap <buffer>   <C-c>s     <Plug>CoqInterrupt<Plug>CoqStop
     " NOTE: [count]
     nmap <buffer><leader><C-c> <Plug>CoqInterrupt
     nmap <buffer>        <M-j> <Plug>CoqNext
     nmap <buffer>        <M-k> <Plug>CoqUndo
     nmap <buffer>        <M-l> <Plug>CoqToLine
     nmap <buffer><leader>c.    <Plug>CoqJumpToEnd
+    nmap <buffer><leader>c,    <Plug>CoqJumpToError
     imap <buffer>        <M-j> <Plug>CoqNext
     imap <buffer>        <M-k> <Plug>CoqUndo
     imap <buffer>        <M-l> <Plug>CoqToLine
@@ -50,6 +50,7 @@ function! tomtomjhj#coq#mappings()
     imap <buffer>   <C-c>k     <Plug>CoqUndo
     imap <buffer>   <C-c>l     <Plug>CoqToLine
     nmap <buffer>   <C-c>.     <Plug>CoqJumpToEnd
+    nmap <buffer>   <C-c>,     <Plug>CoqJumpToError
     nmap <buffer>   <C-c><C-j> <Plug>CoqNext
     nmap <buffer>   <C-c><C-k> <Plug>CoqUndo
     nmap <buffer>   <C-c><C-l> <Plug>CoqToLine
@@ -99,7 +100,7 @@ function! tomtomjhj#coq#mappings()
     vmap <buffer>gq   <cmd>call tomtomjhj#coq#gq(visualmode(), 1)<CR>
 endfunction
 
-" TODO: normal gotodef-ing in aux buf makes aux buf listed
+" TODO: normal gotodef-ing in aux buf makes it 'buflisted'
 " TODO case when the target's source file already has a session
 function! tomtomjhj#coq#goto_def(split, target, bang) abort
     call coqtail#panels#switch(g:coqtail#panels#main)
@@ -113,17 +114,17 @@ endfunction
 " On FileType, register and manually trigger once?
 function! tomtomjhj#coq#split(split)
     exe a:split
+    " NOTE: wait until `s:call('refresh', '', 0, {})` finishes
+    sleep 21ms
     call tomtomjhj#coq#clearhl()
 endfunction
 
 function! tomtomjhj#coq#clearhl()
-    " TODO: timing-sensitive???? when does window-local variables get copied???
-    sleep 21ms
-    let win = winnr()
+    let win = win_getid()
     for l:var in ['coqtail_checked', 'coqtail_sent', 'coqtail_error']
         let l:val = getwinvar(win, l:var, -1)
         if l:val != -1
-            call matchdelete(l:val)
+            call matchdelete(l:val, win)
             call setwinvar(win, l:var, -1)
         endif
     endfor
