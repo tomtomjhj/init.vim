@@ -426,8 +426,13 @@ augroup END
 " }}}
 
 " Markdown, Pandoc, Tex {{{
+" TODO: check vimtex-imap and UltiSnips
 let g:tex_flavor = "latex"
 let g:tex_noindent_env = '\v\w+.?'
+let g:vimtex_fold_enabled = 1
+let g:matchup_override_vimtex = 1
+let g:vimtex_view_method = 'zathura'
+if has('nvim') | let g:vimtex_compiler_progname = 'nvr' | endif
 let g:pandoc#syntax#codeblocks#embeds#langs = ["python", "cpp", "rust"]
 let g:pandoc#modules#enabled = ["formatting", "hypertext", "yaml"]
 " Surround triggers equalprg (pandoc -t markdown), which modifies the text a lot
@@ -436,8 +441,6 @@ let g:pandoc#folding#level = 99
 let g:pandoc#hypertext#use_default_mappings = 0
 let g:pandoc#syntax#use_definition_lists = 0
 let g:pandoc#syntax#protect#codeblocks = 0
-" TODO: inspect some auto-expanded snippets
-let g:vimtex_fold_enabled = 1
 let g:vim_markdown_folding_disabled = 1 " manually control folds: see ftplugin/markdown.vim
 let g:vim_markdown_folding_level = 6
 let g:vim_markdown_folding_style_pythonic = 1
