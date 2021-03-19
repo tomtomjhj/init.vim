@@ -687,6 +687,7 @@ func! SwordJumpLeft()
 endfunc
 
 " i_CTRL-W and i_CTRL-U without 'stop once at the start of insert' (resolved https://github.com/vim/vim/pull/5940)
+" TODO: <C-\><C-o><ESC> breaks dot repeat
 inoremap <M-w> <C-\><C-o><ESC><C-w>
 inoremap <C-u> <C-\><C-o><ESC><C-g>u<C-u>
 " Delete a single character of other non-blank chars
@@ -1021,7 +1022,7 @@ endfunc
 command! -nargs=* -complete=command Execute silent call Execute(<q-args>)
 
 command! -range=% Unpdf
-            \ keeppatterns <line1>,<line2>substitute/[“”ł]/"/ge |
+            \ keeppatterns <line1>,<line2>substitute/[“”łž]/"/ge |
             \ keeppatterns <line1>,<line2>substitute/[‘’]/'/ge |
             \ keeppatterns <line1>,<line2>substitute/\w\zs-\n//ge
 

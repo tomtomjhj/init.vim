@@ -206,7 +206,6 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * shada merging bad https://github.com/neovim/neovim/issues/4295
     * impossible to wipe marks, registers, jumplist...
     * `:wshada!` https://vi.stackexchange.com/a/26540
-* nvim fold column click is (sometimes) broken https://github.com/neovim/neovim/issues/13872
 * nvim diff sync is broken: do diff (the buffer should be fresh e.g. wiped), jump to other window, enter insert → cursor position is wrong!
     * only reproducible with `Gdiffsplit?`
 * The line on which a three-piece comment's start/end piece lies is treated specially by `gq`. Not documented in fo-table 'q'. Related? <https://github.com/vim/vim/issues/1696>.
