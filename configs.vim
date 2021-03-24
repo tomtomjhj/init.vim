@@ -60,12 +60,9 @@ if g:ide_client == 'coc'
     " Plug '~/apps/coc.nvim', { 'branch': 'master', 'do': 'yarn install --frozen-lockfile' }
     Plug 'antoinemadec/coc-fzf'
 else
-    " https://github.com/hrsh7th/nvim-compe
-    Plug 'nvim-lua/completion-nvim'
-    Plug 'steelsojka/completion-buffers'
-    Plug 'kristijanhusak/completion-tags'
+    Plug 'hrsh7th/nvim-compe'
     Plug 'neovim/nvim-lspconfig'
-    " https://github.com/anott03/nvim-lspinstall
+    Plug 'anott03/nvim-lspinstall'
     Plug 'nvim-lua/lsp_extensions.nvim'
     Plug 'nvim-lua/lsp-status.nvim'
     " Plug 'https://github.com/RishabhRD/nvim-lsputils'
@@ -99,6 +96,8 @@ if has('nvim')
     " https://github.com/wbthomason/packer.nvim
     " https://github.com/fsouza/vimfiles/tree/main/lua/fsouza
     " https://github.com/phaazon/hop.nvim/
+    " Plug 'lukas-reineke/indent-blankline.nvim', { 'branch': 'lua' } " TODO tab listchar interaction
+    " https://github.com/lewis6991/gitsigns.nvim
     " Plug 'nvim-lua/plenary.nvim'
     " Plug 'nvim-lua/popup.nvim'
     " Plug 'tjdevries/nlua.nvim'
@@ -175,7 +174,7 @@ set hidden
 set lazyredraw
 
 set exrc secure
-set diffopt+=algorithm:histogram
+set diffopt+=algorithm:histogram " NOTE: indent-heuristic
 
 augroup BasicSetup | au!
     " Return to last edit position when entering normal buffer
@@ -286,53 +285,57 @@ endif
 " }}}
 
 " Completion {{{
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 if g:ide_client == 'coc'
-    inoremap <silent><expr> <TAB>
-          \ pumvisible() ? "\<C-n>" :
-          \ <SID>check_back_space() ? "\<TAB>" :
-          \ coc#refresh()
-    inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-    function! s:check_back_space() abort
-      let col = col('.') - 1
-      return !col || getline('.')[col - 1]  =~# '\s'
-    endfunction
+    inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : <SID>check_back_space() ? "\<Tab>" : coc#refresh()
 else " lua
-    " TODO: completion-nvim improvements
-    " * source name abbrev (`complete-items` menu)
-    " * scoring, priority
-    " * per-source trigger character (esp for path)
-    " * somewhat less smooth?
-    " * more sources (words, ...)
-    " * chain completion isn't good because it uses built-in synchronous i_CTRL-X stuff
+    " TODO
+    " * customize `complete-items` menu
     " * prefix-only completion: e.g. `prefix_suffix` in buffer, input `suffix` and type `pre` and complete.
-    "   Note: https://github.com/neoclide/coc.nvim/blob/8be4f03aff75363818372a755daa8a0dc2071cf0/src/completion/complete.ts#L202-L206
+    "   https://github.com/hrsh7th/nvim-compe/issues/157
     " * buffer source: don't add the word currently being inserted e.g. `presuffix` in the above example.
     "   Note: this only happens when inserting prefix of the word
+    " * matching
+    "   * noignorecase?
+    "   * fuzzy, but exact match for the first char
+    " * don't load disabled sources; loading lua is surprisingly slow https://github.com/hrsh7th/nvim-compe/issues/220
     set completeopt=menuone,noinsert,noselect
-    augroup Completion | au!
-        au BufEnter * lua require'completion'.on_attach()
-    augroup END
-    imap <tab>   <Plug>(completion_smart_tab)
-    imap <s-tab> <Plug>(completion_smart_s_tab)
-
-    let g:completion_enable_snippet = 'UltiSnips'
-    let g:completion_enable_auto_paren = 1
-    let g:completion_chain_complete_list = {
-                \ 'default' : [
-                \    {'complete_items': ['lsp', 'tags', 'UltiSnips', 'buffers']},
-                \ ],
-                \}
-    let g:completion_timer_cycle = 123
-    let g:completion_auto_change_source = 0
-    let g:completion_matching_strategy_list = ['exact', 'fuzzy']
-    let g:completion_confirm_key = "\<C-y>"
-    let g:completion_matching_ignore_case = 0
-    let g:completion_matching_smart_case = 0
-    let g:completion_customize_lsp_label = {'Buffers': '[B]', 'UltiSnips': '[US]'}
-
-    let g:completion_word_separator = '\%(\k\)\@!.'
+    inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : <SID>check_back_space() ? "\<Tab>" : compe#complete()
+    inoremap <expr> <C-y> compe#confirm('<C-y>')
+    inoremap <expr> <C-e> compe#close('<C-e>')
+    " let g:loaded_compe_buffer = 1
+    let g:loaded_compe_calc = 1
+    let g:loaded_compe_emoji = 1
+    " let g:loaded_compe_nvim_lsp = 1
+    " let g:loaded_compe_nvim_lua = 1
+    let g:loaded_compe_omni = 1
+    " let g:loaded_compe_path = 1
+    let g:loaded_compe_snippets_nvim = 1
+    let g:loaded_compe_spell = 1
+    let g:loaded_compe_tags = 1
+    let g:loaded_compe_treesitter = 1
+    " let g:loaded_compe_ultisnips = 1
+    let g:loaded_compe_vim_lsc = 1
+    let g:loaded_compe_vim_lsp = 1
+    let g:loaded_compe_vsnip = 1
+lua << EOF
+    require'compe'.setup {
+      default_pattern = [[\d\@!\k\k*]], -- \h\w*\%(-\w*\)*
+      source = {
+        path = true;
+        buffer = true;
+        nvim_lsp = true;
+        nvim_lua = true;
+        ultisnips = true;
+      };
+    }
+EOF
 endif
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
 
 let g:UltiSnipsExpandTrigger = '<c-l>'
 " }}}

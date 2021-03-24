@@ -1,18 +1,28 @@
 local lspconfig = require('lspconfig')
 local lsp_status = require('lsp-status')
 
+-- nil, false and **0** are falsy
+function TT(x) return x and x ~= 0 end
+
 lsp_status.register_progress()
+
+local lspinstall_dir = vim.fn.stdpath('cache')..'/lspconfig/'
 
 lspconfig.rust_analyzer.setup {
   on_attach = lsp_status.on_attach,
   capabilities = lsp_status.capabilities
 }
 
-lspconfig.sumneko_lua.setup {
+local system_name = TT(vim.fn.has('unix')) and 'Linux' or TT(vim.fn.has('win32')) and 'Windows' or 'macOS'
+local sumneko_root_path = lspinstall_dir..'sumneko_lua/lua-language-server'
+local sumneko_binary = sumneko_root_path..'/bin/'..system_name..'/lua-language-server'
+
+require'lspconfig'.sumneko_lua.setup {
+  cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"};
   settings = {
     Lua = {
       runtime = {
-        -- Tell the language server which version of Lua you're using (LuaJIT in the case of Neovim)
+        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
         version = 'LuaJIT',
         -- Setup your lua path
         path = vim.split(package.path, ';'),
@@ -24,13 +34,15 @@ lspconfig.sumneko_lua.setup {
       workspace = {
         -- Make the server aware of Neovim runtime files
         library = {
-            [vim.fn.expand('$VIMRUNTIME/lua')] = true,
-            [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
+          [vim.fn.expand('$VIMRUNTIME/lua')] = true,
+          [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
         },
       },
     },
   },
 }
+
+require'lspconfig'.vimls.setup{}
 
 local messages = require('lsp-status/messaging').messages
 
