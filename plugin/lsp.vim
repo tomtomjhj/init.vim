@@ -1,7 +1,7 @@
 if g:ide_client == 'coc' " {{{
 function! SetupLSP()
   if !get(g:, 'coc_enabled', 0) | return | endif
-  augroup LocalCocStuff | au!
+  augroup LocalCocStuff | au! * <buffer>
     au User CocJumpPlaceholder <buffer> call CocActionAsync('showSignatureHelp')
     au CursorHold <buffer> call CocActionAsync('getCurrentFunctionSymbol', { e, r -> 0 })
   augroup END
@@ -78,8 +78,12 @@ tomtomjhj.lsp = require('tomtomjhj/lsp')
 EOF
 
 function! SetupLSP()
-  augroup LocalNvimLSPStuff | au!
-    " NOTE: g:completion_enable_auto_signature
+  augroup LocalNvimLSPStuff | au! * <buffer>
+    au CursorHold <buffer> lua require('lsp-status').update_current_function()
+    if &filetype ==# 'rust'
+      au InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost <buffer>
+            \ lua require'lsp_extensions'.inlay_hints{ prefix = '‣ ', highlight = "TypeHint", enabled = {"ChainingHint"} }
+    endif
   augroup END
   nnoremap <buffer><silent>        <M-]> <cmd>lua vim.lsp.buf.definition()<CR>
   nnoremap <buffer><silent>        <M-.> <cmd>lua vim.lsp.buf.hover()<CR>
@@ -89,14 +93,16 @@ function! SetupLSP()
   nnoremap <buffer><silent><leader>gd    <cmd>lua vim.lsp.buf.declaration()<CR>
   nnoremap <buffer><silent><leader>fm    <cmd>lua vim.lsp.buf.formatting()<CR>
   nnoremap <buffer><silent><leader>rn    <cmd>lua vim.lsp.buf.rename()<CR>
-  nnoremap <buffer><silent>        [d    <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
-  nnoremap <buffer><silent>        ]d    <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
+  nnoremap <buffer><silent>        [d    <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
+  nnoremap <buffer><silent>        ]d    <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
+  nnoremap <buffer><silent>        dl    <cmd>LspDiagnosticsAll<CR>
   " nnoremap <buffer><silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
   " nnoremap <buffer><silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
   " nnoremap <buffer><silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
-  " TODO: goto def in split, etc
-  " TODO: hover in preview window
-  " TODO: codelens not implemented
+  " TODO: |lsp-handler| default location_handler
+  " * goto def in split, etc
+  " * hover in preview window
+  " NOTE: codelens not implemented
 endfunction
 
 function! CurrentFunction()
@@ -121,11 +127,12 @@ function! CheckerWarnings()
 endfunction
 
 augroup GlobalNvimLSPStuff | au!
-    au InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *.rs
-                \ lua require'lsp_extensions'.inlay_hints{ prefix = '‣ ', highlight = "TypeHint", enabled = {"ChainingHint"} }
-    au User LspDiagnosticsChanged call lightline#update()
-    au FileType lua call SetupLSP()
+  au User LspDiagnosticsChanged call lightline#update()
+  au FileType lua call SetupLSP()
 augroup end
+
+command! LspLog exe '<mods> pedit +$' v:lua.vim.lsp.get_log_path()
+command! LspStop lua vim.lsp.stop_client(vim.lsp.get_active_clients())
 " }}}
 
 else " ale {{{

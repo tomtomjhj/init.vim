@@ -2,7 +2,6 @@
 
 ```sh
 git clone https://github.com/tomtomjhj/init.vim ~/.vim
-pip3 install --user pynvim neovim-remote
 
 # -nix
 mkdir ~/.config/nvim -p
@@ -16,12 +15,20 @@ mklink C:\Users\you\_vimrc C:\Users\you\.vim\.vimrc
 mklink C:\Users\you\_gvimrc C:\Users\you\.vim\.gvimrc
 
 nvim -c PlugInstall
+```
 
+# External dependencies
+```sh
+pip3 install --user pynvim neovim-remote
+
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 cargo install ripgrep fd-find bat
+
+curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+sudo apt-get install -y nodejs yarn
 ```
 
 # Note
-* https://www.rust-lang.org/tools/install
 * `~/.config/bat/config`
   ```
   --theme="zenburn"
@@ -29,7 +36,7 @@ cargo install ripgrep fd-find bat
   ```
 * windows vim
     * https://github.com/vim/vim-win32-installer
-    * python3: 64bit, install locally, put in PATH
+    * python3: use vim's version, 64bit, install locally, put in PATH,
 
 # compile (n)vim
 ```bash
@@ -42,7 +49,7 @@ sudo apt install ...
 
 ```
 sudo apt-get install ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip
-make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=..
+make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local
 make install
 ```
 

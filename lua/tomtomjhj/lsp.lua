@@ -5,6 +5,7 @@ local lsp_status = require('lsp-status')
 function TT(x) return x and x ~= 0 end
 
 lsp_status.register_progress()
+require('lspfuzzy').setup{}
 
 local lspinstall_dir = vim.fn.stdpath('cache')..'/lspconfig/'
 

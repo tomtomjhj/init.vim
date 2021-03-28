@@ -63,6 +63,7 @@ else
     Plug 'hrsh7th/nvim-compe'
     Plug 'neovim/nvim-lspconfig'
     Plug 'anott03/nvim-lspinstall'
+    Plug 'ojroques/nvim-lspfuzzy'
     Plug 'nvim-lua/lsp_extensions.nvim'
     Plug 'nvim-lua/lsp-status.nvim'
     " Plug 'https://github.com/RishabhRD/nvim-lsputils'
@@ -354,8 +355,8 @@ let g:ale_set_highlights = 1
 let g:ale_linters_explicit = 1
 
 let g:coc_config_home = '~/.vim'
-" coc-rust-analyzer coc-pyright coc-texlab coc-clangd coc-tsserver coc-go
-let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json', 'coc-tag']
+" coc-rust-analyzer coc-pyright coc-texlab coc-clangd coc-tsserver coc-go coc-tag
+let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json']
 let g:coc_quickfix_open_command = 'CW'
 let g:coc_fzf_preview = 'up:66%'
 
