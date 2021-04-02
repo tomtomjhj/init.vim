@@ -18,6 +18,14 @@ local system_name = TT(vim.fn.has('unix')) and 'Linux' or TT(vim.fn.has('win32')
 local sumneko_root_path = lspinstall_dir..'sumneko_lua/lua-language-server'
 local sumneko_binary = sumneko_root_path..'/bin/'..system_name..'/lua-language-server'
 
+local lua_libraries = {
+  vim.fn.expand('$VIMRUNTIME/lua'),
+  vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')
+}
+for _, plugin in ipairs(vim.split(vim.o.runtimepath, ',')) do
+  table.insert(lua_libraries, plugin..'/lua')
+end
+
 require'lspconfig'.sumneko_lua.setup {
   cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"};
   settings = {
@@ -34,10 +42,7 @@ require'lspconfig'.sumneko_lua.setup {
       },
       workspace = {
         -- Make the server aware of Neovim runtime files
-        library = {
-          [vim.fn.expand('$VIMRUNTIME/lua')] = true,
-          [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
-        },
+        library = lua_libraries,
       },
     },
   },

@@ -291,7 +291,6 @@ if g:ide_client == 'coc'
     inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : <SID>check_back_space() ? "\<Tab>" : coc#refresh()
 else " lua
     " TODO
-    " * customize `complete-items` menu
     " * prefix-only completion: e.g. `prefix_suffix` in buffer, input `suffix` and type `pre` and complete.
     "   https://github.com/hrsh7th/nvim-compe/issues/157
     " * buffer source: don't add the word currently being inserted e.g. `presuffix` in the above example.
@@ -300,6 +299,7 @@ else " lua
     "   * noignorecase?
     "   * fuzzy, but exact match for the first char
     " * don't load disabled sources; loading lua is surprisingly slow https://github.com/hrsh7th/nvim-compe/issues/220
+    " * sometimes completion deletes the text on the left of the input??
     set completeopt=menuone,noinsert,noselect
     inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : <SID>check_back_space() ? "\<Tab>" : compe#complete()
     inoremap <expr> <C-y> compe#confirm('<C-y>')
@@ -321,13 +321,14 @@ else " lua
     let g:loaded_compe_vsnip = 1
 lua << EOF
     require'compe'.setup {
+      -- TODO: no한글 like <cword>? \<\>?
       default_pattern = [[\d\@!\k\k*]], -- \h\w*\%(-\w*\)*
       source = {
         path = true;
-        buffer = true;
+        buffer = { menu = '[B]'; priority = 51; }; -- slightly higher than snippets
         nvim_lsp = true;
         nvim_lua = true;
-        ultisnips = true;
+        ultisnips = { menu = '[US]' };
       };
     }
 EOF
@@ -1017,13 +1018,13 @@ func! IsVimWide()
     return &columns > 170
 endfunc
 
-func! Execute(cmd) abort
+func! Execute(cmd, mods) abort
     let output = execute(a:cmd)
-    tabnew
+    exe a:mods 'new'
     setlocal nobuflisted buftype=nofile bufhidden=wipe noswapfile
     call setline(1, split(output, "\n"))
 endfunc
-command! -nargs=* -complete=command Execute silent call Execute(<q-args>)
+command! -nargs=* -complete=command Execute silent call Execute(<q-args>, '<mods>')
 
 command! -range=% Unpdf
             \ keeppatterns <line1>,<line2>substitute/[“”łž]/"/ge |

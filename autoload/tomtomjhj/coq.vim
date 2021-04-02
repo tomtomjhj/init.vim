@@ -32,6 +32,8 @@ function! tomtomjhj#coq#mappings()
     inoremap <buffer><expr> <Plug>CoqJumpToEnd   (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqJumpToEnd<CR>"
     inoremap <buffer><expr> <Plug>CoqJumpToError (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqJumpToError<CR>"
 
+    " TODO: CoqToLine in aux buffer is usually wrong
+
     nmap <buffer>   <C-c>s     <Plug>CoqInterrupt<Plug>CoqStop
     " NOTE: [count]
     nmap <buffer><leader><C-c> <Plug>CoqInterrupt
@@ -133,7 +135,9 @@ endfunction
 function! tomtomjhj#coq#folds()
     let save_cursor = getcurpos()
     " `zo` prevents unintended nested folds
-    silent keepjumps keeppatterns global/\v^\s*\zs(End|Qed|Defined|Abort|Admitted|Save).*\./normal zf%zo
+    " TODO: sometimes fastfold deletes folds??
+    keepjumps keeppatterns global/\v^\s*\zs(End|Qed|Defined|Abort|Admitted|Save).*\./normal zf%
+    " TODO: bullets
     normal! zM
     call setpos('.', save_cursor)
 endfunction

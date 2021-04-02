@@ -234,6 +234,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * https://arxiv.org/abs/2006.03103
 * https://teukka.tech/vimloop.html
 * https://blog.fsouza.dev/prettierd-neovim-format-on-save/
+* http://nikhilm.github.io/uvbook/ https://github.com/luvit/luv/tree/master/examples/uvbook
 
 # new (n)vim stuff
 * (8.2.0590) `backspace+=nostop`
