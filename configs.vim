@@ -557,17 +557,6 @@ nnoremap <C-f>      :<C-u>Files<CR>
 nnoremap <leader>hh :<C-u>History<CR>
 nnoremap <leader><C-t> :Tags ^<C-r><C-w>\  <CR>
 
-" TODO: https://github.com/jonhoo/proximity-sort
-augroup fzf | au!
-    if has('nvim')
-        " `au TermOpen tnoremap` and `au FileType fzf tunmap` breaks coc-fzf
-        tnoremap <expr> <Esc> (&filetype == 'fzf') ? '<Esc>' : '<c-\><c-n>'
-        tnoremap <expr> <C-q> (&filetype == 'fzf') ? '<C-q>' : '<c-\><c-n>'
-    else
-        tnoremap <C-q> <Esc>
-    endif
-augroup END
-
 command! -nargs=* -bang Grep  call Ripgrep(<q-args>)
 command! -nargs=* -bang Grepf call RipgrepFly(<q-args>)
 command! -bang -nargs=? -complete=dir Files call Files(<q-args>)
@@ -754,6 +743,7 @@ inoremap <C-q> <Esc>
 vnoremap <C-q> <Esc>
 onoremap <C-q> <Esc>
 noremap! <C-M-q> <C-q>
+tnoremap <M-[> <C-\><C-n>
 
 cnoremap <M-p> <Up>
 cnoremap <M-n> <Down>
