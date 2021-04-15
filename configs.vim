@@ -320,6 +320,7 @@ else " lua
     let g:loaded_compe_vim_lsp = 1
     let g:loaded_compe_vsnip = 1
 lua << EOF
+    require'compe'.register_source('words', require'tomtomjhj/compe_words')
     require'compe'.setup {
       -- TODO: no한글 like <cword>? \<\>?
       default_pattern = [[\d\@!\k\k*]], -- \h\w*\%(-\w*\)*
@@ -329,6 +330,7 @@ lua << EOF
         nvim_lsp = true;
         nvim_lua = true;
         ultisnips = { menu = '[US]' };
+        words = true;
       };
     }
 EOF
