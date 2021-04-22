@@ -32,39 +32,40 @@ function! tomtomjhj#coq#mappings()
     inoremap <buffer><expr> <Plug>CoqJumpToEnd   (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqJumpToEnd<CR>"
     inoremap <buffer><expr> <Plug>CoqJumpToError (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqJumpToError<CR>"
 
-    " TODO: CoqToLine in aux buffer is usually wrong
-
     nmap <buffer>   <C-c>s     <Plug>CoqInterrupt<Plug>CoqStop
     " NOTE: [count]
     nmap <buffer><leader><C-c> <Plug>CoqInterrupt
     nmap <buffer>        <M-j> <Plug>CoqNext
     nmap <buffer>        <M-k> <Plug>CoqUndo
-    nmap <buffer>        <M-l> <Plug>CoqToLine
     nmap <buffer><leader>c.    <Plug>CoqJumpToEnd
     nmap <buffer><leader>c,    <Plug>CoqJumpToError
     imap <buffer>        <M-j> <Plug>CoqNext
     imap <buffer>        <M-k> <Plug>CoqUndo
-    imap <buffer>        <M-l> <Plug>CoqToLine
     nmap <buffer>   <C-c>j     <Plug>CoqNext
     nmap <buffer>   <C-c>k     <Plug>CoqUndo
-    nmap <buffer>   <C-c>l     <Plug>CoqToLine
     imap <buffer>   <C-c>j     <Plug>CoqNext
     imap <buffer>   <C-c>k     <Plug>CoqUndo
-    imap <buffer>   <C-c>l     <Plug>CoqToLine
     nmap <buffer>   <C-c>.     <Plug>CoqJumpToEnd
     nmap <buffer>   <C-c>,     <Plug>CoqJumpToError
     nmap <buffer>   <C-c><C-j> <Plug>CoqNext
     nmap <buffer>   <C-c><C-k> <Plug>CoqUndo
-    nmap <buffer>   <C-c><C-l> <Plug>CoqToLine
     imap <buffer>   <C-c><C-j> <Plug>CoqNext
     imap <buffer>   <C-c><C-k> <Plug>CoqUndo
-    imap <buffer>   <C-c><C-l> <Plug>CoqToLine
     nmap <buffer>      <C-M-j> <Plug>CoqNext
     nmap <buffer>      <C-M-k> <Plug>CoqUndo
-    nmap <buffer>      <C-M-l> <Plug>CoqToLine
     imap <buffer>      <C-M-j> <Plug>CoqNext
     imap <buffer>      <C-M-k> <Plug>CoqUndo
-    imap <buffer>      <C-M-l> <Plug>CoqToLine
+
+    if &ft ==# 'coq'
+        nmap <buffer>        <M-l> <Plug>CoqToLine
+        imap <buffer>        <M-l> <Plug>CoqToLine
+        nmap <buffer>   <C-c>l     <Plug>CoqToLine
+        imap <buffer>   <C-c>l     <Plug>CoqToLine
+        nmap <buffer>   <C-c><C-l> <Plug>CoqToLine
+        imap <buffer>   <C-c><C-l> <Plug>CoqToLine
+        nmap <buffer>      <C-M-l> <Plug>CoqToLine
+        imap <buffer>      <C-M-l> <Plug>CoqToLine
+    endif
 
     nmap <buffer>       <C-w>s :<C-u>call tomtomjhj#coq#split('split')<CR>
 
