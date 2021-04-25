@@ -16,7 +16,7 @@ func! tomtomjhj#markdown#FencedCodeBlocki()
         return 0
     endif
     if !search('```\w*', 'bW') | return 0 | endif
-    exec 'norm! W'
+    exec 'norm! j0'
     let head_pos = getpos('.')
     let head_pos[2] = 1
     if !search('```', 'W') | return 0 | endif

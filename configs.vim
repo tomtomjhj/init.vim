@@ -175,7 +175,7 @@ set hidden
 set lazyredraw
 
 set exrc secure
-set diffopt+=algorithm:histogram " NOTE: indent-heuristic
+set diffopt+=algorithm:histogram,indent-heuristic
 
 augroup BasicSetup | au!
     " Return to last edit position when entering normal buffer
@@ -212,7 +212,7 @@ let g:lightline = {
       \ },
       \ 'inactive': {
       \   'left': [ ['specialbuf', 'shortrelpath'],
-      \             ['winnr'] ],
+      \             ['bufnr_winnr'] ],
       \   'right': [ ['lineinfo'], ['percent'],
       \              ['checker_errors_inactive', 'checker_warnings_inactive'] ]
       \ },
@@ -221,6 +221,7 @@ let g:lightline = {
       \   'specialbuf': '%q%w',
       \   'modified': '%{&filetype==#"help"?"":&modified?"+":&modifiable?"":"-"}',
       \   'asyncrun': '%{g:asyncrun_status[:3]}',
+      \   'bufnr_winnr': '%n@%{winnr()}'
       \ },
       \ 'component_function': {
       \   'git': 'GitStatusline',
@@ -307,6 +308,7 @@ else " lua
     " let g:loaded_compe_buffer = 1
     let g:loaded_compe_calc = 1
     let g:loaded_compe_emoji = 1
+    let g:loaded_compe_luasnip = 1
     " let g:loaded_compe_nvim_lsp = 1
     " let g:loaded_compe_nvim_lua = 1
     let g:loaded_compe_omni = 1
@@ -809,6 +811,7 @@ nmap <leader>fe :e!<CR>
 
 " etc plugin settings {{{
 " pairs {{{
+let g:matchup_matchparen_offscreen = {}
 let g:pear_tree_map_special_keys = 0
 let g:pear_tree_smart_openers = 1
 let g:pear_tree_smart_backspace = 1
