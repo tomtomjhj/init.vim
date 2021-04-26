@@ -134,7 +134,7 @@ set list listchars=tab:\|\ ,trail:-,nbsp:+,extends:>
 
 " indent the wrapped line, w/ `> ` at the start
 set wrap linebreak breakindent showbreak=>\ 
-set backspace=eol,start,indent
+let &backspace = (has('patch-8.2.0590') || has('nvim-0.5')) ? 3 : 2
 set whichwrap+=<,>,[,],h,l
 
 let mapleader = ","
@@ -684,10 +684,9 @@ func! SwordJumpLeft()
     return ''
 endfunc
 
-" i_CTRL-W and i_CTRL-U without 'stop once at the start of insert' (resolved https://github.com/vim/vim/pull/5940)
-" TODO: <C-\><C-o><ESC> breaks dot repeat
-inoremap <M-w> <C-\><C-o><ESC><C-w>
-inoremap <C-u> <C-\><C-o><ESC><C-g>u<C-u>
+" workaround to disable 'stop once at the start of insert' in older vim
+inoremap <expr> <M-w> (&backspace >= 3) ? "\<C-w>" : "\<C-\>\<C-o>\<ESC>\<C-w>"
+inoremap <expr> <C-u> (&backspace >= 3) ? "\<C-g>u\<C-u>" : "\<C-\>\<C-o>\<ESC>\<C-g>u\<C-u>"
 " Delete a single character of other non-blank chars
 inoremap <silent><expr><C-w>  FineGrainedICtrlW(0)
 " Like above, but first consume whitespace
@@ -705,7 +704,7 @@ func! FineGrainedICtrlW(finer)
             let l:idx += 1
         endwhile
         if l:idx == l:len || (!a:finer && l:chars[-(l:idx + 1)] =~ '\k')
-            return "\<C-\>\<C-o>\<ESC>\<C-w>"
+            return (&backspace >= 3) ? "\<C-w>" : "\<C-\>\<C-o>\<ESC>\<C-w>"
         endif
         let l:sts = &softtabstop
         setlocal softtabstop=0
@@ -715,7 +714,7 @@ func! FineGrainedICtrlW(finer)
     elseif l:chars[-1] !~ '\k'
         return pear_tree#insert_mode#Backspace()
     else
-        return "\<C-\>\<C-o>\<ESC>\<C-w>"
+        return (&backspace >= 3) ? "\<C-w>" : "\<C-\>\<C-o>\<ESC>\<C-w>"
     endif
 endfunc
 " }}}

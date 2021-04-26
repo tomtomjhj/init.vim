@@ -237,5 +237,4 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * http://nikhilm.github.io/uvbook/ https://github.com/luvit/luv/tree/master/examples/uvbook
 
 # new (n)vim stuff
-* (8.2.0590) `backspace+=nostop`
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.
