@@ -20,8 +20,9 @@ Plug 'andymass/vim-matchup' " i%, a%, ]%, z%, g% TODO: % that seeks backward htt
 Plug 'wellle/targets.vim' " multi (e.g. ib, iq), separator, argument
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'kana/vim-textobj-user'
-Plug 'glts/vim-textobj-comment'
+Plug 'glts/vim-textobj-comment' " TODO: nested comment?
 Plug 'pianohacker/vim-textobj-indented-paragraph', { 'do': 'rm -rf plugin' }
+Plug 'Julian/vim-textobj-variable-segment' " iv, av
 Plug 'preservim/nerdcommenter', { 'on': '<Plug>NERDCommenter' }
 Plug 'godlygeek/tabular', { 'on': 'Tabularize' }
 Plug 'AndrewRadev/splitjoin.vim'
