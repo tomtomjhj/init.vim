@@ -28,16 +28,6 @@
             "args": ["config", "exec", "--", "ocamllsp"],
             "filetypes": ["ocaml"]
         },
-        "ccls": {
-            "command": "ccls",
-            "filetypes": ["c", "cpp"],
-            "rootPatterns": [".ccls", "compile_commands.json", ".git/"],
-            "initializationOptions": {
-                "cache": {
-                    "directory": "/tmp/ccls"
-                }
-            }
-        }
     },
     "rust-analyzer.server.path": "~/.cargo/bin/rust-analyzer",
     "rust-analyzer.diagnostics.enable": true,

@@ -325,8 +325,7 @@ else " lua
 lua << EOF
     require'compe'.register_source('words', require'tomtomjhj/compe_words')
     require'compe'.setup {
-      -- TODO: no한글 like <cword>? \<\>?
-      default_pattern = [[\d\@!\k\k*]], -- \h\w*\%(-\w*\)*
+      default_pattern = [[\d\@!\k\k\{-\}\>]],
       source = {
         path = true;
         buffer = { menu = '[B]'; priority = 51; }; -- slightly higher than snippets
@@ -551,7 +550,7 @@ endfunc
 nnoremap / :let g:search_mode='/'<CR>/
 
 let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.5, 'yoffset': 1, 'border': 'top' } }
-let g:fzf_preview_window = 'right:50%'
+" let g:fzf_preview_window = 'right:50%:+{2}-/2'
 
 nnoremap <C-g>      :<C-u>Grep<space>
 nnoremap <leader>g/ :<C-u>Grep <C-r>=RgInput(@/)<CR>
@@ -812,6 +811,7 @@ nmap <leader>fe :e!<CR>
 " etc plugin settings {{{
 " pairs {{{
 let g:matchup_matchparen_offscreen = {}
+let g:matchup_matchparen_deferred = 1
 let g:pear_tree_map_special_keys = 0
 let g:pear_tree_smart_openers = 1
 let g:pear_tree_smart_backspace = 1

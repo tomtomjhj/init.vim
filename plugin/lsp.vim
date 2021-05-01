@@ -95,6 +95,7 @@ function! SetupLSP()
   nnoremap <buffer><silent><leader>rn    <cmd>lua vim.lsp.buf.rename()<CR>
   nnoremap <buffer><silent>        [d    <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
   nnoremap <buffer><silent>        ]d    <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
+  nnoremap <buffer><silent>        <M-,> <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
   nnoremap <buffer><silent>        dl    <cmd>LspDiagnosticsAll<CR>
   " nnoremap <buffer><silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
   " nnoremap <buffer><silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
@@ -132,7 +133,6 @@ augroup GlobalNvimLSPStuff | au!
 augroup end
 
 command! LspLog exe '<mods> pedit +$' v:lua.vim.lsp.get_log_path()
-command! LspStop lua vim.lsp.stop_client(vim.lsp.get_active_clients())
 " }}}
 
 else " ale {{{
