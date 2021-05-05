@@ -4,6 +4,8 @@ syn clear htmlError
 syn clear htmlTag
 syn region htmlTag start=+<[[:alnum:]]+ end=+>+ fold oneline contains=htmlTagN,htmlString,htmlArg,htmlValue,htmlTagError,htmlEvent,htmlCssDefinition,@htmlPreproc,@htmlArgCluster
 
+" Fixed by https://github.com/vim/vim/pull/7900
+if hlID('htmlCommentPart')
 " https://html.spec.whatwg.org/#comments
 " The text
 " 1. must not start with the string ">", nor start with the string "->",
@@ -26,6 +28,7 @@ syn match htmlCommentError contained "\%(<!-\ze-->\|<!-->\@!\|--!>\)"
 syn region htmlComment start=+<!DOCTYPE+ keepend end=+>+
 hi link htmlCommentStart Comment
 hi link htmlCommentEnd Comment
+endif
 
 syn keyword htmlTodo TODO FIXME NOTE containedin=htmlComment contained
 hi link htmlTodo Todo
