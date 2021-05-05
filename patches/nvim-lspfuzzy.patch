@@ -1,0 +1,13 @@
+diff --git a/lua/lspfuzzy.lua b/lua/lspfuzzy.lua
+index 248820a..265d923 100644
+--- a/lua/lspfuzzy.lua
++++ b/lua/lspfuzzy.lua
+@@ -78,7 +78,7 @@ end
+ 
+ local function build_fzf_opts(label, preview, multi)
+   local prompt = fmt("%s> ", label)
+-  local fzf_opts = {'--prompt', prompt, '--ansi', '--delimiter', ':'}
++  local fzf_opts = { '--layout=reverse-list', '--prompt', prompt, '--ansi', '--delimiter', ':'}
+   -- Enable multi-selection
+   if multi then
+     vim.list_extend(fzf_opts, {

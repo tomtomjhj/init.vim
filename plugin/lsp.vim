@@ -91,8 +91,12 @@ function! SetupLSP()
   nnoremap <buffer><silent><leader>gy    <cmd>lua vim.lsp.buf.type_definition()<CR>
   nnoremap <buffer><silent><leader>rf    <cmd>lua vim.lsp.buf.references()<CR>
   nnoremap <buffer><silent><leader>gd    <cmd>lua vim.lsp.buf.declaration()<CR>
-  nnoremap <buffer><silent><leader>fm    <cmd>lua vim.lsp.buf.formatting()<CR>
+  " TODO: Formatting don't preserve the view, unlike ale_fix (see ale#util#SetBufferContents)
+  " and buggy when used with treesitter https://github.com/neovim/neovim/issues/12861
+  " nnoremap <buffer><silent><leader>fm    <cmd>lua vim.lsp.buf.formatting()<CR>
   nnoremap <buffer><silent><leader>rn    <cmd>lua vim.lsp.buf.rename()<CR>
+  nnoremap <buffer><silent><leader>ac    <cmd>lua vim.lsp.buf.code_action()<CR>
+  " TODO: goto_prev/next is not sorted by lines?
   nnoremap <buffer><silent>        [d    <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
   nnoremap <buffer><silent>        ]d    <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
   nnoremap <buffer><silent>        <M-,> <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>

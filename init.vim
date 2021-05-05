@@ -38,7 +38,8 @@ lua <<EOF
 require'nvim-treesitter.configs'.setup {
   ensure_installed = {},
   highlight = {
-    enable = true
+    enable = true;
+    disable = {"python"};
   },
   indent = {
     enable = true
