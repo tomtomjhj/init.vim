@@ -991,9 +991,10 @@ let g:neoterm_automap_keys = '<leader>T'
 
 " etc util {{{
 func! ShowSyntaxInfo()
-    echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")') '->' synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name')
     if has('nvim')
         TSHighlightCapturesUnderCursor
+    else
+        echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")') '->' synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name')
     endif
 endfunc
 nmap <silent><leader>st :<C-u>call ShowSyntaxInfo()<CR>
