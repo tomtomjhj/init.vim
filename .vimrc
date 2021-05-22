@@ -14,8 +14,6 @@ source ~/.vim/configs.vim
 set belloff=all
 set nrformats=bin,hex
 set display=lastline
-set listchars=tab:>\ ,trail:-,nbsp:+
-set formatoptions=tcqj
 set tags=./tags;,tags
 set autoread
 if !empty(&viminfo)

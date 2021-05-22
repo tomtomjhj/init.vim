@@ -486,6 +486,7 @@ let g:go_highlight_types = 1
 
 " Coq {{{
 " TODO: coq ctags (there's etags generator `coqtags`)
+" TODO: auto mkview/loadview for viewoptions=folds?
 " TODO: interaction with listchar? NonText highlighting disappears when CoqtailChecked is applied
 hi CoqtailChecked ctermbg=237 guibg=#3a3a3a
 hi CoqtailSent ctermbg=60 guibg=#5f5f87
@@ -565,7 +566,7 @@ command! -nargs=* -bang Grep  call Ripgrep(<q-args>)
 command! -nargs=* -bang Grepf call RipgrepFly(<q-args>)
 command! -bang -nargs=? -complete=dir Files call Files(<q-args>)
 " allow search on the full tag info, excluding the appended tagfile name
-command! -bang -nargs=* Tags call fzf#vim#tags(<q-args>, fzf#vim#with_preview({ "placeholder": "--tag {2}:{-1}:{3}", 'options': ['-d', '\t', '--nth', '..-2'] }))
+command! -bang -nargs=* Tags call fzf#vim#tags(<q-args>, fzf#vim#with_preview({ "placeholder": "--tag {2}:{-1}:{3..}", 'options': ['-d', '\t', '--nth', '..-2'] }))
 
 func! FzfOpts(arg, spec)
     " TODO: ask the directory to run (double 3), starting from %:p:h

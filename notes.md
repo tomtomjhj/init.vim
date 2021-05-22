@@ -156,6 +156,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * `_` without count is equivalent to `^`
 * `i_CTRL-R_CTRL-` `R/O/P`
 * surround `f/F/^F`
+* grep + `:cdo s/../..`
 
 # pitfalls
 * Cursor movement on concealed string: `set concealcursor=n` doesn't work as expected. <https://vi.stackexchange.com/questions/4530/moving-over-conceal>
@@ -228,7 +229,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
       ```
 * treesitter
     * typescript: vim syntax and treesitter hightlighting both on??
-    * doesn't highlight `TODO` in comments https://github.com/nvim-treesitter/nvim-treesitter/issues/236
+* https://github.com/neovim/neovim/issues/14298 similar issue in vim without tmux when mapping `<M-]>`
 
 # stuff
 * https://arxiv.org/abs/2006.03103

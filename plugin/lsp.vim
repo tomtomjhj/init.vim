@@ -12,6 +12,10 @@ function! SetupLSP()
   nmap     <silent><buffer>       <M-\|> :call CocAction('jumpDefinition', 'Pedit')<CR><C-w>p
   " TODO: preview hover doesn't use the renderer used for float hover
   nmap     <silent><buffer>        <M-.> :call CocActionAsync('doHover')<CR>
+  " Send hover float to preview
+  " TODO: `pedit +set\ winhl=\ nu` fails because the scratch buffer is unnamed.
+  " How to pedit by the buffer number?
+  nmap     <silent><buffer><leader><M-.> <Plug>(coc-float-jump)<cmd>silent! pedit<CR><C-w>P<cmd>set winhl= nu<CR><C-w>p<Plug>(coc-float-hide)
   nmap     <silent><buffer>        <M-,> :call CocAction('diagnosticInfo')<CR>
   nmap     <silent><buffer><leader>gy    <Plug>(coc-type-definition)
   nmap     <silent><buffer><leader>gi    <Plug>(coc-implementation)
