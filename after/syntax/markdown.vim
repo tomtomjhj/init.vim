@@ -1,3 +1,7 @@
+syn case match
+syn sync minlines=200
+finish
+
 let s:conceal = ''
 let s:concealends = ''
 let s:concealcode = ''
@@ -30,11 +34,8 @@ execute 'syn region htmlBold matchgroup=mkdBold start="\\\@!\W\zs__\ze\S" end="\
 execute 'syn region htmlBoldItalic matchgroup=mkdBoldItalic start="\*\*\*\ze\S" end="\S\zs\*\*\*" keepend contains=@Spell' . s:oneline . s:concealends
 execute 'syn region htmlBoldItalic matchgroup=mkdBoldItalic start="\\\@!\W\zs___\ze\S" end="\S\zs___" keepend contains=@Spell' . s:oneline . s:concealends
 
-syn clear mkdLineBreak
 " TODO: don't highlight indented codeblock
 " indented text following a bullet list is not codeblock (need to mark the end
 " of the list using a comment, etc)
 " → fork?
 
-syn case match
-syn sync minlines=200

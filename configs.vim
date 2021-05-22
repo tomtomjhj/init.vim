@@ -72,7 +72,7 @@ else
     " Plug 'https://github.com/glepnir/lspsaga.nvim'
 endif
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-Plug 'plasticboy/vim-markdown'
+Plug 'tomtomjhj/vim-markdown'
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
 Plug 'tomtomjhj/vim-pandoc-syntax'
 Plug 'tomtomjhj/vim-rust-syntax-ext'| Plug 'rust-lang/rust.vim'
