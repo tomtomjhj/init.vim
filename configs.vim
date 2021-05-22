@@ -67,6 +67,7 @@ else
     Plug 'ojroques/nvim-lspfuzzy'
     Plug 'nvim-lua/lsp_extensions.nvim'
     Plug 'nvim-lua/lsp-status.nvim'
+    Plug 'folke/lua-dev.nvim'
     " Plug 'https://github.com/RishabhRD/nvim-lsputils'
     " Plug 'https://github.com/glepnir/lspsaga.nvim'
 endif
@@ -88,10 +89,9 @@ Plug 'rhysd/vim-llvm'
 Plug 'fatih/vim-go', { 'do': 'rm -rf plugin ftplugin' }
 Plug 'vim-python/python-syntax'
 Plug 'tbastos/vim-lua'
-Plug 'leafgarland/typescript-vim'
 " Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] } | let g:grammarous#use_location_list = 1
 
-" etc etc
+" etc etc TODO: check has('nvim-0.5')
 if has('nvim')
     Plug 'antoinemadec/FixCursorHold.nvim'
     Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
@@ -111,6 +111,7 @@ if has('nvim')
     " Plug 'mfussenegger/nvim-fzy'
     " Plug 'https://github.com/vijaymarupudi/nvim-fzf'
     " Plug 'https://github.com/TimUntersberger/neogit'
+    " https://github.com/nvim-telescope/telescope-frecency.nvim
 endif
 
 call plug#end()
@@ -323,16 +324,15 @@ else " lua
     let g:loaded_compe_vim_lsp = 1
     let g:loaded_compe_vsnip = 1
 lua << EOF
-    require'compe'.register_source('words', require'tomtomjhj/compe_words')
+    -- require'compe'.register_source('words', require'tomtomjhj/compe_words')
     require'compe'.setup {
       default_pattern = [[\d\@!\k\k\{-\}\>]],
       source = {
         path = true;
         buffer = { menu = '[B]'; priority = 51; }; -- slightly higher than snippets
         nvim_lsp = true;
-        nvim_lua = true;
         ultisnips = { menu = '[US]' };
-        words = true;
+        words = false;
       };
     }
 EOF
