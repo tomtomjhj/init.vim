@@ -168,7 +168,7 @@ set backup backupdir=~/.vim/backup//
 set undofile
 set history=500
 set viminfo=!,'150,<50,s30,h
-let &undodir = has('nvim-0.5') ? '~/.vim/undoo//' : '~/.vim/undo//'
+if has('nvim-0.5') | set undodir=~/.vim/undoo// | else | set undodir=~/.vim/undo// | endif
 
 set autoread
 set splitright splitbelow
