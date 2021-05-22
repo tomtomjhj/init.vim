@@ -20,7 +20,7 @@ Plug 'andymass/vim-matchup' " i%, a%, ]%, z%, g% TODO: % that seeks backward htt
 Plug 'wellle/targets.vim' " multi (e.g. ib, iq), separator, argument
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'kana/vim-textobj-user'
-Plug 'glts/vim-textobj-comment' " TODO: nested comment?
+Plug 'tomtomjhj/vim-textobj-comment'
 Plug 'pianohacker/vim-textobj-indented-paragraph', { 'do': 'rm -rf plugin' }
 Plug 'Julian/vim-textobj-variable-segment' " iv, av
 Plug 'preservim/nerdcommenter', { 'on': '<Plug>NERDCommenter' }
@@ -112,6 +112,7 @@ if has('nvim')
     " Plug 'https://github.com/vijaymarupudi/nvim-fzf'
     " Plug 'https://github.com/TimUntersberger/neogit'
     " https://github.com/nvim-telescope/telescope-frecency.nvim
+    Plug 'b3nj5m1n/kommentary'
 endif
 
 call plug#end()
