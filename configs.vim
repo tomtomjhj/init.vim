@@ -91,10 +91,12 @@ Plug 'vim-python/python-syntax'
 Plug 'tbastos/vim-lua'
 " Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] } | let g:grammarous#use_location_list = 1
 
-" etc etc TODO: check has('nvim-0.5')
+" etc etc
 if has('nvim')
     Plug 'antoinemadec/FixCursorHold.nvim'
     Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
+endif
+if has('nvim-0.5')
     " https://github.com/wbthomason/packer.nvim
     " https://github.com/fsouza/vimfiles/tree/main/lua/fsouza
     " https://github.com/phaazon/hop.nvim/
@@ -165,11 +167,8 @@ set noswapfile " set directory=~/.vim/swap//
 set backup backupdir=~/.vim/backup//
 set undofile
 set history=500
-if has('nvim')
-    set shada=!,'150,<50,s30,h undodir=~/.vim/undoo//
-else
-    set viminfo=!,'150,<50,s30,h undodir=~/.vim/undo//
-endif
+set viminfo=!,'150,<50,s30,h
+let &undodir = has('nvim-0.5') ? '~/.vim/undoo//' : '~/.vim/undo//'
 
 set autoread
 set splitright splitbelow
@@ -993,7 +992,7 @@ let g:neoterm_automap_keys = '<leader>T'
 
 " etc util {{{
 func! ShowSyntaxInfo()
-    if has('nvim')
+    if has('nvim-0.5')
         TSHighlightCapturesUnderCursor
     else
         echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")') '->' synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name')
