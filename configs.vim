@@ -420,8 +420,8 @@ command! -range=% PrettifyRustSymbol <line1>,<line2>SubstituteDict { '$SP$': '@'
 
 " C,C++ {{{
 augroup SetupCCpp | au!
-    au FileType c,cpp call SetupLSP()
-    au FileType c,cpp setl tabstop=2 shiftwidth=2
+    au FileType c,cpp,cuda call SetupLSP()
+    au FileType c,cpp,cuda setl tabstop=2 shiftwidth=2
 augroup END
 " }}}
 
