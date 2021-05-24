@@ -26,6 +26,7 @@ Plug 'Julian/vim-textobj-variable-segment' " iv, av
 Plug 'preservim/nerdcommenter', { 'on': '<Plug>NERDCommenter' }
 Plug 'godlygeek/tabular', { 'on': 'Tabularize' }
 Plug 'AndrewRadev/splitjoin.vim'
+Plug 'whonore/vim-sentencer'
 " TODO Plug 'mg979/vim-visual-multi'
 " TODO Plug 'chrisbra/unicode.vim'
 " TODO Plug 'https://github.com/chaoren/vim-wordmotion'
@@ -988,6 +989,10 @@ nnoremap U :UndotreeToggle<CR>
 " neoterm
 let g:neoterm_default_mod = 'rightbelow'
 let g:neoterm_automap_keys = '<leader>T'
+
+" sentencer
+let g:sentencer_max_length = 79 " formatexpr doesn't work like built-in gq for textwidth=0
+nnoremap <leader>sb :SentencerBind<CR>
 " }}}
 
 " etc util {{{

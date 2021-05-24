@@ -60,6 +60,8 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * automatically apply patches for plugins that I don't want to fork
     * pre-PlugUpdate command
     * command to checkout,PlugUpdate,patch
+* abbrev tex commands with unicode
+* https://github.com/lervag/vimtex/issues/1937
 * `debug-mode`?
 
 ## Done
@@ -229,13 +231,16 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
       ```
 * treesitter
     * typescript: vim syntax and treesitter hightlighting both on??
-* https://github.com/neovim/neovim/issues/14298 similar issue in vim without tmux when mapping `<M-]>`
+* https://github.com/neovim/neovim/issues/14298
+  Similar issue in vim without tmux when mapping `<M-]>`.
+  `vim --clean -c 'map <ESC>] <M-]>'` to reproduce.
 
 # stuff
 * https://arxiv.org/abs/2006.03103
 * https://teukka.tech/vimloop.html
 * https://blog.fsouza.dev/prettierd-neovim-format-on-save/
 * http://nikhilm.github.io/uvbook/ https://github.com/luvit/luv/tree/master/examples/uvbook
+* https://github.com/jbyuki/instant.nvim https://github.com/jbyuki/nabla.nvim
 
 # new (n)vim stuff
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.

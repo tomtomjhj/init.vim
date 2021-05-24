@@ -113,6 +113,7 @@ func! tomtomjhj#markdown#RunPandoc(open)
     let src = expand("%:p")
     let out = expand("%:p:h") . '/' . expand("%:t:r") . '.pdf'
     " need to pass --filter=pandoc-citeproc here in order to specify bibliography in yaml
+    " TODO: option for --pdf-engine=xelatex .. or more general command
     let params = '-Vurlcolor=blue --highlight-style=kate'
     " NOTE: pandoc 2.11 got built-in support for citation
     if executable('pandoc-citeproc')
