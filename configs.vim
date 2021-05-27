@@ -90,6 +90,7 @@ Plug 'rhysd/vim-llvm'
 Plug 'fatih/vim-go', { 'do': 'rm -rf plugin ftplugin' }
 Plug 'vim-python/python-syntax'
 Plug 'tbastos/vim-lua'
+" TODO: vimtex-grammar-vlty
 " Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] } | let g:grammarous#use_location_list = 1
 
 " etc etc
@@ -309,22 +310,6 @@ else " lua
     inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : <SID>check_back_space() ? "\<Tab>" : compe#complete()
     inoremap <expr> <C-y> compe#confirm('<C-y>')
     inoremap <expr> <C-e> compe#close('<C-e>')
-    " let g:loaded_compe_buffer = 1
-    let g:loaded_compe_calc = 1
-    let g:loaded_compe_emoji = 1
-    let g:loaded_compe_luasnip = 1
-    " let g:loaded_compe_nvim_lsp = 1
-    " let g:loaded_compe_nvim_lua = 1
-    let g:loaded_compe_omni = 1
-    " let g:loaded_compe_path = 1
-    let g:loaded_compe_snippets_nvim = 1
-    let g:loaded_compe_spell = 1
-    let g:loaded_compe_tags = 1
-    let g:loaded_compe_treesitter = 1
-    " let g:loaded_compe_ultisnips = 1
-    let g:loaded_compe_vim_lsc = 1
-    let g:loaded_compe_vim_lsp = 1
-    let g:loaded_compe_vsnip = 1
 lua << EOF
     -- require'compe'.register_source('words', require'tomtomjhj/compe_words')
     require'compe'.setup {
