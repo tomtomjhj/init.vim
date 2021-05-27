@@ -133,7 +133,7 @@ set tabstop=4 shiftwidth=4
 set expandtab smarttab
 set autoindent " smartindent is unnecessary
 " set indentkeys+=!<M-i> " doesn't work, maybe i_META? just use i_CTRL-F
-set formatoptions+=n " this may interfere with 'comment'?
+set formatoptions+=jn
 set formatlistpat=\\C^\\s*[\\[({]\\\?\\([0-9]\\+\\\|[iIvVxXlLcCdDmM]\\+\\\|[a-zA-Z]\\)[\\]:.)}]\\s\\+\\\|^\\s*[-+o*]\\s\\+
 set nojoinspaces
 set list listchars=tab:\|\ ,trail:-,nbsp:+,extends:>
@@ -149,7 +149,7 @@ set updatetime=1234
 
 let $LANG='en'
 set langmenu=en
-set encoding=utf8
+set encoding=utf-8
 set spellfile=~/.vim/spell/en.utf-8.add
 set spelllang=en,cjk
 
@@ -163,6 +163,7 @@ set hlsearch incsearch
 
 set noerrorbells novisualbell t_vb=
 set shortmess+=Ic
+set belloff=all
 
 set noswapfile " set directory=~/.vim/swap//
 set backup backupdir=~/.vim/backup//
@@ -722,16 +723,16 @@ endfunc
 " }}}
 
 " etc mappings {{{
-map <silent><leader><CR> :noh<CR>
-map <leader>ss :setlocal spell!\|setlocal spell?<cr>
-map <leader>sc :if &spc == "" \| setl spc< \| else \| setl spc= \| endif \| setl spc?<CR>
-map <leader>sp :setlocal paste!\|setlocal paste?<cr>
-map <leader>sw :set wrap!\|set wrap?<CR>
-map <leader>ic :set ignorecase! smartcase!\|set ignorecase?<CR>
-map <leader>sf :syn sync fromstart<CR>
+nnoremap <silent><leader><CR> :nohlsearch\|diffupdate<CR><C-L>
+nnoremap <leader>ss :setlocal spell!\|setlocal spell?<cr>
+nnoremap <leader>sc :if &spc == "" \| setl spc< \| else \| setl spc= \| endif \| setl spc?<CR>
+nnoremap <leader>sp :setlocal paste!\|setlocal paste?<cr>
+nnoremap <leader>sw :set wrap!\|set wrap?<CR>
+nnoremap <leader>ic :set ignorecase! smartcase!\|set ignorecase?<CR>
+nnoremap <leader>sf :syn sync fromstart<CR>
 
-map <leader>dp :diffput<CR>
-map <leader>do :diffget<CR>
+noremap <leader>dp :diffput<CR>
+noremap <leader>do :diffget<CR>
 
 " clipboard.
 inoremap <C-v> <C-g>u<C-\><C-o>:set paste<CR><C-r>+<C-\><C-o>:set nopaste<CR>
@@ -748,7 +749,9 @@ inoremap <C-q> <Esc>
 vnoremap <C-q> <Esc>
 onoremap <C-q> <Esc>
 noremap! <C-M-q> <C-q>
-tnoremap <M-[> <C-\><C-n>
+if has('nvim')
+    tnoremap <M-[> <C-\><C-n>
+endif
 
 cnoremap <M-p> <Up>
 cnoremap <M-n> <Down>
@@ -802,12 +805,12 @@ command! -bang W   w<bang>
 command! -bang Q   q<bang>
 
 nmap <leader>cx :tabclose<cr>
-nmap <leader>td :tab split<CR>
-nmap <leader>tt :tabedit<CR>
-nmap <leader>cd :cd <c-r>=expand("%:p:h")<cr>/
-nmap <leader>e  :e! <c-r>=expand("%:p:h")<cr>/
-nmap <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
-nmap <leader>fe :e!<CR>
+nnoremap <leader>td :tab split<CR>
+nnoremap <leader>tt :tabedit<CR>
+nnoremap <leader>cd :cd <c-r>=expand("%:p:h")<cr>/
+nnoremap <leader>e  :e! <c-r>=expand("%:p:h")<cr>/
+nnoremap <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
+nnoremap <leader>fe :e!<CR>
 " }}}
 
 " etc plugin settings {{{
