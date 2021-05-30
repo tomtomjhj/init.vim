@@ -63,6 +63,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * abbrev tex commands with unicode
 * https://github.com/lervag/vimtex/issues/1937
 * `debug-mode`?
+* how to make `Gdiffsplit` do `--follow`?
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -113,6 +114,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
   register the file as autoload file (?), so the file will be sourced again.
   https://groups.google.com/g/vim_dev/c/k9wRhNMNIFc/m/vpFvud0mo9UJ?pli=1
 * `:match`
+* http://vimcasts.org/blog/2013/03/combining-vimgrep-with-git-ls-files/
 
 ## dictionary (`i_CTRL-X_CTRL-K`)
 ```vim
@@ -159,6 +161,8 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * `i_CTRL-R_CTRL-` `R/O/P`
 * surround `f/F/^F`
 * grep + `:cdo s/../..`
+* `:cabove`
+* `backtick-expansion`
 
 # pitfalls
 * Cursor movement on concealed string: `set concealcursor=n` doesn't work as expected. <https://vi.stackexchange.com/questions/4530/moving-over-conceal>
@@ -198,10 +202,6 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
     * running tmux inside the termianl:
         * reflow works but scrolling is broken
         * automation? maybe check `$VIM` in bashrc
-* nvim lsp, completion performance?
-    * need some kind of delay before doing something
-    * <https://github.com/nvim-lua/completion-nvim/issues/203>, <https://github.com/nvim-lua/completion-nvim/issues/231>
-    * https://github.com/neovim/neovim/issues/13049
 * nvim creates empty undo when editorconfig TrimTrailingWhitespace is used (https://github.com/neovim/neovim/issues/11987) (https://github.com/neovim/neovim/pull/11988)
 * nvim's `CursorMoved` is differrent from vim's. This makes `vimtex_matchparen` wrongly hightlight fzf floatwin.
 * showbreak breaks many things: blockwise paste, ..?

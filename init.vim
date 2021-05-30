@@ -3,7 +3,12 @@ set runtimepath+=~/.vim/after
 let &packpath = &runtimepath
 
 lua << EOF
-tomtomjhj = {}
+tomtomjhj = tomtomjhj or {}
+
+function P(v)
+  print(vim.inspect(v))
+  return v
+end
 EOF
 
 source ~/.vim/configs.vim

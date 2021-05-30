@@ -1,6 +1,6 @@
 " vim: set foldmethod=marker foldlevel=0 nomodeline:
 
-let g:ide_client = get(g:, 'ide_client', 'coc')
+let g:ide_client = get(g:, 'ide_client', has('nvim-0.5') ? 'nvim' : 'coc')
 
 " Plug {{{
 call plug#begin('~/.vim/plugged')
@@ -126,27 +126,25 @@ call plug#end()
 set mouse=a
 set number ruler " cursorline
 set foldcolumn=1 foldnestmax=5
-set scrolloff=2 " sidescrolloff
+set scrolloff=2 sidescrolloff=2
 set showtabline=1
 set laststatus=2
 
 set tabstop=4 shiftwidth=4
 set expandtab smarttab
 set autoindent " smartindent is unnecessary
-" set indentkeys+=!<M-i> " doesn't work, maybe i_META? just use i_CTRL-F
 set formatoptions+=jn
 set formatlistpat=\\C^\\s*[\\[({]\\\?\\([0-9]\\+\\\|[iIvVxXlLcCdDmM]\\+\\\|[a-zA-Z]\\)[\\]:.)}]\\s\\+\\\|^\\s*[-+o*]\\s\\+
 set nojoinspaces
 set list listchars=tab:\|\ ,trail:-,nbsp:+,extends:>
 
-" indent the wrapped line, w/ `> ` at the start
 set wrap linebreak breakindent showbreak=>\ 
 let &backspace = (has('patch-8.2.0590') || has('nvim-0.5')) ? 3 : 2
 set whichwrap+=<,>,[,],h,l
+set cpoptions-=_
 
 let mapleader = ","
 set timeoutlen=987
-set updatetime=1234
 
 let $LANG='en'
 set langmenu=en
@@ -157,30 +155,34 @@ set spelllang=en,cjk
 set wildmenu wildmode=longest:full,full
 set wildignore=*.o,*~,*.pyc,*.pdf,*.v.d,*.vo,*.vos,*.vok,*.glob,*.aux
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store,*/__pycache__/
+set complete-=i complete-=u
 
-set magic
 set ignorecase smartcase
 set hlsearch incsearch
 
 set noerrorbells novisualbell t_vb=
-set shortmess+=Ic
+set shortmess+=Ic shortmess-=S
 set belloff=all
 
+set history=1000
+set viminfo=!,'150,<50,s30,h
+set updatetime=1234
 set noswapfile " set directory=~/.vim/swap//
 set backup backupdir=~/.vim/backup//
 set undofile
-set history=500
-set viminfo=!,'150,<50,s30,h
 if has('nvim-0.5') | set undodir=~/.vim/undoo// | else | set undodir=~/.vim/undo// | endif
 
 set autoread
 set splitright splitbelow
-set switchbuf=useopen,usetab
+let &switchbuf = (has('patch-8.1.2315') || has('nvim-0.5')) ? 'useopen,uselast' : 'useopen'
 set hidden
 set lazyredraw
 
+set modeline " debian unsets this
 set exrc secure
-set diffopt+=algorithm:histogram,indent-heuristic
+if has('nvim-0.3.2') || has("patch-8.1.0360")
+    set diffopt+=algorithm:histogram,indent-heuristic
+endif
 
 augroup BasicSetup | au!
     " Return to last edit position when entering normal buffer
@@ -304,7 +306,6 @@ else " lua
     " * matching
     "   * noignorecase?
     "   * fuzzy, but exact match for the first char
-    " * don't load disabled sources; loading lua is surprisingly slow https://github.com/hrsh7th/nvim-compe/issues/220
     " * sometimes completion deletes the text on the left of the input??
     set completeopt=menuone,noinsert,noselect
     inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : <SID>check_back_space() ? "\<Tab>" : compe#complete()
@@ -549,8 +550,8 @@ nnoremap <C-f>      :<C-u>Files<CR>
 nnoremap <leader>hh :<C-u>History<CR>
 nnoremap <leader><C-t> :Tags ^<C-r><C-w>\  <CR>
 
-command! -nargs=* -bang Grep  call Ripgrep(<q-args>)
-command! -nargs=* -bang Grepf call RipgrepFly(<q-args>)
+command! -nargs=? -bang Grep  call Ripgrep(<q-args>)
+command! -nargs=? -bang Grepf call RipgrepFly(<q-args>)
 command! -bang -nargs=? -complete=dir Files call Files(<q-args>)
 " allow search on the full tag info, excluding the appended tagfile name
 command! -bang -nargs=* Tags call fzf#vim#tags(<q-args>, fzf#vim#with_preview({ "placeholder": "--tag {2}:{-1}:{3..}", 'options': ['-d', '\t', '--nth', '..-2'] }))
@@ -671,6 +672,9 @@ func! SwordJumpLeft()
     call search(col('.') != 1 ? g:sword : '\v$', 'bW')
     return ''
 endfunc
+" <C-b> <C-e>
+cnoremap <C-j> <S-Right>
+cnoremap <C-k> <S-Left>
 
 " workaround to disable 'stop once at the start of insert' in older vim
 inoremap <expr> <M-w> (&backspace >= 3) ? "\<C-w>" : "\<C-\>\<C-o>\<ESC>\<C-w>"
@@ -708,13 +712,13 @@ endfunc
 " }}}
 
 " etc mappings {{{
-nnoremap <silent><leader><CR> :nohlsearch\|diffupdate<CR><C-L>
-nnoremap <leader>ss :setlocal spell!\|setlocal spell?<cr>
-nnoremap <leader>sc :if &spc == "" \| setl spc< \| else \| setl spc= \| endif \| setl spc?<CR>
-nnoremap <leader>sp :setlocal paste!\|setlocal paste?<cr>
-nnoremap <leader>sw :set wrap!\|set wrap?<CR>
-nnoremap <leader>ic :set ignorecase! smartcase!\|set ignorecase?<CR>
-nnoremap <leader>sf :syn sync fromstart<CR>
+nnoremap <silent><leader><CR> :nohlsearch<CR>
+nnoremap <silent><leader><C-L> :diffupdate\|syntax sync fromstart<CR><C-L>
+nnoremap <leader>ss :setlocal spell! spell?<CR>
+nnoremap <leader>sc :if empty(&spc) \| setl spc< spc? \| else \| setl spc= spc? \| endif<CR>
+nnoremap <leader>sp :setlocal paste! paste?<CR>
+nnoremap <leader>sw :set wrap! wrap?<CR>
+nnoremap <leader>ic :set ignorecase! smartcase! ignorecase?<CR>
 
 noremap <leader>dp :diffput<CR>
 noremap <leader>do :diffget<CR>
@@ -771,10 +775,6 @@ vnoremap <M-+> g<C-a>
 noremap  <M--> <C-x>
 vnoremap <M--> g<C-x>
 
-" <C-b> <C-e>
-cnoremap <C-j> <S-Right>
-cnoremap <C-k> <S-Left>
-
 nnoremap <C-j> <C-W>j
 nnoremap <C-k> <C-W>k
 nnoremap <C-h> <C-W>h
@@ -789,7 +789,7 @@ noremap ZAQ :<C-u>qa!<CR>
 command! -bang W   w<bang>
 command! -bang Q   q<bang>
 
-nmap <leader>cx :tabclose<cr>
+nnoremap <leader>cx :tabclose<CR>
 nnoremap <leader>td :tab split<CR>
 nnoremap <leader>tt :tabedit<CR>
 nnoremap <leader>cd :cd <c-r>=expand("%:p:h")<cr>/
@@ -887,7 +887,6 @@ command! -nargs=? -complete=dir Sexplore split | silent Dirvish <args>
 command! -nargs=? -complete=dir Vexplore vsplit | silent Dirvish <args>
 nmap <silent><C-w>es :Sexplore %<CR>
 nmap <silent><C-w>ev :Vexplore %<CR>
-nmap <leader>D <Plug>(dirvish_up)
 hi! link DirvishSuffix Special
 " }}}
 
@@ -947,15 +946,24 @@ let g:NERDCreateDefaultMappings = 0
 " NOTE: indentation is incorrect sometimes. Use i_CTRL-f
 imap <M-/> <C-G>u<Plug>NERDCommenterInsert
 map <M-/> <Plug>NERDCommenterComment
-" TODO: <Plug>NERDCommenterComment using block comment on visual block whose last char is unicode (e.g. "a가") breaks up the unicode char
 xmap <leader>c<Space> <Plug>NERDCommenterToggle
 nmap <leader>c<Space> <Plug>NERDCommenterToggle
 xmap <leader>cs <Plug>NERDCommenterSexy
 nmap <leader>cs <Plug>NERDCommenterSexy
 xmap <leader>cm <Plug>NERDCommenterMinimal
 nmap <leader>cm <Plug>NERDCommenterMinimal
-xmap <leader>cu <Plug>NERDCommenterUncomment
-nmap <leader>cu <Plug>NERDCommenterUncomment
+if has('nvim-0.5')
+    xmap <leader>cu <Plug>kommentary_visual_decrease<ESC>
+    nmap <leader>cu <Plug>kommentary_line_decrease
+else
+    " NOTE: NERDCommeter Insert is incorrect for col('.')==1
+    " NOTE: nerdcommenter uncomments nested comments
+    " (*
+    " (* *)
+    " *)
+    xmap <leader>cu <Plug>NERDCommenterUncomment
+    nmap <leader>cu <Plug>NERDCommenterUncomment
+endif
 let g:NERDSpaceDelims = 1
 let g:NERDCustomDelimiters = {
             \ 'python' : { 'left': '#', 'leftAlt': '#' },
@@ -963,11 +971,6 @@ let g:NERDCustomDelimiters = {
             \ 'coq': { 'left': '(*', 'right': '*)', 'nested': 1 },
             \}
 let g:NERDDefaultAlign = 'left'
-" TODO: nested comment gets uncommented! e.g.
-" (*
-" (* *)
-" *)
-" → command to remove exactly one layer?
 " }}}
 
 " undotree
@@ -987,9 +990,8 @@ nnoremap <leader>sb :SentencerBind<CR>
 func! ShowSyntaxInfo()
     if has('nvim-0.5')
         TSHighlightCapturesUnderCursor
-    else
-        echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")') '->' synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name')
     endif
+    echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")') '->' synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name')
 endfunc
 nmap <silent><leader>st :<C-u>call ShowSyntaxInfo()<CR>
 func! InSynStack(pat, ...)
@@ -1017,9 +1019,9 @@ endfunc
 command! -nargs=* -complete=command Execute silent call Execute(<q-args>, '<mods>')
 
 command! -range=% Unpdf
-            \ keeppatterns <line1>,<line2>substitute/[“”łž]/"/ge |
-            \ keeppatterns <line1>,<line2>substitute/[‘’]/'/ge |
-            \ keeppatterns <line1>,<line2>substitute/\w\zs-\n//ge
+            \ keeppatterns keepjumps <line1>,<line2>substitute/[“”łž]/"/ge |
+            \ keeppatterns keepjumps <line1>,<line2>substitute/[‘’]/'/ge |
+            \ keeppatterns keepjumps <line1>,<line2>substitute/\w\zs-\n//ge
 
 " :substitute using a dict, where key == submatch (like VisualStar)
 function! SubstituteDict(dict) range

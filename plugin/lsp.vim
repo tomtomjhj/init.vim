@@ -1,3 +1,5 @@
+let g:ide_client = get(g:, 'ide_client', has('nvim-0.5') ? 'nvim' : 'coc')
+
 if g:ide_client == 'coc' " {{{
 function! SetupLSP()
   if !get(g:, 'coc_enabled', 0) | return | endif
@@ -104,12 +106,12 @@ function! SetupLSP()
   nnoremap <buffer><silent>        [d    <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
   nnoremap <buffer><silent>        ]d    <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
   nnoremap <buffer><silent>        <M-,> <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
-  nnoremap <buffer><silent>        dl    <cmd>LspDiagnosticsAll<CR>
+  nnoremap <buffer><silent><leader>dl    <cmd>LspDiagnosticsAll<CR>
   nnoremap <buffer><silent><leader>ol    <cmd>lua vim.lsp.buf.document_symbol()<CR>
   nnoremap <buffer><silent><leader>sb    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
   inoremap <buffer><silent>        <M-i> <cmd>lua vim.lsp.buf.signature_help()<CR>
   " TODO: |lsp-handler| default location_handler
-  " * goto def in split, etc
+  " * goto def in split, etc https://github.com/neovim/neovim/pull/12966
   " * hover in preview window
   " NOTE: codelens not implemented
 endfunction
@@ -140,7 +142,7 @@ augroup GlobalNvimLSPStuff | au!
   au FileType lua call SetupLSP()
 augroup end
 
-command! LspLog exe '<mods> pedit +$' v:lua.vim.lsp.get_log_path()
+command! LspLog exe '<mods> pedit +$|setlocal\ nobuflisted' v:lua.vim.lsp.get_log_path()
 " }}}
 
 else " ale {{{
