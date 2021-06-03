@@ -38,16 +38,23 @@ if !has('gui_running')
 
   " fix <M- mappings {{{
   " NOTE: :h 'termcap' (e.g. arrows). Map only necessary stuff.
-  for c in ['+', ',', '-', '.', '/', '0', '\', ']', 'i', 'j', 'k', 'l', 'n', 'o', 'p', 'q', 'w', 'y', '\|']
-    exec 'map  <ESC>'.c '<M-'.c.'>'
-    exec 'map! <ESC>'.c '<M-'.c.'>'
-  endfor
-  cnoremap <ESC><ESC> <C-c>
-  map  <Nul> <C-space>
-  map! <Nul> <C-space>
-
+  " NOTE: <M- keys can be affected by 'encoding'.
+  " NOTE: Run after VimEnter to avoid messing up terminal stuff.
+  function! s:InitESCMaps() abort
+    for c in ['+', ',', '-', '.', '/', '0', '\', ']', 'i', 'j', 'k', 'l', 'n', 'o', 'p', 'q', 'w', 'y', '\|']
+      exec 'map  <ESC>'.c '<M-'.c.'>'
+      exec 'map! <ESC>'.c '<M-'.c.'>'
+    endfor
+    cnoremap <ESC><ESC> <C-c>
+    map  <Nul> <C-space>
+    map! <Nul> <C-space>
+  endfunction
   " A hack to bypass <ESC> prefix map timeout stuff.
   function! s:ESCHack(mode)
+    if mode(1) ==# 'niI'
+      call feedkeys("\<ESC>", 'n')
+      return
+    endif
     exec a:mode . 'unmap <buffer><ESC>'
     let extra = ''
     while 1
@@ -97,6 +104,7 @@ if !has('gui_running')
   endfunction
   " TODO: omap generates an empty change when aborted by <ESC>
   augroup TerminalVimSetup | au!
+    au VimEnter * call s:InitESCMaps()
     au BufEnter * call ESCimap() | call ESCnmap() | call ESCvmap() | call ESComap()
     au CmdlineEnter * set timeoutlen=23
     au CmdlineLeave * set timeoutlen=432
