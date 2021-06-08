@@ -16,8 +16,7 @@ lspconfig.rust_analyzer.setup {
 }
 
 -- lspconfig.pyright.setup{}
--- TODO: check pylsp https://github.com/python-lsp/python-lsp-server.
-lspconfig.pyls.setup {
+lspconfig.pylsp.setup {
   settings = {
     pyls = {
       plugins = {

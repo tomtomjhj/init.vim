@@ -38,7 +38,6 @@ Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': has('unix') ? './install --all' : { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'fszymanski/fzf-quickfix', { 'on': 'Quickfix' } " TODO: multi select and re-send to quickfix
 Plug 'Konfekt/FastFold' " only useful for non-manual folds
 Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
@@ -124,13 +123,13 @@ call plug#end()
 
 " Basic {{{
 set mouse=a
-set number ruler " cursorline
+set number ruler
 set foldcolumn=1 foldnestmax=5
 set scrolloff=2 sidescrolloff=2
 set showtabline=1
 set laststatus=2
 
-set tabstop=4 shiftwidth=4
+set shiftwidth=4
 set expandtab smarttab
 set autoindent " smartindent is unnecessary
 set formatoptions+=jn
@@ -143,19 +142,20 @@ let &backspace = (has('patch-8.2.0590') || has('nvim-0.5')) ? 3 : 2
 set whichwrap+=<,>,[,],h,l
 set cpoptions-=_
 
-let mapleader = ","
-set timeoutlen=987
-
 let $LANG='en'
 set langmenu=en
 set encoding=utf-8
 set spellfile=~/.vim/spell/en.utf-8.add
 set spelllang=en,cjk
 
+let mapleader = ","
+set timeoutlen=987
+
 set wildmenu wildmode=longest:full,full
-set wildignore=*.o,*~,*.pyc,*.pdf,*.v.d,*.vo,*.vos,*.vok,*.glob,*.aux
-set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store,*/__pycache__/
+set wildignore=*~,%*,*.o,*.pyc,*.pdf,*.v.d,*.vo*,*.glob,*.cm*,*.aux
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/__pycache__/*,*/target/*
 set complete-=i complete-=u
+set path=.,./*,./..,,*,*/*,*/*/*,*/*/*/*,*/*/*/*/*
 
 set ignorecase smartcase
 set hlsearch incsearch
@@ -524,6 +524,7 @@ func! Star(g)
         let g:search_mode = 'n'
         let @/ = a:g ? @c : '\<' . @c . '\>'
     endif
+    call histadd('/', @/)
 endfunc
 func! VisualStar(g)
     " TODO separate out the functionality get the selected text
@@ -534,9 +535,11 @@ func! VisualStar(g)
     let @c = @"
     let l:pattern = escape(@", '\.*$^~[]')
     let @/ = a:g ? '\<' . l:pattern . '\>' : l:pattern " reversed
+    call histadd('/', @/)
     let @" = l:reg_save
 endfunc
 nnoremap / :let g:search_mode='/'<CR>/
+nnoremap ? :let g:search_mode='/'<CR>?
 
 let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.5, 'yoffset': 1, 'border': 'top' } }
 " let g:fzf_preview_window = 'right:50%:+{2}-/2'
@@ -550,11 +553,11 @@ nnoremap <C-f>      :<C-u>Files<CR>
 nnoremap <leader>hh :<C-u>History<CR>
 nnoremap <leader><C-t> :Tags ^<C-r><C-w>\  <CR>
 
-command! -nargs=? -bang Grep  call Ripgrep(<q-args>)
-command! -nargs=? -bang Grepf call RipgrepFly(<q-args>)
-command! -bang -nargs=? -complete=dir Files call Files(<q-args>)
+command! -nargs=? Grep  call Ripgrep(<q-args>)
+command! -nargs=? Grepf call RipgrepFly(<q-args>)
+command! -nargs=? -complete=dir Files call Files(<q-args>)
 " allow search on the full tag info, excluding the appended tagfile name
-command! -bang -nargs=* Tags call fzf#vim#tags(<q-args>, fzf#vim#with_preview({ "placeholder": "--tag {2}:{-1}:{3..}", 'options': ['-d', '\t', '--nth', '..-2'] }))
+command! -nargs=* Tags call fzf#vim#tags(<q-args>, fzf#vim#with_preview({ "placeholder": "--tag {2}:{-1}:{3..}", 'options': ['-d', '\t', '--nth', '..-2'] }))
 
 func! FzfOpts(arg, spec)
     " TODO: ask the directory to run (double 3), starting from %:p:h
@@ -848,6 +851,7 @@ let g:qf_auto_resize = 0
 let g:qf_max_height = 12
 let g:qf_auto_quit = 0
 
+packadd cfilter
 command! -bar CW
             \ if IsWinWide() |
             \   exec 'vert copen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p |

@@ -1,3 +1,4 @@
+set nocompatible
 if has('win32')
   set runtimepath^=~/.vim
   set runtimepath+=~/.vim/after
@@ -107,7 +108,7 @@ if !has('gui_running')
     au VimEnter * call s:InitESCMaps()
     au BufEnter * call ESCimap() | call ESCnmap() | call ESCvmap() | call ESComap()
     au CmdlineEnter * set timeoutlen=23
-    au CmdlineLeave * set timeoutlen=432
+    au CmdlineLeave * set timeoutlen=987
   augroup END
   " }}}
 else
