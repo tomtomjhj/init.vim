@@ -473,7 +473,8 @@ let g:go_highlight_types = 1
 " }}}
 
 " Coq {{{
-" TODO: coq ctags (there's etags generator `coqtags`)
+let g:coqtail_nomap = 1
+let g:coqtail_noindent_comment = 1
 " TODO: auto mkview/loadview for viewoptions=folds?
 " TODO: interaction with listchar? NonText highlighting disappears when CoqtailChecked is applied
 hi CoqtailChecked ctermbg=237 guibg=#3a3a3a
@@ -488,7 +489,8 @@ augroup SetupCoq | au!
                 \ setl shiftwidth=2 |
                 \ setl comments=s:(*,e:*) formatoptions=tcqnj " no middle piece & comment leader
                 " \ setl comments=sr:(*,mb:*,ex:*) formatoptions=tcroqnj
-    let g:coqtail_noindent_comment = 1
+                " TODO: coq uses zero-based column index..                     vv
+    au FileType coq setl errorformat=File\ \"%f\"\\,\ line\ %l\\,\ characters\ %c-%*[0-9]:
 augroup END
 " }}}
 

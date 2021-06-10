@@ -17,7 +17,6 @@
 " * goal/info panel not updated when the main panel is displayed in another tab
 " * tradewind breaks coqtail and nvim
 " * disable coc path completion trigger (`/`)
-" * errorformat: File "%f", line %l, characters 83-90:
 " * show diff of unification error
 
 function! tomtomjhj#coq#mappings()
@@ -75,16 +74,16 @@ function! tomtomjhj#coq#mappings()
     nmap <buffer><leader>cs    :<C-u>Coq Search<space>
     xmap <buffer><leader>cs    <Plug>CoqSearch
 
-    nmap <buffer>        <M-.> <Plug>CoqCheck
-    xmap <buffer>        <M-.> <Plug>CoqCheck
-    nmap <buffer><leader>?     :<C-u>Coq Check<space>
+    nmap <buffer><leader>ch    :<C-u>Coq Check<space>
+    xmap <buffer><leader>ch    <Plug>CoqCheck
+
+    nmap <buffer>        <M-.> <Plug>CoqAbout
+    xmap <buffer>        <M-.> <Plug>CoqAbout
+    nmap <buffer><leader>?     :<C-u>Coq About<space>
 
     nmap <buffer>        <M-,> <Plug>CoqPrint
     xmap <buffer>        <M-,> <Plug>CoqPrint
     nmap <buffer><leader>p     :<C-u>Coq Print<space>
-
-    nmap <buffer><leader>ca    <Plug>CoqAbout
-    xmap <buffer><leader>ca    <Plug>CoqAbout
 
     nmap <buffer><leader>lc    :<C-u>Coq Locate<space>
     xmap <buffer><leader>lc    :<C-u>Coq Locate "<C-r>=coqtail#util#getvisual()<CR>"

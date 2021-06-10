@@ -23,6 +23,11 @@ syn match coqProofKwd contained "/\\\|∧\|\\/\|∨\|<->\|->\|→\|=>\|<-\|←\|
 
 syn region coqDefContents1  contained contains=@coqTerm matchgroup=coqVernacPunctuation start=":=" matchgroup=coqVernacPunctuation end="\.\_s"
 
+" don't highlight fields (very fragile)
+syn clear coqRecContent coqRecStart coqRecField
+syn region coqRecContent contained contains=coqRecStart matchgroup=coqVernacPunctuation start=":=" end="\.\_s"
+syn region coqRecStart   contained contains=@coqTerm start="{" matchgroup=coqVernacPunctuation end="}" keepend
+
 syn sync minlines=321
 
 command -nargs=+ HiLink hi! link <args>
