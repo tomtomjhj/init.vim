@@ -519,7 +519,7 @@ func! Star(g)
     " <cword> can be non-keyword
     if match(@c, '\k') == -1
         let g:search_mode = 'v'
-        let @/ = escape(@c, '\.*$^~[]')
+        let @/ = Text2Magic(@c)
     else
         let g:search_mode = 'n'
         let @/ = a:g ? @c : '\<' . @c . '\>'
@@ -533,7 +533,7 @@ func! VisualStar(g)
     " don't trigger TextYankPost
     noau exec "norm! gvy"
     let @c = @"
-    let l:pattern = escape(@", '\.*$^~[]')
+    let l:pattern = Text2Magic(@")
     let @/ = a:g ? '\<' . l:pattern . '\>' : l:pattern " reversed
     call histadd('/', @/)
     let @" = l:reg_save
@@ -679,9 +679,7 @@ endfunc
 cnoremap <C-j> <S-Right>
 cnoremap <C-k> <S-Left>
 
-" workaround to disable 'stop once at the start of insert' in older vim
-inoremap <expr> <M-w> (&backspace >= 3) ? "\<C-w>" : "\<C-\>\<C-o>\<ESC>\<C-w>"
-inoremap <expr> <C-u> (&backspace >= 3) ? "\<C-g>u\<C-u>" : "\<C-\>\<C-o>\<ESC>\<C-g>u\<C-u>"
+inoremap <C-u> <C-g>u<C-u>
 " Delete a single character of other non-blank chars
 inoremap <silent><expr><C-w>  FineGrainedICtrlW(0)
 " Like above, but first consume whitespace
@@ -699,7 +697,7 @@ func! FineGrainedICtrlW(finer)
             let l:idx += 1
         endwhile
         if l:idx == l:len || (!a:finer && l:chars[-(l:idx + 1)] =~ '\k')
-            return (&backspace >= 3) ? "\<C-w>" : "\<C-\>\<C-o>\<ESC>\<C-w>"
+            return "\<C-w>"
         endif
         let l:sts = &softtabstop
         setlocal softtabstop=0
@@ -709,7 +707,7 @@ func! FineGrainedICtrlW(finer)
     elseif l:chars[-1] !~ '\k'
         return pear_tree#insert_mode#Backspace()
     else
-        return (&backspace >= 3) ? "\<C-w>" : "\<C-\>\<C-o>\<ESC>\<C-w>"
+        return "\<C-w>"
     endif
 endfunc
 " }}}
@@ -898,7 +896,6 @@ let g:EditorConfig_exclude_patterns = ['.*[.]git/.*', 'fugitive://.*', 'scp://.*
 
 " firenvim {{{
 " chrome://extensions/shortcuts -> this may break chrome keymaps like <C-w>
-" TODO: Maybe some edge case in fallback? Just use GhostText?
 if exists('g:started_by_firenvim')
     let g:firenvim_config = {
                 \ 'globalSettings': {
@@ -1013,6 +1010,9 @@ endfunc
 func! IsVimWide()
     return &columns > 170
 endfunc
+function! Text2Magic(text)
+    return escape(a:text, '\.*$^~[]')
+endfunction
 
 func! Execute(cmd, mods) abort
     let output = execute(a:cmd)
@@ -1030,7 +1030,7 @@ command! -range=% Unpdf
 " :substitute using a dict, where key == submatch (like VisualStar)
 function! SubstituteDict(dict) range
     exe a:firstline . ',' . a:lastline . 'substitute'
-                \ . '/\C\%(' . join(map(keys(a:dict), 'escape(v:val, ''\.*$^~[]'')'), '\|'). '\)'
+                \ . '/\C\%(' . join(map(keys(a:dict), 'Text2Magic(v:val)'), '\|'). '\)'
                 \ . '/\=a:dict[submatch(0)]/ge'
 endfunction
 command! -range=% -nargs=1 SubstituteDict :<line1>,<line2>call SubstituteDict(<args>)

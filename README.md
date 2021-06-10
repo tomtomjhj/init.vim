@@ -65,4 +65,3 @@ make install
         * https://github.com/vim/vim/issues/2525
         * https://github.com/junegunn/fzf/issues/1191
     * powershell?
-* linux vim 7.4: minimal, pure vimscript

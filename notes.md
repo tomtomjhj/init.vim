@@ -195,6 +195,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * lightline
     * separator hightlighting is optimized for fancy stuff like `'separator': { 'left': '', 'right': '' }, 'subseparator': { 'left': '', 'right': '' }` ([issue](https://github.com/itchyny/lightline.vim/issues/85)) → using `' '` for separator results in some odd whitespaces
     * `component_expand` is not per-window
+* `expand()` before passing to `filereadable()` (for `~`)
 
 # (n)vim problem
 * terminal reflow https://github.com/neovim/neovim/issues/2514
