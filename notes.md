@@ -205,13 +205,9 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
         * automation? maybe check `$VIM` in bashrc
 * nvim creates empty undo when editorconfig TrimTrailingWhitespace is used (https://github.com/neovim/neovim/issues/11987) (https://github.com/neovim/neovim/pull/11988)
 * nvim's `CursorMoved` is differrent from vim's. This makes `vimtex_matchparen` wrongly hightlight fzf floatwin.
-* showbreak breaks many things: blockwise paste, ..?
-* copying window-local variables on split is not synchronous??
 * shada merging bad https://github.com/neovim/neovim/issues/4295
     * impossible to wipe marks, registers, jumplist...
     * `:wshada!` https://vi.stackexchange.com/a/26540
-* nvim diff sync is broken: do diff (the buffer should be fresh e.g. wiped), jump to other window, enter insert → cursor position is wrong!
-    * only reproducible with `Gdiffsplit?`
 * The line on which a three-piece comment's start/end piece lies is treated specially by `gq`. Not documented in fo-table 'q'. Related? <https://github.com/vim/vim/issues/1696>.
     * These lines are not joined properly by `gq`.
       ```coq

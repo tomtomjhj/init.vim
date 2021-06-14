@@ -343,6 +343,7 @@ lua << EOF
         buffer = { menu = '[B]'; priority = 51; }; -- slightly higher than snippets
         nvim_lsp = true;
         ultisnips = { menu = '[US]' };
+        tags = { menu = '[T]' };
         words = false;
       };
     }
@@ -664,13 +665,14 @@ nnoremap <c-space> <C-u>
 noremap <M-0> ^w
 
 " NOTE: vertical scope, label_esc
-let g:sneak#s_next = 1
+let g:sneak#s_next = 0
 let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
 map f <Plug>Sneak_f
 map F <Plug>Sneak_F
 map t <Plug>Sneak_t
 map T <Plug>Sneak_T
+map <M-;> <Plug>Sneak_,
 hi! Sneak guifg=black guibg=#afff00 gui=bold ctermfg=black ctermbg=154 cterm=bold
 " NOTE: my fork
 let g:sneak#alias = {
@@ -738,7 +740,7 @@ endfunc
 " }}}
 
 " etc mappings {{{
-nnoremap <silent><leader><CR> :nohlsearch<CR>
+nnoremap <silent><leader><CR> :let v:searchforward=1\|nohlsearch<CR>
 nnoremap <silent><leader><C-L> :diffupdate\|syntax sync fromstart<CR><C-L>
 nnoremap <leader>ss :setlocal spell! spell?<CR>
 nnoremap <leader>sc :if empty(&spc) \| setl spc< spc? \| else \| setl spc= spc? \| endif<CR>

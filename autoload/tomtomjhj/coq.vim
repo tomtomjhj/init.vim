@@ -3,7 +3,6 @@
 " * <Plug>CoqJumpToEnd blocks while processing
 " * how to hide a buffer without error? (+ bdelete)
 " * spell
-" * something breaks sneak if run while processing → #197
 " * queries: if no session for current buffer, use existing one
 "   * one-session mode (like PG)
 " * auto layout breaks nerdtree
@@ -19,17 +18,20 @@
 " * disable coc path completion trigger (`/`)
 " * show diff of unification error
 
+" NOTE:
+" * hang → send SIGINT to coq
+
 function! tomtomjhj#coq#mappings()
     command! -buffer -bang -nargs=1 CoqGotoDefSplit call tomtomjhj#coq#goto_def('split', <f-args>, <bang>0)
 
     " nvim may hang in `-- (insert) --` with `<C-\><C-o>:CoqNext<CR>` (vim somehow recovers).
     " Use <C-y> to prevent race between CoqNext and <Plug>CocRefresh when pumvisible.
-    inoremap <buffer><expr> <Plug>CoqNext        (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqNext<CR>"
-    inoremap <buffer><expr> <Plug>CoqUndo        (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqUndo<CR>"
-    inoremap <buffer><expr> <Plug>CoqToLine      (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqToLine<CR>"
-    inoremap <buffer><expr> <Plug>CoqToTop       (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqToTop<CR>"
-    inoremap <buffer><expr> <Plug>CoqJumpToEnd   (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqJumpToEnd<CR>"
-    inoremap <buffer><expr> <Plug>CoqJumpToError (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqJumpToError<CR>"
+    inoremap <buffer><expr> <Plug>CoqNext        (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqNext\<CR>"
+    inoremap <buffer><expr> <Plug>CoqUndo        (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqUndo\<CR>"
+    inoremap <buffer><expr> <Plug>CoqToLine      (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqToLine\<CR>"
+    inoremap <buffer><expr> <Plug>CoqToTop       (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqToTop\<CR>"
+    inoremap <buffer><expr> <Plug>CoqJumpToEnd   (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqJumpToEnd\<CR>"
+    inoremap <buffer><expr> <Plug>CoqJumpToError (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqJumpToError\<CR>"
 
     nmap <buffer>   <C-c>s     <Plug>CoqInterrupt<Plug>CoqStop
     " NOTE: [count]

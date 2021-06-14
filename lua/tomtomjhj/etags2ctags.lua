@@ -22,7 +22,7 @@ local etags2ctags = function (etags_file, ctags_file)
         local tag = matchlist[2+1]
         local src_lnum = tonumber(matchlist[3+1])
         local src = src_lines[src_lnum]
-        local tag_line = vim.fn.printf("%s\t%s\t/^%s$/;\"\n", tag, src_file, src)
+        local tag_line = vim.fn.printf("%s\t%s\t/^%s$/;\"\n", tag, src_file, vim.fn.escape(src, "\\/$"))
         table.insert(ctags_lines, tag_line)
         cur = cur + 1
       end
