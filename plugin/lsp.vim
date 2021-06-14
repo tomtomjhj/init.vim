@@ -142,7 +142,7 @@ augroup GlobalNvimLSPStuff | au!
   au FileType lua call SetupLSP()
 augroup end
 
-command! LspLog exe '<mods> pedit +$|setlocal\ nobuflisted' v:lua.vim.lsp.get_log_path()
+command! LspLog exe '<mods> pedit +setlocal\ nobuflisted|$' v:lua.vim.lsp.get_log_path()
 " }}}
 
 else " ale {{{

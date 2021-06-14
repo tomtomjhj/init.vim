@@ -18,7 +18,7 @@ lspconfig.rust_analyzer.setup {
 -- lspconfig.pyright.setup{}
 lspconfig.pylsp.setup {
   settings = {
-    pyls = {
+    pylsp = {
       plugins = {
         pylint = {
           enabled = true,
