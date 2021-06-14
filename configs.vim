@@ -215,7 +215,7 @@ let g:lightline = {
       \             ['curr_func', 'git'] ],
       \   'right': [ ['lineinfo'], ['percent'],
       \              ['checker_errors', 'checker_warnings', 'checker_status'],
-      \              ['asyncrun'] ]
+      \              ['searchcount', 'asyncrun'] ]
       \ },
       \ 'inactive': {
       \   'left': [ ['specialbuf', 'shortrelpath'],
@@ -237,6 +237,7 @@ let g:lightline = {
       \   'checker_status': 'CheckerStatus',
       \   'checker_errors_inactive': 'CheckerErrors',
       \   'checker_warnings_inactive': 'CheckerWarnings',
+      \   'searchcount': 'SearchCount',
       \ },
       \ 'component_expand': {
       \  'checker_errors': 'CheckerErrors',
@@ -250,6 +251,7 @@ let g:lightline = {
       \   'readonly': '(&filetype!=#"help"&& &readonly)',
       \   'modified': '(&filetype!=#"help"&&(&modified||!&modifiable))',
       \   'specialbuf': '&pvw||&buftype==#"quickfix"',
+      \   'asyncrun': '!empty(g:asyncrun_status)',
       \ },
       \ 'mode_map': {
       \     'n' : 'N ',
@@ -274,6 +276,27 @@ func! ShortRelPath()
     endif
     return pathshorten(fnamemodify(name, ":~:."))
 endfunc
+function! SearchCount()
+    if !v:hlsearch | return '' | endif
+    try
+        let result = searchcount(#{recompute: 1, maxcount: -1})
+        if empty(result) || result.total ==# 0
+            return ''
+        endif
+        if result.incomplete ==# 1
+            return printf('[?/??]')
+        elseif result.incomplete ==# 2
+            if result.total > result.maxcount && result.current > result.maxcount
+                return printf('[>%d/>%d]', result.current, result.total)
+            elseif result.total > result.maxcount
+                return printf('[%d/>%d]', result.current, result.total)
+            endif
+        endif
+        return printf('[%d/%d]', result.current, result.total)
+    catch
+        return ''
+    endtry
+endfunction
 " `vil() { nvim "$@" --cmd 'set background=light'; }` for light theme
 if exists('g:colors_name') " loading the color again breaks lightline
 elseif &background == 'dark' || !has('nvim')
