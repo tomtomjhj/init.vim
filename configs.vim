@@ -81,7 +81,7 @@ Plug 'tomtomjhj/haskell-vim', { 'branch': 'custom' }
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'lervag/vimtex'
 Plug 'KeitaNakamura/tex-conceal.vim'
-Plug 'whonore/Coqtail' | let g:coqtail_nomap = 1
+Plug 'whonore/Coqtail'
 " Plug 'puremourning/vimspector' | let g:vimspector_enable_mappings = 'HUMAN'
 Plug 'cespare/vim-toml'
 Plug 'neoclide/jsonc.vim'
@@ -123,15 +123,15 @@ call plug#end()
 
 " Basic {{{
 set mouse=a
-set number ruler
+set number ruler showcmd
 set foldcolumn=1 foldnestmax=5
-set scrolloff=2 sidescrolloff=2
+set scrolloff=2 sidescrolloff=2 sidescroll=1 nostartofline
 set showtabline=1
 set laststatus=2
 
 set shiftwidth=4
 set expandtab smarttab
-set autoindent " smartindent is unnecessary
+set autoindent
 set formatoptions+=jn
 set formatlistpat=\\C^\\s*[\\[({]\\\?\\([0-9]\\+\\\|[iIvVxXlLcCdDmM]\\+\\\|[a-zA-Z]\\)[\\]:.)}]\\s\\+\\\|^\\s*[-+o*]\\s\\+
 set nojoinspaces
@@ -152,8 +152,8 @@ let mapleader = ","
 set timeoutlen=987
 
 set wildmenu wildmode=longest:full,full
-set wildignore=*~,%*,*.o,*.pyc,*.pdf,*.v.d,*.vo*,*.glob,*.cm*,*.aux
-set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/__pycache__/*,*/target/*
+let s:wildignore_files = ['*~', '%*', '*.o', '*.so', '*.pyc', '*.pdf', '*.v.d', '*.vo*', '*.glob', '*.cm*', '*.aux']
+let s:wildignore_dirs = ['.git', '__pycache__', 'target']
 set complete-=i complete-=u
 set path=.,./*,./..,,*,*/*,*/*/*,*/*/*/*,*/*/*/*/*
 
@@ -664,10 +664,10 @@ nnoremap <c-space> <C-u>
 
 noremap <M-0> ^w
 
-" NOTE: vertical scope, label_esc
 let g:sneak#s_next = 0
 let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
+" TODO: line('w0') & line('w$') for {stopline} to prevent jumping to random place
 map f <Plug>Sneak_f
 map F <Plug>Sneak_F
 map t <Plug>Sneak_t
@@ -813,7 +813,7 @@ command! -count Wfh set winfixheight | if <count> | exe "normal! z".<count>."\<C
 noremap <leader>q :<C-u>q<CR>
 noremap q, :<C-u>q<CR>
 nnoremap <leader>w :<C-u>up<CR>
-noremap ZAQ :<C-u>qa!<CR>
+nnoremap ZAQ :<C-u>qa!<CR>
 command! -bang W   w<bang>
 command! -bang Q   q<bang>
 
@@ -916,7 +916,18 @@ command! -nargs=? -complete=dir Sexplore split | silent Dirvish <args>
 command! -nargs=? -complete=dir Vexplore vsplit | silent Dirvish <args>
 nmap <silent><C-w>es :Sexplore %<CR>
 nmap <silent><C-w>ev :Vexplore %<CR>
+nmap <leader>D <Plug>(dirvish_up)
 hi! link DirvishSuffix Special
+augroup dirvish_config | autocmd!
+  autocmd FileType dirvish nnoremap <silent><buffer> t :call DirvishSubdir()<CR>
+  autocmd FileType dirvish nmap <buffer> - <Plug>(dirvish_up)
+augroup END
+function! DirvishSubdir() abort
+    let dir = getline('.')
+    let subdirs = split(system('find "'.dir.'" -maxdepth 1 -print0 | xargs -0 ls -Fd'), "\n")
+    call filter(subdirs, 'v:val !~# "//"')
+    call append(line('.'), subdirs)
+endfunction
 " }}}
 
 let g:EditorConfig_exclude_patterns = ['.*[.]git/.*', 'fugitive://.*', 'scp://.*']
@@ -1010,7 +1021,7 @@ let g:neoterm_default_mod = 'rightbelow'
 let g:neoterm_automap_keys = '<leader>T'
 
 " sentencer
-let g:sentencer_max_length = 79 " formatexpr doesn't work like built-in gq for textwidth=0
+let g:sentencer_textwidth = 79 " formatexpr doesn't work like built-in gq for textwidth=0
 nnoremap <leader>sb :SentencerBind<CR>
 " }}}
 
@@ -1063,4 +1074,21 @@ endfunction
 command! -range=% -nargs=1 SubstituteDict :<line1>,<line2>call SubstituteDict(<args>)
 
 command! WipeReg for i in range(34,122) | silent! call setreg(nr2char(i), []) | endfor
+
+command! -nargs=+ -bang AddWildignore call AddWildignore([<f-args>], <bang>0)
+function! AddWildignore(wigs, is_dir) abort
+    if a:is_dir
+        call add(g:wildignore_dirs, a:wigs)
+        let globs = map(a:wigs, 'v:val.",".v:val."/,**/".v:val."/*"')
+    else
+        call add(g:wildignore_files, a:wigs)
+        let globs = a:wigs
+    endif
+    exe 'set wildignore+='.join(globs, ',')
+endfunction
+if !exists('g:wildignore_files')
+    let [g:wildignore_files, g:wildignore_dirs] = [[], []]
+    call AddWildignore(s:wildignore_files, 0)
+    call AddWildignore(s:wildignore_dirs, 1)
+endif
 " }}}
