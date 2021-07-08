@@ -29,7 +29,7 @@ function s:SetupDigraph()
     digraph ~< 8818 " ≲
     digraph v^ 8652 " ⇌
     exe 'digraph (+ 8713 " ∉'
-    digraph ^= 8796 " ≜
+    digraph =^ 8796 " ≜
     digraph U+ 8846 " ⊎
     digraph U. 8845 " ⊍
     digraph =v 8659 " ⇓
@@ -51,6 +51,9 @@ function s:SetupDigraph()
     digraph _7 8327
     digraph _8 8328
     digraph _9 8329
+    digraph _+ 8330
+    digraph _- 8331
+    digraph _= 8332
     digraph ^0 8304
     digraph ^1  185
     digraph ^2  178
@@ -63,7 +66,7 @@ function s:SetupDigraph()
     digraph ^9 8313
     digraph ^+ 8314
     digraph ^- 8315
-    " digraph ^= 8316 " ⁼
+    digraph ^= 8316
     exe 'digraph ^( 8317'
     exe 'digraph ^) 8318'
 

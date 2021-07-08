@@ -70,6 +70,7 @@ else
     Plug 'folke/lua-dev.nvim'
     " Plug 'https://github.com/RishabhRD/nvim-lsputils'
     " Plug 'https://github.com/glepnir/lspsaga.nvim'
+    " https://github.com/simrat39/rust-tools.nvim
 endif
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'tomtomjhj/vim-markdown'
@@ -89,7 +90,6 @@ Plug 'rhysd/vim-llvm'
 Plug 'fatih/vim-go', { 'do': 'rm -rf plugin ftplugin' }
 Plug 'vim-python/python-syntax'
 Plug 'tbastos/vim-lua'
-" TODO: vimtex-grammar-vlty
 " Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] } | let g:grammarous#use_location_list = 1
 
 " etc etc

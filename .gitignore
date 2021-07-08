@@ -11,3 +11,4 @@ __pycache__
 .mypy_cache/*
 plugged/*
 autoload/plug.vim.old
+.netrwhist
