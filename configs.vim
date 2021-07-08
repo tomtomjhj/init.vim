@@ -911,19 +911,28 @@ let g:NERDTreeStatusline = -1
 nmap <silent><leader>nn :NERDTreeToggle<cr>
 nmap <silent><leader>nf :NERDTreeFind<cr>
 
-" TODO: make preview use preview window https://github.com/justinmk/vim-dirvish/pull/65/commits/9e3f16aa5413479919b540e1f0db594d3f997f15
 command! -nargs=? -complete=dir Sexplore split | silent Dirvish <args>
 command! -nargs=? -complete=dir Vexplore vsplit | silent Dirvish <args>
 nmap <silent><C-w>es :Sexplore %<CR>
 nmap <silent><C-w>ev :Vexplore %<CR>
-nmap <leader>D <Plug>(dirvish_up)
+nmap <leader>- <Plug>(dirvish_up)
 hi! link DirvishSuffix Special
 augroup dirvish_config | autocmd!
-  autocmd FileType dirvish nnoremap <silent><buffer> t :call DirvishSubdir()<CR>
-  autocmd FileType dirvish nmap <buffer> - <Plug>(dirvish_up)
+    autocmd FileType dirvish call SetupDirvish()
 augroup END
+function! SetupDirvish() abort
+    nnoremap <silent><buffer> t :call DirvishSubdir()<CR>
+    nmap <buffer> - <Plug>(dirvish_up)
+    " Prevent \ze[^/]*[/]\=$ from highlighting almost every character when the
+    " actual input pattern is empty by temporarily disabling incsearch.
+    augroup dirvish_incsearch | au! * <buffer>
+        au CmdlineChanged <buffer> if getcmdline() =~# '\v^\\ze\[\^\\?\/\]\*\[\\?\/\]\\\=\$$' | set noincsearch | else | set incsearch | endif
+        au CmdlineLeave <buffer> set incsearch
+    augroup END
+endfunction
 function! DirvishSubdir() abort
     let dir = getline('.')
+    if dir !~# '/$' | return | endif
     let subdirs = split(system('find "'.dir.'" -maxdepth 1 -print0 | xargs -0 ls -Fd'), "\n")
     call filter(subdirs, 'v:val !~# "//"')
     call append(line('.'), subdirs)
