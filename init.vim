@@ -9,6 +9,9 @@ function P(v)
   print(vim.inspect(v))
   return v
 end
+
+-- nil, false and 0 are falsy
+function TT(x) return x and x ~= 0 end
 EOF
 
 source ~/.vim/configs.vim

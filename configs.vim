@@ -63,7 +63,7 @@ if g:ide_client == 'coc'
 else
     Plug 'hrsh7th/nvim-compe'
     Plug 'neovim/nvim-lspconfig'
-    Plug 'anott03/nvim-lspinstall'
+    Plug 'kabouzeid/nvim-lspinstall'
     Plug 'ojroques/nvim-lspfuzzy'
     Plug 'nvim-lua/lsp_extensions.nvim'
     Plug 'nvim-lua/lsp-status.nvim'

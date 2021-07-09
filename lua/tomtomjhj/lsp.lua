@@ -1,21 +1,19 @@
 local lspconfig = require('lspconfig')
 local lsp_status = require('lsp-status')
 
--- nil, false and **0** are falsy
-function TT(x) return x and x ~= 0 end
-
+-- NOTE: don't use lspinstall's configuration... so confusing
+-- lspinstall.setup()
 lsp_status.register_progress()
 require('lspfuzzy').setup{}
 
-local HOME = vim.fn.expand("~")
-local lspinstall_dir = vim.fn.stdpath('cache')..'/lspconfig/'
+local lspinstall_dir = vim.fn.stdpath('data')..'/lspinstall/'
 
 lspconfig.rust_analyzer.setup {
   on_attach = lsp_status.on_attach,
   capabilities = lsp_status.capabilities,
+  cmd = { lspinstall_dir..'rust/rust-analyzer' },
 }
 
--- lspconfig.pyright.setup{}
 lspconfig.pylsp.setup {
   on_attach = lsp_status.on_attach,
   capabilities = lsp_status.capabilities,
@@ -34,20 +32,16 @@ lspconfig.pylsp.setup {
 lspconfig.clangd.setup {
   on_attach = lsp_status.on_attach,
   capabilities = lsp_status.capabilities,
-  cmd = {HOME.."/.config/coc/extensions/coc-clangd-data/install/12.0.0/clangd_12.0.0/bin/clangd", "--background-index" };
+  cmd = { lspinstall_dir.."cpp/clangd/bin/clangd", "--background-index" };
   filetypes = { "c", "cpp", "cuda" };
 }
 
-local system_name = TT(vim.fn.has('unix')) and 'Linux' or TT(vim.fn.has('win32')) and 'Windows' or 'macOS'
-local sumneko_root_path = lspinstall_dir..'sumneko_lua/lua-language-server'
-local sumneko_binary = sumneko_root_path..'/bin/'..system_name..'/lua-language-server'
-
-require'lspconfig'.sumneko_lua.setup (
+lspconfig.sumneko_lua.setup (
   require'lua-dev'.setup {
     lspconfig = {
       on_attach = lsp_status.on_attach,
       capabilities = lsp_status.capabilities,
-      cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"}
+      cmd = { lspinstall_dir..'lua/sumneko-lua-language-server' }
     }
   }
 )
@@ -55,4 +49,5 @@ require'lspconfig'.sumneko_lua.setup (
 lspconfig.vimls.setup {
   on_attach = lsp_status.on_attach,
   capabilities = lsp_status.capabilities,
+  cmd = { lspinstall_dir..'/vim/node_modules/.bin/vim-language-server', '--stdio' }
 }
