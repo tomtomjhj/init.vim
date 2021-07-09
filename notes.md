@@ -238,6 +238,8 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * https://blog.fsouza.dev/prettierd-neovim-format-on-save/
 * http://nikhilm.github.io/uvbook/ https://github.com/luvit/luv/tree/master/examples/uvbook
 * https://github.com/jbyuki/instant.nvim https://github.com/jbyuki/nabla.nvim
+* https://github.com/tweekmonster/helpful.vim https://www.arp242.net/vimlog/ https://axelf.nu/vim-helptag-versions/
+* https://github.com/jose-elias-alvarez/null-ls.nvim
 
 # new (n)vim stuff
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.

@@ -85,8 +85,8 @@ EOF
 
 function! SetupLSP()
   augroup LocalNvimLSPStuff | au! * <buffer>
-    au CursorHold <buffer> lua require('lsp-status').update_current_function()
     if &filetype ==# 'rust'
+      " TODO: use rust-tools
       au InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost <buffer>
             \ lua require'lsp_extensions'.inlay_hints{ prefix = '‣ ', highlight = "TypeHint", enabled = {"ChainingHint"} }
     endif
@@ -112,25 +112,28 @@ function! SetupLSP()
   inoremap <buffer><silent>        <M-i> <cmd>lua vim.lsp.buf.signature_help()<CR>
   " TODO: |lsp-handler| default location_handler
   " * goto def in split, etc https://github.com/neovim/neovim/pull/12966
+  "   https://github.com/weilbith/nvim-lsp-smag
   " * hover in preview window
-  " NOTE: codelens not implemented
 endfunction
 
 function! CurrentFunction()
   return get(b:,'lsp_current_function', '')
 endfunction
 function! CheckerStatus()
-  return v:lua.tomtomjhj.lsp.status()
+  if luaeval('#vim.lsp.buf_get_clients() > 0')
+    return luaeval('require("lsp-status").status_progress()')
+  endif
+  return ''
 endfunction
 function! CheckerErrors()
-  if luaeval('#vim.lsp.buf_get_clients() > -1')
+  if luaeval('#vim.lsp.buf_get_clients() > 0')
     let errors = luaeval('vim.lsp.diagnostic.get_count(0, "Error")')
     return errors ? 'E' . errors : ''
   endif
   return ''
 endfunction
 function! CheckerWarnings()
-  if luaeval('#vim.lsp.buf_get_clients() > -1')
+  if luaeval('#vim.lsp.buf_get_clients() > 0')
     let warnings = luaeval('vim.lsp.diagnostic.get_count(0, "Warning")')
     return warnings ? 'W' . warnings : ''
   endif
