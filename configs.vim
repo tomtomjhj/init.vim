@@ -540,6 +540,7 @@ vnoremap <silent>* :<C-u>call VisualStar(0)\|set hlsearch<CR>
 vnoremap <silent>g* :<C-u>call VisualStar(1)\|set hlsearch<CR>
 " set hlsearch inside the function doesn't work? Maybe :h function-search-undo?
 " NOTE: word boundary is syntax property -> may not match in other ft buffers
+let g:search_mode = get(g:, 'search_mode', '/')
 func! Star(g)
     let @c = expand('<cword>')
     " <cword> can be non-keyword
@@ -603,13 +604,13 @@ func! FzfOpts(arg, spec)
     return fzf#vim#with_preview(a:spec, l:preview_window)
 endfunc
 func! RgInput(raw)
-    if g:search_mode == 'n'
+    if g:search_mode ==# 'n'
         return substitute(a:raw, '\v\\[<>]','','g')
-    elseif g:search_mode == 'v'
+    elseif g:search_mode ==# 'v'
         return escape(a:raw, '+|?-(){}') " not escaped by VisualStar
     else " can convert most of strict very magic to riggrep regex, otherwise, DIY
-        if a:raw[0:1] != '\v'
-            return substitute(a:raw, '\v\\[<>]','','g')
+        if a:raw[0:1] !=# '\v'
+            return substitute(a:raw, '\v(\\V|\\[<>])','','g')
         endif
         return substitute(a:raw[2:], '\v\\([~/])', '\1', 'g')
     endif
