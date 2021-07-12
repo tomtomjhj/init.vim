@@ -76,22 +76,38 @@ endfunc
 " adapted tpope/vim-markdown/ftplugin/markdown.vim + plasticboy/vim-markdown pythonic foldtext
 " NOTE: doesn't handle yaml front matter
 
-function! s:NotCodeBlock(lnum) abort
-    return !InSynStack('^mkd\%(Code\|Snippet\)', synstack(a:lnum, 1))
+function! s:IsCodeBlock(lnum) abort
+    return InSynStack('^mkd\%(Code\|Snippet\)', synstack(a:lnum, 1))
 endfunction
 
 function! tomtomjhj#markdown#foldexpr() abort
     let line = getline(v:lnum)
-    let hashes = matchstr(line, '^\s\{,3}\zs#\+')
-    if !empty(hashes) && s:NotCodeBlock(v:lnum)
-        return ">" . len(hashes)
+    let hashes = matchstr(line, '^#\+')
+    let is_code = -1
+    if !empty(hashes)
+        let is_code = s:IsCodeBlock(v:lnum)
+        if !is_code
+            return ">" . len(hashes)
+        endif
     endif
-    let nextline = getline(v:lnum + 1)
-    if (line =~ '^.\+$') && (nextline =~ '^=\+$') && s:NotCodeBlock(v:lnum + 1)
-        return ">1"
-    endif
-    if (line =~ '^.\+$') && (nextline =~ '^-\+$') && s:NotCodeBlock(v:lnum + 1)
-        return ">2"
+    if !empty(line)
+        let nextline = getline(v:lnum + 1)
+        if nextline =~ '^=\+$'
+            if is_code == -1
+                let is_code = s:IsCodeBlock(v:lnum)
+            endif
+            if !is_code
+                return ">1"
+            endif
+        endif
+        if nextline =~ '^-\+$'
+            if is_code == -1
+                let is_code = s:IsCodeBlock(v:lnum)
+            endif
+            if !is_code
+                return ">2"
+            endif
+        endif
     endif
     return "="
 endfunction
