@@ -1,6 +1,5 @@
 syn case match
 syn sync minlines=200
-finish
 
 let s:conceal = ''
 let s:concealends = ''

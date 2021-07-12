@@ -42,8 +42,7 @@ Plug 'Konfekt/FastFold' " only useful for non-manual folds
 Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
-Plug 'wellle/visual-split.vim' " <C-w>g gr/gss/gsa/gsb
-Plug 'andymass/vim-tradewinds' " <C-w>g h/j/k/l
+Plug 'wellle/visual-split.vim' " <C-w>g gr/gss/gsa/gsb TODO: setlocal scrolloff=0?
 " TODO Plug 'tpope/vim-obsession'
 " TODO Plug 'yuki-ycino/fzf-preview.vim'
 " TODO Plug 'lpinilla/vim-codepainter'
@@ -469,6 +468,8 @@ let g:vim_markdown_auto_insert_bullets = 0
 let g:vim_markdown_new_list_item_indent = 0
 let g:vim_markdown_frontmatter = 1
 let g:vim_markdown_no_default_key_mappings = 1
+let g:vim_markdown_strikethrough = 1
+let g:vim_markdown_conceal = 0
 " let g:mkdp_port = '8080'
 " let g:mkdp_open_to_the_world = 1
 " let g:mkdp_echo_preview_url = 1
@@ -1031,6 +1032,7 @@ let g:neoterm_default_mod = 'rightbelow'
 let g:neoterm_automap_keys = '<leader>T'
 
 " sentencer
+let g:sentencer_filetypes = []
 let g:sentencer_textwidth = 79 " formatexpr doesn't work like built-in gq for textwidth=0
 nnoremap <leader>sb :SentencerBind<CR>
 " }}}
