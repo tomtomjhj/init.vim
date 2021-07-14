@@ -1,4 +1,4 @@
-set nocompatible
+if &compatible | set nocompatible | endif
 if has('win32')
   set runtimepath^=~/.vim
   set runtimepath+=~/.vim/after
@@ -38,10 +38,12 @@ if !has('gui_running')
   set ttymouse=sgr
 
   " fix <M- mappings {{{
+  " NOTE: vim-rsi does it very differently
   " NOTE: :h 'termcap' (e.g. arrows). Map only necessary stuff.
   " NOTE: <M- keys can be affected by 'encoding'.
   " NOTE: Run after VimEnter to avoid messing up terminal stuff.
-  function! s:InitESCMaps() abort
+  function! InitESCMaps() abort
+    " TODO: when can I map <M-]> safely?
     for c in ['+', ',', '-', '.', '/', '0', '\', ']', 'i', 'j', 'k', 'l', 'n', 'o', 'p', 'q', 'w', 'y', '\|']
       exec 'map  <ESC>'.c '<M-'.c.'>'
       exec 'map! <ESC>'.c '<M-'.c.'>'
@@ -51,7 +53,7 @@ if !has('gui_running')
     map! <Nul> <C-space>
   endfunction
   " A hack to bypass <ESC> prefix map timeout stuff.
-  function! s:ESCHack(mode)
+  function! ESCHack(mode)
     if mode(1) ==# 'niI'
       call feedkeys("\<ESC>", 'n')
       return
@@ -79,33 +81,38 @@ if !has('gui_running')
       call feedkeys(prefix, 'n')
     endif
     call feedkeys("\<ESC>" . extra . "\<Plug>" . a:mode . "mapESC")
+    return ''
   endfunction
 
   " TODO remove redundant commands
-  imap <silent><Plug>imapESC <C-o>:<C-u>call ESCimap()<CR>
+  imap <silent><Plug>imapESC <C-r>=ESCimap()<CR>
   map  <silent><Plug>imapESC      :<C-u>call ESCimap()<CR>
-  imap <silent><Plug>nmapESC <C-o>:<C-u>call ESCnmap()<CR>
+  imap <silent><Plug>nmapESC <C-r>=ESCnmap()<CR>
   map  <silent><Plug>nmapESC      :<C-u>call ESCnmap()<CR>
-  imap <silent><Plug>vmapESC <C-o>:<C-u>call ESCvmap()<CR>
+  imap <silent><Plug>vmapESC <C-r>=ESCvmap()<CR>
   map  <silent><Plug>vmapESC      :<C-u>call ESCvmap()<CR>
-  imap <silent><Plug>omapESC <C-o>:<C-u>call ESComap()<CR>
+  imap <silent><Plug>omapESC <C-r>=ESComap()<CR>
   map  <silent><Plug>omapESC      :<C-u>call ESComap()<CR>
 
   function! ESCimap()
-    imap <silent><buffer><nowait><ESC> <C-o>:<C-u>call <SID>ESCHack('i')<CR>
+    imap <silent><buffer><nowait><ESC> <C-r>=ESCHack('i')<CR>
+    return ''
   endfunction
   function! ESCnmap()
-    nmap <silent><buffer><nowait><ESC> :<C-u>call <SID>ESCHack('n')<CR>
+    nmap <silent><buffer><nowait><ESC> :<C-u>call ESCHack('n')<CR>
+    return ''
   endfunction
   function! ESCvmap()
-    vmap <silent><buffer><nowait><ESC> :<C-u>call <SID>ESCHack('v')<CR>
+    vmap <silent><buffer><nowait><ESC> :<C-u>call ESCHack('v')<CR>
+    return ''
   endfunction
   function! ESComap()
-    omap <silent><buffer><nowait><ESC> :<C-u>call <SID>ESCHack('o')<CR>
+    omap <silent><buffer><nowait><ESC> :<C-u>call ESCHack('o')<CR>
+    return ''
   endfunction
   " TODO: omap generates an empty change when aborted by <ESC>
   augroup TerminalVimSetup | au!
-    au VimEnter * call s:InitESCMaps()
+    au VimEnter * call InitESCMaps()
     au BufEnter * call ESCimap() | call ESCnmap() | call ESCvmap() | call ESComap()
     au CmdlineEnter * set timeoutlen=23
     au CmdlineLeave * set timeoutlen=987

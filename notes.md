@@ -115,6 +115,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
   https://groups.google.com/g/vim_dev/c/k9wRhNMNIFc/m/vpFvud0mo9UJ?pli=1
 * `:match`
 * http://vimcasts.org/blog/2013/03/combining-vimgrep-with-git-ls-files/
+* https://vimways.org/2018/death-by-a-thousand-files/
 
 ## dictionary (`i_CTRL-X_CTRL-K`)
 ```vim
@@ -193,9 +194,14 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
     * `exe "digraph \<Space>\<Space> 32"`
     * `exe "inoremap \u00A0 <Space>"`
 * lightline
-    * separator hightlighting is optimized for fancy stuff like `'separator': { 'left': '', 'right': '' }, 'subseparator': { 'left': '', 'right': '' }` ([issue](https://github.com/itchyny/lightline.vim/issues/85)) → using `' '` for separator results in some odd whitespaces
+    * separator highlighting is optimized for fancy stuff like `'separator': { 'left': '', 'right': '' }, 'subseparator': { 'left': '', 'right': '' }` ([issue](https://github.com/itchyny/lightline.vim/issues/85)) → using `' '` for separator results in some odd whitespaces
     * `component_expand` is not per-window
 * `expand()` before passing to `filereadable()` (for `~`)
+* `useopen` applies to `CTRL-W_CTRL-]` and `:sfind` etc but I only want it for quickfix commands.
+* `formatexpr` and `indentexpr` silence errors
+* ftplugin runs before other `au FileType` because the `filetype plugin indent on` is usually invoked before defining other autocmds (so the order is not built-in).
+* `:filetype on` runs ftdetect scripts. So `runtimepath` should be set before `:filetype on`. If `SYS_VIMRC_FILE` runs `:syntax on` (which runs `:filetype on`), it should be reset by `:filetype off`.
+  This is unnecessary for `:packadd`-based plugin management.
 
 # (n)vim problem
 * terminal reflow https://github.com/neovim/neovim/issues/2514
@@ -231,6 +237,12 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * https://github.com/neovim/neovim/issues/14298
   Similar issue in vim without tmux when mapping `<M-]>`.
   `vim --clean -c 'map <ESC>] <M-]>'` to reproduce.
+* previewheight is ignored if pedit is run on window with
+  `vim --clean`, `set lines=74`
+  ```
+  wincmd s | wincmd j | set wfh | exe "norm! z13\<CR>" | pedit file
+  wincmd s | wincmd j | set wfh | exe "norm! z14\<CR>" | pedit file
+  ```
 
 # stuff
 * https://arxiv.org/abs/2006.03103
