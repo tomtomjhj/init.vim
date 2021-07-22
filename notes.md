@@ -193,6 +193,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * `<C-k><space><space>` is non-break space! Can't disable with
     * `exe "digraph \<Space>\<Space> 32"`
     * `exe "inoremap \u00A0 <Space>"`
+    * check patch 8.2.3184: cannot add a digraph with a leading space
 * lightline
     * separator highlighting is optimized for fancy stuff like `'separator': { 'left': '', 'right': '' }, 'subseparator': { 'left': '', 'right': '' }` ([issue](https://github.com/itchyny/lightline.vim/issues/85)) → using `' '` for separator results in some odd whitespaces
     * `component_expand` is not per-window

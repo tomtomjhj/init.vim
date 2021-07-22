@@ -8,10 +8,6 @@ endif
 source ~/.vim/configs.vim
 
 " stuff from sensible {{{
-" plug#end() does this
-" filetype plugin indent on
-" syntax enable
-
 set belloff=all
 set nrformats=bin,hex
 set display=lastline
@@ -34,6 +30,8 @@ endif
 " }}}
 
 if !has('gui_running')
+  " term=tmux-256color messes up ctrl-arrows
+  if $TERM =~ '\(tmux\|screen\)-256' | set term=xterm-256color | endif
   " set to xterm in tmux, which doesn't support window resizing with mouse
   set ttymouse=sgr
 
@@ -48,6 +46,7 @@ if !has('gui_running')
       exec 'map  <ESC>'.c '<M-'.c.'>'
       exec 'map! <ESC>'.c '<M-'.c.'>'
     endfor
+    imap <ESC><BS> <M-BS>
     cnoremap <ESC><ESC> <C-c>
     map  <Nul> <C-space>
     map! <Nul> <C-space>

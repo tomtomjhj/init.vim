@@ -173,7 +173,7 @@ if has('nvim-0.5') | set undodir=~/.vim/undoo// | else | set undodir=~/.vim/undo
 
 set autoread
 set splitright splitbelow
-let &switchbuf = (has('patch-8.1.2315') || has('nvim-0.5')) ? 'useopen,uselast' : 'useopen'
+if (has('patch-8.1.2315') || has('nvim-0.5')) | set switchbuf+=uselast | endif
 set hidden
 set lazyredraw
 
@@ -452,7 +452,7 @@ let g:tex_noindent_env = '\v\w+.?'
 let g:vimtex_fold_enabled = 1
 let g:matchup_override_vimtex = 1
 let g:vimtex_view_method = 'zathura'
-if has('nvim') | let g:vimtex_compiler_progname = 'nvr' | endif
+let g:vimtex_grammar_textidote = { 'jar': '~/Downloads/textidote.jar', 'args': '' }
 let g:pandoc#syntax#codeblocks#embeds#langs = ["python", "cpp", "rust"]
 let g:pandoc#modules#enabled = ["formatting", "hypertext", "yaml"]
 " Surround triggers equalprg (pandoc -t markdown), which modifies the text a lot
@@ -688,7 +688,7 @@ let g:sneak#alias = {
 
 " TODO: (special char -> non-blank, non-keyword), user-defined (paren -> pair?)
 " s-word: (a keyword | repetition of non-paren special char | a paren | whitespace)
-let g:sword = '\v(\k+|([^[:alnum:]_[:blank:](){}[\]<>$])\2*|[(){}[\]<>$]|\s+)'
+let g:sword = '\v(\k+|([^[:alnum:]_[:blank:](){}[\]<>''"`$])\2*|[(){}[\]<>''"`$]|\s+)'
 "                     %(\k|[()[\]{}<>[:blank:]$])@!(.)\1*
 
 " Jump past a sword. Assumes `set whichwrap+=]` for i_<Right>
@@ -712,7 +712,6 @@ inoremap <C-u> <C-g>u<C-u>
 " Delete a single character of other non-blank chars
 inoremap <silent><expr><C-w>  FineGrainedICtrlW(0)
 " Like above, but first consume whitespace
-" TODO: more fine-grained like emacs syntax-subword
 inoremap <silent><expr><M-BS> FineGrainedICtrlW(1)
 func! FineGrainedICtrlW(finer)
     let l:col = col('.')
@@ -830,6 +829,7 @@ nnoremap <leader>fe :e!<CR>
 
 " etc plugin settings {{{
 " pairs {{{
+let g:matchup_override_vimtex = 1
 let g:matchup_matchparen_offscreen = {}
 let g:matchup_matchparen_deferred = 1
 let g:pear_tree_map_special_keys = 0
@@ -989,6 +989,7 @@ if exists('g:started_by_firenvim')
         if !s:IsFirenvimActive(a:event) | return | endif
         " inoremap <buffer> <M-CR> <Esc>:w<CR>:call firenvim#press_keys("<LT>CR>")<CR>ggdGa
     endfunction
+    set guifont=Source\ Code\ Pro:h20
 else
     let g:firenvim_loaded = 1
 endif

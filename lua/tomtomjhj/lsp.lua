@@ -49,5 +49,5 @@ lspconfig.sumneko_lua.setup (
 lspconfig.vimls.setup {
   on_attach = lsp_status.on_attach,
   capabilities = lsp_status.capabilities,
-  cmd = { lspinstall_dir..'/vim/node_modules/.bin/vim-language-server', '--stdio' }
+  cmd = { lspinstall_dir..'vim/node_modules/.bin/vim-language-server', '--stdio' }
 }
