@@ -902,10 +902,29 @@ nmap <silent>[l <Plug>(qf_loc_previous)
 
 " Explorers {{{
 let g:loaded_netrwPlugin = 1
-nnoremap <silent> <Plug>NetrwBrowseX :call netrw#BrowseX(expand((exists("g:netrw_gx")? g:netrw_gx : '<cfile>')),netrw#CheckIfRemote())<cr>
-vnoremap <silent> <Plug>NetrwBrowseXVis :<c-u>call netrw#BrowseXVis()<cr>
-nmap gx <Plug>NetrwBrowseX
-vmap gx <Plug>NetrwBrowseXVis
+function! GXBrowse(url)
+    let redir = '>&/dev/null'
+    if exists('g:netrw_browsex_viewer')
+        let viewer = g:netrw_browsex_viewer
+    elseif has('unix') && executable('xdg-open')
+        let viewer = 'xdg-open'
+    elseif has('macunix') && executable('open')
+        let viewer = 'open'
+    elseif has('win64') || has('win32')
+        let viewer = 'start'
+        redir = '>null'
+    else
+        return
+    endif
+    execute 'silent! !' . viewer . ' ' . shellescape(a:url, 1) . redir
+    redraw!
+endfunction
+" based on https://gist.github.com/gruber/249502
+let s:url_regex = '\c\<\%([a-z][0-9A-Za-z_-]\+:\%(\/\{1,3}\|[a-z0-9%]\)\|www\d\{0,3}[.]\|[a-z0-9.\-]\+[.][a-z]\{2,4}\/\)\%([^ \t()<>]\+\|(\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\)\+\%((\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\|[^ \t`!()[\]{};:'."'".'".,<>?«»“”‘’]\)'
+function! CursorURL() abort
+    return matchstr(expand('<cWORD>'), s:url_regex)
+endfunction
+nnoremap <silent> gx :call GXBrowse(CursorURL())<cr>
 
 let NERDTreeHijackNetrw = 0
 let g:NERDTreeIgnore=['\~$', '\.glob$', '\v\.vo[sk]?$', '\.v\.d$', '\.o$']
@@ -976,9 +995,8 @@ endif
 " }}}
 
 " textobj {{{
-let s:url_or_filename_regex = '\c\(\<\%([a-z][0-9A-Za-z_-]\+:\%(\/\{1,3}\|[a-z0-9%]\)\|www\d\{0,3}[.]\|[a-z0-9.\-]\+[.][a-z]\{2,4}\/\)\%([^ \t()<>]\+\|(\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\)\+\%((\([^ \t()<>]\+\|\(([^ \t()<>]\+)\)\)*)\|[^ \t`!()[\]{};:'."'".'".,<>?«»“”‘’]\)\|\f\+\)'
 call textobj#user#plugin('tomtomjhj', {
-\   'url_or_filename': { 'pattern': s:url_or_filename_regex, 'select': ['au', 'iu'] },
+\   'url_or_filename': { 'pattern': '\('.s:url_regex.'\|\f\+\)', 'select': ['au', 'iu'] },
 \   'indented_paragraph': {
 \     'select-a-function': 'indented_paragraph#SelectA',
 \     'select-a': 'aP',
