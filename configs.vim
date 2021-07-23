@@ -507,16 +507,24 @@ hi CoqtailSent ctermbg=60 guibg=#5f5f87
 augroup SetupCoq | au!
     au FileType coq,coq-goals,coq-infos
                 \ call tomtomjhj#coq#mappings() |
-                \ set matchpairs+=⌜:⌝,⎡:⎤
-    " NOTE: 'r', 'o' flags don't distinguish bullet '*' and comment leader '*'
-    au FileType coq
-                \ let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} }) |
-                \ setl shiftwidth=2 |
-                \ setl comments=s:(*,e:*) formatoptions=tcqnj " no middle piece & comment leader
-                " \ setl comments=sr:(*,mb:*,ex:*) formatoptions=tcroqnj
-                " TODO: coq uses zero-based column index..                     vv
-    au FileType coq setl errorformat=File\ \"%f\"\\,\ line\ %l\\,\ characters\ %c-%*[0-9]:
+                \ setlocal matchpairs+=⌜:⌝,⎡:⎤
+    au FileType coq call SetupCoq()
 augroup END
+function! SetupCoq() abort
+    let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} }) |
+    " TODO: FastFold deletes manual fold. fastfold_skip_filetypes doesn't work.
+    " :e file.md → :sp file.v → WinEnter → EnterWin → w:lastfdm = expr
+    " FileType (UpdateBuf does nothing) → ... → UpdateWin → LeaveWin (fdm=expr).
+    if exists('w:lastfdm') | unlet w:lastfdm | endif
+    setlocal foldmethod=manual
+    setlocal shiftwidth=2
+    " no middle piece & comment leader
+    setlocal comments=s:(*,e:*) formatoptions=qnj
+    " NOTE: 'r', 'o' flags don't distinguish bullet '*' and comment leader '*'
+    " setlocal comments=sr:(*,mb:*,ex:*) formatoptions=roqnj
+    " TODO: coq uses zero-based column index..                     vv
+    setlocal errorformat=File\ \"%f\"\\,\ line\ %l\\,\ characters\ %c-%*[0-9]:
+endfunction
 " }}}
 
 " Lua {{{
