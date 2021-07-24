@@ -38,7 +38,6 @@ if !exists('g:python_pep8_indent_hang_closing')
     let g:python_pep8_indent_hang_closing = 0
 endif
 
-" TODO: check required patch for timeout argument, likely lower than 7.3.429 though.
 if !exists('g:python_pep8_indent_searchpair_timeout')
     if has('patch-8.0.1483')
         let g:python_pep8_indent_searchpair_timeout = 150
@@ -81,8 +80,6 @@ if !get(g:, 'python_pep8_indent_skip_concealed', 0) || !has('conceal')
     endfunction
 else
     " Also ignore anything concealed.
-    " TODO: doc; likely only necessary with jedi-vim, where a better version is
-    " planned (https://github.com/Vimjas/vim-python-pep8-indent/pull/98).
 
     " Wrapper around synconcealed for older Vim (7.3.429, used on Travis CI).
     function! s:is_concealed(line, col)

@@ -2,7 +2,6 @@
 " * removing error highlight
 " * <Plug>CoqJumpToEnd blocks while processing
 " * how to hide a buffer without error? (+ bdelete)
-" * spell
 " * queries: if no session for current buffer, use existing one
 "   * one-session mode (like PG)
 " * auto layout breaks nerdtree
@@ -14,8 +13,7 @@
 " * CoqGotoDef on id containing `'` is broken
 " * if a job failed, then clear the job queue
 " * goal/info panel not updated when the main panel is displayed in another tab
-" * tradewind breaks coqtail and nvim
-" * disable coc path completion trigger (`/`)
+" * disable path completion trigger (`/`)
 " * show diff of unification error
 
 " NOTE:
@@ -137,9 +135,7 @@ endfunction
 function! tomtomjhj#coq#folds()
     let save_cursor = getcurpos()
     " `zo` prevents unintended nested folds
-    " TODO: sometimes fastfold deletes folds??
     keepjumps keeppatterns global/\v^\s*\zs(End|Qed|Defined|Abort|Admitted|Save).*\./normal zf%
-    " TODO: bullets
     normal! zM
     call setpos('.', save_cursor)
 endfunction
@@ -160,4 +156,11 @@ function! tomtomjhj#coq#gq(type, ...)
 
     let &selection = sel_save
     setl indentexpr=GetCoqIndent()
+endfunction
+
+function! tomtomjhj#coq#ctags() abort
+    !coqtags $(fd -e v)
+    lua require'tomtomjhj/etags2ctags'()
+    split tags
+    g/iris.proofmode\|Build_/d
 endfunction

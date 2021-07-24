@@ -1,9 +1,8 @@
 {
     // NOTE: make the keys totally flat (instead of nested objects)
     "coc.preferences.extensionUpdateCheck": "never", // :CocUpdate
-    "coc.preferences.hoverTarget": "preview",
-    "coc.preferences.previewAutoClose": false,
-    "coc.preferences.previewMaxHeight": 20,
+    "hover.target": "float",
+    "hover.previewMaxHeight": 20,
     "coc.preferences.currentFunctionSymbolAutoUpdate": true,
     "list.insertMappings": {
         "<C-q>": "feedkeys:\\<ESC>"

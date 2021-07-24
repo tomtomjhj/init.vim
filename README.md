@@ -55,13 +55,13 @@ make install
 
 # TODO
 * win gvim
-    * `C-+/-` to zoom in/out
     * `z=` slow (only in win gvim)
     * fzf stuff is unusable, cmd.exe bad, `preview.sh: line 2: $'\r': command not found`
         * `set shell=STUFF` completely breaks fzf (maybe related to `fzf#exec()`)
-    * `:h terminal.txt`?
     * using wsl for `:terminal`?
         * https://vi.stackexchange.com/q/16386
         * https://github.com/vim/vim/issues/2525
         * https://github.com/junegunn/fzf/issues/1191
     * powershell?
+        * 8.2.3079
+        * neovim #14349

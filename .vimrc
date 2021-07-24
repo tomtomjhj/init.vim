@@ -7,15 +7,15 @@ endif
 
 source ~/.vim/configs.vim
 
-" stuff from sensible {{{
-set belloff=all
-set nrformats=bin,hex
-set display=lastline
-set tags=./tags;,tags
-set autoread
-if !empty(&viminfo)
-  set viminfo^=!
+" stuff from sensible that are not in my settings {{{
+set nrformats-=octal
+set ttimeout ttimeoutlen=50
+set display+=lastline
+set tags-=./tags tags-=./tags; tags^=./tags;
+if &shell =~# 'fish$' && (v:version < 704 || v:version == 704 && !has('patch276'))
+  set shell=/usr/bin/env\ bash
 endif
+set tabpagemax=50
 set sessionoptions-=options
 
 " Allow color schemes to do bright colors without forcing bold.

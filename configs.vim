@@ -12,7 +12,6 @@ Plug 'tomtomjhj/zenbruh.vim'
 
 " editing
 Plug 'tomtomjhj/vim-sneak'
-" TODO: machakann/vim-sandwich?
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'tomtomjhj/pear-tree'
@@ -27,9 +26,6 @@ Plug 'preservim/nerdcommenter', { 'on': '<Plug>NERDCommenter' }
 Plug 'godlygeek/tabular', { 'on': 'Tabularize' }
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'whonore/vim-sentencer'
-" TODO Plug 'mg979/vim-visual-multi'
-" TODO Plug 'chrisbra/unicode.vim'
-" TODO Plug 'https://github.com/chaoren/vim-wordmotion'
 
 " etc
 Plug 'tpope/vim-fugitive'
@@ -43,12 +39,6 @@ Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'wellle/visual-split.vim' " <C-w>g gr/gss/gsa/gsb TODO: setlocal scrolloff=0?
-" TODO Plug 'tpope/vim-obsession'
-" TODO Plug 'yuki-ycino/fzf-preview.vim'
-" TODO Plug 'lpinilla/vim-codepainter'
-" TODO Plug 'https://github.com/kshenoy/vim-signature'
-" TODO Plug https://github.com/pwntester/octo.nvim
-" TODO: Plug 'https://github.com/lambdalisue/fern.vim'
 Plug 'justinmk/vim-dirvish'
 Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
 Plug 'kassio/neoterm'
@@ -67,9 +57,6 @@ else
     Plug 'nvim-lua/lsp_extensions.nvim'
     Plug 'nvim-lua/lsp-status.nvim'
     Plug 'folke/lua-dev.nvim'
-    " Plug 'https://github.com/RishabhRD/nvim-lsputils'
-    " Plug 'https://github.com/glepnir/lspsaga.nvim'
-    " https://github.com/simrat39/rust-tools.nvim
 endif
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'tomtomjhj/vim-markdown'
@@ -97,23 +84,10 @@ if has('nvim')
     Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 endif
 if has('nvim-0.5')
-    " https://github.com/wbthomason/packer.nvim
-    " https://github.com/fsouza/vimfiles/tree/main/lua/fsouza
-    " https://github.com/phaazon/hop.nvim/
-    " Plug 'lukas-reineke/indent-blankline.nvim', { 'branch': 'lua' } " TODO tab listchar interaction
-    " https://github.com/lewis6991/gitsigns.nvim
     " Plug 'nvim-lua/plenary.nvim'
     " Plug 'nvim-lua/popup.nvim'
-    " Plug 'tjdevries/nlua.nvim'
-    " Plug 'nvim-telescope/telescope.nvim'
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'nvim-treesitter/playground'
-    " Plug 'nvim-treesitter/nvim-treesitter-textobjects'
-    " Plug 'mfussenegger/nvim-dap'
-    " Plug 'mfussenegger/nvim-fzy'
-    " Plug 'https://github.com/vijaymarupudi/nvim-fzf'
-    " Plug 'https://github.com/TimUntersberger/neogit'
-    " https://github.com/nvim-telescope/telescope-frecency.nvim
     Plug 'b3nj5m1n/kommentary'
 endif
 
@@ -205,7 +179,6 @@ endif
 
 " Themes {{{
 " TODO: buffer_title: merge specialbuf and shortrelpath; and do more fancy stuff for special buffers e.g. w:quickfix_title, term:///, fugitive://, ..
-" TODO: merge readonly and modified
 let g:lightline = {
       \ 'colorscheme': 'powerwombat',
       \ 'active': {
@@ -306,8 +279,7 @@ else
     let g:solarized_italics = 0
     set termguicolors
     colorscheme solarized8_high
-    " TODO: match fzf/bat themes
-    " fix terminal window hl (set winhl=NormalFloat:TermNormal) vs. modify bat theme
+    " TODO: fzf: fix terminal window hl (set winhl=NormalFloat:TermNormal) vs. modify bat theme
     " hi TermNormal guifg=#eeeeee guibg=#1c1c1c
     hi Special guifg=#735050 | hi Conceal guifg=#735050
     hi Statement gui=bold
@@ -536,7 +508,7 @@ augroup END
 " }}}
 
 let g:lisp_rainbow = 1
-let g:vimsyn_embed = 'l' " TODO: only loads $VIMRUNTIME/syntax/lua.vim
+let g:vimsyn_embed = 'l' " NOTE: only loads $VIMRUNTIME/syntax/lua.vim
 " }}}
 
 " search & fzf {{{
@@ -677,7 +649,6 @@ noremap <M-0> ^w
 let g:sneak#s_next = 0
 let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
-" TODO: line('w0') & line('w$') for {stopline} to prevent jumping to random place
 map f <Plug>Sneak_f
 map F <Plug>Sneak_F
 map t <Plug>Sneak_t

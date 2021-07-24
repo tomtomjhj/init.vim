@@ -38,7 +38,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
   function s:CtrlW()
       let extra = ''
       while 1
-          " TODO: timeout? set of built-in and mappings
+          " timeout? set of built-in and mappings
           let c = getchar()
           if c == 0
               break
@@ -250,9 +250,44 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * https://teukka.tech/vimloop.html
 * https://blog.fsouza.dev/prettierd-neovim-format-on-save/
 * http://nikhilm.github.io/uvbook/ https://github.com/luvit/luv/tree/master/examples/uvbook
-* https://github.com/jbyuki/instant.nvim https://github.com/jbyuki/nabla.nvim
 * https://github.com/tweekmonster/helpful.vim https://www.arp242.net/vimlog/ https://axelf.nu/vim-helptag-versions/
-* https://github.com/jose-elias-alvarez/null-ls.nvim
+
+## plugins
+* https://github.com/machakann/vim-sandwich
+* https://github.com/mg979/vim-visual-multi
+* https://github.com/chrisbra/unicode.vim
+* https://github.com/chaoren/vim-wordmotion
+* https://github.com/tpope/vim-obsession
+* https://github.com/lpinilla/vim-codepainter
+* https://github.com/kshenoy/vim-signature marks
+* https://github.com/lambdalisue/fern.vim
+* lsp stuff
+    * https://github.com/jose-elias-alvarez/null-ls.nvim
+    * https://github.com/RishabhRD/nvim-lsputils
+    * https://github.com/ray-x/lsp_signature.nvim
+    * https://github.com/simrat39/rust-tools.nvim
+    * https://github.com/weilbith/nvim-lsp-smag
+* https://github.com/RRethy/nvim-treesitter-textsubjects
+  https://github.com/vigoux/architext.nvim
+* git
+    * https://github.com/junegunn/gv.vim
+    * https://github.com/rhysd/conflict-marker.vim
+    * https://github.com/pwntester/octo.nvim
+    * https://github.com/TimUntersberger/neogit
+    * https://github.com/lewis6991/gitsigns.nvim
+* https://github.com/nvim-telescope/telescope.nvim
+  https://github.com/nvim-telescope/telescope-frecency.nvim
+* https://github.com/vhyrro/neorg
+  https://github.com/kristijanhusak/orgmode.nvim
+* https://github.com/vijaymarupudi/nvim-fzf
+* https://github.com/jbyuki/instant.nvim
+  https://github.com/jbyuki/nabla.nvim
+  https://github.com/jbyuki/venn.nvim
+* https://github.com/mfussenegger/nvim-dap
+* https://github.com/lukas-reineke/indent-blankline.nvim NOTE: conflict with tab listchar
+* https://github.com/phaazon/hop.nvim/
+  https://github.com/ggandor/lightspeed.nvim
+* https://github.com/rktjmp/lush.nvim interesting lua hack for DSL
 
 # new (n)vim stuff
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.

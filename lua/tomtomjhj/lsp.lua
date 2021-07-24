@@ -34,6 +34,7 @@ lspconfig.clangd.setup {
   capabilities = lsp_status.capabilities,
   cmd = { lspinstall_dir.."cpp/clangd/bin/clangd", "--background-index" };
   filetypes = { "c", "cpp", "cuda" };
+  flags = { debounce_text_changes = 123 };
 }
 
 lspconfig.sumneko_lua.setup (

@@ -1,6 +1,5 @@
 local compe = require'compe'
 
--- TODO: Initialization takes 3ms. Make it lazy?
 local words_file = vim.fn.expand("~/.config/coc/extensions/node_modules/coc-word/10k.txt")
 local word_map = {}
 for word in io.lines(words_file) do
