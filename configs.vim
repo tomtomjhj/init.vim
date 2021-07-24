@@ -242,7 +242,7 @@ let g:lightline = {
 func! ShortRelPath()
     let name = expand('%')
     if empty(name)
-        return empty(&buftype) ? '[No Name]' : ''
+        return empty(&buftype) ? '[No Name]' : &buftype ==# 'nofile' ? '[Scratch]' : ''
     elseif isdirectory(name)
         return pathshorten(fnamemodify(name[:-2], ":~")) . '/'
     endif
