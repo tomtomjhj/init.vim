@@ -50,7 +50,7 @@ if g:ide_client == 'coc'
     " Plug '~/apps/coc.nvim', { 'branch': 'master', 'do': 'yarn install --frozen-lockfile' }
     Plug 'antoinemadec/coc-fzf'
 else
-    Plug 'hrsh7th/nvim-compe'
+    Plug 'hrsh7th/nvim-compe', { 'on': [] }
     Plug 'neovim/nvim-lspconfig'
     Plug 'kabouzeid/nvim-lspinstall'
     Plug 'ojroques/nvim-lspfuzzy'
@@ -88,7 +88,7 @@ if has('nvim-0.5')
     " Plug 'nvim-lua/popup.nvim'
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'nvim-treesitter/playground'
-    Plug 'b3nj5m1n/kommentary'
+    Plug 'b3nj5m1n/kommentary', {'on': '<Plug>kommentary'}
 endif
 
 call plug#end()
@@ -305,20 +305,24 @@ else " lua
     inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : <SID>check_back_space() ? "\<Tab>" : compe#complete()
     inoremap <expr> <C-y> compe#confirm('<C-y>')
     inoremap <expr> <C-e> compe#close('<C-e>')
+    au InsertEnter * ++once call LoadCompe()
+    function! LoadCompe()
+        call plug#load('nvim-compe')
 lua << EOF
-    -- require'compe'.register_source('words', require'tomtomjhj/compe_words')
-    require'compe'.setup {
-      default_pattern = [[\d\@!\k\k\{-\}\>]],
-      source = {
-        path = true;
-        buffer = { menu = '[B]'; priority = 51; }; -- slightly higher than snippets
-        nvim_lsp = true;
-        ultisnips = { menu = '[US]' };
-        tags = { menu = '[T]' };
-        words = false;
-      };
-    }
+        -- require'compe'.register_source('words', require'tomtomjhj/compe_words')
+        require'compe'.setup {
+          default_pattern = [[\d\@!\k\k\{-\}\>]],
+          source = {
+            path = true;
+            buffer = { menu = '[B]'; priority = 51; }; -- slightly higher than snippets
+            nvim_lsp = true;
+            ultisnips = { menu = '[US]' };
+            tags = { menu = '[T]' };
+            words = false;
+          };
+        }
 EOF
+    endfunction
 endif
 
 function! s:check_back_space() abort

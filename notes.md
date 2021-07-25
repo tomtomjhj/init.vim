@@ -64,6 +64,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * https://github.com/lervag/vimtex/issues/1937
 * `debug-mode`?
 * how to make `Gdiffsplit` do `--follow`?
+* Textobj plugins can be lazy-loaded with manual `s:lod_map`
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
