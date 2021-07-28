@@ -235,7 +235,8 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
       *)
       ```
 * treesitter
-    * typescript: vim syntax and treesitter hightlighting both on??
+    * sometimes both vim syntax and treesitter hightlighting are on
+    * breaks `<cword>`?
 * https://github.com/neovim/neovim/issues/14298
   Similar issue in vim without tmux when mapping `<M-]>`.
   `vim --clean -c 'map <ESC>] <M-]>'` to reproduce.
@@ -245,6 +246,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
   wincmd s | wincmd j | set wfh | exe "norm! z13\<CR>" | pedit file
   wincmd s | wincmd j | set wfh | exe "norm! z14\<CR>" | pedit file
   ```
+* In diff mode, editing in insert mode keeps moving the view. Triggered by `<CR>` and inserting a character for the first time after the last `<CR>` or entering the insert mode. Not related to `set diffopt+=algorithm:histogram,indent-heuristic`.
 
 # stuff
 * https://arxiv.org/abs/2006.03103
@@ -289,6 +291,8 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * https://github.com/phaazon/hop.nvim/
   https://github.com/ggandor/lightspeed.nvim
 * https://github.com/rktjmp/lush.nvim interesting lua hack for DSL
+* https://github.com/hkupty/iron.nvim
+* https://github.com/Julian/lean.nvim
 
 # new (n)vim stuff
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.

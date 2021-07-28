@@ -113,8 +113,9 @@ if !has('gui_running')
   augroup TerminalVimSetup | au!
     au VimEnter * call InitESCMaps()
     au BufEnter * call ESCimap() | call ESCnmap() | call ESCvmap() | call ESComap()
-    au CmdlineEnter * set timeoutlen=23
-    au CmdlineLeave * set timeoutlen=987
+    let g:cmdlines = 0
+    au CmdlineEnter * let g:cmdlines += 1 | set timeoutlen=23
+    au CmdlineLeave * let g:cmdlines -= 1 | if !g:cmdlines | set timeoutlen=987 | endif
   augroup END
   " }}}
 else
