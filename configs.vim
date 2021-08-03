@@ -488,10 +488,6 @@ augroup SetupCoq | au!
 augroup END
 function! SetupCoq() abort
     let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} }) |
-    " TODO: FastFold deletes manual fold. fastfold_skip_filetypes doesn't work.
-    " :e file.md → :sp file.v → WinEnter → EnterWin → w:lastfdm = expr
-    " FileType (UpdateBuf does nothing) → ... → UpdateWin → LeaveWin (fdm=expr).
-    if exists('w:lastfdm') | unlet w:lastfdm | endif
     setlocal foldmethod=manual
     setlocal shiftwidth=2
     " no middle piece & comment leader
