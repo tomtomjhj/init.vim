@@ -1,6 +1,10 @@
 " In markdown fenced code block, comments inside terms are not highlighted.
 syn cluster coqTerm add=coqComment
 
+" improve interaction between of coq syntax and notations using {}
+syn region coqKwdBrace contained contains=@coqTerm start="{" end="}"
+syn cluster coqTerm add=coqKwdBrace
+
 " tune symbol highlighting
 syn clear coqKwd
 syn keyword coqKwd contained else end exists2 fix cofix forall fun if in struct then as return
@@ -26,7 +30,7 @@ syn region coqDefContents1  contained contains=@coqTerm matchgroup=coqVernacPunc
 " don't highlight fields (very fragile)
 syn clear coqRecContent coqRecStart coqRecField
 syn region coqRecContent contained contains=coqRecStart matchgroup=coqVernacPunctuation start=":=" end="\.\_s"
-syn region coqRecStart   contained contains=@coqTerm start="{" matchgroup=coqVernacPunctuation end="}" keepend
+syn region coqRecStart   contained contains=@coqTerm start="{" matchgroup=coqVernacPunctuation end="}"
 
 syn sync minlines=321
 
