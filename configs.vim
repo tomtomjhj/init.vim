@@ -128,7 +128,7 @@ set wildmenu wildmode=longest:full,full
 let s:wildignore_files = ['*~', '%*', '*.o', '*.so', '*.pyc', '*.pdf', '*.v.d', '*.vo*', '*.glob', '*.cm*', '*.aux']
 let s:wildignore_dirs = ['.git', '__pycache__', 'target']
 set complete-=i complete-=u
-set path=.,./*,./..,,*,*/*,*/*/*,*/*/*/*,*/*/*/*/*
+set path=.,,*,*/*,*/*/*,*/*/*/*,*/*/*/*/*
 
 set ignorecase smartcase
 set hlsearch incsearch
@@ -311,7 +311,7 @@ else " lua
 lua << EOF
         -- require'compe'.register_source('words', require'tomtomjhj/compe_words')
         require'compe'.setup {
-          default_pattern = [[\d\@!\k\k\{-\}\>]],
+          default_pattern = [[\K\k\{-\}\>]],
           source = {
             path = true;
             buffer = { menu = '[B]'; priority = 51; }; -- slightly higher than snippets
@@ -485,6 +485,7 @@ augroup SetupCoq | au!
                 \ call tomtomjhj#coq#mappings() |
                 \ setlocal matchpairs+=⌜:⌝,⎡:⎤
     au FileType coq call SetupCoq()
+    au FileType coq-goals,coq-infos setlocal foldcolumn=0
 augroup END
 function! SetupCoq() abort
     let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} }) |
@@ -804,6 +805,10 @@ nnoremap <leader>cd :cd <c-r>=expand("%:p:h")<cr>/
 nnoremap <leader>e  :e! <c-r>=expand("%:p:h")<cr>/
 nnoremap <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 nnoremap <leader>fe :e!<CR>
+
+let g:conflict_marker_pat = '\(' . '^<<<<<<< \@=' . '\|' . '^||||||| .*$' . '\|' . '^=======$' . '\|' . '^>>>>>>> \@=' . '\)'
+noremap <silent> [x <Cmd>call search(g:conflict_marker_pat, 'bW')<CR>
+noremap <silent> ]x <Cmd>call search(g:conflict_marker_pat, 'W')<CR>
 " }}}
 
 " etc plugin settings {{{
@@ -842,7 +847,7 @@ augroup END
 " asyncrun
 map <leader>R :AsyncRun<space>
 map <leader>ST :AsyncStop\|let g:asyncrun_status = ''<CR>
-command! -bang -nargs=* -complete=file Make AsyncRun -program=make @ <args>
+command! -bang -nargs=* -complete=file Make AsyncRun -auto=make -program=make @ <args>
 map <leader>M :Make<space>
 command! -bang -bar -nargs=* -complete=customlist,fugitive#PushComplete Gpush  execute 'AsyncRun<bang> -cwd=' . fnameescape(FugitiveGitDir()) 'git push' <q-args>
 command! -bang -bar -nargs=* -complete=customlist,fugitive#FetchComplete Gfetch execute 'AsyncRun<bang> -cwd=' . fnameescape(FugitiveGitDir()) 'git fetch' <q-args>

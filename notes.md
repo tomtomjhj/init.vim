@@ -105,15 +105,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
       -c 'qa!'
   ```
 * `arglist`
-* overriding autoload
-    ```vim
-    " .vim/plugin/sneak/util.vim
-    call sneak#util#strlen('')
-    ...
-    ```
-  Maybe this is the only way to override autoload function. `:runtime` doesn't
-  register the file as autoload file (?), so the file will be sourced again.
-  https://groups.google.com/g/vim_dev/c/k9wRhNMNIFc/m/vpFvud0mo9UJ?pli=1
+* overriding autoload: `:runtime` the autoload file in a matching autoload file https://www.reddit.com/r/vim/comments/oq82hg/overriding_a_single_autoloaded_package_function/
 * `:match`
 * http://vimcasts.org/blog/2013/03/combining-vimgrep-with-git-ls-files/
 * https://vimways.org/2018/death-by-a-thousand-files/
@@ -264,6 +256,8 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * https://github.com/lpinilla/vim-codepainter
 * https://github.com/kshenoy/vim-signature marks
 * https://github.com/lambdalisue/fern.vim
+* https://github.com/Konfekt/vim-compilers
+* https://mg979.github.io/tasks.vim
 * lsp stuff
     * https://github.com/jose-elias-alvarez/null-ls.nvim
     * https://github.com/RishabhRD/nvim-lsputils
@@ -293,6 +287,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * https://github.com/rktjmp/lush.nvim interesting lua hack for DSL
 * https://github.com/hkupty/iron.nvim
 * https://github.com/Julian/lean.nvim
+* https://github.com/gelguy/wilder.nvim
 
 # new (n)vim stuff
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.

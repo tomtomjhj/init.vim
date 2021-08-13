@@ -1,6 +1,7 @@
 " TODO
 " * removing error highlight
 " * <Plug>CoqJumpToEnd blocks while processing
+" * hlsearch disabled while processing
 " * how to hide a buffer without error? (+ bdelete)
 " * queries: if no session for current buffer, use existing one
 "   * one-session mode (like PG)
@@ -100,6 +101,8 @@ function! tomtomjhj#coq#mappings()
     nmap <buffer>gqq  <cmd>set opfunc=tomtomjhj#coq#gq<CR>g@l
     nmap <buffer>gqgq <cmd>set opfunc=tomtomjhj#coq#gq<CR>g@l
     vmap <buffer>gq   <cmd>call tomtomjhj#coq#gq(visualmode(), 1)<CR>
+
+    nnoremap <buffer><localleader><C-L> :<C-u>call tomtomjhj#coq#clearhl()<CR>
 endfunction
 
 " TODO: normal gotodef-ing in aux buf makes it 'buflisted'
