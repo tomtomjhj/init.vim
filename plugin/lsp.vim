@@ -82,11 +82,6 @@ EOF
 
 function! SetupLSP()
   augroup LocalNvimLSPStuff | au! * <buffer>
-    if &filetype ==# 'rust'
-      " TODO: use rust-tools
-      au InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost <buffer>
-            \ lua require'lsp_extensions'.inlay_hints{ prefix = '‣ ', highlight = "TypeHint", enabled = {"ChainingHint"} }
-    endif
   augroup END
   nnoremap <buffer><silent>        <M-]> <cmd>lua vim.lsp.buf.definition()<CR>
   nnoremap <buffer><silent>        <M-.> <cmd>lua vim.lsp.buf.hover()<CR>

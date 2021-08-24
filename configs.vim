@@ -57,6 +57,7 @@ else
     Plug 'nvim-lua/lsp_extensions.nvim'
     Plug 'nvim-lua/lsp-status.nvim'
     Plug 'folke/lua-dev.nvim'
+    Plug 'simrat39/rust-tools.nvim'
 endif
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'tomtomjhj/vim-markdown'

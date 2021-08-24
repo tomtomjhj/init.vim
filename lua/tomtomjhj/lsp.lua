@@ -8,10 +8,22 @@ require('lspfuzzy').setup{}
 
 local lspinstall_dir = vim.fn.stdpath('data')..'/lspinstall/'
 
-lspconfig.rust_analyzer.setup {
-  on_attach = lsp_status.on_attach,
-  capabilities = lsp_status.capabilities,
-  cmd = { lspinstall_dir..'rust/rust-analyzer' },
+require('rust-tools').setup {
+  tools = {
+    runnables = { use_telescope = false },
+    debuggables = { use_telescope = false },
+    inlay_hints = {
+      parameter_hints_prefix = "← ",
+      other_hints_prefix = "⇒ ",
+      highlight = "TypeHint",
+    },
+  },
+  -- lspconfig.rust_analyzer.setup
+  server = {
+    on_attach = lsp_status.on_attach,
+    capabilities = lsp_status.capabilities,
+    cmd = { lspinstall_dir..'rust/rust-analyzer' },
+  }
 }
 
 lspconfig.pylsp.setup {
@@ -52,3 +64,5 @@ lspconfig.vimls.setup {
   capabilities = lsp_status.capabilities,
   cmd = { lspinstall_dir..'vim/node_modules/.bin/vim-language-server', '--stdio' }
 }
+
+-- vim:set et sw=2 ts=8:
