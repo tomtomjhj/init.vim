@@ -28,7 +28,7 @@
             "filetypes": ["ocaml"]
         },
     },
-    "rust-analyzer.server.path": "~/.cargo/bin/rust-analyzer",
+    "rust-analyzer.server.path": "~/.local/share/nvim/lspinstall/rust/rust-analyzer",
     "rust-analyzer.diagnostics.enable": true,
     "rust-analyzer.checkOnSave.enable": true,
     "rust-analyzer.inlayHints.typeHintsSeparator": "‣ ",

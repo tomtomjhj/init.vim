@@ -2,6 +2,8 @@
 
 let g:ide_client = get(g:, 'ide_client', has('nvim-0.5') ? 'nvim' : 'coc')
 
+" TODO: packadd-based, lazy-loaded (event, normal, ex), vim/nvim compatible plugin manager?
+" NOTE: lua plugin startup is slow. https://github.com/neovim/neovim/pull/15282 https://github.com/neovim/neovim/pull/15436
 " Plug {{{
 call plug#begin('~/.vim/plugged')
 
@@ -33,6 +35,9 @@ Plug 'rhysd/git-messenger.vim'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': has('unix') ? './install --all' : { -> fzf#install() } }
+" TODO: :Buffers multiple select makes sense for :tabe, :sp, ...
+" Make sth similar to that for small.vim
+" See also https://github.com/junegunn/fzf.vim/pull/1239
 Plug 'junegunn/fzf.vim'
 Plug 'Konfekt/FastFold' " only useful for non-manual folds
 Plug 'romainl/vim-qf'
@@ -51,10 +56,15 @@ if g:ide_client == 'coc'
     Plug 'antoinemadec/coc-fzf'
 else
     Plug 'hrsh7th/nvim-compe', { 'on': [] }
+    " Plug 'hrsh7th/nvim-cmp' " TODO: example config at defaults.nvim; port when nvim gets proper lua autoload
+    " Plug 'hrsh7th/cmp-buffer'
+    " Plug 'hrsh7th/cmp-nvim-lsp'
+    " Plug 'hrsh7th/cmp-path'
+    " Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+    " Plug 'quangnguyen30192/cmp-nvim-tags'
     Plug 'neovim/nvim-lspconfig'
     Plug 'kabouzeid/nvim-lspinstall'
     Plug 'ojroques/nvim-lspfuzzy'
-    Plug 'nvim-lua/lsp_extensions.nvim'
     Plug 'nvim-lua/lsp-status.nvim'
     Plug 'folke/lua-dev.nvim'
     Plug 'simrat39/rust-tools.nvim'
@@ -97,7 +107,8 @@ call plug#end()
 
 " Basic {{{
 set mouse=a
-set number ruler showcmd
+set number signcolumn=number
+set ruler showcmd
 set foldcolumn=1 foldnestmax=5
 set scrolloff=2 sidescrolloff=2 sidescroll=1 nostartofline
 set showtabline=1
@@ -541,7 +552,7 @@ func! VisualStar(g)
     let g:search_mode = 'v'
     let l:reg_save = @"
     " don't trigger TextYankPost
-    noau exec "norm! gvy"
+    noau silent! normal! gvy
     let @c = @"
     let l:pattern = Text2Magic(@")
     let @/ = a:g ? '\<' . l:pattern . '\>' : l:pattern " reversed

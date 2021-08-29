@@ -192,4 +192,10 @@ function s:SetupDigraph()
     return ''
 endfunction
 
+" https://github.com/neovim/neovim/pull/13883
+" Redraw is buggy in vim?
+" if exists('*setcellwidths')
+"     call setcellwidths([[9711, 9711, 2]]) " ◯
+" endif
+
 noremap! <C-space> <C-R>=<SID>SetupDigraph()<CR><C-K>

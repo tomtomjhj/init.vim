@@ -1,3 +1,5 @@
+-- TODO: Error executing vim.schedule lua callback: /usr/share/nvim/runtime/lua/vim/lsp/rpc.lua:399: Vim:E474: String "<ec><9d>" contains byte that does not start any UTF-8 character
+-- https://github.com/neovim/neovim/issues/14542
 local lspconfig = require('lspconfig')
 local lsp_status = require('lsp-status')
 

@@ -65,6 +65,8 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * `debug-mode`?
 * how to make `Gdiffsplit` do `--follow`?
 * Textobj plugins can be lazy-loaded with manual `s:lod_map`
+* search without confirming search, window-local search, jump with `/_CTRL-G`, ...
+* refreshing clipboard `call setenv('DISPLAY', '...')`: The new value can be obtained by launching another shell.. how to automate? Note: `call serverlist()` seems to work
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -139,6 +141,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * `g0`, `g$`, `g_`, `zH`, `zL`
 * `g;`, `g,`
 * `complete_CTRL-Y`, `complete_CTRL-E`
+* wildmenu filename completion `<Left>` `<Right>` `<Down>` `<Up>`
 * `(`, `)`, `{`, `}`
 * `/\C`
 * `g<Tab>`
@@ -229,6 +232,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * treesitter
     * sometimes both vim syntax and treesitter hightlighting are on
     * breaks `<cword>`?
+    * frequently broken by diff mode
 * https://github.com/neovim/neovim/issues/14298
   Similar issue in vim without tmux when mapping `<M-]>`.
   `vim --clean -c 'map <ESC>] <M-]>'` to reproduce.
@@ -238,7 +242,14 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
   wincmd s | wincmd j | set wfh | exe "norm! z13\<CR>" | pedit file
   wincmd s | wincmd j | set wfh | exe "norm! z14\<CR>" | pedit file
   ```
-* In diff mode, editing in insert mode keeps moving the view. Triggered by `<CR>` and inserting a character for the first time after the last `<CR>` or entering the insert mode. Not related to `set diffopt+=algorithm:histogram,indent-heuristic`.
+* Unexpected scrolling while editing with diff mode enabled https://github.com/vim/vim/issues/8809
+* gvim clears clipboard when exiting??
+* nvim crash
+  ```
+  vim: /build/neovim-p1nQMF/neovim-0.5.0+ubuntu2+git202107281808-ac5139eae-d569569c9/src/nvim/normal.c:4011
+   nv_screengo: Assertion `curwin->w_curswant <= INT_MAX - w' failed.
+                                                                     Aborted (core dumped)
+  ```
 
 # stuff
 * https://arxiv.org/abs/2006.03103
@@ -264,6 +275,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
     * https://github.com/ray-x/lsp_signature.nvim
     * https://github.com/simrat39/rust-tools.nvim
     * https://github.com/weilbith/nvim-lsp-smag
+    * https://github.com/valentjn/ltex-ls
 * https://github.com/RRethy/nvim-treesitter-textsubjects
   https://github.com/vigoux/architext.nvim
 * git
@@ -276,7 +288,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
   https://github.com/nvim-telescope/telescope-frecency.nvim
 * https://github.com/vhyrro/neorg
   https://github.com/kristijanhusak/orgmode.nvim
-* https://github.com/vijaymarupudi/nvim-fzf
+* https://github.com/vijaymarupudi/nvim-fzf https://github.com/ibhagwan/fzf-lua
 * https://github.com/jbyuki/instant.nvim
   https://github.com/jbyuki/nabla.nvim
   https://github.com/jbyuki/venn.nvim
