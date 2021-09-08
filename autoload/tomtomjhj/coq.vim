@@ -11,7 +11,6 @@
 "   * sentence text object
 "   * use coqtail's sentence parser?
 " * string escape in sentence parsing
-" * CoqGotoDef on id containing `'` is broken
 " * if a job failed, then clear the job queue
 " * goal/info panel not updated when the main panel is displayed in another tab
 " * disable path completion trigger (`/`)
@@ -165,5 +164,5 @@ function! tomtomjhj#coq#ctags() abort
     !coqtags $(fd -e v)
     lua require'tomtomjhj/etags2ctags'()
     split tags
-    g/iris.proofmode\|Build_/d
+    keeppatterns g/iris.proofmode\|Build_/d
 endfunction

@@ -1,5 +1,5 @@
 diff --git a/after/plugin/coc_fzf.vim b/after/plugin/coc_fzf.vim
-index 1619c4d..bda5409 100644
+index a83c37c..6182bce 100644
 --- a/after/plugin/coc_fzf.vim
 +++ b/after/plugin/coc_fzf.vim
 @@ -1,15 +1,4 @@

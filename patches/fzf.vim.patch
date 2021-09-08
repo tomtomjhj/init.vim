@@ -1,8 +1,8 @@
 diff --git a/autoload/fzf/vim.vim b/autoload/fzf/vim.vim
-index 090f9d2..9ab5b23 100644
+index b15f06b..8b4a06c 100644
 --- a/autoload/fzf/vim.vim
 +++ b/autoload/fzf/vim.vim
-@@ -350,7 +350,7 @@ endfunction
+@@ -354,7 +354,7 @@ endfunction
  
  function! s:fill_quickfix(list, ...)
    if len(a:list) > 1

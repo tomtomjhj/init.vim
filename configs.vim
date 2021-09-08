@@ -64,7 +64,7 @@ else
     " Plug 'quangnguyen30192/cmp-nvim-tags'
     Plug 'neovim/nvim-lspconfig'
     Plug 'kabouzeid/nvim-lspinstall'
-    Plug 'ojroques/nvim-lspfuzzy'
+    Plug 'ojroques/nvim-lspfuzzy', { 'branch': 'dev' }
     Plug 'nvim-lua/lsp-status.nvim'
     Plug 'folke/lua-dev.nvim'
     Plug 'simrat39/rust-tools.nvim'

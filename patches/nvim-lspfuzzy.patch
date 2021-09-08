@@ -1,8 +1,8 @@
 diff --git a/lua/lspfuzzy.lua b/lua/lspfuzzy.lua
-index 50c49b7..47c4d48 100644
+index eb846b7..a3c9551 100644
 --- a/lua/lspfuzzy.lua
 +++ b/lua/lspfuzzy.lua
-@@ -82,6 +82,7 @@ end
+@@ -101,6 +101,7 @@ end
  local function build_fzf_opts(label, preview, multi)
    local prompt = fmt("%s> ", label)
    local fzf_opts = {

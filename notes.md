@@ -300,6 +300,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * https://github.com/hkupty/iron.nvim
 * https://github.com/Julian/lean.nvim
 * https://github.com/gelguy/wilder.nvim
+* https://github.com/chipsenkbeil/distant.nvim
 
 # new (n)vim stuff
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.
