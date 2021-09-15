@@ -64,7 +64,7 @@ else
     " Plug 'quangnguyen30192/cmp-nvim-tags'
     Plug 'neovim/nvim-lspconfig'
     Plug 'kabouzeid/nvim-lspinstall'
-    Plug 'ojroques/nvim-lspfuzzy', { 'branch': 'dev' }
+    Plug 'ojroques/nvim-lspfuzzy'
     Plug 'nvim-lua/lsp-status.nvim'
     Plug 'folke/lua-dev.nvim'
     Plug 'simrat39/rust-tools.nvim'
@@ -489,15 +489,13 @@ let g:go_highlight_types = 1
 let g:coqtail_nomap = 1
 let g:coqtail_noindent_comment = 1
 " TODO: auto mkview/loadview for viewoptions=folds?
-" TODO: interaction with listchar? NonText highlighting disappears when CoqtailChecked is applied
-hi CoqtailChecked ctermbg=237 guibg=#3a3a3a
-hi CoqtailSent ctermbg=60 guibg=#5f5f87
 augroup SetupCoq | au!
     au FileType coq,coq-goals,coq-infos
                 \ call tomtomjhj#coq#mappings() |
                 \ setlocal matchpairs+=⌜:⌝,⎡:⎤
     au FileType coq call SetupCoq()
     au FileType coq-goals,coq-infos setlocal foldcolumn=0
+    au ColorScheme * call s:CoqHighlight()
 augroup END
 function! SetupCoq() abort
     let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} }) |
@@ -510,6 +508,12 @@ function! SetupCoq() abort
     " TODO: coq uses zero-based column index..                     vv
     setlocal errorformat=File\ \"%f\"\\,\ line\ %l\\,\ characters\ %c-%*[0-9]:
 endfunction
+function s:CoqHighlight() abort
+    " TODO: interaction with listchar? NonText highlighting disappears when CoqtailChecked is applied
+    hi! CoqtailChecked ctermbg=237 guibg=#3a3a3a
+    hi! CoqtailSent ctermbg=60 guibg=#5f5f87
+endfunction
+call s:CoqHighlight()
 " }}}
 
 " Lua {{{
@@ -1049,7 +1053,7 @@ let g:neoterm_automap_keys = '<leader>T'
 " sentencer
 let g:sentencer_filetypes = []
 let g:sentencer_textwidth = 79 " formatexpr doesn't work like built-in gq for textwidth=0
-nnoremap <leader>sb :SentencerBind<CR>
+
 " }}}
 
 " etc util {{{
