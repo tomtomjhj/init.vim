@@ -3,8 +3,8 @@
 " * <Plug>CoqJumpToEnd blocks while processing
 " * hlsearch disabled while processing
 " * how to hide a buffer without error? (+ bdelete)
-" * queries: if no session for current buffer, use existing one
-"   * one-session mode (like PG)
+" * queries: if no session for current buffer, check if there is a session for
+"   a visible buffer and use it.
 " * auto layout breaks nerdtree
 " * show a buffer with session in split without jumping to its current layout
 " * `(` and `)` for sentence movement: not configurable ('sentence')
@@ -15,6 +15,7 @@
 " * goal/info panel not updated when the main panel is displayed in another tab
 " * disable path completion trigger (`/`)
 " * show diff of unification error
+" * completion source to get names from goal/info panel
 
 " NOTE:
 " * hang → send SIGINT to coq
@@ -117,9 +118,9 @@ endfunction
 " attached to window. BufWinEnter might not work! Maybe WinEnter?
 " On FileType, register and manually trigger once?
 function! tomtomjhj#coq#split(split)
-    exe a:split
-    " NOTE: wait until `s:call('refresh', '', 0, {})` finishes
-    sleep 21ms
+    " Don't trigger WinNew (runs `s:call('refresh', '', 0, {})`) so that
+    " coqtail doesn't highlight the new window.
+    noau exe a:split
     call tomtomjhj#coq#clearhl()
 endfunction
 
