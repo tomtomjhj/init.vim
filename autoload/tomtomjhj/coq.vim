@@ -120,7 +120,9 @@ endfunction
 function! tomtomjhj#coq#split(split)
     " Don't trigger WinNew (runs `s:call('refresh', '', 0, {})`) so that
     " coqtail doesn't highlight the new window.
-    noau exe a:split
+    set eventignore+=WinNew
+    exe a:split
+    set eventignore-=WinNew
     call tomtomjhj#coq#clearhl()
 endfunction
 
