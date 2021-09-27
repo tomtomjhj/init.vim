@@ -17,8 +17,8 @@ let s:pandoc_textobj = {
             \     'select-i': 'iM',
             \   },
             \ }
-call textobj#user#plugin('pandoc', s:pandoc_textobj)
-TextobjPandocDefaultKeyMappings!
+silent! call textobj#user#plugin('pandoc', s:pandoc_textobj)
+silent! TextobjPandocDefaultKeyMappings!
 
 " set to notoplevel in haskell.vim
 syntax spell toplevel

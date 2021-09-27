@@ -181,6 +181,7 @@ augroup BasicSetup | au!
     au FileType help nnoremap <silent><buffer> <M-.> :h <C-r><C-w><CR>
     let &pumheight = min([&window/4, 20])
     au VimResized * let &pumheight = min([&window/4, 20])
+    au FileType git,fugitive setl foldmethod=syntax foldlevel=99
 augroup END
 
 if has('unix')
@@ -400,7 +401,6 @@ let g:haskell_enable_static_pointers = 1
 let g:haskell_indent_let_no_in = 0
 let g:haskell_indent_if = 0
 let g:haskell_indent_case_alternative = 1
-let g:intero_start_immediately = 0
 augroup SetupHaskell | au!
     au FileType haskell setl tabstop=2 shiftwidth=2
 augroup END
@@ -827,6 +827,9 @@ nnoremap <leader>e  :e! <c-r>=expand("%:p:h")<cr>/
 nnoremap <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 nnoremap <leader>fe :e!<CR>
 
+cnoremap <C-r><C-v> <C-r>=join(tomtomjhj#util#visual_selection_lines(), ' ')<CR>
+inoremap <C-r><C-v> <C-r>=join(tomtomjhj#util#visual_selection_lines(), ' ')<CR>
+
 let g:conflict_marker_pat = '\(' . '^<<<<<<< \@=' . '\|' . '^||||||| .*$' . '\|' . '^=======$' . '\|' . '^>>>>>>> \@=' . '\)'
 noremap <silent> [x <Cmd>call search(g:conflict_marker_pat, 'bW')<CR>
 noremap <silent> ]x <Cmd>call search(g:conflict_marker_pat, 'W')<CR>
@@ -852,6 +855,8 @@ omap aa a%
 xmap ia i%
 omap ia i%
 
+" https://github.com/wellle/targets.vim/issues/233
+call targets#sources#newFactories('')
 augroup MyTargets | au!
     " NOTE: can't expand by repeating → use builtin for simple objects
     " NOTE: can't select **text <newline> text** using i*

@@ -117,6 +117,7 @@ function! CheckerStatus()
   endif
   return ''
 endfunction
+" TODO: vim.lsp.diagnostic is deprecated
 function! CheckerErrors()
   if luaeval('#vim.lsp.buf_get_clients() > 0')
     let errors = luaeval('vim.lsp.diagnostic.get_count(0, "Error")')

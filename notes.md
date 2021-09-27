@@ -111,6 +111,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * `:match`
 * http://vimcasts.org/blog/2013/03/combining-vimgrep-with-git-ls-files/
 * https://vimways.org/2018/death-by-a-thousand-files/
+* `\%V`
 
 ## dictionary (`i_CTRL-X_CTRL-K`)
 ```vim
@@ -160,6 +161,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * grep + `:cdo s/../..`
 * `:cabove`
 * `backtick-expansion`
+* yanking a line character-wise (not using `yy`) so that I can paste without trailing newline
 
 # pitfalls
 * Cursor movement on concealed string: `set concealcursor=n` doesn't work as expected. <https://vi.stackexchange.com/questions/4530/moving-over-conceal>
@@ -250,6 +252,9 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
    nv_screengo: Assertion `curwin->w_curswant <= INT_MAX - w' failed.
                                                                      Aborted (core dumped)
   ```
+* If `lazyredraw` is set, entering cmdline-mode with a mapping doesn't update the statusline.
+  Manually: `noremap <C-g> :<C-u>Grep <C-r>=execute('redrawstatus')<CR>`
+
 
 # stuff
 * https://arxiv.org/abs/2006.03103

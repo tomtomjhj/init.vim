@@ -21,7 +21,7 @@ let s:mkd_textobj = {
             \     'select-i': 'id',
             \   },
             \ }
-call textobj#user#plugin('markdown', s:mkd_textobj)
+silent! call textobj#user#plugin('markdown', s:mkd_textobj)
 " TODO:
 " * list item text object
 " * make paragraph, sentence text object list-aware
