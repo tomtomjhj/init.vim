@@ -1,3 +1,4 @@
+" NOTE: these are specific to nvim-qt
 GuiTabline 0
 GuiPopupmenu 0
 GuiFont Source Code Pro:h13
@@ -8,6 +9,6 @@ func! FontSize(delta)
     exe 'GuiFont ' . name . new_size
 endfunc
 
-map <silent><C--> :<C-u>call FontSize(-v:count1)<CR>
-map <silent><C-+> :<C-u>call FontSize(v:count1)<CR>
-map <silent><C-=> :<C-u>call FontSize(v:count1)<CR>
+map <C--> <Cmd>call FontSize(-v:count1)<CR>
+map <C-+> <Cmd>call FontSize(v:count1)<CR>
+map <C-=> <Cmd>call FontSize(v:count1)<CR>

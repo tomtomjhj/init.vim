@@ -988,18 +988,17 @@ if exists('g:started_by_firenvim')
                 \     },
                 \ }
                 \ }
-    augroup FirenvimStuff | au!
-        au UIEnter * call FirenvimUIEnter(deepcopy(v:event))
-    augroup END
-    function! s:IsFirenvimActive(event) abort
-        let l:ui = nvim_get_chan_info(a:event.chan)
-        return has_key(l:ui, 'client') && has_key(l:ui.client, 'name') && l:ui.client.name =~? 'Firenvim'
-    endfunction
-    function! FirenvimUIEnter(event) abort
-        if !s:IsFirenvimActive(a:event) | return | endif
-        " inoremap <buffer> <M-CR> <Esc>:w<CR>:call firenvim#press_keys("<LT>CR>")<CR>ggdGa
-    endfunction
+    " inoremap <M-CR> <Esc>:w<CR>:call firenvim#press_keys("<LT>CR>")<CR>ggdGa
+    set laststatus=0
     set guifont=Source\ Code\ Pro:h20
+    function! FontSize(delta)
+        let [name, size] = matchlist(&guifont, '\v(.*:h)(\d+)')[1:2]
+        let new_size = str2nr(size) + a:delta
+        let &guifont = name . new_size
+    endfunction
+    map <C--> <Cmd>call FontSize(-v:count1)<CR>
+    map <C-+> <Cmd>call FontSize(v:count1)<CR>
+    map <C-=> <Cmd>call FontSize(v:count1)<CR>
 else
     let g:firenvim_loaded = 1
 endif
