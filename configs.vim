@@ -63,7 +63,7 @@ else
     " Plug 'quangnguyen30192/cmp-nvim-ultisnips'
     " Plug 'quangnguyen30192/cmp-nvim-tags'
     Plug 'neovim/nvim-lspconfig'
-    Plug 'kabouzeid/nvim-lspinstall'
+    Plug 'kabouzeid/nvim-lspinstall' " TODO https://github.com/williamboman/nvim-lsp-installer
     Plug 'ojroques/nvim-lspfuzzy'
     Plug 'nvim-lua/lsp-status.nvim'
     Plug 'folke/lua-dev.nvim'
@@ -150,7 +150,7 @@ set shortmess+=Ic shortmess-=S
 set belloff=all
 
 set history=1000
-set viminfo=!,'150,<50,s30,h
+set viminfo=!,'150,<50,s30,h,r/tmp,rfugitive://
 set updatetime=1234
 set noswapfile " set directory=~/.vim/swap//
 set backup backupdir=~/.vim/backup//
@@ -181,7 +181,7 @@ augroup BasicSetup | au!
     au FileType help nnoremap <silent><buffer> <M-.> :h <C-r><C-w><CR>
     let &pumheight = min([&window/4, 20])
     au VimResized * let &pumheight = min([&window/4, 20])
-    au FileType git,fugitive setl foldmethod=syntax foldlevel=99
+    au FileType git,fugitive,gitcommit setl foldmethod=syntax foldlevel=99
 augroup END
 
 if has('unix')
@@ -325,6 +325,7 @@ lua << EOF
         -- require'compe'.register_source('words', require'tomtomjhj/compe_words')
         require'compe'.setup {
           default_pattern = [[\K\k\{-\}\>]],
+          preselect = "disable",
           source = {
             path = true;
             buffer = { menu = '[B]'; priority = 51; }; -- slightly higher than snippets
@@ -498,7 +499,7 @@ augroup SetupCoq | au!
     au ColorScheme * call s:CoqHighlight()
 augroup END
 function! SetupCoq() abort
-    let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} }) |
+    let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} })
     setlocal foldmethod=manual
     setlocal shiftwidth=2
     " no middle piece & comment leader
@@ -510,8 +511,13 @@ function! SetupCoq() abort
 endfunction
 function s:CoqHighlight() abort
     " TODO: interaction with listchar? NonText highlighting disappears when CoqtailChecked is applied
-    hi! CoqtailChecked ctermbg=237 guibg=#3a3a3a
-    hi! CoqtailSent ctermbg=60 guibg=#5f5f87
+    if &background ==# 'dark'
+        hi! CoqtailChecked ctermbg=237 guibg=#3a3a3a
+        hi! CoqtailSent ctermbg=60 guibg=#5f5f87
+    else
+        hi! CoqtailChecked ctermbg=252 guibg=#d0d0d0
+        hi! CoqtailSent ctermbg=146 guibg=#afafd7
+    endif
 endfunction
 call s:CoqHighlight()
 " }}}

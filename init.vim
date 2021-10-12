@@ -20,6 +20,7 @@ augroup NvimStuff | au!
     au TextYankPost * silent! lua vim.highlight.on_yank()
 augroup END
 
+" TODO: these are removed https://github.com/neovim/neovim/issues/14090#issuecomment-921312955
 " vim doesn't have `numhl`
 sign define LspDiagnosticsSignError       text=>> texthl=ALEErrorSign   linehl= numhl=
 sign define LspDiagnosticsSignWarning     text=>> texthl=ALEWarningSign linehl= numhl=

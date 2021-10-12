@@ -1,5 +1,4 @@
 " TODO
-" * removing error highlight
 " * <Plug>CoqJumpToEnd blocks while processing
 " * hlsearch disabled while processing
 " * how to hide a buffer without error? (+ bdelete)
@@ -68,6 +67,7 @@ function! tomtomjhj#coq#mappings()
     endif
 
     nmap <buffer>       <C-w>s :<C-u>call tomtomjhj#coq#split('split')<CR>
+    nmap <buffer>       <C-w>v :<C-u>call tomtomjhj#coq#split('vsplit')<CR>
 
     nmap <buffer>        <M-]> <Plug>CoqGotoDef
     nmap <buffer>        <M-\> :<C-u>CoqGotoDefSplit <C-r>=coqtail#util#getcurword()<CR><CR>
@@ -139,7 +139,6 @@ endfunction
 
 function! tomtomjhj#coq#folds()
     let save_cursor = getcurpos()
-    " `zo` prevents unintended nested folds
     keepjumps keeppatterns global/\v^\s*\zs(End|Qed|Defined|Abort|Admitted|Save).*\./normal zf%
     normal! zM
     call setpos('.', save_cursor)

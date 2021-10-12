@@ -18,7 +18,7 @@ syn clear coqLtac
 syn keyword coqLtac contained do info progress repeat try
 syn keyword coqLtac contained abstract constr context end external eval fail first fresh fun goal
 syn keyword coqLtac contained idtac in let ltac lazymatch multimatch match of rec reverse solve type with
-syn keyword coqLtac contained have suff congr last done
+syn keyword coqLtac contained have suff wlog congr last done
 
 syn clear coqProofKwd
 syn keyword coqProofKwd contained else end exists exists2 forall fun if in match let struct then where with as return

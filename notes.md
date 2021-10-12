@@ -19,8 +19,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * `g]`-like commands can't be used in functions etc?
 * fzf: make a feature request for ivy-like actions
 * close all folds under the cursor (sub-tree) `zC` doesn't do this
-* `<C-r><C-v>` to getvisual in cmap
-* better 'paragraph'
+* better 'paragraph' and 'sentence' (not customizable at all)
     * markdown list
 * fzf preview: <S-down> slow -> key code 분해됨
 * make repetitive jump commands' jumplist modification behave like `sneak-clever-s`
@@ -67,6 +66,8 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * Textobj plugins can be lazy-loaded with manual `s:lod_map`
 * search without confirming search, window-local search, jump with `/_CTRL-G`, ...
 * refreshing clipboard `call setenv('DISPLAY', '...')`: The new value can be obtained by launching another shell.. how to automate? Note: `call serverlist()` seems to work
+    * https://stackoverflow.com/questions/13634697/openssh-client-hangs-on-logout-when-forwarding-x-connections
+* Shouldn't `buftype=nofile` buffers be ignored from viminfo (so that they don't clutter oldfiles)?
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -208,11 +209,11 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
     * running tmux inside the termianl:
         * reflow works but scrolling is broken
         * automation? maybe check `$VIM` in bashrc
-* nvim creates empty undo when editorconfig TrimTrailingWhitespace is used (https://github.com/neovim/neovim/issues/11987) (https://github.com/neovim/neovim/pull/11988)
 * nvim's `CursorMoved` is differrent from vim's. This makes `vimtex_matchparen` wrongly hightlight fzf floatwin.
 * shada merging bad https://github.com/neovim/neovim/issues/4295
     * impossible to wipe marks, registers, jumplist...
     * `:wshada!` https://vi.stackexchange.com/a/26540
+    * Edit shada, `:rshada!`, exit.
 * The line on which a three-piece comment's start/end piece lies is treated specially by `gq`. Not documented in fo-table 'q'. Related? <https://github.com/vim/vim/issues/1696>.
     * These lines are not joined properly by `gq`.
       ```coq
@@ -244,7 +245,6 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
   wincmd s | wincmd j | set wfh | exe "norm! z13\<CR>" | pedit file
   wincmd s | wincmd j | set wfh | exe "norm! z14\<CR>" | pedit file
   ```
-* Unexpected scrolling while editing with diff mode enabled https://github.com/vim/vim/issues/8809
 * gvim clears clipboard when exiting??
 * nvim crash
   ```
@@ -253,7 +253,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
                                                                      Aborted (core dumped)
   ```
 * If `lazyredraw` is set, entering cmdline-mode with a mapping doesn't update the statusline.
-  Manually: `noremap <C-g> :<C-u>Grep <C-r>=execute('redrawstatus')<CR>`
+  Manually: `noremap <C-g> :<C-u>Grep <Cmd>redrawstatus<CR>`
 
 
 # stuff
@@ -306,6 +306,8 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * https://github.com/Julian/lean.nvim
 * https://github.com/gelguy/wilder.nvim
 * https://github.com/chipsenkbeil/distant.nvim
+* https://github.com/tomtom/tcomment_vim
+  https://github.com/numToStr/Comment.nvim
 
 # new (n)vim stuff
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.
