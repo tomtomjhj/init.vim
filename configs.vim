@@ -31,6 +31,7 @@ Plug 'whonore/vim-sentencer'
 
 " etc
 Plug 'tpope/vim-fugitive'
+Plug 'rbong/vim-flog'
 Plug 'rhysd/git-messenger.vim'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
@@ -47,6 +48,8 @@ Plug 'wellle/visual-split.vim' " <C-w>g gr/gss/gsa/gsb TODO: setlocal scrolloff=
 Plug 'justinmk/vim-dirvish'
 Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
 Plug 'kassio/neoterm'
+Plug 'inkarkat/vim-mark'
+Plug 'inkarkat/vim-ingo-library'
 
 " lanauges
 Plug 'dense-analysis/ale', { 'on': ['<Plug>(ale_', 'ALEEnable'] } ")
@@ -1069,6 +1072,15 @@ let g:neoterm_automap_keys = '<leader>T'
 let g:sentencer_filetypes = []
 let g:sentencer_textwidth = 79 " formatexpr doesn't work like built-in gq for textwidth=0
 
+" vim-mark
+let g:mwMaxMatchPriority = -2
+let g:mw_no_mappings = 1
+nmap m* <Plug>MarkSet
+xmap m* <Plug>MarkSet
+nmap m/ <Plug>MarkSearchAnyNext
+nmap m? <Plug>MarkSearchAnyPrev
+nmap m<BS> <Plug>MarkToggle
+" TODO: stuff using api-highlights, like codepainter
 " }}}
 
 " etc util {{{
