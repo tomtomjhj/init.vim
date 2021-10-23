@@ -59,7 +59,7 @@ if g:ide_client == 'coc'
     Plug 'antoinemadec/coc-fzf'
 else
     Plug 'hrsh7th/nvim-compe', { 'on': [] }
-    " Plug 'hrsh7th/nvim-cmp' " TODO: example config at defaults.nvim; port when nvim gets proper lua autoload
+    " Plug 'hrsh7th/nvim-cmp' " TODO: example config at kickstart.nvim; port when nvim gets proper lua autoload
     " Plug 'hrsh7th/cmp-buffer'
     " Plug 'hrsh7th/cmp-nvim-lsp'
     " Plug 'hrsh7th/cmp-path'
@@ -304,21 +304,29 @@ endif
 " }}}
 
 " Completion {{{
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 if g:ide_client == 'coc'
     inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : <SID>check_back_space() ? "\<Tab>" : coc#refresh()
+    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 else " lua
-    " TODO
-    " * prefix-only completion: e.g. `prefix_suffix` in buffer, input `suffix` and type `pre` and complete.
-    "   https://github.com/hrsh7th/nvim-compe/issues/157
-    " * buffer source: don't add the word currently being inserted e.g. `presuffix` in the above example.
-    "   Note: this only happens when inserting prefix of the word
-    " * matching
-    "   * noignorecase?
-    "   * fuzzy, but exact match for the first char
-    " * sometimes completion deletes the text on the left of the input??
-    set completeopt=menuone,noinsert,noselect
+    " lua require'tomtomjhj/cmp'
+    " TODO: lazy loading doesn't work..
+    " - https://github.com/hrsh7th/nvim-cmp/issues/65
+    " - plug#load only sources .vim files. Fixing this alone doesn't entirely fix the issue.
+    " - order of setup() and plugin/*.lua sourcing
+    " au InsertEnter * ++once call LoadCmp()
+    " function! LoadCmp()
+    "     call plug#load('nvim-cmp')
+    "     call plug#load('cmp-buffer')
+    "     call plug#load('cmp-nvim-lsp')
+    "     call plug#load('cmp-path')
+    "     call plug#load('cmp-nvim-ultisnips')
+    "     call plug#load('cmp-nvim-tags')
+    "     lua require'tomtomjhj/cmp'
+    " endfunction
+
+    set completeopt=menuone,noselect
     inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : <SID>check_back_space() ? "\<Tab>" : compe#complete()
+    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
     inoremap <expr> <C-y> compe#confirm('<C-y>')
     inoremap <expr> <C-e> compe#close('<C-e>')
     au InsertEnter * ++once call LoadCompe()
