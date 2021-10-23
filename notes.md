@@ -68,6 +68,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * refreshing clipboard `call setenv('DISPLAY', '...')`: The new value can be obtained by launching another shell.. how to automate? Note: `call serverlist()` seems to work
     * https://stackoverflow.com/questions/13634697/openssh-client-hangs-on-logout-when-forwarding-x-connections
 * Shouldn't `buftype=nofile` buffers be ignored from viminfo (so that they don't clutter oldfiles)?
+    * It seems that the buffer is not added to viminfo if it doesn't have marks. Clear the marks when deleting nofile buffer?
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -113,6 +114,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * http://vimcasts.org/blog/2013/03/combining-vimgrep-with-git-ls-files/
 * https://vimways.org/2018/death-by-a-thousand-files/
 * `\%V`
+* `hitest.vim`
 
 ## dictionary (`i_CTRL-X_CTRL-K`)
 ```vim
@@ -202,6 +204,9 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * ftplugin runs before other `au FileType` because the `filetype plugin indent on` is usually invoked before defining other autocmds (so the order is not built-in).
 * `:filetype on` runs ftdetect scripts. So `runtimepath` should be set before `:filetype on`. If `SYS_VIMRC_FILE` runs `:syntax on` (which runs `:filetype on`), it should be reset by `:filetype off`.
   This is unnecessary for `:packadd`-based plugin management.
+* If `lazyredraw` is set, entering cmdline-mode with a mapping doesn't update the statusline.
+    * Manually: `noremap <C-g> :<C-u>Grep <Cmd>redrawstatus<CR>`
+    * `redrawstatus` on `CmdlineEnter`: Mappings that enter&exit cmdline mode also trigger this. Must use `<Cmd>`.
 
 # (n)vim problem
 * terminal reflow https://github.com/neovim/neovim/issues/2514
@@ -209,7 +214,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
     * running tmux inside the termianl:
         * reflow works but scrolling is broken
         * automation? maybe check `$VIM` in bashrc
-* nvim's `CursorMoved` is differrent from vim's. This makes `vimtex_matchparen` wrongly hightlight fzf floatwin.
+* nvim's `CursorMoved` is differrent from vim's. This makes `vimtex_matchparen` wrongly highlight fzf floatwin.
 * shada merging bad https://github.com/neovim/neovim/issues/4295
     * impossible to wipe marks, registers, jumplist...
     * `:wshada!` https://vi.stackexchange.com/a/26540
@@ -252,8 +257,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
    nv_screengo: Assertion `curwin->w_curswant <= INT_MAX - w' failed.
                                                                      Aborted (core dumped)
   ```
-* If `lazyredraw` is set, entering cmdline-mode with a mapping doesn't update the statusline.
-  Manually: `noremap <C-g> :<C-u>Grep <Cmd>redrawstatus<CR>`
+* nvim leaks 200-300kb of memory on each fzf invocation? Reproducible with minimal config
 
 
 # stuff
@@ -280,11 +284,11 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
     * https://github.com/ray-x/lsp_signature.nvim
     * https://github.com/simrat39/rust-tools.nvim
     * https://github.com/weilbith/nvim-lsp-smag
-    * https://github.com/valentjn/ltex-ls
+    * https://github.com/valentjn/ltex-ls like textidote (`:compiler textidote` from vimtex), but using lsp
 * https://github.com/RRethy/nvim-treesitter-textsubjects
   https://github.com/vigoux/architext.nvim
+  https://github.com/abecodes/tabout.nvim
 * git
-    * https://github.com/junegunn/gv.vim
     * https://github.com/rhysd/conflict-marker.vim
     * https://github.com/pwntester/octo.nvim
     * https://github.com/TimUntersberger/neogit
@@ -308,6 +312,11 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * https://github.com/chipsenkbeil/distant.nvim
 * https://github.com/tomtom/tcomment_vim
   https://github.com/numToStr/Comment.nvim
+* https://github.com/mcchrish/vim-no-color-collections
+  https://github.com/fxn/vim-monochrome
+  https://git.sr.ht/~romainl/vim-bruin
+  https://github.com/jeffkreeftmeijer/vim-dim
+  https://github.com/cocopon/iceberg.vim
 
 # new (n)vim stuff
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.

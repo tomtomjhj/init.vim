@@ -2,3 +2,4 @@
 **/_static/*
 **/test/*
 **/tests/*
+package-lock.json

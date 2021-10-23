@@ -1,9 +1,6 @@
-setlocal tabstop=2 shiftwidth=2
+setlocal shiftwidth=2
 setlocal conceallevel=2
 setlocal foldlevel=99
-
-" defaults to asyncrun-project-root
-let b:ale_lsp_root = asyncrun#get_root("%")
 
 call SetupLSP()
 " override textobj-comment

@@ -198,4 +198,4 @@ endfunction
 "     call setcellwidths([[9711, 9711, 2]]) " ◯
 " endif
 
-noremap! <C-space> <C-R>=<SID>SetupDigraph()<CR><C-K>
+noremap! <silent> <C-space> <C-R>=<SID>SetupDigraph()<CR><C-K>

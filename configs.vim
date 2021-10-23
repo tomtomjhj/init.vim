@@ -175,15 +175,17 @@ endif
 augroup BasicSetup | au!
     " Return to last edit position when entering normal buffer
     " TODO: this addes jump? manually running is ok. maybe autocmd problem?
+    " TODO: Commit file shouldn't store marks in the first place
     au BufRead * if empty(&buftype) && &filetype !~# '\v%(commit)' && line("'\"") > 1 && line("'\"") <= line("$") | exec "norm! g`\"" | endif
     au VimEnter * exec 'tabdo windo clearjumps' | tabnext
-    au BufWritePost ~/.vim/configs.vim source ~/.vim/configs.vim
+    au BufWritePost ~/.vim/configs.vim nested source ~/.vim/configs.vim
     au BufRead,BufNewFile *.k set filetype=k
     au BufRead,BufNewFile *.mir set syntax=rust
     au FileType lisp let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} })
     au FileType help nnoremap <silent><buffer> <M-.> :h <C-r><C-w><CR>
     let &pumheight = min([&window/4, 20])
     au VimResized * let &pumheight = min([&window/4, 20])
+    " TODO: very slow and doesn't fold each hunk
     au FileType git,fugitive,gitcommit setl foldmethod=syntax foldlevel=99
 augroup END
 
@@ -1089,6 +1091,13 @@ nmap m/ <Plug>MarkSearchAnyNext
 nmap m? <Plug>MarkSearchAnyPrev
 nmap m<BS> <Plug>MarkToggle
 " TODO: stuff using api-highlights, like codepainter
+
+" git
+let g:flog_default_arguments = {
+            \ 'max_count': 512,
+            \ 'all': 1,
+            \ }
+let g:flog_permanent_default_arguments = { 'date': 'short', }
 " }}}
 
 " etc util {{{
