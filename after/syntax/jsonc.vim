@@ -1,1 +1,1 @@
-hi! link jsoncBraces Delimiter
+hi! def link jsoncBraces Delimiter

@@ -5,30 +5,8 @@ syn match   coqKwd             contained "\<exists!\?"
 syn match coqKwd contained "∀\|∃\|λ"
 syn match coqKwd contained "/\\\|∧\|\\/\|∨\|<->\|->\|→\|=>\|<-\|←\|∗"
 
-" Define the default highlighting.
-command -nargs=+ HiLink hi def link <args>
-
-" TERMS AND TYPES
-HiLink coqTerm              Type
-HiLink coqKwd               coqTerm
-HiLink coqTermPunctuation   coqTerm
-
-" WORK LEFT
-HiLink coqNumberGoals       NONE
-HiLink coqNumberUnfocused   NONE
-HiLink coqNumberAdmitted    Error
-HiLink coqNumberShelved     NONE
-HiLink coqGoalLine          NONE
-
-" GOAL IDENTIFIER
-HiLink coqGoalNumber        Underlined
-HiLink coqNextGoal          Underlined
-
-" USUAL VIM HIGHLIGHTINGS
-" Comments
-HiLink coqComment           Comment
-
-" Strings
-HiLink coqString            String
-
-delcommand HiLink
+" fix default highlight links
+hi! def link coqNumberGoals       NONE
+hi! def link coqNumberUnfocused   NONE
+hi! def link coqNumberShelved     NONE
+hi! def link coqGoalLine          NONE

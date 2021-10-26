@@ -1,6 +1,6 @@
-hi! link goBuiltins Function
-hi! link goFunctionCall Function
-hi! link goTypeConstructor Constant
+hi! def link goBuiltins Function
+hi! def link goFunctionCall Function
+hi! def link goTypeConstructor Constant
 syn region      goParen matchgroup=Delimiter start='(' end=')' transparent
 if go#config#FoldEnable('block')
   syn region    goBlock matchgroup=Delimiter start="{" end="}" transparent fold

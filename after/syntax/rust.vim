@@ -1,4 +1,4 @@
-hi! link rustModPath NONE
-hi! link rustCommentLineDoc Comment
-hi! link rustLabel Special
-hi! link rustIdentifier NONE
+hi! def link rustModPath NONE
+hi! def link rustCommentLineDoc Comment
+hi! def link rustLabel Special
+hi! def link rustIdentifier NONE

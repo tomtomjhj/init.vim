@@ -27,10 +27,10 @@ sign define LspDiagnosticsSignWarning     text=>> texthl=ALEWarningSign linehl= 
 sign define LspDiagnosticsSignInformation text=-- texthl=ALEInfoSign    linehl= numhl=
 sign define LspDiagnosticsSignHint        text=-- texthl=ALEInfoSign    linehl= numhl=
 
-hi! link LspDiagnosticsVirtualTextError TypeHint
-hi! link LspDiagnosticsVirtualTextWarning TypeHint
-hi! link LspDiagnosticsVirtualTextInformation TypeHint
-hi! link LspDiagnosticsVirtualTextHint TypeHint
+hi! def link LspDiagnosticsVirtualTextError TypeHint
+hi! def link LspDiagnosticsVirtualTextWarning TypeHint
+hi! def link LspDiagnosticsVirtualTextInformation TypeHint
+hi! def link LspDiagnosticsVirtualTextHint TypeHint
 
 " hi! link LspDiagnosticsUnderlineError
 " hi! link LspDiagnosticsUnderlineWarning

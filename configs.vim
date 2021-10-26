@@ -195,7 +195,7 @@ if has('unix')
 endif
 " }}}
 
-" Themes {{{
+" Statusline {{{
 " TODO: buffer_title: merge specialbuf and shortrelpath; and do more fancy stuff for special buffers e.g. w:quickfix_title, term:///, fugitive://, ..
 let g:lightline = {
       \ 'colorscheme': 'powerwombat',
@@ -287,17 +287,20 @@ function! SearchCount()
         return ''
     endtry
 endfunction
-" `vil() { nvim "$@" --cmd 'set background=light'; }` for light theme
+" }}}
+
+" ColorScheme {{{
 if exists('g:colors_name') " loading the color again breaks lightline
 elseif &background == 'dark' || !has('nvim')
     colorscheme zenbruh
 else
-    " TODO: customize Search, IncSearch, MatchParen, Diff*
+    " TODO
+    " * customize Search, IncSearch, MatchParen, Diff*
+    " * fzf: fix terminal window hl (set winhl=NormalFloat:TermNormal) vs. modify bat theme
     let g:solarized_enable_extra_hi_groups = 1
     let g:solarized_italics = 0
     set termguicolors
     colorscheme solarized8_high
-    " TODO: fzf: fix terminal window hl (set winhl=NormalFloat:TermNormal) vs. modify bat theme
     " hi TermNormal guifg=#eeeeee guibg=#1c1c1c
     hi Special guifg=#735050 | hi Conceal guifg=#735050
     hi Statement gui=bold
@@ -379,20 +382,21 @@ let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json']
 let g:coc_quickfix_open_command = 'CW'
 let g:coc_fzf_preview = 'up:66%'
 
+" TODO: does nvim have a standard hi group for this?
 hi! TypeHint ctermfg=Grey guifg=#999999
-hi! link CocWarningHighlight NONE
-hi! link CocInfoHighlight    NONE
-hi! link CocHintHighlight    NONE
-hi! link CocErrorSign   ALEErrorSign
-hi! link CocWarningSign ALEWarningSign
-hi! link CocInfoSign    ALEInfoSign
-hi! link CocHintSign    ALEInfoSign
-hi! link CocErrorFloat   NONE
-hi! link CocWarningFloat CocErrorFloat
-hi! link CocInfoFloat    CocErrorFloat
-hi! link CocHintFloat    CocErrorFloat
-hi! link CocRustTypeHint TypeHint
-hi! link CocRustChainingHint TypeHint
+hi! def link CocWarningHighlight NONE
+hi! def link CocInfoHighlight    NONE
+hi! def link CocHintHighlight    NONE
+hi! def link CocErrorSign   ALEErrorSign
+hi! def link CocWarningSign ALEWarningSign
+hi! def link CocInfoSign    ALEInfoSign
+hi! def link CocHintSign    ALEInfoSign
+hi! def link CocErrorFloat   NONE
+hi! def link CocWarningFloat CocErrorFloat
+hi! def link CocInfoFloat    CocErrorFloat
+hi! def link CocHintFloat    CocErrorFloat
+hi! def link CocRustTypeHint TypeHint
+hi! def link CocRustChainingHint TypeHint
 
 nmap <leader>fm <Plug>(ale_fix)
 nmap <M-,> <Plug>(ale_detail)<C-W>p
@@ -509,7 +513,6 @@ augroup SetupCoq | au!
                 \ setlocal matchpairs+=⌜:⌝,⎡:⎤
     au FileType coq call SetupCoq()
     au FileType coq-goals,coq-infos setlocal foldcolumn=0
-    au ColorScheme * call s:CoqHighlight()
 augroup END
 function! SetupCoq() abort
     let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} })
@@ -522,17 +525,6 @@ function! SetupCoq() abort
     " TODO: coq uses zero-based column index..                     vv
     setlocal errorformat=File\ \"%f\"\\,\ line\ %l\\,\ characters\ %c-%*[0-9]:
 endfunction
-function s:CoqHighlight() abort
-    " TODO: interaction with listchar? NonText highlighting disappears when CoqtailChecked is applied
-    if &background ==# 'dark'
-        hi! CoqtailChecked ctermbg=237 guibg=#3a3a3a
-        hi! CoqtailSent ctermbg=60 guibg=#5f5f87
-    else
-        hi! CoqtailChecked ctermbg=252 guibg=#d0d0d0
-        hi! CoqtailSent ctermbg=146 guibg=#afafd7
-    endif
-endfunction
-call s:CoqHighlight()
 " }}}
 
 " Lua {{{

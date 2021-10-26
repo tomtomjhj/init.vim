@@ -1,10 +1,10 @@
-hi! link texMathDelim Delimiter
-hi! link texCmdStyle         texCmdType
-hi! link texCmdStyleBold     texCmdType
-hi! link texCmdStyleBoldItal texCmdType
-hi! link texCmdStyleItal     texCmdType
-hi! link texCmdStyleItalBold texCmdType
-hi! link texZone Special
+hi! def link texMathDelim Delimiter
+hi! def link texCmdStyle         texCmdType
+hi! def link texCmdStyleBold     texCmdType
+hi! def link texCmdStyleBoldItal texCmdType
+hi! def link texCmdStyleItal     texCmdType
+hi! def link texCmdStyleItalBold texCmdType
+hi! def link texZone Special
 
 " conceal inline math only
 syntax clear texMathZone texMathZoneX texMathZoneXX

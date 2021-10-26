@@ -82,7 +82,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
         * how to do this in emacs?
         * too intrusive
 
-# Tips
+# Notes
 * `strcharpart(strpart(line, col - 1), 0, 1)`
 * `<C-\><C-o><ESC>` to reset insert starting point after ins-special-special
 * absolute n/N <https://superuser.com/a/1454131/1089985>
@@ -132,6 +132,50 @@ g!/.\{6,\}/d
 ```sh
 fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr ' ' '\n' | sort | uniq -c | sort -rn
 ```
+
+## Colorscheme customization
+* Context: highlight = syntax (`syntax/`, `after/syntax/`) + colorscheme (`:colorscheme`, `au ColorScheme`).
+    * Syntax definition includes the default highlight links.
+      A default link should point to a syntactic group e.g. builtin groups like `Statement`.
+      This also applies to overriding a default link.
+      If users do not like a default link, they should override the default link in `after/syntax/`.
+    * ColorScheme definition links syntax groups to a color group (or give a color to the syntax group).
+      If users want to change highlight of a syntax group when this specific colorscheme is active, they should override the current link in `au ColorScheme`.
+    * NOTE: `FileType` and `ftplugin/` is not a right place to do any customization because `:syn-include` does not know it.
+* Problem: There is no way to modify the default highlight link ONLY.
+    * `hi def link` has no effect if the default link is already set.
+    * `hi! def link` always overrides the current link.
+      So `hi! def link` in `after/syntax/` may override `:hi! link` customizations done in `ColorScheme`.
+* Desired:
+  `hi! def link` should override the current link only if the current link is the same with the default link.
+  This is useful for customizing syntax/highlight without affecting/being affected by
+  colorschemes that have their own customizations.
+* Workaround:
+    * ✗ At the end of `after/syntax/` (after all `hi! def link`s), source the current colorscheme, and `doautocmd <nomodeline> ColorScheme`.
+      The end result is the same, but doesn't sound like a good idea..
+    * ✗ Set up a `au ColorSchemePre *` that runs `hi! def link`s?
+      `hi clear` changes the behavior of subsequent `hi def link`.
+      This is clearly a bug.
+      ```
+      syn keyword Group word
+      hi def link Group Todo
+      hi clear
+      hi def link Group Comment
+      " "word" is highlighted as Comment
+      " if hi clear is run again, "word" is highlighted as Todo
+      ```
+    * ✗ `hi clear Group` and then `hi def link`?
+      `hi clear` does not clear the default link.
+    * ✗ `hi def link Group NONE` and then `hi def link`?
+      Clears the current link, but
+      doesn't clear the default link and the subsequent `hi def link` (without `hi clear` in between) has no effect at all, ending up with no current highlight.
+    * ✗ `hi! def link Group NONE` and then `hi def link`.
+      Overrides the default link, but following `hi clear` and `hi def link` overrides the current link (but not the default link, like above).
+    * ✗ Set up a `au ColorScheme *` that runs `hi! def link`s.
+      It overrides the default link and is not affected by `hi clear`.
+      However, it may override the links of the colorscheme, which should be re-overridden in another `au ColorScheme`.
+      Quite ugly.
+    * ✓ In `after/syntax/`, put `hi! def link`. Make a function that does per-colorscheme `hi! link`. Immediately call this function and register it to `au ColorScheme`.
 
 # things that I should make more use of
 * marks
@@ -258,7 +302,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
                                                                      Aborted (core dumped)
   ```
 * nvim leaks 200-300kb of memory on each fzf invocation? Reproducible with minimal config
-
+* `hi def link` + `hi clear` is somewhat broken
 
 # stuff
 * https://arxiv.org/abs/2006.03103
