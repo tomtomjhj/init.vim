@@ -185,8 +185,6 @@ augroup BasicSetup | au!
     au FileType help nnoremap <silent><buffer> <M-.> :h <C-r><C-w><CR>
     let &pumheight = min([&window/4, 20])
     au VimResized * let &pumheight = min([&window/4, 20])
-    " TODO: very slow and doesn't fold each hunk
-    au FileType git,fugitive,gitcommit setl foldmethod=syntax foldlevel=99
 augroup END
 
 if has('unix')
@@ -363,7 +361,7 @@ endfunction
 let g:UltiSnipsExpandTrigger = '<c-l>'
 " }}}
 
-" ALE, LSP, ... global settings {{{
+" ALE, LSP, ... global settings. See ./plugin/lsp.vim {{{
 let g:ale_linters = {}
 let g:ale_fixers = {
             \ 'c': ['clang-format'],
@@ -846,7 +844,6 @@ noremap <silent> [x <Cmd>call search(g:conflict_marker_pat, 'bW')<CR>
 noremap <silent> ]x <Cmd>call search(g:conflict_marker_pat, 'W')<CR>
 " }}}
 
-" etc plugin settings {{{
 " pairs {{{
 let g:matchup_override_vimtex = 1
 let g:matchup_matchparen_offscreen = {}
@@ -881,13 +878,17 @@ augroup MyTargets | au!
 augroup END
 " }}}
 
-" asyncrun
+" shell {{{
 map <leader>R :AsyncRun<space>
 map <leader>ST :AsyncStop\|let g:asyncrun_status = ''<CR>
 command! -bang -nargs=* -complete=file Make AsyncRun -auto=make -program=make @ <args>
 map <leader>M :Make<space>
 command! -bang -bar -nargs=* -complete=customlist,fugitive#PushComplete Gpush  execute 'AsyncRun<bang> -cwd=' . fnameescape(FugitiveGitDir()) 'git push' <q-args>
 command! -bang -bar -nargs=* -complete=customlist,fugitive#FetchComplete Gfetch execute 'AsyncRun<bang> -cwd=' . fnameescape(FugitiveGitDir()) 'git fetch' <q-args>
+
+let g:neoterm_default_mod = 'rightbelow'
+let g:neoterm_automap_keys = '<leader>T'
+" }}}
 
 " quickfix, loclist, ... {{{
 " TODO: manually adding lines to qf?
@@ -981,7 +982,15 @@ function! DirvishSubdir() abort
 endfunction
 " }}}
 
-let g:EditorConfig_exclude_patterns = ['.*[.]git/.*', 'fugitive://.*', 'scp://.*']
+" git {{{
+let g:flog_default_arguments = { 'max_count': 512, 'all': 1, }
+let g:flog_permanent_default_arguments = { 'date': 'short', }
+
+augroup git-custom | au!
+    " TODO: Very slow and doesn't fold each hunk.
+    au FileType git,fugitive,gitcommit setlocal foldmethod=syntax foldlevel=99
+augroup END
+" }}}
 
 " firenvim {{{
 " chrome://extensions/shortcuts -> this may break chrome keymaps like <C-w>
@@ -1062,13 +1071,12 @@ let g:NERDCustomDelimiters = {
 let g:NERDDefaultAlign = 'left'
 " }}}
 
+" etc plugins {{{
+let g:EditorConfig_exclude_patterns = ['.*[.]git/.*', 'fugitive://.*', 'scp://.*']
+
 " undotree
 let g:undotree_WindowLayout = 4
 nnoremap U :UndotreeToggle<CR>
-
-" neoterm
-let g:neoterm_default_mod = 'rightbelow'
-let g:neoterm_automap_keys = '<leader>T'
 
 " sentencer
 let g:sentencer_filetypes = []
@@ -1083,13 +1091,6 @@ nmap m/ <Plug>MarkSearchAnyNext
 nmap m? <Plug>MarkSearchAnyPrev
 nmap m<BS> <Plug>MarkToggle
 " TODO: stuff using api-highlights, like codepainter
-
-" git
-let g:flog_default_arguments = {
-            \ 'max_count': 512,
-            \ 'all': 1,
-            \ }
-let g:flog_permanent_default_arguments = { 'date': 'short', }
 " }}}
 
 " etc util {{{
