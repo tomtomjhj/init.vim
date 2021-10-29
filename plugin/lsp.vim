@@ -102,6 +102,7 @@ function! SetupLSP()
   nnoremap <buffer><silent><leader>ol    <cmd>lua vim.lsp.buf.document_symbol()<CR>
   nnoremap <buffer><silent><leader>sb    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
   inoremap <buffer><silent>        <M-i> <cmd>lua vim.lsp.buf.signature_help()<CR>
+  " TODO: codelens? codeaction? how do I run tests??
   " TODO: |lsp-handler| default location_handler
   " * goto def in split, etc https://github.com/neovim/neovim/pull/12966
   "   https://github.com/weilbith/nvim-lsp-smag

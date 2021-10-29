@@ -44,7 +44,6 @@ Plug 'Konfekt/FastFold' " only useful for non-manual folds
 Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
-Plug 'wellle/visual-split.vim' " <C-w>g gr/gss/gsa/gsb TODO: setlocal scrolloff=0?
 Plug 'justinmk/vim-dirvish'
 Plug 'lambdalisue/fern.vim'
 Plug 'kassio/neoterm'
@@ -59,7 +58,7 @@ if g:ide_client == 'coc'
     Plug 'antoinemadec/coc-fzf'
 else
     Plug 'hrsh7th/nvim-compe', { 'on': [] }
-    " Plug 'hrsh7th/nvim-cmp' " TODO: example config at kickstart.nvim; port when nvim gets proper lua autoload
+    " Plug 'hrsh7th/nvim-cmp'
     " Plug 'hrsh7th/cmp-buffer'
     " Plug 'hrsh7th/cmp-nvim-lsp'
     " Plug 'hrsh7th/cmp-path'
@@ -380,7 +379,7 @@ let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json']
 let g:coc_quickfix_open_command = 'CW'
 let g:coc_fzf_preview = 'up:66%'
 
-" TODO: does nvim have a standard hi group for this?
+" TODO: replace this and ALE stuff with nvim standard stuff
 hi! TypeHint ctermfg=Grey guifg=#999999
 hi! def link CocWarningHighlight NONE
 hi! def link CocInfoHighlight    NONE
@@ -407,6 +406,17 @@ nnoremap <M-i> <C-i>
 " }}}
 
 " Languages {{{
+" see also ftplugin/ and after/ftplugin/
+augroup Languages | au!
+    au FileType haskell call s:haskell()
+    au FileType c,cpp,cuda call s:c_cpp()
+    au FileType python call s:python()
+    au FileType coq,coq-goals,coq-infos call s:coq_common()
+    au FileType coq call s:coq_common()
+    au FileType coq-goals,coq-infos call s:coq_aux()
+    au FileType lua call s:lua()
+augroup END
+
 " Haskell {{{
 let g:haskell_classic_highlighting = 1
 let g:haskell_enable_quantification = 1
@@ -417,9 +427,9 @@ let g:haskell_enable_static_pointers = 1
 let g:haskell_indent_let_no_in = 0
 let g:haskell_indent_if = 0
 let g:haskell_indent_case_alternative = 1
-augroup SetupHaskell | au!
-    au FileType haskell setl tabstop=2 shiftwidth=2
-augroup END
+function s:haskell() abort
+    setlocal shiftwidth=2
+endfunction
 " }}}
 
 " Rust {{{
@@ -434,19 +444,19 @@ command! -range=% PrettifyRustSymbol <line1>,<line2>SubstituteDict { '$SP$': '@'
 " }}}
 
 " C,C++ {{{
-augroup SetupCCpp | au!
-    au FileType c,cpp,cuda call SetupLSP()
-    au FileType c,cpp,cuda setl tabstop=2 shiftwidth=2
-augroup END
+function s:c_cpp() abort
+    setlocal shiftwidth=2
+    call SetupLSP()
+endfunction
 " }}}
 
 " Python {{{
 let g:python_highlight_all = 1
 let g:python_highlight_builtin_funcs = 0
-augroup SetupPython | au!
-    au FileType python call SetupLSP()
-    au FileType python set formatoptions+=ro
-augroup END
+function s:python() abort
+    setlocal formatoptions+=ro
+    call SetupLSP()
+endfunction
 " }}}
 
 " Markdown, Pandoc, Tex {{{
@@ -505,16 +515,8 @@ let g:go_highlight_types = 1
 let g:coqtail_nomap = 1
 let g:coqtail_noindent_comment = 1
 " TODO: auto mkview/loadview for viewoptions=folds?
-augroup SetupCoq | au!
-    au FileType coq,coq-goals,coq-infos
-                \ call tomtomjhj#coq#mappings() |
-                \ setlocal matchpairs+=⌜:⌝,⎡:⎤
-    au FileType coq call SetupCoq()
-    au FileType coq-goals,coq-infos setlocal foldcolumn=0
-augroup END
-function! SetupCoq() abort
+function s:coq_common() abort
     let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} })
-    setlocal foldmethod=manual
     setlocal shiftwidth=2
     " no middle piece & comment leader
     setlocal comments=s:(*,e:*) formatoptions=qnj
@@ -522,15 +524,23 @@ function! SetupCoq() abort
     " setlocal comments=sr:(*,mb:*,ex:*) formatoptions=roqnj
     " TODO: coq uses zero-based column index..                     vv
     setlocal errorformat=File\ \"%f\"\\,\ line\ %l\\,\ characters\ %c-%*[0-9]:
+    setlocal matchpairs+=⌜:⌝,⎡:⎤
+    call tomtomjhj#coq#mappings()
+endfunction
+function! s:coq() abort
+    setlocal foldmethod=manual
+endfunction
+function! s:coq_aux() abort
+    setlocal foldcolumn=0
 endfunction
 " }}}
 
 " Lua {{{
 let g:lua_syntax_noextendedstdlib = 1
-augroup SetupLua | au!
-    au FileType lua call SetupLSP()
-    au FileType lua setl shiftwidth=2
-augroup END
+function s:lua() abort
+    setlocal shiftwidth=2
+    call SetupLSP()
+endfunction
 " }}}
 
 let g:lisp_rainbow = 1
@@ -561,7 +571,6 @@ func! Star(g)
     call histadd('/', @/)
 endfunc
 func! VisualStar(g)
-    " TODO separate out the functionality get the selected text
     let g:search_mode = 'v'
     let l:reg_save = @"
     " don't trigger TextYankPost
@@ -713,7 +722,7 @@ endfunc
 cnoremap <C-j> <S-Right>
 cnoremap <C-k> <S-Left>
 
-inoremap <C-u> <C-g>u<C-u>
+inoremap <expr> <C-u> match(getline('.'), '\S') >= 0 ? "\<C-g>u<C-u>" : "<C-u>"
 " Delete a single character of other non-blank chars
 inoremap <silent><expr><C-w>  FineGrainedICtrlW(0)
 " Like above, but first consume whitespace
@@ -1005,7 +1014,9 @@ let g:flog_permanent_default_arguments = { 'date': 'short', }
 
 augroup git-custom | au!
     " TODO: Very slow and doesn't fold each hunk.
-    au FileType git,fugitive,gitcommit setlocal foldmethod=syntax foldlevel=99
+    au FileType git,fugitive,gitcommit nnoremap <buffer>zM :setlocal foldmethod=syntax\|unmap <lt>buffer>zM<CR>zM
+    au User FugitiveObject,FugitiveIndex unmap <buffer> *
+    au FileType floggraph nunmap <buffer> <Tab>
 augroup END
 " }}}
 
@@ -1170,8 +1181,6 @@ function! SubstituteDict(dict) range
 endfunction
 command! -range=% -nargs=1 SubstituteDict :<line1>,<line2>call SubstituteDict(<args>)
 
-command! WipeReg for i in range(34,122) | silent! call setreg(nr2char(i), []) | endfor
-
 command! -nargs=+ -bang AddWildignore call AddWildignore([<f-args>], <bang>0)
 function! AddWildignore(wigs, is_dir) abort
     if a:is_dir
@@ -1188,4 +1197,9 @@ if !exists('g:wildignore_files')
     call AddWildignore(s:wildignore_files, 0)
     call AddWildignore(s:wildignore_dirs, 1)
 endif
+
+command! -range=% ZulipMarkdown
+            \ keeppatterns keepjumps <line1>,<line2>substitute/^    \ze[-+*]\s/  /e
+            \|keeppatterns keepjumps <line1>,<line2>substitute/^        \ze[-+*]\s/    /e
+            \|keeppatterns keepjumps <line1>,<line2>substitute/^            \ze[-+*]\s/      /e
 " }}}

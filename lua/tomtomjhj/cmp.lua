@@ -29,10 +29,12 @@ capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 --   Note: this only happens when inserting prefix of the word
 -- * sometimes completion deletes the text on the left of the input??
 
--- TODO: what's keyword_pattern?
+-- TODO: what's keyword_pattern?? It does 2 things: the pattern for item,
+-- condition to list the source's item (pattern of the word before cursor)
+-- See also: https://github.com/hrsh7th/nvim-cmp/issues/444
 cmp.setup {
   completion = {
-    keyword_pattern = [[\K\k\{-,30\}\>]],
+    -- keyword_pattern = [[\K\k\{-,30}\>]],
     completeopt = [[menuone,noselect]],
   },
   sources = {
@@ -41,7 +43,7 @@ cmp.setup {
     { name = 'buffer',
       -- TODO: at least 3 chars
       opts = {
-        keyword_pattern = [[\K\k\{-,30}\>]],
+        keyword_pattern = [[\K\k\{-,30}\>]], -- TODO: help file's iskeyword
         get_bufnrs = get_visible_bufnrs,
       }
     },
@@ -95,6 +97,10 @@ cmp.setup {
     end,
   },
 }
+
+-- TODO cmp.setup.cmdline {}
+
+
 vim.cmd [[
 hi! CmpItemAbbrMatch guifg=NONE ctermfg=NONE guibg=NONE ctermbg=NONE gui=bold cterm=bold
 ]]

@@ -20,28 +20,6 @@ augroup NvimStuff | au!
     au TextYankPost * silent! lua vim.highlight.on_yank()
 augroup END
 
-" TODO: these are removed https://github.com/neovim/neovim/issues/14090#issuecomment-921312955
-" vim doesn't have `numhl`
-sign define LspDiagnosticsSignError       text=>> texthl=ALEErrorSign   linehl= numhl=
-sign define LspDiagnosticsSignWarning     text=>> texthl=ALEWarningSign linehl= numhl=
-sign define LspDiagnosticsSignInformation text=-- texthl=ALEInfoSign    linehl= numhl=
-sign define LspDiagnosticsSignHint        text=-- texthl=ALEInfoSign    linehl= numhl=
-
-hi! def link LspDiagnosticsVirtualTextError TypeHint
-hi! def link LspDiagnosticsVirtualTextWarning TypeHint
-hi! def link LspDiagnosticsVirtualTextInformation TypeHint
-hi! def link LspDiagnosticsVirtualTextHint TypeHint
-
-" hi! link LspDiagnosticsUnderlineError
-" hi! link LspDiagnosticsUnderlineWarning
-" hi! link LspDiagnosticsUnderlineInformation
-" hi! link LspDiagnosticsUnderlineHint
-
-" hi! link LspDiagnosticsFloatingError
-" hi! link LspDiagnosticsFloatingWarning
-" hi! link LspDiagnosticsFloatingInformation
-" hi! link LspDiagnosticsFloatingHint
-
 " TODO: how to customize highlighting queries? → read readme
 if has('nvim-0.5')
 lua <<EOF
