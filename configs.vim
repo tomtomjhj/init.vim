@@ -46,7 +46,7 @@ Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'wellle/visual-split.vim' " <C-w>g gr/gss/gsa/gsb TODO: setlocal scrolloff=0?
 Plug 'justinmk/vim-dirvish'
-Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
+Plug 'lambdalisue/fern.vim'
 Plug 'kassio/neoterm'
 Plug 'inkarkat/vim-mark'
 Plug 'inkarkat/vim-ingo-library'
@@ -153,7 +153,7 @@ set shortmess+=Ic shortmess-=S
 set belloff=all
 
 set history=1000
-set viminfo=!,'150,<50,s30,h,r/tmp,rfugitive://
+set viminfo=!,'150,<50,s30,h,r/tmp,rterm://,rfugitive://,rfern://
 set updatetime=1234
 set noswapfile " set directory=~/.vim/swap//
 set backup backupdir=~/.vim/backup//
@@ -948,11 +948,28 @@ function! CursorURL() abort
 endfunction
 nnoremap <silent> gx :call GXBrowse(CursorURL())<cr>
 
-let NERDTreeHijackNetrw = 0
-let g:NERDTreeIgnore=['\~$', '\.glob$', '\v\.vo[sk]?$', '\.v\.d$', '\.o$']
-let g:NERDTreeStatusline = -1
-nmap <silent><leader>nn :NERDTreeToggle<cr>
-nmap <silent><leader>nf :NERDTreeFind<cr>
+let g:fern#default_exclude = '\v(\.glob|\.vo[sk]?|\.o)$'
+nmap <silent><leader>nn <Cmd>Fern . -drawer -toggle<CR>
+nmap <silent><leader>nf <Cmd>Fern . -drawer -reveal=%<CR>
+function! s:init_fern() abort
+    let helper = fern#helper#new()
+    if helper.sync.is_drawer()
+        setlocal nonumber foldcolumn=0
+    else
+        setlocal signcolumn=number foldcolumn=0
+    endif
+    " must ignore the error
+    silent! nunmap <buffer> <C-l>
+    silent! nunmap <buffer> <C-h>
+    silent! nunmap <buffer> <BS>
+    silent! nunmap <buffer> s
+    nmap <buffer> - <Plug>(fern-action-leave)
+    map <buffer> x <Plug>(fern-action-mark)
+endfunction
+
+augroup fern-custom | au!
+  autocmd FileType fern call s:init_fern()
+augroup END
 
 command! -nargs=? -complete=dir Sexplore split | silent Dirvish <args>
 command! -nargs=? -complete=dir Vexplore vsplit | silent Dirvish <args>
