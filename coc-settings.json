@@ -14,9 +14,10 @@
     "diagnostic.displayByAle": false, // setting this true makes signs keep appear/disappearing
     "diagnostic.enableHighlightLineNumber": false,
     "diagnostic.enableMessage": "jump", // manually by CocAction('diagnosticInfo')
-    "diagnostic.warningSign": "--",
-    "diagnostic.infoSign": "--",
-    "diagnostic.hintSign": "--",
+    "diagnostic.errorSign": "E",
+    "diagnostic.warningSign": "W",
+    "diagnostic.infoSign": "I",
+    "diagnostic.hintSign": "H",
     "codeLens.enable": true,
     "codeLens.subseparator": " | ",
     "suggest.maxPreviewWidth": 100,

@@ -378,22 +378,21 @@ let g:coc_config_home = '~/.vim'
 let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json']
 let g:coc_quickfix_open_command = 'CW'
 let g:coc_fzf_preview = 'up:66%'
+" for https://github.com/valentjn/vscode-ltex/issues/425
+let g:coc_filetype_map = {'tex': 'latex'}
 
-" TODO: replace this and ALE stuff with nvim standard stuff
-hi! TypeHint ctermfg=Grey guifg=#999999
-hi! def link CocWarningHighlight NONE
-hi! def link CocInfoHighlight    NONE
-hi! def link CocHintHighlight    NONE
-hi! def link CocErrorSign   ALEErrorSign
-hi! def link CocWarningSign ALEWarningSign
-hi! def link CocInfoSign    ALEInfoSign
-hi! def link CocHintSign    ALEInfoSign
-hi! def link CocErrorFloat   NONE
-hi! def link CocWarningFloat CocErrorFloat
-hi! def link CocInfoFloat    CocErrorFloat
-hi! def link CocHintFloat    CocErrorFloat
-hi! def link CocRustTypeHint TypeHint
-hi! def link CocRustChainingHint TypeHint
+" :h coc-highlights
+hi! def link CocFadeOut             LspCodeLens
+hi! def link CocErrorSign           DiagnosticSignError
+hi! def link CocWarningSign         DiagnosticSignWarn
+hi! def link CocInfoSign            DiagnosticSignInfo
+hi! def link CocHintSign            DiagnosticSignHint
+hi! def link CocErrorVirtualText    DiagnosticVirtualTextError
+hi! def link CocWarningVirtualText  DiagnosticVirtualTextWarn
+hi! def link CocInfoVirtualText     DiagnosticVirtualTextInfo
+hi! def link CocHintVirtualText     DiagnosticVirtualTextHint
+hi! def link CocRustTypeHint LspCodeLens
+hi! def link CocRustChainingHint LspCodeLens
 
 nmap <leader>fm <Plug>(ale_fix)
 nmap <M-,> <Plug>(ale_detail)<C-W>p
@@ -1109,6 +1108,7 @@ nnoremap U :UndotreeToggle<CR>
 " sentencer
 let g:sentencer_filetypes = []
 let g:sentencer_textwidth = 79 " formatexpr doesn't work like built-in gq for textwidth=0
+let g:sentencer_ignore = ['\<i.e', '\<e.g', '\<vs', '\<Dr', '\<Mr', '\<Mrs', '\<Ms', '\<et al']
 
 " vim-mark
 let g:mwMaxMatchPriority = -2
@@ -1163,15 +1163,18 @@ endfunc
 command! -nargs=* -complete=command Execute silent call Execute(<q-args>, '<mods>')
 
 command! -range=% TrimWhitespace
-            \ let _view = winsaveview() |
-            \ keeppatterns keepjumps <line1>,<line2>substitute/\s\+$//e |
-            \ call winrestview(_view) |
-            \ unlet _view
+            \ let _view = winsaveview()
+            \|keeppatterns keepjumps <line1>,<line2>substitute/\s\+$//e
+            \|call winrestview(_view)
+            \|unlet _view
 
 command! -range=% Unpdf
-            \ keeppatterns keepjumps <line1>,<line2>substitute/[“”łž]/"/ge |
-            \ keeppatterns keepjumps <line1>,<line2>substitute/[‘’]/'/ge |
-            \ keeppatterns keepjumps <line1>,<line2>substitute/\w\zs-\n//ge
+            \ let _view = winsaveview()
+            \|keeppatterns keepjumps <line1>,<line2>substitute/[“”łž]/"/ge
+            \|keeppatterns keepjumps <line1>,<line2>substitute/[‘’]/'/ge
+            \|keeppatterns keepjumps <line1>,<line2>substitute/\w\zs-\n//ge
+            \|call winrestview(_view)
+            \|unlet _view
 
 " :substitute using a dict, where key == submatch (like VisualStar)
 function! SubstituteDict(dict) range

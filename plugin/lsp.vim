@@ -59,9 +59,6 @@ augroup GlobalCocStuff
   autocmd!
   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
   autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
-  " TODO: coc resets showbreak on flotwin hover. showbreak is not local in nvim!
-  " https://github.com/vim/vim/commit/ee85702c10495041791f728e977b86005c4496e8
-  autocmd User CocOpenFloat set showbreak=>\ 
   autocmd BufLeave list://* hi! CursorLine cterm=NONE gui=NONE
   autocmd BufEnter list://* hi! CursorLine cterm=underline gui=underline
   " https://github.com/neoclide/coc.nvim/issues/2043
@@ -106,6 +103,7 @@ function! SetupLSP()
   " TODO: |lsp-handler| default location_handler
   " * goto def in split, etc https://github.com/neovim/neovim/pull/12966
   "   https://github.com/weilbith/nvim-lsp-smag
+  "   https://github.com/neovim/neovim/pull/16103
   " * hover in preview window
 endfunction
 

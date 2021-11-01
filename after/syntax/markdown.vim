@@ -38,3 +38,5 @@ execute 'syn region htmlBoldItalic matchgroup=mkdBoldItalic start="\\\@!\W\zs___
 " of the list using a comment, etc)
 " → fork?
 
+syn keyword mkdTodo TODO containedin=ALL
+hi def link mkdTodo Todo

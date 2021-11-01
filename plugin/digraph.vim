@@ -19,14 +19,14 @@ function s:SetupDigraph()
     digraph /> 10217
     exe 'digraph (> 8618' | " ↪
     digraph fm 8640 " ⇀
-    digraph <\ 8828 " ≼
+    digraph \< 8828 " ≼
+    digraph ~< 8830 " ≾
     digraph [U 8851 " ⊓
     digraph ]U 8852 " ⊔
     digraph [C 8847 " ⊏
     digraph ]C 8848 " ⊐
     digraph [_ 8849 " ⊑
     digraph ]_ 8850 " ⊒
-    digraph ~< 8818 " ≲
     digraph v^ 8652 " ⇌
     exe 'digraph (+ 8713 " ∉'
     digraph =^ 8796 " ≜
