@@ -15,6 +15,7 @@
 " * disable path completion trigger (`/`)
 " * show diff of unification error
 " * completion source to get names from goal/info panel
+" * make undo work more consistently in goal/info panel
 
 " NOTE:
 " * hang → send SIGINT to coq
@@ -103,6 +104,11 @@ function! tomtomjhj#coq#mappings()
     vmap <buffer>gq   <cmd>call tomtomjhj#coq#gq(visualmode(), 1)<CR>
 
     nnoremap <buffer><localleader><C-L> :<C-u>call tomtomjhj#coq#clearhl()<CR>
+
+    nmap <buffer> ]g <Plug>CoqGotoGoalNextStart
+    nmap <buffer> ]G <Plug>CoqGotoGoalNextEnd
+    nmap <buffer> [g <Plug>CoqGotoGoalPrevStart
+    nmap <buffer> [G <Plug>CoqGotoGoalPrevEnd
 endfunction
 
 " TODO: normal gotodef-ing in aux buf makes it 'buflisted'

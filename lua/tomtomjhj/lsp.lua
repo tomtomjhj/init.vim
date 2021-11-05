@@ -17,7 +17,7 @@ require('rust-tools').setup {
     inlay_hints = {
       parameter_hints_prefix = "← ",
       other_hints_prefix = "⇒ ",
-      highlight = "TypeHint",
+      highlight = "LspCodeLens",
     },
   },
   -- lspconfig.rust_analyzer.setup

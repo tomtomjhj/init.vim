@@ -34,14 +34,12 @@ capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 -- See also: https://github.com/hrsh7th/nvim-cmp/issues/444
 cmp.setup {
   completion = {
-    -- keyword_pattern = [[\K\k\{-,30}\>]],
     completeopt = [[menuone,noselect]],
   },
   sources = {
     { name = 'nvim_lsp' },
     { name = 'path' },
     { name = 'buffer',
-      -- TODO: at least 3 chars
       opts = {
         keyword_pattern = [[\K\k\{-,30}\>]], -- TODO: help file's iskeyword
         get_bufnrs = get_visible_bufnrs,

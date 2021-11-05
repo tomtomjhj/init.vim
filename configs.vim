@@ -411,7 +411,6 @@ augroup Languages | au!
     au FileType c,cpp,cuda call s:c_cpp()
     au FileType python call s:python()
     au FileType coq,coq-goals,coq-infos call s:coq_common()
-    au FileType coq call s:coq_common()
     au FileType coq-goals,coq-infos call s:coq_aux()
     au FileType lua call s:lua()
 augroup END
@@ -967,12 +966,16 @@ function! s:init_fern() abort
         setlocal signcolumn=number foldcolumn=0
     endif
     " must ignore the error
-    silent! nunmap <buffer> <C-l>
     silent! nunmap <buffer> <C-h>
+    silent! nunmap <buffer> <C-j>
+    silent! nunmap <buffer> <C-k>
+    silent! nunmap <buffer> <C-l>
     silent! nunmap <buffer> <BS>
     silent! nunmap <buffer> s
+    silent! nunmap <buffer> N
     nmap <buffer> - <Plug>(fern-action-leave)
     map <buffer> x <Plug>(fern-action-mark)
+    map <buffer> <C-n> <Plug>(fern-action-new-file)
 endfunction
 
 augroup fern-custom | au!
@@ -1014,8 +1017,8 @@ let g:flog_permanent_default_arguments = { 'date': 'short', }
 augroup git-custom | au!
     " TODO: Very slow and doesn't fold each hunk.
     au FileType git,fugitive,gitcommit nnoremap <buffer>zM :setlocal foldmethod=syntax\|unmap <lt>buffer>zM<CR>zM
-    au User FugitiveObject,FugitiveIndex unmap <buffer> *
-    au FileType floggraph nunmap <buffer> <Tab>
+    au User FugitiveObject,FugitiveIndex silent! unmap <buffer> *
+    au FileType floggraph silent! nunmap <buffer> <Tab>
 augroup END
 " }}}
 
