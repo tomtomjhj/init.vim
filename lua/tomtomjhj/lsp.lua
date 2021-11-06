@@ -13,7 +13,11 @@ require('lspfuzzy').setup{}
 local function base_opt(server_name)
   local _, server = lsp_installer_servers.get_server(server_name)
   return {
-    on_attach = lsp_status.on_attach,
+    on_attach = function(client, bufnr)
+      vim.fn['SetupLSP']()
+      vim.fn['SetupLSPPost']()
+      lsp_status.on_attach(client, bufnr)
+    end,
     capabilities = lsp_status.capabilities,
     cmd = server:get_default_options().cmd
   }

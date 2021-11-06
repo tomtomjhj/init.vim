@@ -104,6 +104,8 @@ if has('nvim-0.5')
     Plug 'b3nj5m1n/kommentary', {'on': '<Plug>kommentary'}
 endif
 
+" NOTE: This runs `filetype plugin indent on`, which registers au FileType.
+" Custom au FileType should be registered after this.
 call plug#end()
 " }}}
 
@@ -405,14 +407,20 @@ nnoremap <M-i> <C-i>
 " }}}
 
 " Languages {{{
-" see also ftplugin/ and after/ftplugin/
+" see also ftplugin/, after/ftplugin/, SetupLSP(), SetupLSPPost()
 augroup Languages | au!
-    au FileType haskell call s:haskell()
     au FileType c,cpp,cuda call s:c_cpp()
-    au FileType python call s:python()
     au FileType coq,coq-goals,coq-infos call s:coq_common()
     au FileType coq-goals,coq-infos call s:coq_aux()
+    au FileType go call s:go()
+    au FileType haskell call s:haskell()
     au FileType lua call s:lua()
+    au FileType markdown call s:markdown()
+    au FileType ocaml call s:ocaml()
+    au FileType pandoc call s:pandoc()
+    au FileType python call s:python()
+    au FileType tex call s:tex()
+    au FileType rust call s:rust()
 augroup END
 
 " Haskell {{{
@@ -439,12 +447,23 @@ let g:cargo_shell_command_runner = 'AsyncRun -post=CW'
 " https://github.com/rust-lang/rust-clippy/issues/4612
 command! -nargs=* Cclippy call cargo#cmd("+nightly clippy -Zunstable-options " . <q-args>)
 command! -range=% PrettifyRustSymbol <line1>,<line2>SubstituteDict { '$SP$': '@', '$BP$': '*', '$RF$': '&', '$LT$': '<', '$GT$': '>', '$LP$': '(', '$RP$': ')', '$C$' : ',',  '$u20$': ' ', '$u7b$': '{', '$u7d$': '}', }
+function! s:rust() abort
+    " TODO fix 'spellcapcheck' for `//!` comments, also fix <leader>sc mapping
+    " TODO: matchit handle < -> non-pair
+    let b:pear_tree_pairs['|'] = {'closer': '|'}
+    if g:ide_client == 'coc'
+        command! ExpandMacro CocCommand rust-analyzer.expandMacro
+    endif
+    nmap <buffer><leader>C :AsyncRun -program=make -post=CW test --no-run<CR>
+    vmap <buffer><leader>fm :RustFmtRange<CR>
+    nmap <silent><buffer> [[ :call tomtomjhj#rust#section(1)<CR>
+    nmap <silent><buffer> ]] :call tomtomjhj#rust#section(0)<CR>
+endfunction
 " }}}
 
 " C,C++ {{{
 function s:c_cpp() abort
     setlocal shiftwidth=2
-    call SetupLSP()
 endfunction
 " }}}
 
@@ -453,18 +472,40 @@ let g:python_highlight_all = 1
 let g:python_highlight_builtin_funcs = 0
 function s:python() abort
     setlocal formatoptions+=ro
-    call SetupLSP()
 endfunction
 " }}}
 
-" Markdown, Pandoc, Tex {{{
-" TODO: check vimtex-imap and UltiSnips
+" LaTex {{{
 let g:tex_flavor = "latex"
 let g:tex_noindent_env = '\v\w+.?'
 let g:vimtex_fold_enabled = 1
 let g:matchup_override_vimtex = 1
 let g:vimtex_view_method = 'zathura'
-let g:vimtex_grammar_textidote = { 'jar': '~/Downloads/textidote.jar', 'args': '' }
+function! s:tex() abort
+    setlocal shiftwidth=2
+    setlocal conceallevel=2
+    setlocal foldlevel=99
+    " https://github.com/tmsvg/pear-tree/pull/27
+    let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), {
+                \ '\\begin{*}': {'closer': '\\end{*}', 'until': '[{}[:space:]]'},
+                \ '$$': {'closer': '$$'},
+                \ '$': {'closer': '$'}
+                \ }, 'keep')
+    " override textobj-comment
+    xmap <buffer> ic <Plug>(vimtex-ic)
+    omap <buffer> ic <Plug>(vimtex-ic)
+    xmap <buffer> ac <Plug>(vimtex-ac)
+    omap <buffer> ac <Plug>(vimtex-ac)
+    nmap <buffer><silent><leader>oo :call Zathura("<C-r>=expand("%:p:h").'/main.pdf'<CR>")<CR>
+endfunction
+function! s:bib() abort
+    setlocal shiftwidth=2
+    " unmap broken vimtex-% in bib
+    silent! unmap <buffer> %
+endfunction
+" }}}
+
+" Markdown, Pandoc {{{
 let g:pandoc#syntax#codeblocks#embeds#langs = ["python", "cpp", "rust"]
 let g:pandoc#modules#enabled = ["formatting", "hypertext", "yaml"]
 " Surround triggers equalprg (pandoc -t markdown), which modifies the text a lot
@@ -490,16 +531,112 @@ let g:mkdp_page_title = '${name}'
 let g:mkdp_preview_options = {
             \ 'mkit': { 'typographer': v:false },
             \ 'disable_sync_scroll': 1 }
-func! Zathura(file, ...)
+function! s:markdown() abort
+    " vim-markdown-mappings
+    function! s:nvmap(lhs, rhs)
+        execute 'nmap <buffer>' . a:lhs . ' <Plug>' . a:rhs
+        execute 'vmap <buffer>' . a:lhs . ' <Plug>' . a:rhs
+    endfunction
+    call s:nvmap(']]', 'Markdown_MoveToNextHeader')
+    call s:nvmap('[[', 'Markdown_MoveToPreviousHeader')
+    call s:nvmap('][', 'Markdown_MoveToNextSiblingHeader')
+    call s:nvmap('[]', 'Markdown_MoveToPreviousSiblingHeader')
+    call s:nvmap(']u', 'Markdown_MoveToParentHeader')
+    call s:nvmap(']h', 'Markdown_MoveToCurHeader')
+    call s:nvmap('gx', 'Markdown_OpenUrlUnderCursor')
+    delfunction s:nvmap
+
+    let s:mkd_textobj = {
+                \   'code': {
+                    \     'select-a-function': 'tomtomjhj#markdown#FencedCodeBlocka',
+                    \     'select-a': 'ad',
+                    \     'select-i-function': 'tomtomjhj#markdown#FencedCodeBlocki',
+                    \     'select-i': 'id',
+                    \   },
+                    \ }
+    silent! call textobj#user#plugin('markdown', s:mkd_textobj)
+    " TODO:
+    " * list item text object
+    " * make paragraph, sentence text object list-aware
+
+    setlocal foldexpr=tomtomjhj#markdown#foldexpr()
+    setlocal foldmethod=expr
+    setlocal foldtext=tomtomjhj#markdown#foldtext()
+    let b:undo_ftplugin .= " | setlocal foldexpr< foldmethod< foldtext<"
+
+    " too intrusive
+    setlocal matchpairs-=<:>
+    " $VIMRUNTIME/ftplugin/html.vim:31 → remove `<:>,`
+    if b:match_words[:3] ==# '<:>,'
+        let b:match_words = b:match_words[4:]
+    endif
+
+    nmap     <buffer>             <leader>pd :set ft=pandoc\|unmap <lt>buffer><lt>leader>pd<CR>
+    nmap     <buffer><silent>     <leader>py vid:AsyncRun python3<CR>:CW<CR>
+    nnoremap <buffer><silent><localleader>b  :set opfunc=tomtomjhj#markdown#surround_strong<cr>g@
+    vnoremap <buffer><silent><localleader>b  :<C-U>call tomtomjhj#markdown#surround_strong(visualmode())<CR>
+    nmap     <buffer>          <MiddleMouse> <LeftMouse><localleader>biw
+    vmap     <buffer>          <MiddleMouse> <localleader>b
+    nnoremap <buffer><silent>     <leader>tf :TableFormat<CR>
+endfunction
+function! s:pandoc() abort
+    let s:pandoc_textobj = {
+                \   'begin-end': {
+                \     'pattern': ['\\begin{[^}]\+}\s*\n\?', '\s*\\end{[^}]\+}'],
+                \     'select-a': 'ae',
+                \     'select-i': 'ie',
+                \   },
+                \  'dollar-math': {
+                \     'select-a-function': 'tomtomjhj#markdown#PandocDollarMatha',
+                \     'select-a': 'am',
+                \     'select-i-function': 'tomtomjhj#markdown#PandocDollarMathi',
+                \     'select-i': 'im',
+                \   },
+                \  'dollar-mathmath': {
+                \     'select-a-function': 'tomtomjhj#markdown#PandocDollarMathMatha',
+                \     'select-a': 'aM',
+                \     'select-i-function': 'tomtomjhj#markdown#PandocDollarMathMathi',
+                \     'select-i': 'iM',
+                \   },
+                \ }
+    silent! call textobj#user#plugin('pandoc', s:pandoc_textobj)
+    silent! TextobjPandocDefaultKeyMappings!
+
+    let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), {
+                \ '$': {'closer': '$'},
+                \ '$$': {'closer': '$$'},
+                \ '`': {'closer': '`'},
+                \ '```': {'closer': '```'},
+                \ })
+
+    let b:match_words = &l:matchpairs .
+                \ ',' . '\%(^\s*\)\@<=\\begin{\(\w\+\*\?\)}' . ':' . '\%(^\s*\)\@<=\\end{\1}'
+
+    " set to notoplevel in haskell.vim
+    syntax spell toplevel
+
+    command! -buffer -bang Pandoc call tomtomjhj#markdown#RunPandoc(<bang>0)
+
+    nmap <buffer><silent><leader>C :Pandoc<CR>
+    nmap <buffer><silent><leader>O :Pandoc!<CR>
+    nmap <buffer><silent><leader>oo :call Zathura("<C-r>=expand("%:p:h").'/'.expand("%:t:r").'.pdf'<CR>")<CR>
+    nmap <buffer><silent>gx <Plug>(pandoc-hypertext-open-system)
+    nmap <buffer>zM :call pandoc#folding#Init()\|unmap <lt>buffer>zM<CR>zM
+endfunction
+function! Zathura(file, ...)
     if get(a:, 1, 1)
         call jobstart(['zathura', a:file, '--fork'])
     endif
-endfunc
+endfunction
 " }}}
 
 " ocaml {{{
 let g:ale_ocaml_ocamlformat_options = '--enable-outside-detected-project'
 let g:ocaml_highlight_operators = 1
+function! s:ocaml() abort
+    setlocal tabstop=2 shiftwidth=2
+    nmap <buffer><leader>C :AsyncRun -program=make -post=CocRestart<CR>
+endfunction
 " }}}
 
 " go {{{
@@ -507,6 +644,10 @@ let g:go_highlight_operators = 1
 let g:go_highlight_functions = 1
 let g:go_highlight_function_calls = 1
 let g:go_highlight_types = 1
+function! s:go() abort
+    setlocal noexpandtab
+    let b:undo_ftplugin .= " | setl et<"
+endfunction
 " }}}
 
 " Coq {{{
@@ -537,7 +678,6 @@ endfunction
 let g:lua_syntax_noextendedstdlib = 1
 function s:lua() abort
     setlocal shiftwidth=2
-    call SetupLSP()
 endfunction
 " }}}
 

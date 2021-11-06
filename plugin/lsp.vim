@@ -64,7 +64,7 @@ augroup GlobalCocStuff
   " https://github.com/neoclide/coc.nvim/issues/2043
   autocmd VimLeave * call coc#rpc#kill()
   " NOTE: some langs need to override Coc mappings
-  autocmd FileType json,sh,javascript,typescript,lua call SetupLSP()
+  autocmd FileType c,cpp,python,lua,go,ocaml,rust,tex,json,sh,javascript,typescript call SetupLSP() | call SetupLSPPost()
 augroup end
 
 command! -nargs=0 Format call CocAction('format')
@@ -135,7 +135,6 @@ endfunction
 
 augroup GlobalNvimLSPStuff | au!
   au User LspDiagnosticsChanged call lightline#update()
-  au FileType lua call SetupLSP()
 augroup end
 
 command! LspLog exe '<mods> pedit +setlocal\ nobuflisted|$' v:lua.vim.lsp.get_log_path()
@@ -160,6 +159,19 @@ function! CheckerWarnings()
   return ''
 endfunction
 endif " }}}
+
+" common {{{
+" Override things done in SetupLSP
+function! SetupLSPPost()
+  " lsp format didn't work well for these filetypes. Format using ale.
+  if &filetype =~# '\v^(go|ocaml)$'
+    nmap <buffer><leader>fm <Plug>(ale_fix)
+  endif
+  if &filetype ==# 'vim'
+    noremap <silent><buffer> <M-.> K
+  endif
+endfunction
+" }}}
 
 " utils {{{
 " CocAction jumpDefinition assumes that openCommand changes the current window

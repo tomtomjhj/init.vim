@@ -124,6 +124,31 @@ function! tomtomjhj#markdown#foldtext()
     return line . ' ' . repeat("-", fillcharcount) . ' ' . foldedlinecount
 endfunction
 
+" surrounders {{{1
+function! tomtomjhj#markdown#surround(type, ends) abort
+    let sel_save = &selection
+    let &selection = 'old'
+    let reg_save = getreg('"')
+    if a:type ==# 'v'
+        " handle the cursor on eol
+        let l:p = (col([line("'>"), "$"]) - col("'>") <= 1) ? 'p' : 'P'
+        execute 'normal! `<v`>x'
+    elseif a:type ==# 'char'
+        let l:p = (col([line("']"), "$"]) - col("']") <= 1) ? 'p' : 'P'
+        execute 'normal! `[v`]x'
+    else
+        return
+    endif
+    call setreg('"', a:ends.getreg('"').a:ends)
+    execute 'normal!' l:p
+    call setreg('"', reg_save)
+    let &selection = sel_save
+endfunction
+
+function! tomtomjhj#markdown#surround_strong(type)
+    return tomtomjhj#markdown#surround(a:type, '**')
+endfunction
+
 " etc {{{1
 func! tomtomjhj#markdown#RunPandoc(open)
     let src = expand("%:p")
