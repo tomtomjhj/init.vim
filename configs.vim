@@ -65,7 +65,7 @@ else
     " Plug 'quangnguyen30192/cmp-nvim-ultisnips'
     " Plug 'quangnguyen30192/cmp-nvim-tags'
     Plug 'neovim/nvim-lspconfig'
-    Plug 'kabouzeid/nvim-lspinstall' " TODO https://github.com/williamboman/nvim-lsp-installer
+    Plug 'williamboman/nvim-lsp-installer'
     Plug 'ojroques/nvim-lspfuzzy'
     Plug 'nvim-lua/lsp-status.nvim'
     Plug 'folke/lua-dev.nvim'

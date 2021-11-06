@@ -110,6 +110,7 @@ endfunction
 function! CurrentFunction()
   return get(b:,'lsp_current_function', '')
 endfunction
+" TODO: Too much stl flickering when typing if the message is too long.
 function! CheckerStatus()
   if luaeval('#vim.lsp.buf_get_clients() > 0')
     return luaeval('require("lsp-status").status_progress()')

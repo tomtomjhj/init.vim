@@ -1,14 +1,23 @@
--- TODO: Error executing vim.schedule lua callback: /usr/share/nvim/runtime/lua/vim/lsp/rpc.lua:399: Vim:E474: String "<ec><9d>" contains byte that does not start any UTF-8 character
--- https://github.com/neovim/neovim/issues/14542
 local lspconfig = require('lspconfig')
 local lsp_status = require('lsp-status')
+local lsp_installer_servers = require'nvim-lsp-installer.servers'
+-- TODO: Lazy load this entire file on the first FileType that uses lsp?
+-- Note that the server is launched in FileType.
+-- https://github.com/neovim/nvim-lspconfig/issues/970
+-- https://github.com/williamboman/nvim-lsp-installer/issues/244
+-- https://github.com/neovim/neovim/issues/12688#issuecomment-665115778
 
--- NOTE: don't use lspinstall's configuration... so confusing
--- lspinstall.setup()
 lsp_status.register_progress()
 require('lspfuzzy').setup{}
 
-local lspinstall_dir = vim.fn.stdpath('data')..'/lspinstall/'
+local function base_opt(server_name)
+  local _, server = lsp_installer_servers.get_server(server_name)
+  return {
+    on_attach = lsp_status.on_attach,
+    capabilities = lsp_status.capabilities,
+    cmd = server:get_default_options().cmd
+  }
+end
 
 require('rust-tools').setup {
   tools = {
@@ -21,50 +30,42 @@ require('rust-tools').setup {
     },
   },
   -- lspconfig.rust_analyzer.setup
-  server = {
-    on_attach = lsp_status.on_attach,
-    capabilities = lsp_status.capabilities,
-    cmd = { lspinstall_dir..'rust/rust-analyzer' },
-  }
+  server = base_opt('rust_analyzer')
 }
 
-lspconfig.pylsp.setup {
-  on_attach = lsp_status.on_attach,
-  capabilities = lsp_status.capabilities,
-  settings = {
-    pylsp = {
+lspconfig.pylsp.setup(
+  vim.tbl_extend('error', base_opt('pylsp'), {
+    settings = { pylsp = {
       plugins = {
         pylint = {
           enabled = true,
           args = {"-dR", "-dC", "-dW0511", "-dW0614", "-dW0621", "-dW0231", "-dF0401", "--generated-members=cv2.*,onnx.*,tf.*,np.*"}
         }
       }
-    }
-  }
-}
-
-lspconfig.clangd.setup {
-  on_attach = lsp_status.on_attach,
-  capabilities = lsp_status.capabilities,
-  cmd = { lspinstall_dir.."cpp/clangd/bin/clangd", "--background-index" };
-  filetypes = { "c", "cpp", "cuda" };
-  flags = { debounce_text_changes = 123 };
-}
-
-lspconfig.sumneko_lua.setup (
-  require'lua-dev'.setup {
-    lspconfig = {
-      on_attach = lsp_status.on_attach,
-      capabilities = lsp_status.capabilities,
-      cmd = { lspinstall_dir..'lua/sumneko-lua-language-server' }
-    }
-  }
+    }}
+  })
 )
 
-lspconfig.vimls.setup {
-  on_attach = lsp_status.on_attach,
-  capabilities = lsp_status.capabilities,
-  cmd = { lspinstall_dir..'vim/node_modules/.bin/vim-language-server', '--stdio' }
-}
+lspconfig.clangd.setup(
+  vim.tbl_extend('error', base_opt('clangd'), {
+    filetypes = { "c", "cpp", "cuda" },
+    flags = { debounce_text_changes = 123 },
+  })
+)
+
+lspconfig.sumneko_lua.setup (
+  require'lua-dev'.setup { lspconfig = base_opt('sumneko_lua') }
+)
+
+lspconfig.vimls.setup(base_opt('vimls'))
+
+lspconfig.texlab.setup(base_opt('texlab'))
+
+-- run with LspStart ltex
+lspconfig.ltex.setup(
+  vim.tbl_extend('error', base_opt('ltex'), {
+    autostart = false
+  })
+)
 
 -- vim:set et sw=2 ts=8:
