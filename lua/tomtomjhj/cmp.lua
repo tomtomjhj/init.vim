@@ -20,7 +20,6 @@ capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 --   * exact matching on the first char e.g.  ")" should not match "c)" snippet.
 --   * smartcase matching
 -- * scroll_docs() should fallback when *documentation window* is not visible
--- * mappings are not set on InsertEnter if Coq is already active
 -- * buffer source: first letter adjustment like coc
 -- * sometime completion dies. No anomally detected by :CmpStatus
 -- 
@@ -29,18 +28,18 @@ capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 --   Note: this only happens when inserting prefix of the word
 -- * sometimes completion deletes the text on the left of the input??
 
--- TODO: what's keyword_pattern?? It does 2 things: the pattern for item,
+-- NOTE: keyword_pattern does 2 things: the pattern for item, and
 -- condition to list the source's item (pattern of the word before cursor)
--- See also: https://github.com/hrsh7th/nvim-cmp/issues/444
 cmp.setup {
   completion = {
     completeopt = [[menuone,noselect]],
   },
+  preselect = cmp.PreselectMode.None,
   sources = {
     { name = 'nvim_lsp' },
     { name = 'path' },
     { name = 'buffer',
-      opts = {
+      option = {
         keyword_pattern = [[\K\k\{-,30}\>]], -- TODO: help file's iskeyword
         get_bufnrs = get_visible_bufnrs,
       }
@@ -53,8 +52,8 @@ cmp.setup {
     ghost_text = false,
   },
   mapping = {
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    -- ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    -- ['<C-f>'] = cmp.mapping.scroll_docs(4),
     -- ['<C-Space>'] = cmp.mapping.complete(),
     ['<C-y>'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Replace,

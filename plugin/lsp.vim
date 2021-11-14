@@ -80,6 +80,7 @@ EOF
 function! SetupLSP()
   augroup LocalNvimLSPStuff | au! * <buffer>
   augroup END
+  setlocal tagfunc=v:lua.vim.lsp.tagfunc
   nnoremap <buffer><silent>        <M-]> <cmd>lua vim.lsp.buf.definition()<CR>
   nnoremap <buffer><silent>        <M-.> <cmd>lua vim.lsp.buf.hover()<CR>
   nnoremap <buffer><silent><leader>gi    <cmd>lua vim.lsp.buf.implementation()<CR>
@@ -97,13 +98,12 @@ function! SetupLSP()
   nnoremap <buffer><silent>        <M-,> <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
   nnoremap <buffer><silent><leader>dl    <cmd>LspDiagnosticsAll<CR>
   nnoremap <buffer><silent><leader>ol    <cmd>lua vim.lsp.buf.document_symbol()<CR>
+  " TODO: <ESC> on workspace_symbol prompt doesn't cancel
   nnoremap <buffer><silent><leader>sb    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
   inoremap <buffer><silent>        <M-i> <cmd>lua vim.lsp.buf.signature_help()<CR>
   " TODO: codelens? codeaction? how do I run tests??
   " TODO: |lsp-handler| default location_handler
   " * goto def in split, etc https://github.com/neovim/neovim/pull/12966
-  "   https://github.com/weilbith/nvim-lsp-smag
-  "   https://github.com/neovim/neovim/pull/16103
   " * hover in preview window
 endfunction
 
@@ -111,6 +111,9 @@ function! CurrentFunction()
   return get(b:,'lsp_current_function', '')
 endfunction
 " TODO: Too much stl flickering when typing if the message is too long.
+" TODO: Do I still need lsp-status? See vim.lsp.util.get_progress_messages(), LspProgressUpdate
+" https://github.com/neovim/neovim/pull/13294
+" https://github.com/teto/home/blob/373966b5cd8cbcc7ca20a07da28de218668a656a/config/nvim/lua/statusline.lua
 function! CheckerStatus()
   if luaeval('#vim.lsp.buf_get_clients() > 0')
     return luaeval('require("lsp-status").status_progress()')

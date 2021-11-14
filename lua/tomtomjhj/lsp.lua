@@ -82,4 +82,6 @@ lspconfig.ltex.setup(
   })
 )
 
+lspconfig.bashls.setup(base_opt('bashls'))
+
 -- vim:set et sw=2 ts=8:

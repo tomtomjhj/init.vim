@@ -30,7 +30,22 @@ Plug 'AndrewRadev/splitjoin.vim'
 Plug 'whonore/vim-sentencer'
 
 " etc
+" TODO:
+" * :G log unicode broken
+" * '--git-completion-helper'-based completion (#1265) doesn't complete many things for git log e.g. --grep
 Plug 'tpope/vim-fugitive'
+" TODO:
+" * Command argument design is somewhat ad-hoc. Why do we need them? Why not
+"   just git-log stuff and fugitive#LogComplete?
+" * inline the patch in the flog buffer?
+" * au User FugitiveChanged: update the flog buffer
+" * map <C-n> and <C-p> in the temporary fugitive:// window
+" * BUG: When there is a flog-temp-window and the cursor is near the right side of the window, flog-<CR> scrolls the window to the right.
+"   * It's the problem of `vertical belowright Flogsplitcommit`
+"   * flog#run_tmp_command('<mods> Gsplit %h')
+"     nothing wrong with Gsplit
+" * respect current layout; don't force vsplit on <CR>
+" * buffer name with URI scheme like fugitive:// and fern://
 Plug 'rbong/vim-flog'
 Plug 'rhysd/git-messenger.vim'
 Plug 'skywind3000/asyncrun.vim'
@@ -452,7 +467,7 @@ function! s:rust() abort
     " TODO: matchit handle < -> non-pair
     let b:pear_tree_pairs['|'] = {'closer': '|'}
     if g:ide_client == 'coc'
-        command! ExpandMacro CocCommand rust-analyzer.expandMacro
+        command! -buffer ExpandMacro CocCommand rust-analyzer.expandMacro
     endif
     nmap <buffer><leader>C :AsyncRun -program=make -post=CW test --no-run<CR>
     vmap <buffer><leader>fm :RustFmtRange<CR>

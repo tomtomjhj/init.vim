@@ -30,7 +30,8 @@ require'nvim-treesitter.configs'.setup {
     disable = {"python"};
   },
   indent = {
-    enable = false
+    enable = true;
+    disable = {"rust"}; -- comment indentation is broken
   },
   incremental_selection = {
     enable = true,

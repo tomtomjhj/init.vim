@@ -16,6 +16,7 @@
 " * show diff of unification error
 " * completion source to get names from goal/info panel
 " * make undo work more consistently in goal/info panel
+" * compatibility with :Gedit
 
 " NOTE:
 " * hang → send SIGINT to coq
