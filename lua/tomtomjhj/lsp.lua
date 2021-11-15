@@ -19,7 +19,8 @@ local function base_opt(server_name)
       lsp_status.on_attach(client, bufnr)
     end,
     capabilities = lsp_status.capabilities,
-    cmd = server:get_default_options().cmd
+    cmd = server:get_default_options().cmd,
+    flags = { debounce_text_changes = 123 }
   }
 end
 
@@ -53,7 +54,6 @@ lspconfig.pylsp.setup(
 lspconfig.clangd.setup(
   vim.tbl_extend('error', base_opt('clangd'), {
     filetypes = { "c", "cpp", "cuda" },
-    flags = { debounce_text_changes = 123 },
   })
 )
 
@@ -68,7 +68,17 @@ lspconfig.texlab.setup(base_opt('texlab'))
 -- run with LspStart ltex
 lspconfig.ltex.setup(
   vim.tbl_extend('error', base_opt('ltex'), {
-    autostart = false
+    autostart = false,
+    settings = { ltex = {
+      checkFrequency = "save",
+      -- dictionary = {
+      --   ["en-US"] = { ":~/.vim/spell/en.utf-8.add" }
+      -- },
+      -- TODO: Make dictionary work as intended. In the meantime, use the built-in spellchecker.
+      disabledRules = {
+        ["en-US"] = { "MORFOLOGIK_RULE_EN_US" }
+      },
+    }}
   })
 )
 
