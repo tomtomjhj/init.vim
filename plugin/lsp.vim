@@ -92,10 +92,9 @@ function! SetupLSP()
   nnoremap <buffer><silent><leader>fm    <cmd>lua vim.lsp.buf.formatting()<CR>
   nnoremap <buffer><silent><leader>rn    <cmd>lua vim.lsp.buf.rename()<CR>
   nnoremap <buffer><silent><leader>ac    <cmd>lua vim.lsp.buf.code_action()<CR>
-  " TODO: goto_prev/next is not sorted by lines?
-  nnoremap <buffer><silent>        [d    <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
-  nnoremap <buffer><silent>        ]d    <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
-  nnoremap <buffer><silent>        <M-,> <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
+  nnoremap <buffer><silent>        [d    <cmd>lua vim.diagnostic.goto_prev{float=false}<CR>
+  nnoremap <buffer><silent>        ]d    <cmd>lua vim.diagnostic.goto_next{float=false}<CR>
+  nnoremap <buffer><silent>        <M-,> <cmd>lua vim.diagnostic.open_float(0, {scope="line"})<CR>
   nnoremap <buffer><silent><leader>dl    <cmd>LspDiagnosticsAll<CR>
   nnoremap <buffer><silent><leader>ol    <cmd>lua vim.lsp.buf.document_symbol()<CR>
   " TODO: <ESC> on workspace_symbol prompt doesn't cancel
@@ -120,24 +119,17 @@ function! CheckerStatus()
   endif
   return ''
 endfunction
-" TODO: vim.lsp.diagnostic is deprecated
 function! CheckerErrors()
-  if luaeval('#vim.lsp.buf_get_clients() > 0')
-    let errors = luaeval('vim.lsp.diagnostic.get_count(0, "Error")')
-    return errors ? 'E' . errors : ''
-  endif
-  return ''
+  let errors = luaeval('#vim.diagnostic.get(0, {severity=vim.diagnostic.severity.ERROR})')
+  return errors ? 'E' . errors : ''
 endfunction
 function! CheckerWarnings()
-  if luaeval('#vim.lsp.buf_get_clients() > 0')
-    let warnings = luaeval('vim.lsp.diagnostic.get_count(0, "Warning")')
-    return warnings ? 'W' . warnings : ''
-  endif
-  return ''
+  let warnings = luaeval('#vim.diagnostic.get(0, {severity=vim.diagnostic.severity.WARN})')
+  return warnings ? 'W' . warnings : ''
 endfunction
 
 augroup GlobalNvimLSPStuff | au!
-  au User LspDiagnosticsChanged call lightline#update()
+  au DiagnosticChanged * call lightline#update()
 augroup end
 
 command! LspLog exe '<mods> pedit +setlocal\ nobuflisted|$' v:lua.vim.lsp.get_log_path()

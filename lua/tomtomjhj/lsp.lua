@@ -5,10 +5,17 @@ local lsp_installer_servers = require'nvim-lsp-installer.servers'
 -- Note that the server is launched in FileType.
 -- https://github.com/neovim/nvim-lspconfig/issues/970
 -- https://github.com/williamboman/nvim-lsp-installer/issues/244
--- https://github.com/neovim/neovim/issues/12688#issuecomment-665115778
+-- https://github.com/gpanders/dotfiles/commit/01464e949574dcb9752e8dc92f39a7cee91446b7
 
 lsp_status.register_progress()
 require('lspfuzzy').setup{}
+
+vim.diagnostic.config {
+  underline = { severity = { min = vim.diagnostic.severity.WARN } },
+  virtual_text = true,
+  signs = { severity = { min = vim.diagnostic.severity.WARN } },
+  serverity_sort = true,
+}
 
 local function base_opt(server_name)
   local _, server = lsp_installer_servers.get_server(server_name)
