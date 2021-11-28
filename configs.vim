@@ -59,8 +59,8 @@ Plug 'Konfekt/FastFold' " only useful for non-manual folds
 Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
-Plug 'justinmk/vim-dirvish'
 Plug 'lambdalisue/fern.vim'
+Plug 'lambdalisue/fern-hijack.vim'
 Plug 'kassio/neoterm'
 Plug 'inkarkat/vim-mark'
 Plug 'inkarkat/vim-ingo-library'
@@ -1113,6 +1113,10 @@ nnoremap <silent> gx :call GXBrowse(CursorURL())<cr>
 let g:fern#default_exclude = '\v(\.glob|\.vo[sk]?|\.o)$'
 nmap <silent><leader>nn <Cmd>Fern . -drawer -toggle<CR>
 nmap <silent><leader>nf <Cmd>Fern . -drawer -reveal=%<CR>
+nmap <silent><leader>-  <Cmd>Fern %:h<CR>
+nmap <silent><C-w>es :Fern %:h -opener=split<CR>
+nmap <silent><C-w>ev :Fern %:h -opener=vsplit<CR>
+nmap <silent><C-w>et :Fern %:h -opener=tabedit<CR>
 function! s:init_fern() abort
     let helper = fern#helper#new()
     if helper.sync.is_drawer()
@@ -1131,38 +1135,16 @@ function! s:init_fern() abort
     nmap <buffer> - <Plug>(fern-action-leave)
     map <buffer> x <Plug>(fern-action-mark)
     map <buffer> <C-n> <Plug>(fern-action-new-file)
+    " or use the 'ex' action
+    cmap <buffer> <C-r><C-p> <C-r><C-r>=fern#helper#new().sync.get_root_node()._path<CR>
+    nmap <buffer> <leader>cd :cd <C-r><C-p>/
+    nmap <buffer> <leader>e  :e! <C-r><C-p>/
+    nmap <buffer> <leader>te :tabedit <C-r><C-p>/
 endfunction
 
 augroup fern-custom | au!
   autocmd FileType fern call s:init_fern()
 augroup END
-
-command! -nargs=? -complete=dir Sexplore split | silent Dirvish <args>
-command! -nargs=? -complete=dir Vexplore vsplit | silent Dirvish <args>
-nmap <silent><C-w>es :Sexplore %<CR>
-nmap <silent><C-w>ev :Vexplore %<CR>
-nmap <leader>- <Plug>(dirvish_up)
-hi! link DirvishSuffix Special
-augroup dirvish_config | autocmd!
-    autocmd FileType dirvish call SetupDirvish()
-augroup END
-function! SetupDirvish() abort
-    nnoremap <silent><buffer> t :call DirvishSubdir()<CR>
-    nmap <buffer> - <Plug>(dirvish_up)
-    " Prevent \ze[^/]*[/]\=$ from highlighting almost every character when the
-    " actual input pattern is empty by temporarily disabling incsearch.
-    augroup dirvish_incsearch | au! * <buffer>
-        au CmdlineChanged <buffer> if getcmdline() =~# '\v^\\ze\[\^\\?\/\]\*\[\\?\/\]\\\=\$$' | set noincsearch | else | set incsearch | endif
-        au CmdlineLeave <buffer> set incsearch
-    augroup END
-endfunction
-function! DirvishSubdir() abort
-    let dir = getline('.')
-    if dir !~# '/$' | return | endif
-    let subdirs = split(system('find "'.dir.'" -maxdepth 1 -print0 | xargs -0 ls -Fd'), "\n")
-    call filter(subdirs, 'v:val !~# "//"')
-    call append(line('.'), subdirs)
-endfunction
 " }}}
 
 " git {{{
