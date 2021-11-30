@@ -29,11 +29,6 @@ sudo apt-get install -y nodejs yarn
 ```
 
 # Note
-* `~/.config/bat/config`
-  ```
-  --theme="zenburn"
-  --map-syntax "*.v:SML"
-  ```
 * windows vim
     * https://github.com/vim/vim-win32-installer
     * python3: use vim's version, 64bit, install locally, put in PATH,

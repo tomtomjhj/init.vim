@@ -31,7 +31,8 @@ require'nvim-treesitter.configs'.setup {
   },
   indent = {
     enable = true;
-    disable = {"rust"}; -- comment indentation is broken
+    disable = {"lua",   -- doesn't work at all
+               "rust"}; -- comment indentation is broken
   },
   incremental_selection = {
     enable = true,

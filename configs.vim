@@ -62,7 +62,7 @@ Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'lambdalisue/fern.vim'
 Plug 'lambdalisue/fern-hijack.vim'
 Plug 'kassio/neoterm'
-Plug 'inkarkat/vim-mark'
+Plug 'inkarkat/vim-mark', { 'on': '<Plug>MarkS' }
 Plug 'inkarkat/vim-ingo-library'
 
 " lanauges

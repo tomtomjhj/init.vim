@@ -115,6 +115,8 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * https://vimways.org/2018/death-by-a-thousand-files/
 * `\%V`
 * `hitest.vim`
+* Inserting text from script and return to insert mode without (1) moving the cursor and (2) delaying the actual input (like `feedkeys()`, `<expr>`)
+  `<C-\><C-o>:exe 'normal!' . (col('.') > strlen(getline('.')) ? 'a' : 'i') . "TEXT\<C-\>\<C-o>"<CR>`
 
 ## dictionary (`i_CTRL-X_CTRL-K`)
 ```vim
