@@ -10,9 +10,10 @@ local function get_visible_bufnrs()
   return vim.tbl_keys(bufs)
 end
 
--- TODO: move this to lsp.lua
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+local function after_iskeyword()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col > 0 and vim.regex([[\k]]):match_str(vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col)) ~= nil
+end
 
 -- TODO
 -- cmp issues
@@ -62,6 +63,8 @@ cmp.setup {
     ['<Tab>'] = function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
+      elseif after_iskeyword() then
+        cmp.complete()
       else
         fallback()
       end
@@ -69,6 +72,8 @@ cmp.setup {
     ['<S-Tab>'] = function(fallback)
       if cmp.visible() then
         cmp.select_prev_item()
+      elseif after_iskeyword() then
+        cmp.complete()
       else
         fallback()
       end

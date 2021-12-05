@@ -17,6 +17,8 @@ vim.diagnostic.config {
   serverity_sort = true,
 }
 
+local capabilities = require('cmp_nvim_lsp').update_capabilities(lsp_status.capabilities)
+
 local function base_opt(server_name)
   local _, server = lsp_installer_servers.get_server(server_name)
   return {
@@ -25,7 +27,7 @@ local function base_opt(server_name)
       vim.fn['SetupLSPPost']()
       lsp_status.on_attach(client, bufnr)
     end,
-    capabilities = lsp_status.capabilities,
+    capabilities = capabilities,
     cmd = server:get_default_options().cmd,
     flags = { debounce_text_changes = 123 }
   }
