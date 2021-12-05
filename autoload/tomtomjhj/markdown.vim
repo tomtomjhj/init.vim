@@ -125,13 +125,18 @@ function! tomtomjhj#markdown#foldtext()
 endfunction
 
 " etc {{{1
+" TODO: refactor
+" * use ++once
+" * --defaults file in dots repo https://pandoc.org/MANUAL.html#default-files
+" * option for --pdf-engine=xelatex .. or more general command
+" * --from=commonmark_x by default? https://github.com/jgm/pandoc/wiki/Roadmap#pandocs-markdown-transition-to-commonmark
+" * remove pandoc-citeproc? (2.11 got built-in citation support)
+" * project-local include?
 func! tomtomjhj#markdown#RunPandoc(open)
     let src = expand("%:p")
     let out = expand("%:p:h") . '/' . expand("%:t:r") . '.pdf'
-    " need to pass --filter=pandoc-citeproc here in order to specify bibliography in yaml
-    " TODO: option for --pdf-engine=xelatex .. or more general command
     let params = '-Vurlcolor=blue --highlight-style=kate'
-    " NOTE: pandoc 2.11 got built-in support for citation
+    " need to pass --filter=pandoc-citeproc here in order to specify bibliography in yaml
     if executable('pandoc-citeproc')
         let params .= ' --filter=pandoc-citeproc'
     endif

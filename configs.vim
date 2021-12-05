@@ -86,6 +86,7 @@ else
     Plug 'folke/lua-dev.nvim'
     Plug 'simrat39/rust-tools.nvim'
 endif
+" TODO: use vsnip? (supports vscode snippets)
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'tomtomjhj/vim-markdown'
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
@@ -159,7 +160,7 @@ set wildmenu wildmode=longest:full,full
 let s:wildignore_files = ['*~', '%*', '*.o', '*.so', '*.pyc', '*.pdf', '*.v.d', '*.vo*', '*.glob', '*.cm*', '*.aux']
 let s:wildignore_dirs = ['.git', '__pycache__', 'target']
 set complete-=i complete-=u
-set path=.,,*,*/*,*/*/*,*/*/*/*,*/*/*/*/*
+set path=.,,
 
 set ignorecase smartcase
 set hlsearch incsearch
@@ -768,6 +769,7 @@ func! FzfOpts(arg, spec)
     endif
     " from project root
     if l:opts =~ '3'
+        " TODO: don't use this function and lazy-load asyncrun
         let a:spec['dir'] = asyncrun#get_root("%")
     endif
     return fzf#vim#with_preview(a:spec, l:preview_window)
@@ -985,10 +987,12 @@ nnoremap ZAQ :<C-u>qa!<CR>
 cnoreabbrev <expr> W <SID>cabbrev('W', 'w')
 cnoreabbrev <expr> Q <SID>cabbrev('Q', 'q')
 
+cnoreabbrev <expr> ff  <SID>cabbrev('ff',  "find**/<Left><Left><Left>")
+cnoreabbrev <expr> sff <SID>cabbrev('sff', "sf**/<Left><Left><Left>")
 cnoreabbrev <expr> vsb <SID>cabbrev('vsb', 'vert sb')
-cnoreabbrev <expr> vsf <SID>cabbrev('vsf', 'vert sf')
+cnoreabbrev <expr> vsf <SID>cabbrev('vsf', "vert sf**/<Left><Left><Left>")
 cnoreabbrev <expr> tsb <SID>cabbrev('tsb', 'tab sb')
-cnoreabbrev <expr> tsf <SID>cabbrev('tsf', 'tab sf')
+cnoreabbrev <expr> tsf <SID>cabbrev('tsf', "tab sf**/<Left><Left><Left>")
 
 nnoremap <leader>cx :tabclose<CR>
 nnoremap <leader>td :tab split<CR>

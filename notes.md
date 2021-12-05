@@ -254,7 +254,9 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
     * Manually: `noremap <C-g> :<C-u>Grep <Cmd>redrawstatus<CR>`
     * `redrawstatus` on `CmdlineEnter`: Mappings that enter&exit cmdline mode also trigger this. Must use `<Cmd>`.
 
-# (n)vim problem
+# (n)vim issues
+
+## bugs
 * terminal reflow https://github.com/neovim/neovim/issues/2514
     * best: make it work like normal buffer with `nowrap`
     * running tmux inside the termianl:
@@ -297,14 +299,21 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
   wincmd s | wincmd j | set wfh | exe "norm! z14\<CR>" | pedit file
   ```
 * gvim clears clipboard when exiting??
-* nvim crash
-  ```
-  vim: /build/neovim-p1nQMF/neovim-0.5.0+ubuntu2+git202107281808-ac5139eae-d569569c9/src/nvim/normal.c:4011
-   nv_screengo: Assertion `curwin->w_curswant <= INT_MAX - w' failed.
-                                                                     Aborted (core dumped)
-  ```
-* nvim leaks 200-300kb of memory on each fzf invocation? Reproducible with minimal config
 * `hi def link` + `hi clear` is somewhat broken
+
+## ...
+* `ge` ... design of inclusive/exclusive stuff
+* `^` vs `0`
+* `Y`
+* `n`, `;` is relative
+* `whichwrap` option. Why not absolute commands?
+* `backspace=nostop` is not default
+* no command for deleting whitespace block
+
+## wishlist
+* timeout for built-in multi-char commands so that it doesn't interfere with user mappings
+* character classes (like emacs); word ≠ identifier
+
 
 # stuff
 * https://arxiv.org/abs/2006.03103
@@ -328,9 +337,6 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
     * https://github.com/jose-elias-alvarez/null-ls.nvim
     * https://github.com/RishabhRD/nvim-lsputils
     * https://github.com/ray-x/lsp_signature.nvim
-    * https://github.com/simrat39/rust-tools.nvim
-    * https://github.com/weilbith/nvim-lsp-smag
-    * https://github.com/valentjn/ltex-ls like textidote (`:compiler textidote` from vimtex), but using lsp
 * https://github.com/RRethy/nvim-treesitter-textsubjects
   https://github.com/vigoux/architext.nvim
   https://github.com/abecodes/tabout.nvim
@@ -364,5 +370,5 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
   https://github.com/jeffkreeftmeijer/vim-dim
   https://github.com/cocopon/iceberg.vim
 
-# new (n)vim stuff
+## new (n)vim stuff
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.
