@@ -13,10 +13,10 @@ function! tomtomjhj#surround#(type, ends) abort
     let cb_save = &clipboard
 
     try
-        set clipboard= selection=inclusive
-        silent exe 'noautocmd keepjumps normal!' cmd_x
         " handle the cursor on eol
         let l:p = (col([line("']"), "$"]) - col("']") <= 1) ? 'p' : 'P'
+        set clipboard= selection=inclusive
+        silent exe 'noautocmd keepjumps normal!' cmd_x
         call setreg('"', a:ends.getreg('"').a:ends)
         silent exe 'noautocmd keepjumps normal!' l:p
     finally
