@@ -117,6 +117,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * `hitest.vim`
 * Inserting text from script and return to insert mode without (1) moving the cursor and (2) delaying the actual input (like `feedkeys()`, `<expr>`)
   `<C-\><C-o>:exe 'normal!' . (col('.') > strlen(getline('.')) ? 'a' : 'i') . "TEXT\<C-\>\<C-o>"<CR>`
+* https://www.reddit.com/r/vim/comments/r9s36f/what_are_some_of_your_insert_mode_mappings/hnekp5r/?utm_source=reddit&utm_medium=web2x&context=3
 
 ## dictionary (`i_CTRL-X_CTRL-K`)
 ```vim
@@ -337,6 +338,8 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
     * https://github.com/jose-elias-alvarez/null-ls.nvim
     * https://github.com/RishabhRD/nvim-lsputils
     * https://github.com/ray-x/lsp_signature.nvim
+    * https://github.com/stevearc/aerial.nvim
+    * https://github.com/gfanto/fzf-lsp.nvim
 * https://github.com/RRethy/nvim-treesitter-textsubjects
   https://github.com/vigoux/architext.nvim
   https://github.com/abecodes/tabout.nvim
@@ -349,7 +352,9 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
   https://github.com/nvim-telescope/telescope-frecency.nvim
 * https://github.com/vhyrro/neorg
   https://github.com/kristijanhusak/orgmode.nvim
-* https://github.com/vijaymarupudi/nvim-fzf https://github.com/ibhagwan/fzf-lua
+* https://github.com/vijaymarupudi/nvim-fzf
+  https://github.com/ibhagwan/fzf-lua
+  https://github.com/stevearc/dressing.nvim
 * https://github.com/jbyuki/instant.nvim
   https://github.com/jbyuki/nabla.nvim
   https://github.com/jbyuki/venn.nvim
@@ -369,6 +374,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
   https://git.sr.ht/~romainl/vim-bruin
   https://github.com/jeffkreeftmeijer/vim-dim
   https://github.com/cocopon/iceberg.vim
+* https://github.com/stevearc/gkeep.nvim
 
 ## new (n)vim stuff
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.

@@ -196,8 +196,8 @@ augroup BasicSetup | au!
     au BufRead * if empty(&buftype) && &filetype !~# '\v%(commit)' && line("'\"") > 1 && line("'\"") <= line("$") | exec "norm! g`\"" | endif
     au VimEnter * exec 'tabdo windo clearjumps' | tabnext
     au BufWritePost ~/.vim/configs.vim nested source ~/.vim/configs.vim
-    au BufRead,BufNewFile *.k set filetype=k
-    au BufRead,BufNewFile *.mir set syntax=rust
+    au BufRead,BufNewFile *.k setlocal filetype=k
+    au BufRead,BufNewFile *.mir setlocal syntax=rust
     au FileType lisp let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} })
     au FileType help nnoremap <silent><buffer> <M-.> :h <C-r><C-w><CR>
     let &pumheight = min([&window/4, 20])
@@ -437,6 +437,7 @@ augroup Languages | au!
     au FileType python call s:python()
     au FileType tex call s:tex()
     au FileType rust call s:rust()
+    au FileType xml setlocal formatoptions-=r " very broken: <!--<CR> → <!--\n--> █
 augroup END
 
 " Haskell {{{
@@ -587,7 +588,7 @@ function! s:markdown() abort
         let b:match_words = b:match_words[4:]
     endif
 
-    nmap     <buffer>             <leader>pd :set ft=pandoc\|unmap <lt>buffer><lt>leader>pd<CR>
+    nmap     <buffer>             <leader>pd :setlocal ft=pandoc\|unmap <lt>buffer><lt>leader>pd<CR>
     nmap     <buffer><silent>     <leader>py vid:AsyncRun python3<CR>:CW<CR>
     nnoremap <buffer><expr> <localleader>b tomtomjhj#surround#strong('')
     xnoremap <buffer><expr> <localleader>b tomtomjhj#surround#strong('')
@@ -914,8 +915,8 @@ nnoremap <silent><leader><CR> :let v:searchforward=1\|nohlsearch<CR>
 nnoremap <silent><leader><C-L> :diffupdate\|syntax sync fromstart<CR><C-L>
 nnoremap <leader>ss :setlocal spell! spell?<CR>
 nnoremap <leader>sc :if empty(&spc) \| setl spc< spc? \| else \| setl spc= spc? \| endif<CR>
-nnoremap <leader>sp :setlocal paste! paste?<CR>
-nnoremap <leader>sw :set wrap! wrap?<CR>
+nnoremap <leader>sp :set paste! paste?<CR>
+nnoremap <leader>sw :setlocal wrap! wrap?<CR>
 nnoremap <leader>ic :set ignorecase! smartcase! ignorecase?<CR>
 
 noremap <leader>dp :diffput<CR>
@@ -978,7 +979,7 @@ nnoremap <C-k> <C-W>k
 nnoremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
 
-command! -count Wfh set winfixheight | if <count> | exe "normal! z".<count>."\<CR>" | endif
+command! -count Wfh setlocal winfixheight | if <count> | exe "normal! z".<count>."\<CR>" | endif
 
 noremap <leader>q :<C-u>q<CR>
 noremap q, :<C-u>q<CR>
@@ -1212,7 +1213,6 @@ call textobj#user#plugin('tomtomjhj', {
 
 " comments {{{
 let g:NERDCreateDefaultMappings = 0
-" NOTE: indentation is incorrect sometimes. Use i_CTRL-f
 imap <M-/> <C-G>u<Plug>NERDCommenterInsert
 map <M-/> <Plug>NERDCommenterComment
 xmap <leader>c<Space> <Plug>NERDCommenterToggle
@@ -1225,7 +1225,6 @@ if has('nvim-0.5')
     xmap <leader>cu <Plug>kommentary_visual_decrease<ESC>
     nmap <leader>cu <Plug>kommentary_line_decrease
 else
-    " NOTE: NERDCommeter Insert is incorrect for col('.')==1
     " NOTE: nerdcommenter uncomments nested comments
     " (*
     " (* *)
