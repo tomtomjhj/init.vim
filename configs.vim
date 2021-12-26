@@ -425,6 +425,7 @@ nnoremap <M-i> <C-i>
 " Languages {{{
 " see also ftplugin/, after/ftplugin/, SetupLSP(), SetupLSPPost()
 augroup Languages | au!
+    au FileType bib call s:bib()
     au FileType c,cpp,cuda call s:c_cpp()
     au FileType coq,coq-goals,coq-infos call s:coq_common()
     au FileType coq-goals,coq-infos call s:coq_aux()
