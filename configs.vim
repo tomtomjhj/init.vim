@@ -9,8 +9,7 @@ call plug#begin('~/.vim/plugged')
 
 " appearance
 Plug 'itchyny/lightline.vim'
-Plug 'lifepillar/vim-solarized8'
-Plug 'tomtomjhj/zenbruh.vim'
+Plug 'tomtomjhj/taiga.vim'
 
 " editing
 Plug 'tomtomjhj/vim-sneak'
@@ -304,22 +303,12 @@ endfunction
 " }}}
 
 " ColorScheme {{{
+let g:taiga_full_special_attrs_support = 1
 if exists('g:colors_name') " loading the color again breaks lightline
-elseif &background == 'dark' || !has('nvim')
-    colorscheme zenbruh
 else
-    " TODO
-    " * customize Search, IncSearch, MatchParen, Diff*
-    " * fzf: fix terminal window hl (set winhl=NormalFloat:TermNormal) vs. modify bat theme
-    let g:solarized_enable_extra_hi_groups = 1
-    let g:solarized_italics = 0
-    set termguicolors
-    colorscheme solarized8_high
-    " hi TermNormal guifg=#eeeeee guibg=#1c1c1c
-    hi Special guifg=#735050 | hi Conceal guifg=#735050
-    hi Statement gui=bold
-    let g:lightline.colorscheme = 'solarized'
+    colorscheme taiga
 endif
+silent! set termguicolors
 " }}}
 
 " Completion {{{

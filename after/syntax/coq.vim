@@ -63,6 +63,9 @@ function! s:colors()
     hi! link coqTactic            ZenbruhGreen
     hi! link coqLtac              ZenbruhGreen
     hi! link coqTacticKwd         ZenbruhGreen
+  elseif get(g:, 'colors_name', '') ==# 'taiga'
+    " NOTE: wip coqIdentDef stuff
+    hi! link coqIdentDef          TaigaGreenHigh
   endif
 endfunction
 call s:colors()
