@@ -72,13 +72,12 @@ if g:ide_client == 'coc'
     " Plug '~/apps/coc.nvim', { 'branch': 'master', 'do': 'yarn install --frozen-lockfile' }
     Plug 'antoinemadec/coc-fzf'
 else
-    Plug 'hrsh7th/nvim-compe', { 'on': [] }
-    " Plug 'hrsh7th/nvim-cmp'
-    " Plug 'hrsh7th/cmp-buffer'
-    " Plug 'hrsh7th/cmp-nvim-lsp'
-    " Plug 'hrsh7th/cmp-path'
-    " Plug 'quangnguyen30192/cmp-nvim-ultisnips'
-    " Plug 'quangnguyen30192/cmp-nvim-tags'
+    Plug 'hrsh7th/nvim-cmp'
+    Plug 'hrsh7th/cmp-buffer'
+    Plug 'hrsh7th/cmp-nvim-lsp'
+    Plug 'hrsh7th/cmp-path'
+    Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+    Plug 'quangnguyen30192/cmp-nvim-tags'
     Plug 'neovim/nvim-lspconfig'
     Plug 'williamboman/nvim-lsp-installer'
     Plug 'ojroques/nvim-lspfuzzy'
@@ -328,7 +327,7 @@ if g:ide_client == 'coc'
     inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : <SID>check_back_space() ? "\<Tab>" : coc#refresh()
     inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 else " lua
-    " lua require'tomtomjhj/cmp'
+    lua require'tomtomjhj/cmp'
     " TODO: lazy loading doesn't work..
     " - https://github.com/hrsh7th/nvim-cmp/issues/65
     " - plug#load only sources .vim files. Fixing this alone doesn't entirely fix the issue.
@@ -343,31 +342,6 @@ else " lua
     "     call plug#load('cmp-nvim-tags')
     "     lua require'tomtomjhj/cmp'
     " endfunction
-
-    set completeopt=menuone,noselect
-    inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : <SID>check_back_space() ? "\<Tab>" : compe#complete()
-    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-    inoremap <expr> <C-y> compe#confirm('<C-y>')
-    inoremap <expr> <C-e> compe#close('<C-e>')
-    au InsertEnter * ++once call LoadCompe()
-    function! LoadCompe()
-        call plug#load('nvim-compe')
-lua << EOF
-        -- require'compe'.register_source('words', require'tomtomjhj/compe_words')
-        require'compe'.setup {
-          default_pattern = [[\K\k\{-\}\>]],
-          preselect = "disable",
-          source = {
-            path = true;
-            buffer = { menu = '[B]'; priority = 51; }; -- slightly higher than snippets
-            nvim_lsp = true;
-            ultisnips = { menu = '[US]' };
-            tags = { menu = '[T]' };
-            words = false;
-          };
-        }
-EOF
-    endfunction
 endif
 
 function! s:check_back_space() abort
