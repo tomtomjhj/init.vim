@@ -21,16 +21,15 @@ local capabilities = require('cmp_nvim_lsp').update_capabilities(lsp_status.capa
 
 local function base_opt(server_name)
   local _, server = lsp_installer_servers.get_server(server_name)
-  return {
+  return vim.tbl_extend('error', server:get_default_options(), {
     on_attach = function(client, bufnr)
       vim.fn['SetupLSP']()
       vim.fn['SetupLSPPost']()
       lsp_status.on_attach(client, bufnr)
     end,
     capabilities = capabilities,
-    cmd = server:get_default_options().cmd,
     flags = { debounce_text_changes = 123 }
-  }
+  })
 end
 
 require('rust-tools').setup {
