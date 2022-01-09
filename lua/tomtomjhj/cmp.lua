@@ -41,7 +41,7 @@ cmp.setup {
     { name = 'path' },
     { name = 'buffer',
       option = {
-        keyword_pattern = [[\K\k\{-,30}\>]], -- TODO: help file's iskeyword
+        keyword_pattern = [[\<\K\k\{-,30}\>]], -- TODO: per-ft keyword pattern? e.g. no \k for help file
         get_bufnrs = get_visible_bufnrs,
       }
     },
@@ -100,15 +100,13 @@ cmp.setup {
   },
 }
 
--- TODO cmp.setup.cmdline {}
+-- TODO: This disables hlsearch when the menu is refreshed.
+-- cmp.setup.cmdline('/', { sources = { { name = 'buffer' } } })
 
-
-vim.cmd [[
-hi! CmpItemAbbrMatch guifg=NONE ctermfg=NONE guibg=NONE ctermbg=NONE gui=bold cterm=bold
-]]
--- CmpItemAbbr
--- CmpItemAbbrDeprecated
--- CmpItemAbbrMatch
--- CmpItemAbbrMatchFuzzy
--- CmpItemKind
--- CmpItemMenu
+cmp.setup.cmdline(':', {
+  sources = cmp.config.sources({
+    { name = 'path' }
+  }, {
+    { name = 'cmdline' }
+  })
+})
