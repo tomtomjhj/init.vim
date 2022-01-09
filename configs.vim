@@ -117,10 +117,17 @@ if has('nvim-0.5')
     Plug 'nvim-treesitter/playground'
     Plug 'b3nj5m1n/kommentary', {'on': '<Plug>kommentary'}
 endif
+if has('nvim-0.6')
+    Plug 'lewis6991/impatient.nvim'
+endif
 
 " NOTE: This runs `filetype plugin indent on`, which registers au FileType.
 " Custom au FileType should be registered after this.
 call plug#end()
+
+if has('nvim-0.6')
+    lua require('impatient')
+endif
 " }}}
 
 " Basic {{{
