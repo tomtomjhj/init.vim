@@ -316,7 +316,7 @@ if exists('g:colors_name') " loading the color again breaks lightline
 else
     colorscheme taiga
 endif
-silent! set termguicolors
+silent! set termguicolors pumblend=15
 " }}}
 
 " Completion {{{
@@ -909,9 +909,6 @@ inoremap <C-q> <Esc>
 vnoremap <C-q> <Esc>
 onoremap <C-q> <Esc>
 noremap! <C-M-q> <C-q>
-if has('nvim')
-    tnoremap <M-[> <C-\><C-n>
-endif
 
 cnoremap <M-p> <Up>
 cnoremap <M-n> <Down>
@@ -1017,7 +1014,12 @@ augroup MyTargets | au!
 augroup END
 " }}}
 
-" shell {{{
+" shell, terminal {{{
+if has('nvim')
+    tnoremap <M-[> <C-\><C-n>
+    tnoremap <expr> <M-r> '<C-\><C-N>"'.nr2char(getchar()).'pi'
+endif
+
 map <leader>R :AsyncRun<space>
 map <leader>ST :AsyncStop\|let g:asyncrun_status = ''<CR>
 command! -bang -nargs=* -complete=file Make AsyncRun -auto=make -program=make @ <args>
