@@ -49,7 +49,7 @@ cmp.setup {
     { name = 'tags' },
   },
   experimental = {
-    native_menu = false,
+    native_menu = true, -- NOTE: temporary mitigation for https://github.com/hrsh7th/nvim-cmp/issues/328
     ghost_text = false,
   },
   mapping = {
