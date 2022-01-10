@@ -103,10 +103,12 @@ cmp.setup {
 -- TODO: This disables hlsearch when the menu is refreshed.
 -- cmp.setup.cmdline('/', { sources = { { name = 'buffer' } } })
 
-cmp.setup.cmdline(':', {
-  sources = cmp.config.sources({
-    { name = 'path' }
-  }, {
-    { name = 'cmdline' }
-  })
-})
+-- TODO: breaks completion when :command-count and :command-modifiers are used
+-- https://github.com/hrsh7th/cmp-cmdline/issues/20
+-- cmp.setup.cmdline(':', {
+--   sources = cmp.config.sources({
+--     { name = 'path' }
+--   }, {
+--     { name = 'cmdline' }
+--   })
+-- })
