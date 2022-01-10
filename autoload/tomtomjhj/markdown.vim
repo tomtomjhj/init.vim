@@ -1,6 +1,6 @@
 " text object {{{1
 func! tomtomjhj#markdown#FencedCodeBlocka()
-    if !InSynStack('\v(mkdSnippet|mkdCode|pandocDelimitedCodeBlock)')
+    if !InSynStack('\v(markdownCode|markdownHighlight|pandocDelimitedCodeBlock)')
         return 0
     endif
     if !search('```\w*', 'bW') | return 0 | endif
@@ -12,7 +12,7 @@ func! tomtomjhj#markdown#FencedCodeBlocka()
     return ['V', head_pos, tail_pos]
 endfunc
 func! tomtomjhj#markdown#FencedCodeBlocki()
-    if !InSynStack('\v(mkdSnippet|mkdCode|pandocDelimitedCodeBlock)')
+    if !InSynStack('\v(markdownCode|markdownHighlight|pandocDelimitedCodeBlock)')
         return 0
     endif
     if !search('```\w*', 'bW') | return 0 | endif
@@ -71,58 +71,6 @@ func! tomtomjhj#markdown#PandocDollarMathMathi()
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
 endfunc
-
-" folding {{{1
-" adapted tpope/vim-markdown/ftplugin/markdown.vim + plasticboy/vim-markdown pythonic foldtext
-" NOTE: doesn't handle yaml front matter
-
-function! s:IsCodeBlock(lnum) abort
-    return InSynStack('^mkd\%(Code\|Snippet\)', synstack(a:lnum, 1))
-endfunction
-
-function! tomtomjhj#markdown#foldexpr() abort
-    let line = getline(v:lnum)
-    let hashes = matchstr(line, '^#\+')
-    let is_code = -1
-    if !empty(hashes)
-        let is_code = s:IsCodeBlock(v:lnum)
-        if !is_code
-            return ">" . len(hashes)
-        endif
-    endif
-    if !empty(line)
-        let nextline = getline(v:lnum + 1)
-        if nextline =~ '^=\+$'
-            if is_code == -1
-                let is_code = s:IsCodeBlock(v:lnum)
-            endif
-            if !is_code
-                return ">1"
-            endif
-        endif
-        if nextline =~ '^-\+$'
-            if is_code == -1
-                let is_code = s:IsCodeBlock(v:lnum)
-            endif
-            if !is_code
-                return ">2"
-            endif
-        endif
-    endif
-    return "="
-endfunction
-
-function! tomtomjhj#markdown#foldtext()
-    let line = getline(v:foldstart)
-    let has_numbers = &number || &relativenumber
-    let nucolwidth = &fdc + has_numbers * &numberwidth
-    let windowwidth = winwidth(0) - nucolwidth - 6
-    let foldedlinecount = v:foldend - v:foldstart
-    let line = strpart(line, 0, windowwidth - 2 -len(foldedlinecount))
-    let line = substitute(line, '\%("""\|''''''\)', '', '')
-    let fillcharcount = windowwidth - strdisplaywidth(line) - len(foldedlinecount) + 1
-    return line . ' ' . repeat("-", fillcharcount) . ' ' . foldedlinecount
-endfunction
 
 " etc {{{1
 " TODO: refactor

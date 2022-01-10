@@ -87,6 +87,7 @@ else
 endif
 " TODO: use vsnip? (supports vscode snippets)
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+Plug 'tomtomjhj/tpope-vim-markdown'
 Plug 'tomtomjhj/vim-markdown'
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
 Plug 'tomtomjhj/vim-pandoc-syntax'
@@ -503,15 +504,8 @@ let g:pandoc#folding#level = 99
 let g:pandoc#hypertext#use_default_mappings = 0
 let g:pandoc#syntax#use_definition_lists = 0
 let g:pandoc#syntax#protect#codeblocks = 0
-let g:vim_markdown_folding_disabled = 1 " manually control folds: see ftplugin/markdown.vim
-let g:vim_markdown_folding_level = 6
-let g:vim_markdown_folding_style_pythonic = 1
-let g:vim_markdown_auto_insert_bullets = 0
-let g:vim_markdown_new_list_item_indent = 0
-let g:vim_markdown_frontmatter = 1
-let g:vim_markdown_no_default_key_mappings = 1
-let g:vim_markdown_strikethrough = 1
-let g:vim_markdown_conceal = 0
+let g:markdown_fenced_languages = ['bash=sh']
+let g:markdown_folding = 1
 " let g:mkdp_port = '8080'
 " let g:mkdp_open_to_the_world = 1
 " let g:mkdp_echo_preview_url = 1
@@ -521,19 +515,7 @@ let g:mkdp_preview_options = {
             \ 'mkit': { 'typographer': v:false },
             \ 'disable_sync_scroll': 1 }
 function! s:markdown() abort
-    " vim-markdown-mappings
-    function! s:nvmap(lhs, rhs)
-        execute 'nmap <buffer>' . a:lhs . ' <Plug>' . a:rhs
-        execute 'vmap <buffer>' . a:lhs . ' <Plug>' . a:rhs
-    endfunction
-    call s:nvmap(']]', 'Markdown_MoveToNextHeader')
-    call s:nvmap('[[', 'Markdown_MoveToPreviousHeader')
-    call s:nvmap('][', 'Markdown_MoveToNextSiblingHeader')
-    call s:nvmap('[]', 'Markdown_MoveToPreviousSiblingHeader')
-    call s:nvmap(']u', 'Markdown_MoveToParentHeader')
-    call s:nvmap(']h', 'Markdown_MoveToCurHeader')
-    call s:nvmap('gx', 'Markdown_OpenUrlUnderCursor')
-    delfunction s:nvmap
+    setlocal foldlevel=6
 
     let s:mkd_textobj = {
                 \   'code': {
@@ -548,11 +530,6 @@ function! s:markdown() abort
     " * list item text object
     " * make paragraph, sentence text object list-aware
 
-    setlocal foldexpr=tomtomjhj#markdown#foldexpr()
-    setlocal foldmethod=expr
-    setlocal foldtext=tomtomjhj#markdown#foldtext()
-    let b:undo_ftplugin .= " | setlocal foldexpr< foldmethod< foldtext<"
-
     " too intrusive
     setlocal matchpairs-=<:>
     " $VIMRUNTIME/ftplugin/html.vim:31 → remove `<:>,`
@@ -561,7 +538,6 @@ function! s:markdown() abort
     endif
 
     nmap     <buffer>             <leader>pd :setlocal ft=pandoc\|unmap <lt>buffer><lt>leader>pd<CR>
-    nmap     <buffer><silent>     <leader>py vid:AsyncRun python3<CR>:CW<CR>
     nnoremap <buffer><expr> <localleader>b tomtomjhj#surround#strong('')
     xnoremap <buffer><expr> <localleader>b tomtomjhj#surround#strong('')
     nmap     <buffer>          <MiddleMouse> <LeftMouse><localleader>biw
@@ -569,6 +545,7 @@ function! s:markdown() abort
     nnoremap <buffer><silent>     <leader>tf :TableFormat<CR>
 endfunction
 function! s:pandoc() abort
+    runtime! ftplugin/markdown.vim
     let s:pandoc_textobj = {
                 \   'begin-end': {
                 \     'pattern': ['\\begin{[^}]\+}\s*\n\?', '\s*\\end{[^}]\+}'],
