@@ -861,7 +861,8 @@ endfunc
 
 " etc mappings {{{
 nnoremap <silent><leader><CR> :let v:searchforward=1\|nohlsearch<CR>
-nnoremap <silent><leader><C-L> :diffupdate\|syntax sync fromstart<CR><C-L>
+nnoremap <silent><leader><C-L> :diffupdate<CR><C-L>
+nnoremap <silent><leader>sfs :syntax sync fromstart<CR><C-L>
 nnoremap <leader>ss :setlocal spell! spell?<CR>
 nnoremap <leader>sc :if empty(&spc) \| setl spc< spc? \| else \| setl spc= spc? \| endif<CR>
 nnoremap <leader>sp :set paste! paste?<CR>
@@ -1052,7 +1053,7 @@ function! GXBrowse(url)
         let viewer = 'open'
     elseif has('win64') || has('win32')
         let viewer = 'start'
-        redir = '>null'
+        let redir = '>null'
     else
         return
     endif
@@ -1248,12 +1249,12 @@ function! Text2Magic(text)
     return escape(a:text, '\.*$^~[]')
 endfunction
 
-func! Execute(cmd, mods) abort
+function! Execute(cmd, mods) abort
     let output = execute(a:cmd)
     exe a:mods 'new'
     setlocal nobuflisted buftype=nofile bufhidden=wipe noswapfile
     call setline(1, split(output, "\n"))
-endfunc
+endfunction
 command! -nargs=* -complete=command Execute silent call Execute(<q-args>, '<mods>')
 
 command! -range=% TrimWhitespace

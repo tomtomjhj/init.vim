@@ -1,19 +1,19 @@
 diff --git a/lua/lspfuzzy.lua b/lua/lspfuzzy.lua
-index 55cf366..871c693 100644
+index 5b32eb6..26961dc 100644
 --- a/lua/lspfuzzy.lua
 +++ b/lua/lspfuzzy.lua
-@@ -107,6 +107,7 @@ end
+@@ -93,6 +93,7 @@ end
  local function build_fzf_opts(label, preview, multi)
-   local prompt = fmt("%s> ", label)
+   local prompt = fmt('%s> ', label)
    local fzf_opts = {
 +    '--layout=reverse-list',
      '--ansi',
      '--delimiter', ':',
      '--keep-right',
-@@ -230,6 +231,34 @@ local function diagnostics_cmd(diagnostics)
-   fzf(source, jump, label, true, true)
+@@ -183,6 +184,13 @@ local function make_call_hierarchy_handler(direction)
  end
  
+ -------------------- COMMANDS ------------------------------
 +local errlist_type_map = {
 +  [vim.diagnostic.severity.ERROR] = 'E',
 +  [vim.diagnostic.severity.WARN] = 'W',
@@ -21,39 +21,27 @@ index 55cf366..871c693 100644
 +  [vim.diagnostic.severity.HINT] = 'N',
 +}
 +
-+local function diagnostics_cmd6(diagnotics)
-+  local label = 'Diagnostics'
-+  local items = {}
-+
-+  for _, diag in ipairs(diagnotics) do
-+    table.insert(items, {
-+        filename = api.nvim_buf_get_name(diag.bufnr),
-+        text = errlist_type_map[diag.severity] .. ': ' .. diag.message:gsub('[\n\r]', ' '),
-+        lnum = diag.lnum + 1,
-+        col = diag.col + 1,
-+    })
-+  end
-+
-+  if vim.tbl_isempty(items) then
-+    return echo('None', fmt('No %s available', string.lower(label)))
-+  end
-+
-+  local source = vim.tbl_map(lsp_to_fzf, items)
-+  fzf(source, jump, label, true, true)
-+end
-+
- local function last_results_cmd()
-   if not opts.save_last then
-     echo('WarningMsg', "The 'save_last' option is set to false")
-@@ -329,7 +358,11 @@ return {
-     diagnostics_cmd({[bufnr] = lsp.diagnostic.get(bufnr)})
+ local function diagnostics_cmd(diagnostics)
+   local label = 'Diagnostics'
+   local items = {}
+@@ -190,7 +198,7 @@ local function diagnostics_cmd(diagnostics)
+   for _, diagnostic in ipairs(diagnostics) do
+     table.insert(items, {
+       filename = vim.api.nvim_buf_get_name(diagnostic.bufnr),
+-      text = diagnostic.message,
++      text = errlist_type_map[diagnostic.severity] .. ': ' .. diagnostic.message:gsub('[\n\r]', ' '),
+       lnum = diagnostic.lnum + 1,
+       col = diagnostic.col + 1,
+     })
+@@ -298,7 +306,11 @@ return {
+     diagnostics_cmd(vim.diagnostic.get(bufnr))
    end,
    diagnostics_all = function()
--    diagnostics_cmd(lsp.diagnostic.get_all())
+-    diagnostics_cmd(vim.diagnostic.get())
 +    -- all diagnostics from the current client (assumes single client)
 +    for id, _ in pairs(vim.lsp.buf_get_clients()) do
 +      local ns = vim.lsp.diagnostic.get_namespace(id)
-+      return diagnostics_cmd6(vim.diagnostic.get(nil, {namespace=ns, severity={min=vim.diagnostic.severity.WARN}}))
++      return diagnostics_cmd(vim.diagnostic.get(nil, {namespace=ns, severity={min=vim.diagnostic.severity.WARN}}))
 +    end
    end,
    last_results = function()
