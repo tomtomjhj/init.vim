@@ -1,7 +1,7 @@
 " * search ^I..^I
 " * use <c-a> with set nrformats+=alpha
 " * char2nr
-function s:SetupDigraph()
+function! s:SetupDigraph()
     digraph mt 8614
     digraph ** 8727
     digraph oo 9679

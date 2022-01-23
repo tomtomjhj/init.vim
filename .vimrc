@@ -55,6 +55,10 @@ if !has('gui_running')
   " <Nul><Nul> becomes <C-Space><Nul>. Currently I use non-prefix <C-Space>
   " for this mapping only.
   map! <C-Space><Nul> <C-Space><C-Space>
+
+  " :h undercurl
+  let &t_Cs = "\e[4:3m"
+  let &t_Ce = "\e[4:0m"
 else
   set guioptions=i
 endif

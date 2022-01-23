@@ -53,7 +53,13 @@ lspconfig.pylsp.setup(
         pylint = {
           enabled = true,
           args = {"-dR", "-dC", "-dW0511", "-dW0614", "-dW0621", "-dW0231", "-dF0401", "--generated-members=cv2.*,onnx.*,tf.*,np.*"}
-        }
+        },
+        ["flake8"] = { enabled = false },
+        mccabe = { enabled = false },
+        pycodestyle = { enabled = false },
+        pyflakes = { enabled = false },
+        rope_completion = { enabled = false },
+        yapf = { enabled = false },
       }
     }}
   })

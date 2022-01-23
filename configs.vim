@@ -334,20 +334,6 @@ if g:ide_client == 'coc'
     inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 else " lua
     lua require'tomtomjhj/cmp'
-    " TODO: lazy loading doesn't work..
-    " - https://github.com/hrsh7th/nvim-cmp/issues/65
-    " - plug#load only sources .vim files. Fixing this alone doesn't entirely fix the issue.
-    " - order of setup() and plugin/*.lua sourcing
-    " au InsertEnter * ++once call LoadCmp()
-    " function! LoadCmp()
-    "     call plug#load('nvim-cmp')
-    "     call plug#load('cmp-buffer')
-    "     call plug#load('cmp-nvim-lsp')
-    "     call plug#load('cmp-path')
-    "     call plug#load('cmp-nvim-ultisnips')
-    "     call plug#load('cmp-nvim-tags')
-    "     lua require'tomtomjhj/cmp'
-    " endfunction
 endif
 
 function! s:check_back_space() abort
@@ -431,7 +417,7 @@ let g:haskell_enable_static_pointers = 1
 let g:haskell_indent_let_no_in = 0
 let g:haskell_indent_if = 0
 let g:haskell_indent_case_alternative = 1
-function s:haskell() abort
+function! s:haskell() abort
     setlocal shiftwidth=2
 endfunction
 " }}}
@@ -468,7 +454,7 @@ endfunction
 " Python {{{
 let g:python_highlight_all = 1
 let g:python_highlight_builtin_funcs = 0
-function s:python() abort
+function! s:python() abort
     setlocal formatoptions+=ro
 endfunction
 " }}}
@@ -512,7 +498,7 @@ let g:pandoc#folding#level = 99
 let g:pandoc#hypertext#use_default_mappings = 0
 let g:pandoc#syntax#use_definition_lists = 0
 let g:pandoc#syntax#protect#codeblocks = 0
-let g:markdown_fenced_languages = ['bash=sh']
+let g:markdown_fenced_languages = []
 let g:markdown_folding = 1
 " let g:mkdp_port = '8080'
 " let g:mkdp_open_to_the_world = 1
@@ -528,9 +514,9 @@ function! s:markdown() abort
     let s:mkd_textobj = {
                 \   'code': {
                     \     'select-a-function': 'tomtomjhj#markdown#FencedCodeBlocka',
-                    \     'select-a': 'ad',
+                    \     'select-a': '<buffer> ad',
                     \     'select-i-function': 'tomtomjhj#markdown#FencedCodeBlocki',
-                    \     'select-i': 'id',
+                    \     'select-i': '<buffer> id',
                     \   },
                     \ }
     silent! call textobj#user#plugin('markdown', s:mkd_textobj)
@@ -557,20 +543,20 @@ function! s:pandoc() abort
     let s:pandoc_textobj = {
                 \   'begin-end': {
                 \     'pattern': ['\\begin{[^}]\+}\s*\n\?', '\s*\\end{[^}]\+}'],
-                \     'select-a': 'ae',
-                \     'select-i': 'ie',
+                \     'select-a': '<buffer> ae',
+                \     'select-i': '<buffer> ie',
                 \   },
                 \  'dollar-math': {
                 \     'select-a-function': 'tomtomjhj#markdown#PandocDollarMatha',
-                \     'select-a': 'am',
+                \     'select-a': '<buffer> am',
                 \     'select-i-function': 'tomtomjhj#markdown#PandocDollarMathi',
-                \     'select-i': 'im',
+                \     'select-i': '<buffer> im',
                 \   },
                 \  'dollar-mathmath': {
                 \     'select-a-function': 'tomtomjhj#markdown#PandocDollarMathMatha',
-                \     'select-a': 'aM',
+                \     'select-a': '<buffer> aM',
                 \     'select-i-function': 'tomtomjhj#markdown#PandocDollarMathMathi',
-                \     'select-i': 'iM',
+                \     'select-i': '<buffer> iM',
                 \   },
                 \ }
     silent! call textobj#user#plugin('pandoc', s:pandoc_textobj)
@@ -627,8 +613,7 @@ endfunction
 " Coq {{{
 let g:coqtail_nomap = 1
 let g:coqtail_noindent_comment = 1
-" TODO: auto mkview/loadview for viewoptions=folds?
-function s:coq_common() abort
+function! s:coq_common() abort
     let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} })
     setlocal shiftwidth=2
     " no middle piece & comment leader
@@ -650,7 +635,7 @@ endfunction
 
 " Lua {{{
 let g:lua_syntax_noextendedstdlib = 1
-function s:lua() abort
+function! s:lua() abort
     setlocal shiftwidth=2
 endfunction
 " }}}
@@ -878,7 +863,7 @@ noremap <leader>dp :diffput<CR>
 noremap <leader>do :diffget<CR>
 
 " clipboard.
-inoremap <C-v> <C-g>u<C-\><C-o>:set paste<CR><C-r>+<C-\><C-o>:set nopaste<CR>
+inoremap <C-v> <C-g>u<C-r><C-p>+
 xnoremap <leader>y "+y
 
 " buf/filename
@@ -1223,7 +1208,7 @@ nmap m<BS> <Plug>MarkToggle
 
 " etc util {{{
 " helpers {{{
-function s:cabbrev(lhs, rhs) abort
+function! s:cabbrev(lhs, rhs) abort
     return (getcmdtype() == ':' && getcmdline() ==# a:lhs) ? a:rhs : a:lhs
 endfunction
 " }}}
@@ -1305,4 +1290,9 @@ command! -range=% ZulipMarkdown
             \ keeppatterns keepjumps <line1>,<line2>substitute/^    \ze[-+*]\s/  /e
             \|keeppatterns keepjumps <line1>,<line2>substitute/^        \ze[-+*]\s/    /e
             \|keeppatterns keepjumps <line1>,<line2>substitute/^            \ze[-+*]\s/      /e
+
+if !has('nvim')
+    command! -nargs=+ -complete=shellcmd Man delcommand Man | runtime ftplugin/man.vim | if winwidth(0) > 170 | exe 'vert Man' <q-args> | else | exe 'Man' <q-args> | endif
+    command! SW w !sudo tee % > /dev/null
+endif
 " }}}

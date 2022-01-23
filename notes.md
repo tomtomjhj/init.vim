@@ -254,6 +254,11 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * If `lazyredraw` is set, entering cmdline-mode with a mapping doesn't update the statusline.
     * Manually: `noremap <C-g> :<C-u>Grep <Cmd>redrawstatus<CR>`
     * `redrawstatus` on `CmdlineEnter`: Mappings that enter&exit cmdline mode also trigger this. Must use `<Cmd>`.
+* vim-plug can't lazy-load lua plugins.
+    * issues
+        * `plug#load` only sources `.vim` files. <https://github.com/hrsh7th/nvim-cmp/issues/65>
+        * Order of `setup()` and `plugin/*.lua` sourcing?
+    * impatient.nvim makes lua plugin startup fast enough.
 
 # (n)vim issues
 
@@ -301,6 +306,8 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
   ```
 * gvim clears clipboard when exiting??
 * `hi def link` + `hi clear` is somewhat broken
+* nvim: If there's a mapping that starts with `<C-c>` in current mode (but not exactly `<C-c>`), `<C-c>` does not interrupt vimscript (loop, `:sleep`, ...). <https://github.com/neovim/neovim/issues/15258>
+* When typing a prefix of imap, the typed char is displayed during the timeout. Is this intended?
 
 ## ...
 * `ge` ... design of inclusive/exclusive stuff
