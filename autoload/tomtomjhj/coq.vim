@@ -33,83 +33,75 @@ function! tomtomjhj#coq#mappings()
     inoremap <buffer><expr> <Plug>CoqJumpToEnd   (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqJumpToEnd\<CR>"
     inoremap <buffer><expr> <Plug>CoqJumpToError (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqJumpToError\<CR>"
 
-    nmap <buffer>   <C-c>s     <Plug>CoqInterrupt<Plug>CoqStop
+    nmap <buffer> <localleader>s <Plug>CoqInterrupt<Plug>CoqStop
+    nmap <buffer> <localleader>i <Plug>CoqInterrupt
+
     " NOTE: [count]
-    nmap <buffer><leader><C-c> <Plug>CoqInterrupt
-    nmap <buffer>        <M-j> <Plug>CoqNext
-    nmap <buffer>        <M-k> <Plug>CoqUndo
-    nmap <buffer><leader>c.    <Plug>CoqJumpToEnd
-    nmap <buffer><leader>c,    <Plug>CoqJumpToError
-    imap <buffer>        <M-j> <Plug>CoqNext
-    imap <buffer>        <M-k> <Plug>CoqUndo
-    nmap <buffer>   <C-c>j     <Plug>CoqNext
-    nmap <buffer>   <C-c>k     <Plug>CoqUndo
-    imap <buffer>   <C-c>j     <Plug>CoqNext
-    imap <buffer>   <C-c>k     <Plug>CoqUndo
-    nmap <buffer>   <C-c>.     <Plug>CoqJumpToEnd
-    nmap <buffer>   <C-c>,     <Plug>CoqJumpToError
-    nmap <buffer>   <C-c><C-j> <Plug>CoqNext
-    nmap <buffer>   <C-c><C-k> <Plug>CoqUndo
-    imap <buffer>   <C-c><C-j> <Plug>CoqNext
-    imap <buffer>   <C-c><C-k> <Plug>CoqUndo
-    nmap <buffer>      <C-M-j> <Plug>CoqNext
-    nmap <buffer>      <C-M-k> <Plug>CoqUndo
-    imap <buffer>      <C-M-j> <Plug>CoqNext
-    imap <buffer>      <C-M-k> <Plug>CoqUndo
+    nmap <buffer> <localleader>j <Plug>CoqNext
+    nmap <buffer> <C-M-j>        <Plug>CoqNext
+    imap <buffer> <C-Space>j     <Plug>CoqNext
+    imap <buffer> <C-Space><C-j> <Plug>CoqNext
+    imap <buffer> <C-M-j>        <Plug>CoqNext
+
+    nmap <buffer> <localleader>k <Plug>CoqUndo
+    nmap <buffer> <C-M-k>        <Plug>CoqUndo
+    imap <buffer> <C-Space>k     <Plug>CoqUndo
+    imap <buffer> <C-Space><C-k> <Plug>CoqUndo
+    imap <buffer> <C-M-k>        <Plug>CoqUndo
+
+    nmap <buffer> <localleader>. <Plug>CoqJumpToEnd
+    nmap <buffer> <localleader>, <Plug>CoqJumpToError
 
     if &ft ==# 'coq'
-        nmap <buffer>        <M-l> <Plug>CoqToLine
-        imap <buffer>        <M-l> <Plug>CoqToLine
-        nmap <buffer>   <C-c>l     <Plug>CoqToLine
-        imap <buffer>   <C-c>l     <Plug>CoqToLine
-        nmap <buffer>   <C-c><C-l> <Plug>CoqToLine
-        imap <buffer>   <C-c><C-l> <Plug>CoqToLine
-        nmap <buffer>      <C-M-l> <Plug>CoqToLine
-        imap <buffer>      <C-M-l> <Plug>CoqToLine
+        nmap <buffer> <localleader>l <Plug>CoqToLine
+        nmap <buffer> <C-M-l>        <Plug>CoqToLine
+        imap <buffer> <C-Space>l     <Plug>CoqToLine
+        imap <buffer> <C-Space><C-l> <Plug>CoqToLine
+        imap <buffer> <C-M-l>        <Plug>CoqToLine
     endif
 
-    nmap <buffer>       <C-w>s :<C-u>call tomtomjhj#coq#split('split')<CR>
-    nmap <buffer>       <C-w>v :<C-u>call tomtomjhj#coq#split('vsplit')<CR>
+    nmap <buffer> <C-w>s <Cmd>call tomtomjhj#coq#split('split')<CR>
+    nmap <buffer> <C-w>v <Cmd>call tomtomjhj#coq#split('vsplit')<CR>
 
-    nmap <buffer>        <M-]> <Plug>CoqGotoDef
-    nmap <buffer>        <M-\> :<C-u>CoqGotoDefSplit <C-r>=coqtail#util#getcurword()<CR><CR>
+    if &ft ==# 'coq'
+        nmap <buffer> <M-]> <Plug>CoqGotoDef
+    endif
+    nmap <buffer> <M-\> <Cmd>CoqGotoDefSplit <C-r>=coqtail#util#getcurword()<CR><CR>
 
-    nmap <buffer><leader>cs    :<C-u>Coq Search<space>
-    xmap <buffer><leader>cs    <Plug>CoqSearch
+    nmap <buffer> <localleader>cs :<C-u>Coq Search<space>
+    xmap <buffer> <localleader>cs <Plug>CoqSearch
 
-    nmap <buffer><leader>ch    :<C-u>Coq Check<space>
-    xmap <buffer><leader>ch    <Plug>CoqCheck
+    nmap <buffer> <localleader>ch :<C-u>Coq Check<space>
+    xmap <buffer> <localleader>ch <Plug>CoqCheck
 
-    nmap <buffer>        <M-.> <Plug>CoqAbout
-    xmap <buffer>        <M-.> <Plug>CoqAbout
-    nmap <buffer><leader>?     :<C-u>Coq About<space>
+    nmap <buffer> <M-.>          <Plug>CoqAbout
+    xmap <buffer> <M-.>          <Plug>CoqAbout
+    nmap <buffer> <localleader>? :<C-u>Coq About<space>
 
-    nmap <buffer>        <M-,> <Plug>CoqPrint
-    xmap <buffer>        <M-,> <Plug>CoqPrint
-    nmap <buffer><leader>p     :<C-u>Coq Print<space>
+    nmap <buffer> <M-,>          <Plug>CoqPrint
+    xmap <buffer> <M-,>          <Plug>CoqPrint
+    nmap <buffer> <localleader>p :<C-u>Coq Print<space>
 
-    nmap <buffer><leader>lc    :<C-u>Coq Locate<space>
-    xmap <buffer><leader>lc    :<C-u>Coq Locate "<C-r>=coqtail#util#getvisual()<CR>"
+    nmap <buffer> <localleader>lc :<C-u>Coq Locate<space>
+    xmap <buffer> <localleader>lc :<C-u>Coq Locate "<C-r>=coqtail#util#getvisual()<CR>"
 
-    nmap <buffer><leader>ll    <Plug>CoqRestorePanels
+    nmap <buffer> <localleader>ll <Plug>CoqRestorePanels
 
-    nmap <buffer><C-c><C-Leftmouse> <Leftmouse>zf%
+    cmap <buffer> <C-r><C-w> <C-r>=coqtail#util#getcurword()<CR>
 
-    cmap <buffer><C-r><C-w> <C-r>=coqtail#util#getcurword()<CR>
+    nmap <buffer> <localleader>fd <Cmd>exe 'normal! zE'\|call tomtomjhj#coq#folds()<CR>
 
-    nmap <buffer><leader>fd    :<C-u>exe 'normal! zE'\|call tomtomjhj#coq#folds()<CR>
+    nmap <buffer> gq   <cmd>set opfunc=tomtomjhj#coq#gq<CR>g@
+    nmap <buffer> gqq  <cmd>set opfunc=tomtomjhj#coq#gq<CR>g@l
+    nmap <buffer> gqgq <cmd>set opfunc=tomtomjhj#coq#gq<CR>g@l
+    vmap <buffer> gq   <cmd>call tomtomjhj#coq#gq(visualmode(), 1)<CR>
 
-    nmap <buffer>gq   <cmd>set opfunc=tomtomjhj#coq#gq<CR>g@
-    nmap <buffer>gqq  <cmd>set opfunc=tomtomjhj#coq#gq<CR>g@l
-    nmap <buffer>gqgq <cmd>set opfunc=tomtomjhj#coq#gq<CR>g@l
-    vmap <buffer>gq   <cmd>call tomtomjhj#coq#gq(visualmode(), 1)<CR>
+    nmap <buffer> <localleader><C-L> <Cmd>call tomtomjhj#coq#clearhl()<CR>
 
-    nnoremap <buffer><localleader><C-L> :<C-u>call tomtomjhj#coq#clearhl()<CR>
-
-    nmap <buffer> ]g <Plug>CoqGotoGoalNextStart
-    nmap <buffer> ]G <Plug>CoqGotoGoalNextEnd
     nmap <buffer> [g <Plug>CoqGotoGoalPrevStart
     nmap <buffer> [G <Plug>CoqGotoGoalPrevEnd
+    nmap <buffer> ]g <Plug>CoqGotoGoalNextStart
+    nmap <buffer> ]G <Plug>CoqGotoGoalNextEnd
 endfunction
 
 " TODO: normal gotodef-ing in aux buf makes it 'buflisted'

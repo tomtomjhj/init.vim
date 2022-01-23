@@ -160,8 +160,16 @@ set encoding=utf-8
 set spellfile=~/.vim/spell/en.utf-8.add
 set spelllang=en,cjk
 
-let mapleader = ","
-set timeoutlen=987
+let mapleader = "\<Space>"
+noremap <Space> <Nop>
+let maplocalleader = ","
+noremap , <Nop>
+noremap <M-;> ,
+" <C-Space> as the insert mode leader
+noremap! <C-Space> <Nop>
+" scrolling with only left hand
+noremap <C-Space> <C-u>
+noremap <Space><Space> <C-d>
 
 set wildmenu wildmode=longest:full,full
 let s:wildignore_files = ['*~', '%*', '*.o', '*.so', '*.pyc', '*.pdf', '*.v.d', '*.vo*', '*.glob', '*.cm*', '*.aux']
@@ -781,9 +789,6 @@ noremap <leader>J J
 noremap <expr> H v:count ? 'H' : 'h'
 noremap <expr> L v:count ? 'L' : 'l'
 
-nnoremap <space> <C-d>
-nnoremap <c-space> <C-u>
-
 noremap <M-0> ^w
 
 let g:sneak#s_next = 0
@@ -874,7 +879,7 @@ noremap <leader>do :diffget<CR>
 
 " clipboard.
 inoremap <C-v> <C-g>u<C-\><C-o>:set paste<CR><C-r>+<C-\><C-o>:set nopaste<CR>
-vnoremap <C-c> "+y
+xnoremap <leader>y "+y
 
 " buf/filename
 noremap <leader>fn 2<C-g>

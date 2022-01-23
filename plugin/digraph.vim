@@ -187,8 +187,8 @@ function s:SetupDigraph()
     digraph sY 120040
     digraph sZ 120041
 
-    unmap! <C-space>
-    noremap! <C-space> <C-k>
+    unmap! <C-Space><C-Space>
+    noremap! <C-Space><C-Space> <C-k>
     return ''
 endfunction
 
@@ -198,4 +198,4 @@ endfunction
 "     call setcellwidths([[9711, 9711, 2]]) " ◯
 " endif
 
-noremap! <silent> <C-space> <C-R>=<SID>SetupDigraph()<CR><C-K>
+noremap! <silent> <C-Space><C-Space> <C-R>=<SID>SetupDigraph()<CR><C-K>

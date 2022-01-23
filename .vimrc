@@ -45,11 +45,16 @@ if !has('gui_running')
     exe 'noremap  <M-'.c.'>' c
     exe 'noremap! <M-'.c.'>' c
   endfor
-  " <M-BS>, <C-space> are not :set-able
+  " <M-BS>, <C-space> are not :set-able. So there is no nice way to map them
+  " that both vim and nvim understand.
   exe "set <F34>=\<Esc>\<C-?>"
   map! <F34> <M-BS>
-  map  <Nul> <C-space>
-  map! <Nul> <C-space>
+  map  <Nul> <C-Space>
+  map! <Nul> <C-Space>
+  " NOTE: Once a map prefix is entered, the above mapping doesn't work, i.e.
+  " <Nul><Nul> becomes <C-Space><Nul>. Currently I use non-prefix <C-Space>
+  " for this mapping only.
+  map! <C-Space><Nul> <C-Space><C-Space>
 else
   set guioptions=i
 endif
