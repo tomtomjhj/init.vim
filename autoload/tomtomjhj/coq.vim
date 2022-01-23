@@ -39,14 +39,14 @@ function! tomtomjhj#coq#mappings()
     " NOTE: [count]
     nmap <buffer> <localleader>j <Plug>CoqNext
     nmap <buffer> <C-M-j>        <Plug>CoqNext
-    imap <buffer> <C-Space>j     <Plug>CoqNext
-    imap <buffer> <C-Space><C-j> <Plug>CoqNext
+    imap <buffer> <C-g>n         <Plug>CoqNext
+    imap <buffer> <C-g><C-n>     <Plug>CoqNext
     imap <buffer> <C-M-j>        <Plug>CoqNext
 
     nmap <buffer> <localleader>k <Plug>CoqUndo
     nmap <buffer> <C-M-k>        <Plug>CoqUndo
-    imap <buffer> <C-Space>k     <Plug>CoqUndo
-    imap <buffer> <C-Space><C-k> <Plug>CoqUndo
+    imap <buffer> <C-g>p         <Plug>CoqUndo
+    imap <buffer> <C-g><C-p>     <Plug>CoqUndo
     imap <buffer> <C-M-k>        <Plug>CoqUndo
 
     nmap <buffer> <localleader>. <Plug>CoqJumpToEnd
@@ -55,8 +55,8 @@ function! tomtomjhj#coq#mappings()
     if &ft ==# 'coq'
         nmap <buffer> <localleader>l <Plug>CoqToLine
         nmap <buffer> <C-M-l>        <Plug>CoqToLine
-        imap <buffer> <C-Space>l     <Plug>CoqToLine
-        imap <buffer> <C-Space><C-l> <Plug>CoqToLine
+        imap <buffer> <C-g>l         <Plug>CoqToLine
+        imap <buffer> <C-g><C-l>     <Plug>CoqToLine
         imap <buffer> <C-M-l>        <Plug>CoqToLine
     endif
 

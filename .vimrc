@@ -45,16 +45,12 @@ if !has('gui_running')
     exe 'noremap  <M-'.c.'>' c
     exe 'noremap! <M-'.c.'>' c
   endfor
-  " <M-BS>, <C-space> are not :set-able. So there is no nice way to map them
-  " that both vim and nvim understand.
+  " <M-BS>, <C-space> are not :set-able. So there is no nice way to use them
+  " in multi-char mapping that that both vim and nvim understand.
   exe "set <F34>=\<Esc>\<C-?>"
   map! <F34> <M-BS>
   map  <Nul> <C-Space>
   map! <Nul> <C-Space>
-  " NOTE: Once a map prefix is entered, the above mapping doesn't work, i.e.
-  " <Nul><Nul> becomes <C-Space><Nul>. Currently I use non-prefix <C-Space>
-  " for this mapping only.
-  map! <C-Space><Nul> <C-Space><C-Space>
 
   " :h undercurl
   let &t_Cs = "\e[4:3m"

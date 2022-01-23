@@ -165,8 +165,6 @@ noremap <Space> <Nop>
 let maplocalleader = ","
 noremap , <Nop>
 noremap <M-;> ,
-" <C-Space> as the insert mode leader
-noremap! <C-Space> <Nop>
 " scrolling with only left hand
 noremap <C-Space> <C-u>
 noremap <Space><Space> <C-d>
