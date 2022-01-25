@@ -45,8 +45,12 @@ if !has('gui_running')
     exe 'noremap  <M-'.c.'>' c
     exe 'noremap! <M-'.c.'>' c
   endfor
+  " NOTE: "set <C-M-j>=\<Esc>\<NL>" breaks stuff. So use <C-M-n> instead.
+  exe "set <C-M-n>=\<Esc>\<C-n>"
+  exe "set <C-M-k>=\<Esc>\<C-k>"
+  exe "set <C-M-l>=\<Esc>\<C-l>"
   " <M-BS>, <C-space> are not :set-able. So there is no nice way to use them
-  " in multi-char mapping that that both vim and nvim understand.
+  " in multi-char mapping that both vim and nvim understand.
   exe "set <F34>=\<Esc>\<C-?>"
   map! <F34> <M-BS>
   map  <Nul> <C-Space>
@@ -66,8 +70,8 @@ if has('clipboard') && !has('gui_running')
   function s:InitClipboard()
     let &clipboard = s:clipboard
     call serverlist()
-    inoremap <C-v> <C-\><C-o>:setl paste<CR><C-r>+<C-\><C-o>:setl nopaste<CR>
-    vnoremap <C-c> "+y
+    inoremap <C-v> <C-g>u<C-r><C-p>+
+    noremap <leader>y "+y
     return ''
   endfunction
   inoremap <silent> <C-v> <C-R>=<SID>InitClipboard()<CR><C-v>

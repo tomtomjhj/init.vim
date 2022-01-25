@@ -39,9 +39,11 @@ function! tomtomjhj#coq#mappings()
     " NOTE: [count]
     nmap <buffer> <localleader>j <Plug>CoqNext
     nmap <buffer> <C-M-j>        <Plug>CoqNext
+    nmap <buffer> <C-M-n>        <Plug>CoqNext
     imap <buffer> <C-g>n         <Plug>CoqNext
     imap <buffer> <C-g><C-n>     <Plug>CoqNext
     imap <buffer> <C-M-j>        <Plug>CoqNext
+    imap <buffer> <C-M-n>        <Plug>CoqNext
 
     nmap <buffer> <localleader>k <Plug>CoqUndo
     nmap <buffer> <C-M-k>        <Plug>CoqUndo
@@ -66,7 +68,7 @@ function! tomtomjhj#coq#mappings()
     if &ft ==# 'coq'
         nmap <buffer> <M-]> <Plug>CoqGotoDef
     endif
-    nmap <buffer> <M-\> <Cmd>CoqGotoDefSplit <C-r>=coqtail#util#getcurword()<CR><CR>
+    nmap <buffer><expr> <M-\> "\<Cmd>CoqGotoDefSplit " . coqtail#util#getcurword() . "\<CR>"
 
     nmap <buffer> <localleader>cs :<C-u>Coq Search<space>
     xmap <buffer> <localleader>cs <Plug>CoqSearch

@@ -61,7 +61,7 @@ Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'lambdalisue/fern.vim'
 Plug 'lambdalisue/fern-hijack.vim'
 Plug 'kassio/neoterm'
-Plug 'inkarkat/vim-mark', { 'on': '<Plug>MarkS' }
+Plug 'inkarkat/vim-mark', { 'on': ['<Plug>MarkS', 'Mark'] }
 Plug 'inkarkat/vim-ingo-library'
 
 " lanauges
@@ -863,7 +863,7 @@ noremap <leader>do :diffget<CR>
 
 " clipboard.
 inoremap <C-v> <C-g>u<C-r><C-p>+
-xnoremap <leader>y "+y
+noremap <leader>y "+y
 
 " buf/filename
 noremap <leader>fn 2<C-g>
@@ -1099,7 +1099,9 @@ let g:flog_permanent_default_arguments = { 'date': 'short', }
 
 augroup git-custom | au!
     " TODO: Very slow and doesn't fold each hunk.
-    au FileType git,fugitive,gitcommit nnoremap <buffer>zM :setlocal foldmethod=syntax\|unmap <lt>buffer>zM<CR>zM
+    au FileType git,fugitive,gitcommit
+        \ nnoremap <buffer>zM :setlocal foldmethod=syntax\|unmap <lt>buffer>zM<CR>zM
+        \|silent! unmap <buffer> *
     au User FugitiveObject,FugitiveIndex silent! unmap <buffer> *
     au FileType floggraph silent! nunmap <buffer> <Tab>
 augroup END
