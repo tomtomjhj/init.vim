@@ -285,15 +285,16 @@ let g:lightline = {
       \     't': 'T ',
       \ }
       \ }
-func! ShortRelPath()
-    let name = expand('%')
+function! ShortRelPath()
+    if &filetype ==# 'fern'
+        return pathshorten(fnamemodify(b:fern.root._path, ":~"))
+    endif
+    let name = bufname()
     if empty(name)
         return empty(&buftype) ? '[No Name]' : &buftype ==# 'nofile' ? '[Scratch]' : ''
-    elseif isdirectory(name)
-        return pathshorten(fnamemodify(name[:-2], ":~")) . '/'
     endif
     return pathshorten(fnamemodify(name, ":~:."))
-endfunc
+endfunction
 function! SearchCount()
     if !v:hlsearch | return '' | endif
     try
@@ -1081,7 +1082,7 @@ function! s:init_fern() abort
     map <buffer> x <Plug>(fern-action-mark)
     map <buffer> <C-n> <Plug>(fern-action-new-file)
     " or use the 'ex' action
-    cmap <buffer> <C-r><C-p> <C-r><C-r>=fern#helper#new().sync.get_root_node()._path<CR>
+    cmap <buffer> <C-r><C-p> <C-r><C-r>=b:fern.root._path<CR>
     nmap <buffer> <leader>cd :cd <C-r><C-p>/
     nmap <buffer> <leader>e  :e! <C-r><C-p>/
     nmap <buffer> <leader>te :tabedit <C-r><C-p>/
