@@ -259,6 +259,8 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
         * `plug#load` only sources `.vim` files. <https://github.com/hrsh7th/nvim-cmp/issues/65>
         * Order of `setup()` and `plugin/*.lua` sourcing?
     * impatient.nvim makes lua plugin startup fast enough.
+* Once a map prefix is entered, single-char mapping doesn't take the effect.
+  Example: With `map! <Nul> <C-Space>` and `noremap! <C-Space><C-Space> XXX`, `<Nul><Nul>` becomes `<C-Space><Nul>`.
 
 # (n)vim issues
 

@@ -862,7 +862,7 @@ noremap <leader>dp :diffput<CR>
 noremap <leader>do :diffget<CR>
 
 " clipboard.
-inoremap <C-v> <C-g>u<C-r><C-p>+
+inoremap <C-v> <C-g>u<C-r><C-o>+
 noremap <leader>y "+y
 
 " buf/filename
