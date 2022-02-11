@@ -48,8 +48,10 @@ cmp.setup {
     { name = 'ultisnips' },
     { name = 'tags' },
   },
+  view = {
+    entries = 'native', -- NOTE: temporary mitigation for https://github.com/hrsh7th/nvim-cmp/issues/328
+  },
   experimental = {
-    native_menu = true, -- NOTE: temporary mitigation for https://github.com/hrsh7th/nvim-cmp/issues/328
     ghost_text = false,
   },
   mapping = {
