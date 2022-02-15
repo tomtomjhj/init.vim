@@ -349,6 +349,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
     * https://github.com/ray-x/lsp_signature.nvim
     * https://github.com/stevearc/aerial.nvim
     * https://github.com/gfanto/fzf-lsp.nvim
+    * https://github.com/j-hui/fidget.nvim
 * https://github.com/RRethy/nvim-treesitter-textsubjects
   https://github.com/vigoux/architext.nvim
   https://github.com/abecodes/tabout.nvim

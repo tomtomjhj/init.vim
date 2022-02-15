@@ -1,9 +1,8 @@
-" vim: set foldmethod=marker foldlevel=0 nomodeline:
+" vim: set foldmethod=marker foldlevel=0:
 
 let g:ide_client = get(g:, 'ide_client', has('nvim-0.5') ? 'nvim' : 'coc')
 
 " TODO: packadd-based, lazy-loaded (event, normal, ex), vim/nvim compatible plugin manager?
-" NOTE: lua plugin startup is slow. https://github.com/neovim/neovim/pull/15282 https://github.com/neovim/neovim/pull/15436
 " Plug {{{
 call plug#begin('~/.vim/plugged')
 
@@ -37,7 +36,6 @@ Plug 'tpope/vim-fugitive'
 " * Command argument design is somewhat ad-hoc. Why do we need them? Why not
 "   just git-log stuff and fugitive#LogComplete?
 " * inline the patch in the flog buffer?
-" * au User FugitiveChanged: update the flog buffer
 " * map <C-n> and <C-p> in the temporary fugitive:// window
 " * BUG: When there is a flog-temp-window and the cursor is near the right side of the window, flog-<CR> scrolls the window to the right.
 "   * It's the problem of `vertical belowright Flogsplitcommit`
@@ -45,6 +43,7 @@ Plug 'tpope/vim-fugitive'
 "     nothing wrong with Gsplit
 " * respect current layout; don't force vsplit on <CR>
 " * buffer name with URI scheme like fugitive:// and fern://
+" * something like fugitive's cmap <C-r><C-g> in flog graph. there's flog-y<C-G> though
 Plug 'rbong/vim-flog'
 Plug 'rhysd/git-messenger.vim'
 Plug 'skywind3000/asyncrun.vim'
@@ -84,6 +83,7 @@ else
     Plug 'nvim-lua/lsp-status.nvim'
     Plug 'folke/lua-dev.nvim'
     Plug 'simrat39/rust-tools.nvim'
+    " https://github.com/p00f/clangd_extensions.nvim
 endif
 " TODO: use vsnip? (supports vscode snippets)
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
@@ -96,10 +96,8 @@ Plug 'tomtomjhj/vim-ocaml'
 Plug 'tomtomjhj/haskell-vim', { 'branch': 'custom' }
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'lervag/vimtex'
-Plug 'KeitaNakamura/tex-conceal.vim'
 Plug 'whonore/Coqtail'
 " Plug 'puremourning/vimspector' | let g:vimspector_enable_mappings = 'HUMAN'
-Plug 'cespare/vim-toml'
 Plug 'neoclide/jsonc.vim'
 Plug 'rhysd/vim-llvm'
 Plug 'fatih/vim-go', { 'do': 'rm -rf plugin ftplugin' }
@@ -191,7 +189,7 @@ set undofile
 if has('nvim-0.5') | set undodir=~/.vim/undoo// | else | set undodir=~/.vim/undo// | endif
 
 set autoread
-set splitright splitbelow
+set splitright splitbelow " TODO: not natural for Gdiffsplit with object
 if (has('patch-8.1.2315') || has('nvim-0.5')) | set switchbuf+=uselast | endif
 set hidden
 set lazyredraw
@@ -393,6 +391,7 @@ augroup Languages | au!
     au FileType bib call s:bib()
     au FileType c,cpp,cuda call s:c_cpp()
     au FileType coq,coq-goals,coq-infos call s:coq_common()
+    au FileType coq call s:coq()
     au FileType coq-goals,coq-infos call s:coq_aux()
     au FileType go call s:go()
     au FileType haskell call s:haskell()
@@ -431,6 +430,7 @@ let g:cargo_shell_command_runner = 'AsyncRun -post=CW'
 command! -nargs=* Cclippy call cargo#cmd("+nightly clippy -Zunstable-options " . <q-args>)
 command! -range=% PrettifyRustSymbol <line1>,<line2>SubstituteDict { '$SP$': '@', '$BP$': '*', '$RF$': '&', '$LT$': '<', '$GT$': '>', '$LP$': '(', '$RP$': ')', '$C$' : ',',  '$u20$': ' ', '$u7b$': '{', '$u7d$': '}', }
 function! s:rust() abort
+    setlocal path+=src
     " TODO fix 'spellcapcheck' for `//!` comments, also fix <leader>sc mapping
     " TODO: matchit handle < -> non-pair
     let b:pear_tree_pairs['|'] = {'closer': '|'}
@@ -622,6 +622,7 @@ function! s:coq_common() abort
     " TODO: coq uses zero-based column index..                     vv
     setlocal errorformat=File\ \"%f\"\\,\ line\ %l\\,\ characters\ %c-%*[0-9]:
     setlocal matchpairs+=⌜:⌝,⎡:⎤
+    setlocal path+=theories,_opam/lib/coq/theories,_opam/lib/coq/user-contrib/*
     call tomtomjhj#coq#mappings()
 endfunction
 function! s:coq() abort
@@ -1103,6 +1104,7 @@ augroup git-custom | au!
         \ nnoremap <buffer>zM :setlocal foldmethod=syntax\|unmap <lt>buffer>zM<CR>zM
         \|silent! unmap <buffer> *
     au User FugitiveObject,FugitiveIndex silent! unmap <buffer> *
+    au User FugitiveChanged if &ft ==# 'floggraph' | call flog#populate_graph_buffer() | endif
     au FileType floggraph silent! nunmap <buffer> <Tab>
 augroup END
 " }}}

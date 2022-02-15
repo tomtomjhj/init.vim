@@ -41,7 +41,6 @@ hi! def link coqEqnKwd            Keyword
 hi! def link coqProofDelim        Keyword
 hi! def link coqTermPunctuation   Operator
 hi! def link coqVernacPunctuation Operator
-hi! def link coqIdent             Constant
 hi! def link coqNotationString    String
 hi! def link coqConstructor       Constant
 hi! def link coqNotationKwd       NONE
