@@ -96,7 +96,7 @@ Plug 'tomtomjhj/vim-ocaml'
 Plug 'tomtomjhj/haskell-vim', { 'branch': 'custom' }
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'lervag/vimtex'
-Plug 'whonore/Coqtail'
+Plug 'tomtomjhj/Coqtail'
 " Plug 'puremourning/vimspector' | let g:vimspector_enable_mappings = 'HUMAN'
 Plug 'neoclide/jsonc.vim'
 Plug 'rhysd/vim-llvm'
