@@ -5,6 +5,7 @@ let &packpath = &runtimepath
 lua << EOF
 tomtomjhj = tomtomjhj or {}
 
+-- NOTE: for cmdline-mode, use :lua =expr
 function P(v)
   print(vim.inspect(v))
   return v

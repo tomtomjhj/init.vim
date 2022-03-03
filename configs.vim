@@ -173,7 +173,7 @@ let s:wildignore_dirs = ['.git', '__pycache__', 'target']
 set complete-=i complete-=u
 set path=.,,
 
-set ignorecase smartcase
+set ignorecase smartcase tagcase=followscs
 set hlsearch incsearch
 
 set noerrorbells novisualbell t_vb=
@@ -386,7 +386,7 @@ nnoremap <M-i> <C-i>
 " }}}
 
 " Languages {{{
-" see also ftplugin/, after/ftplugin/, SetupLSP(), SetupLSPPost()
+" see also {,after/}{indent,ftplugin}/, SetupLSP(), SetupLSPPost()
 augroup Languages | au!
     au FileType bib call s:bib()
     au FileType c,cpp,cuda call s:c_cpp()
@@ -605,7 +605,9 @@ let g:go_highlight_function_calls = 1
 let g:go_highlight_types = 1
 function! s:go() abort
     setlocal noexpandtab
-    let b:undo_ftplugin .= " | setl et<"
+    exe 'setlocal shiftwidth='.&l:tabstop
+    setlocal path+=vendor
+    let b:undo_ftplugin .= " | setl et< sw< path<"
 endfunction
 " }}}
 
@@ -648,8 +650,8 @@ let g:vimsyn_embed = 'l' " NOTE: only loads $VIMRUNTIME/syntax/lua.vim
 " search_mode: which command last set @/?
 " `*`, `v_*` without moving the cursor. Reserve @c for the raw original text
 " NOTE: Can't repeat properly if ins-special-special is used. Use q-recording.
-nnoremap <silent>* :call Star(0)\|set hlsearch<CR>
-nnoremap <silent>g* :call Star(1)\|set hlsearch<CR>
+nnoremap <silent>* :<C-u>call Star(0)\|set hlsearch<CR>
+nnoremap <silent>g* :<C-u>call Star(1)\|set hlsearch<CR>
 vnoremap <silent>* :<C-u>call VisualStar(0)\|set hlsearch<CR>
 vnoremap <silent>g* :<C-u>call VisualStar(1)\|set hlsearch<CR>
 " set hlsearch inside the function doesn't work? Maybe :h function-search-undo?
