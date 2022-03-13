@@ -340,8 +340,8 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * https://github.com/tpope/vim-obsession
 * https://github.com/lpinilla/vim-codepainter
 * https://github.com/kshenoy/vim-signature marks
-* https://github.com/lambdalisue/fern.vim
 * https://github.com/Konfekt/vim-compilers
+* https://github.com/dkarter/bullets.vim
 * https://mg979.github.io/tasks.vim
 * lsp stuff
     * https://github.com/jose-elias-alvarez/null-ls.nvim
@@ -358,12 +358,13 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
     * https://github.com/pwntester/octo.nvim
     * https://github.com/TimUntersberger/neogit
     * https://github.com/lewis6991/gitsigns.nvim
+    * https://github.com/sindrets/diffview.nvim
 * https://github.com/nvim-telescope/telescope.nvim
   https://github.com/nvim-telescope/telescope-frecency.nvim
 * https://github.com/vhyrro/neorg
   https://github.com/kristijanhusak/orgmode.nvim
 * https://github.com/vijaymarupudi/nvim-fzf
-  https://github.com/ibhagwan/fzf-lua
+  **<https://github.com/ibhagwan/fzf-lua>**
   https://github.com/stevearc/dressing.nvim
 * https://github.com/jbyuki/instant.nvim
   https://github.com/jbyuki/nabla.nvim

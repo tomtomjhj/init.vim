@@ -77,6 +77,9 @@ lua << EOF
 tomtomjhj.lsp = require('tomtomjhj/lsp')
 EOF
 
+" lsp_markdown can't be customized..
+hi! link markdownError NONE
+
 function! SetupLSP()
   augroup LocalNvimLSPStuff | au! * <buffer>
   augroup END
@@ -87,9 +90,9 @@ function! SetupLSP()
   nnoremap <buffer><silent><leader>gy    <cmd>lua vim.lsp.buf.type_definition()<CR>
   nnoremap <buffer><silent><leader>rf    <cmd>lua vim.lsp.buf.references()<CR>
   nnoremap <buffer><silent><leader>gd    <cmd>lua vim.lsp.buf.declaration()<CR>
-  " TODO: Formatting don't preserve the view, unlike ale_fix (see ale#util#SetBufferContents)
-  " and buggy when used with treesitter https://github.com/neovim/neovim/issues/12861
   nnoremap <buffer><silent><leader>fm    <cmd>lua vim.lsp.buf.formatting()<CR>
+  " TODO: vim.lsp.buf.range_formatting() or vim.lsp.formatexpr() → refactor
+  " into a function that doesn't use v: so that it's usable without gq?
   nnoremap <buffer><silent><leader>rn    <cmd>lua vim.lsp.buf.rename()<CR>
   nnoremap <buffer><silent><leader>ac    <cmd>lua vim.lsp.buf.code_action()<CR>
   nnoremap <buffer><silent>        [d    <cmd>lua vim.diagnostic.goto_prev{float=false}<CR>

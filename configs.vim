@@ -287,7 +287,7 @@ function! ShortRelPath()
     if &filetype ==# 'fern'
         return pathshorten(fnamemodify(b:fern.root._path, ":~"))
     endif
-    let name = bufname()
+    let name = bufname('%')
     if empty(name)
         return empty(&buftype) ? '[No Name]' : &buftype ==# 'nofile' ? '[Scratch]' : ''
     endif
@@ -454,6 +454,7 @@ endfunction
 let g:python_highlight_all = 1
 let g:python_highlight_builtin_funcs = 0
 function! s:python() abort
+    setlocal foldmethod=indent foldnestmax=2 foldignore=
     setlocal formatoptions+=ro
 endfunction
 " }}}
@@ -652,8 +653,8 @@ let g:vimsyn_embed = 'l' " NOTE: only loads $VIMRUNTIME/syntax/lua.vim
 " NOTE: Can't repeat properly if ins-special-special is used. Use q-recording.
 nnoremap <silent>* :<C-u>call Star(0)\|set hlsearch<CR>
 nnoremap <silent>g* :<C-u>call Star(1)\|set hlsearch<CR>
-vnoremap <silent>* :<C-u>call VisualStar(0)\|set hlsearch<CR>
-vnoremap <silent>g* :<C-u>call VisualStar(1)\|set hlsearch<CR>
+xnoremap <silent>* :<C-u>call VisualStar(0)\|set hlsearch<CR>
+xnoremap <silent>g* :<C-u>call VisualStar(1)\|set hlsearch<CR>
 " set hlsearch inside the function doesn't work? Maybe :h function-search-undo?
 " NOTE: word boundary is syntax property -> may not match in other ft buffers
 let g:search_mode = get(g:, 'search_mode', '/')
@@ -764,12 +765,12 @@ nnoremap <expr> j                     v:count ? 'j' : 'gj'
 nnoremap <expr> k                     v:count ? 'k' : 'gk'
 nnoremap <expr> J                     v:count ? 'j' : 'gj'
 nnoremap <expr> K                     v:count ? 'k' : 'gk'
-vnoremap <expr> j mode() !=# 'v' \|\| v:count ? 'j' : 'gj'
-vnoremap <expr> k mode() !=# 'v' \|\| v:count ? 'k' : 'gk'
+xnoremap <expr> j mode() !=# 'v' \|\| v:count ? 'j' : 'gj'
+xnoremap <expr> k mode() !=# 'v' \|\| v:count ? 'k' : 'gk'
 onoremap <expr> j mode() !=# 'v' \|\| v:count ? 'j' : 'gj'
 onoremap <expr> k mode() !=# 'v' \|\| v:count ? 'k' : 'gk'
-vnoremap <expr> J mode() !=# 'v' \|\| v:count ? 'j' : 'gj'
-vnoremap <expr> K mode() !=# 'v' \|\| v:count ? 'k' : 'gk'
+xnoremap <expr> J mode() !=# 'v' \|\| v:count ? 'j' : 'gj'
+xnoremap <expr> K mode() !=# 'v' \|\| v:count ? 'k' : 'gk'
 onoremap <expr> J mode() !=# 'v' \|\| v:count ? 'j' : 'gj'
 onoremap <expr> K mode() !=# 'v' \|\| v:count ? 'k' : 'gk'
 noremap <leader>J J
@@ -801,6 +802,8 @@ let g:sneak#alias = {
 " s-word: (a keyword | repetition of non-paren special char | a paren | whitespace)
 let g:sword = '\v(\k+|([^[:alnum:]_[:blank:](){}[\]<>''"`$])\2*|[(){}[\]<>''"`$]|\s+)'
 "                     %(\k|[()[\]{}<>[:blank:]$])@!(.)\1*
+" NOTE: \v(<|>) works well for word chars, but not for non-word chars 𝓥s
+" '\v(<|>|[^[:alnum:]_[:blank:]])', '\k\+\|[[:punct:]]\|\s\+'
 
 " Jump past a sword. Assumes `set whichwrap+=]` for i_<Right>
 inoremap <silent><C-j> <C-r>=SwordJumpRight()<CR><Right>
@@ -909,9 +912,9 @@ xnoremap <silent> & :&&<cr>
 
 " set nrformats+=alpha
 noremap  <M-+> <C-a>
-vnoremap <M-+> g<C-a>
+xnoremap <M-+> g<C-a>
 noremap  <M--> <C-x>
-vnoremap <M--> g<C-x>
+xnoremap <M--> g<C-x>
 
 nnoremap <C-j> <C-W>j
 nnoremap <C-k> <C-W>k
@@ -1089,6 +1092,8 @@ function! s:init_fern() abort
     nmap <buffer> <leader>cd :cd <C-r><C-p>/
     nmap <buffer> <leader>e  :e! <C-r><C-p>/
     nmap <buffer> <leader>te :tabedit <C-r><C-p>/
+    " toggle both hidden and exclude
+    nmap <buffer> <expr> ! "\<Plug>(fern-action-exclude=)\<C-u>" . (!b:fern.hidden ? "" : g:fern#default_exclude) . "\<CR>" . "\<Plug>(fern-action-hidden:toggle)"
 endfunction
 
 augroup fern-custom | au!

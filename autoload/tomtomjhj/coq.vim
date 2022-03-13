@@ -104,6 +104,10 @@ function! tomtomjhj#coq#mappings()
     nmap <buffer> [G <Plug>CoqGotoGoalPrevEnd
     nmap <buffer> ]g <Plug>CoqGotoGoalNextStart
     nmap <buffer> ]G <Plug>CoqGotoGoalNextEnd
+    if &ft ==# 'coq-goals'
+        nmap <buffer> [[ <Cmd>call tomtomjhj#coq#goal_section(1)<CR>
+        nmap <buffer> ]] <Cmd>call tomtomjhj#coq#goal_section(0)<CR>
+    endif
 endfunction
 
 " TODO: normal gotodef-ing in aux buf makes it 'buflisted'
@@ -143,6 +147,10 @@ function! tomtomjhj#coq#folds()
     keepjumps keeppatterns global/\v^\s*\zs(End|Qed|Defined|Abort|Admitted|Save).*\./normal zf%
     normal! zM
     call setpos('.', save_cursor)
+endfunction
+
+function! tomtomjhj#coq#goal_section(back) abort
+    call search('\v^(\=+ \(\d|-+[□∗])', a:back ? 'bW' : 'W') " )
 endfunction
 
 " prevent indentexpr from breaking gq on comments
