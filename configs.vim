@@ -869,7 +869,7 @@ noremap <leader>do :diffget<CR>
 
 " clipboard.
 inoremap <C-v> <C-g>u<C-r><C-o>+
-noremap <leader>y "+y
+noremap <M-c> "+y
 
 " buf/filename
 noremap <leader>fn 2<C-g>

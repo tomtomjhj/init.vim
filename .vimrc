@@ -40,7 +40,7 @@ if !has('gui_running')
   " Fortunately, they are not important and can be disabled.
   set t_IS= t_RF= t_RB= t_SC= t_ts= t_Cs= " uses <Esc>]
   set t_RS= " uses <Esc>P and <ESC>\
-  for c in ['+', '-', '/', '0', ';', 'P', 'n', 'p', 'q', 'y'] + [',', '.', '\', ']', '\|']
+  for c in ['+', '-', '/', '0', ';', 'P', 'c', 'n', 'p', 'q', 'y'] + [',', '.', '\', ']', '\|']
     exe 'set <M-'.c.'>='."\<Esc>".c
     exe 'noremap  <M-'.c.'>' c
     exe 'noremap! <M-'.c.'>' c
