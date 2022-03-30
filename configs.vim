@@ -1,8 +1,10 @@
 " vim: set foldmethod=marker foldlevel=0:
 
-let g:ide_client = get(g:, 'ide_client', has('nvim-0.5') ? 'nvim' : 'coc')
+let s:nvim_latest_stable = has('nvim-0.6.1')
+let g:ide_client = get(g:, 'ide_client', s:nvim_latest_stable ? 'nvim' : 'coc')
 
 " TODO: packadd-based, lazy-loaded (event, normal, ex), vim/nvim compatible plugin manager?
+" TODO: post-update hook doesn't work on nvim-0.6 Vim(call):E117: Unknown function: mkdp#util#install ...
 " Plug {{{
 call plug#begin('~/.vim/plugged')
 
@@ -108,16 +110,14 @@ Plug 'tbastos/vim-lua'
 " etc etc
 if has('nvim')
     Plug 'antoinemadec/FixCursorHold.nvim'
-    Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 endif
-if has('nvim-0.5')
+if s:nvim_latest_stable
+    Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
     " Plug 'nvim-lua/plenary.nvim'
-    " Plug 'nvim-lua/popup.nvim'
+    Plug 'b3nj5m1n/kommentary', {'on': '<Plug>kommentary'}
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'nvim-treesitter/playground'
-    Plug 'b3nj5m1n/kommentary', {'on': '<Plug>kommentary'}
-endif
-if has('nvim-0.6')
+    " NOTE: should do `rm ~/.cache/nvim/luacache*` after upgrading nvim
     Plug 'lewis6991/impatient.nvim'
 endif
 
@@ -125,7 +125,7 @@ endif
 " Custom au FileType should be registered after this.
 call plug#end()
 
-if has('nvim-0.6')
+if s:nvim_latest_stable
     lua require('impatient')
 endif
 " }}}
@@ -329,7 +329,7 @@ silent! set termguicolors pumblend=15
 if g:ide_client == 'coc'
     inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : <SID>check_back_space() ? "\<Tab>" : coc#refresh()
     inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-else " lua
+elseif g:ide_client == 'nvim'
     lua require'tomtomjhj/cmp'
 endif
 
@@ -1173,7 +1173,7 @@ xmap <leader>cs <Plug>NERDCommenterSexy
 nmap <leader>cs <Plug>NERDCommenterSexy
 xmap <leader>cm <Plug>NERDCommenterMinimal
 nmap <leader>cm <Plug>NERDCommenterMinimal
-if has('nvim-0.5')
+if s:nvim_latest_stable
     xmap <leader>cu <Plug>kommentary_visual_decrease<ESC>
     nmap <leader>cu <Plug>kommentary_line_decrease
 else
@@ -1224,7 +1224,7 @@ endfunction
 " }}}
 
 func! ShowSyntaxInfo()
-    if has('nvim-0.5')
+    if s:nvim_latest_stable
         TSHighlightCapturesUnderCursor
     endif
     echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")') '->' synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name')

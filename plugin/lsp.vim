@@ -1,6 +1,4 @@
-let g:ide_client = get(g:, 'ide_client', has('nvim-0.5') ? 'nvim' : 'coc')
-
-if g:ide_client == 'coc' " {{{
+if get(g:, 'ide_client', '') == 'coc' " {{{
 function! SetupLSP()
   if !get(g:, 'coc_enabled', 0) | return | endif
   augroup LocalCocStuff | au! * <buffer>
@@ -72,7 +70,7 @@ command! -nargs=0 Format call CocAction('format')
 command! -nargs=? Fold   call CocAction('fold', <f-args>)
 " }}}
 
-elseif g:ide_client == 'nvim' " {{{
+elseif get(g:, 'ide_client', '') == 'nvim' " {{{
 lua << EOF
 tomtomjhj.lsp = require('tomtomjhj/lsp')
 EOF
@@ -138,7 +136,7 @@ augroup end
 command! LspLog exe '<mods> pedit +setlocal\ nobuflisted|$' v:lua.vim.lsp.get_log_path()
 " }}}
 
-else " ale {{{
+elseif get(g:, 'ide_client', '') == 'ale' " {{{
 function! SetupLSP()
   nmap <buffer><M-.> <Plug>(ale_hover)
   nmap <buffer><M-]> <Plug>(ale_go_to_definition)

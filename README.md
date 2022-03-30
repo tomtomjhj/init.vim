@@ -33,6 +33,11 @@ sudo apt-get install -y nodejs yarn
     * https://github.com/vim/vim-win32-installer
     * python3: use vim's version, 64bit, install locally, put in PATH,
 
+* clean backup/undo files
+  ```
+  fd -uuu --changed-before 1month --exclude .gitignore '' undo undoo backup -x rm
+  ```
+
 # compile (n)vim
 ```bash
 sudo apt install ...
