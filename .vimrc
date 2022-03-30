@@ -63,6 +63,8 @@ else
   set guioptions=i
 endif
 
+source ~/.vim/configs.vim
+
 " lazy clipboard setup :h -X {{{
 if has('clipboard') && !has('gui_running')
   let s:clipboard = &clipboard
@@ -71,14 +73,13 @@ if has('clipboard') && !has('gui_running')
     let &clipboard = s:clipboard
     call serverlist()
     inoremap <C-v> <C-g>u<C-r><C-p>+
-    noremap <leader>y "+y
+    noremap <M-c> "+y
     return ''
   endfunction
   inoremap <silent> <C-v> <C-R>=<SID>InitClipboard()<CR><C-v>
-  vnoremap <silent> <C-c> <ESC>:call <SID>InitClipboard()<CR>gv"+y
+  nnoremap <silent> <M-c> <ESC>:call <SID>InitClipboard()<CR>"+y
+  xnoremap <silent> <M-c> <ESC>:call <SID>InitClipboard()<CR>gv"+y
 endif
 " }}}
-
-source ~/.vim/configs.vim
 
 " vim: set sw=2 ts=2 fdm=marker fdl=0 noml:
