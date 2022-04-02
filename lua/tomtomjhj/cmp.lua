@@ -1,6 +1,8 @@
 local cmp = require'cmp'
 
--- TODO: ignore huge buffer, ...
+cmp.register_source('tags', require'tomtomjhj/cmp_tags'.new())
+
+-- TODO: ignore huge buffer, huge buffer updates (e.g. coq-infos), cmp internal buf, ...
 -- https://github.com/hrsh7th/cmp-buffer/pull/12
 local function get_visible_bufnrs()
   local bufs = {}
@@ -31,8 +33,10 @@ end
 
 -- NOTE: keyword_pattern does 2 things: the pattern for item, and
 -- condition to list the source's item (pattern of the word before cursor)
+vim.opt.completeopt:append('menuone')
 cmp.setup {
   completion = {
+    -- NOTE: this menuone doesn't apply to native popup
     completeopt = [[menuone,noselect]],
   },
   preselect = cmp.PreselectMode.None,
@@ -91,6 +95,7 @@ cmp.setup {
       if vim_item.kind == "Text" then
         vim_item.kind = ""
       end
+      -- TODO: dup = 0 for buffer source? didn't work
       vim_item.menu = ({
           buffer = "[B]",
           nvim_lsp = "[LS]",
