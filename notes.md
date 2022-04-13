@@ -365,6 +365,10 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
   https://github.com/kristijanhusak/orgmode.nvim
 * https://github.com/vijaymarupudi/nvim-fzf
   **<https://github.com/ibhagwan/fzf-lua>**
+    * live_grep ↔ grep!
+    * Preview buffer's ftdetect uses `:filetype detect`, which is somewhat broken? `*.v` file doesn't get recognized as coq.
+    * Does not reuse the buffer for preview <https://github.com/ibhagwan/fzf-lua/issues/208#issuecomment-962550013>... 
+    * `require'fzf-lua'.setup` takes 5 ms
   https://github.com/stevearc/dressing.nvim
 * https://github.com/jbyuki/instant.nvim
   https://github.com/jbyuki/nabla.nvim
@@ -384,6 +388,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
   https://github.com/fxn/vim-monochrome
   https://git.sr.ht/~romainl/vim-bruin
   https://github.com/jeffkreeftmeijer/vim-dim
+  https://github.com/noahfrederick/vim-noctu
   https://github.com/cocopon/iceberg.vim
 * https://github.com/stevearc/gkeep.nvim
 

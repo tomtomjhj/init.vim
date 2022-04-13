@@ -45,7 +45,7 @@ cmp.setup {
     { name = 'path' },
     { name = 'buffer',
       option = {
-        keyword_pattern = [[\<\K\k\{-,30}\>]], -- TODO: per-ft keyword pattern? e.g. no \k for help file
+        keyword_pattern = [[\<\K\k\{-,38}\>]], -- TODO: per-ft keyword pattern? e.g. no \k for help file
         get_bufnrs = get_visible_bufnrs,
       }
     },
@@ -58,7 +58,7 @@ cmp.setup {
   experimental = {
     ghost_text = false,
   },
-  mapping = {
+  mapping = cmp.mapping.preset.insert {
     -- ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     -- ['<C-f>'] = cmp.mapping.scroll_docs(4),
     -- ['<C-Space>'] = cmp.mapping.complete(),

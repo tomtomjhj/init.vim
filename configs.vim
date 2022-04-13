@@ -71,7 +71,7 @@ if g:ide_client == 'coc'
     Plug 'neoclide/coc.nvim', { 'branch': 'release' }
     " Plug '~/apps/coc.nvim', { 'branch': 'master', 'do': 'yarn install --frozen-lockfile' }
     Plug 'antoinemadec/coc-fzf'
-else
+elseif g:ide_client == 'nvim'
     Plug 'hrsh7th/nvim-cmp'
     Plug 'hrsh7th/cmp-buffer'
     " Plug 'hrsh7th/cmp-cmdline'
@@ -321,7 +321,7 @@ if exists('g:colors_name') " loading the color again breaks lightline
 else
     colorscheme taiga
 endif
-silent! set termguicolors pumblend=15
+silent! set termguicolors
 " }}}
 
 " Completion {{{
@@ -446,6 +446,8 @@ endfunction
 " C,C++ {{{
 function s:c_cpp() abort
     setlocal shiftwidth=2
+    setlocal commentstring=//%s
+    setlocal path+=/usr/include
 endfunction
 " }}}
 
@@ -692,6 +694,7 @@ nnoremap <leader>gw :<C-u>Grep \b<C-R>=expand('<cword>')<CR>\b
 nnoremap <leader>gf :<C-u>Grepf<space>
 nnoremap <leader>b  :<C-u>Buffers<CR>
 nnoremap <C-f>      :<C-u>Files<CR>
+" TODO: filter out stuff that matches wildignore e.g. .git/index, .git/COMMIT_EDITMSG
 nnoremap <leader>hh :<C-u>History<CR>
 nnoremap <leader><C-t> :Tags ^<C-r><C-w>\  <CR>
 
@@ -699,6 +702,7 @@ command! -nargs=? Grep  call Ripgrep(<q-args>)
 command! -nargs=? Grepf call RipgrepFly(<q-args>)
 command! -nargs=? -complete=dir Files call Files(<q-args>)
 " allow search on the full tag info, excluding the appended tagfile name
+" TODO: shift up/down not mapped to preview scroll
 command! -nargs=* Tags call fzf#vim#tags(<q-args>, fzf#vim#with_preview({ "placeholder": "--tag {2}:{-1}:{3..}", 'options': ['-d', '\t', '--nth', '..-2'] }))
 
 func! FzfOpts(arg, spec)
@@ -1064,6 +1068,7 @@ nnoremap <silent> gx :call GXBrowse(CursorURL())<cr>
 let g:fern#default_exclude = '\v(\.glob|\.vo[sk]?|\.o)$'
 nmap <silent><leader>nn <Cmd>Fern . -drawer -toggle<CR>
 nmap <silent><leader>nf <Cmd>Fern . -drawer -reveal=%<CR>
+" TODO: %:h doesn't work for fern buffer
 nmap <silent><leader>-  <Cmd>Fern %:h<CR>
 nmap <silent><C-w>es :Fern %:h -opener=split<CR>
 nmap <silent><C-w>ev :Fern %:h -opener=vsplit<CR>
