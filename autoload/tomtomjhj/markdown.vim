@@ -74,11 +74,10 @@ endfunc
 
 " etc {{{1
 " TODO: refactor
-" * use ++once
 " * --defaults file in dots repo https://pandoc.org/MANUAL.html#default-files
 " * option for --pdf-engine=xelatex .. or more general command
 " * --from=commonmark_x by default? https://github.com/jgm/pandoc/wiki/Roadmap#pandocs-markdown-transition-to-commonmark
-" * remove pandoc-citeproc? (2.11 got built-in citation support)
+"   * NOTE: commonmark_x seems to break latex in header-includes..
 " * project-local include?
 " * more run options
 "   * AsyncRun -save=1 -cwd=%:p:h pandoc %:p --from commonmark_x -o %:p:h/%:t:r.docx
@@ -93,12 +92,7 @@ func! tomtomjhj#markdown#RunPandoc(open)
     let src = expand("%:p")
     let out = expand("%:p:h") . '/' . expand("%:t:r") . '.pdf'
     let params = '-Vurlcolor=blue --highlight-style=kate'
-    " need to pass --filter=pandoc-citeproc here in order to specify bibliography in yaml
-    if executable('pandoc-citeproc')
-        let params .= ' --filter=pandoc-citeproc'
-    endif
-    let post = "exec 'au! pandoc_quickfix'"
-    let post .= a:open ? "|call Zathura('" . l:out . "',!g:asyncrun_code)" : ''
+    let post = a:open ? "call Zathura('" . l:out . "',!g:asyncrun_code)" : ''
     let post = escape(post, ' ')
     " set manually or by local vimrc, override header-includes in yaml metadata
     " TODO: local_vimrc or editorconfig hook
@@ -107,8 +101,8 @@ func! tomtomjhj#markdown#RunPandoc(open)
     endif
     let cmd = 'pandoc ' . l:src . ' -o ' . l:out . ' ' . l:params
     augroup pandoc_quickfix | au!
-        au QuickFixCmdPost caddexpr belowright copen 8 | winc p
+        au QuickFixCmdPost pandoc ++once belowright copen 8 | winc p
     augroup END
-    exec 'AsyncRun -save=1 -cwd=' . expand("%:p:h") '-post=' . l:post l:cmd
+    exec 'AsyncRun -save=1 -cwd=' . expand("%:p:h") '-auto=pandoc' '-post=' . l:post l:cmd
 endfunc
 " vim: set fdm=marker fdl=0:
