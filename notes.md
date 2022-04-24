@@ -323,6 +323,13 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 ## wishlist
 * timeout for built-in multi-char commands so that it doesn't interfere with user mappings
 * character classes (like emacs); word ≠ identifier
+* `nvim_buf_attach` event is too fine-grained (per `chagnedtick`?)
+    * Problems:
+        * unwanted diagnostics (e.g. after `gq`, `=`, etc, which bump `changedtick` multiple times) with some language servers (e.g. lua)
+        * cmp-buffer high CPU usage, ...
+    * Solution?
+        * event for each change added to the "change list"?
+        * diagnostics: merge incremental changes in `pending_changes` while debouncing?
 
 
 # stuff
