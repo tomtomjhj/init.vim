@@ -2,12 +2,16 @@ local cmp = require'cmp'
 
 cmp.register_source('tags', require'tomtomjhj/cmp_tags'.new())
 
--- TODO: ignore huge buffer, huge buffer updates (e.g. coq-infos), cmp internal buf, ...
--- https://github.com/hrsh7th/cmp-buffer/pull/12
+-- TODO: ignore huge buffer, huge buffer updates (e.g. coq-infos)..
 local function get_visible_bufnrs()
   local bufs = {}
   for _, win in ipairs(vim.api.nvim_list_wins()) do
-    bufs[vim.api.nvim_win_get_buf(win)] = true
+    local bufnr = vim.api.nvim_win_get_buf(win)
+    local ft = vim.api.nvim_buf_get_option(bufnr, 'filetype')
+    local bl = vim.api.nvim_buf_get_option(bufnr, 'buflisted')
+    if (bl or #ft > 0) and ft ~= 'help' then
+      bufs[bufnr] = true
+    end
   end
   return vim.tbl_keys(bufs)
 end
@@ -20,19 +24,16 @@ end
 -- TODO
 -- cmp issues
 -- * matching/filter
---   * exact matching on the first char e.g.  ")" should not match "c)" snippet.
 --   * smartcase matching
 -- * scroll_docs() should fallback when *documentation window* is not visible
--- * buffer source: first letter adjustment like coc
--- * sometime completion dies. No anomally detected by :CmpStatus
--- 
--- Old issues from compe that might have been fixed in cmp
--- * buffer source: don't add the word currently being inserted e.g. `presuffix` in the above example.
---   Note: this only happens when inserting prefix of the word
--- * sometimes completion deletes the text on the left of the input??
+-- * buffer source
+--   * first letter case adjustment like coc
+--   * Don't add the word currently being editted in the middle e.g. `pre|suffix`.
+-- * Popup from `view.entries = 'native'` unnecessarily triggers buffer-updates
+--   (the changed text is quite weird), which floods cmp-buffer.
+-- * keyword_pattern does 2 things: the pattern for item, and condition to list
+--   the source's item (pattern of the word before cursor)
 
--- NOTE: keyword_pattern does 2 things: the pattern for item, and
--- condition to list the source's item (pattern of the word before cursor)
 vim.opt.completeopt:append('menuone')
 cmp.setup {
   completion = {
@@ -45,15 +46,12 @@ cmp.setup {
     { name = 'path' },
     { name = 'buffer',
       option = {
-        keyword_pattern = [[\<\K\k\{-,38}\>]], -- TODO: per-ft keyword pattern? e.g. no \k for help file
+        keyword_pattern = [[\K\k\{-,38}\>]], -- TODO: per-ft keyword pattern? e.g. no \k for help file
         get_bufnrs = get_visible_bufnrs,
       }
     },
     { name = 'ultisnips' },
     { name = 'tags' },
-  },
-  view = {
-    entries = 'native', -- NOTE: temporary mitigation for https://github.com/hrsh7th/nvim-cmp/issues/328
   },
   experimental = {
     ghost_text = false,
