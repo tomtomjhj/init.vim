@@ -1,12 +1,12 @@
 local lspconfig = require('lspconfig')
 local lsp_status = require('lsp-status')
-local lsp_installer_servers = require'nvim-lsp-installer.servers'
 -- TODO: Lazy load this entire file on the first FileType that uses lsp?
 -- Note that the server is launched in FileType.
 -- https://github.com/neovim/nvim-lspconfig/issues/970
 -- https://github.com/williamboman/nvim-lsp-installer/issues/244
 -- https://github.com/gpanders/dotfiles/commit/01464e949574dcb9752e8dc92f39a7cee91446b7
 
+require('nvim-lsp-installer').setup{} -- registers some hooks for lspconfig setup
 lsp_status.register_progress()
 require('lspfuzzy').setup{}
 
@@ -19,18 +19,15 @@ vim.diagnostic.config {
 
 local capabilities = require('cmp_nvim_lsp').update_capabilities(lsp_status.capabilities)
 
-local function base_opt(server_name)
-  local _, server = lsp_installer_servers.get_server(server_name)
-  return vim.tbl_extend('error', server:get_default_options(), {
-    on_attach = function(client, bufnr)
-      vim.fn['SetupLSP']()
-      vim.fn['SetupLSPPost']()
-      lsp_status.on_attach(client, bufnr)
-    end,
-    capabilities = capabilities,
-    flags = { debounce_text_changes = 123 }
-  })
-end
+local base_opt = {
+  on_attach = function(client, bufnr)
+    vim.fn['SetupLSP']()
+    vim.fn['SetupLSPPost']()
+    lsp_status.on_attach(client, bufnr)
+  end,
+  capabilities = capabilities,
+  flags = { debounce_text_changes = 123 }
+}
 
 require('rust-tools').setup {
   tools = {
@@ -43,11 +40,11 @@ require('rust-tools').setup {
     },
   },
   -- lspconfig.rust_analyzer.setup
-  server = base_opt('rust_analyzer')
+  server = base_opt
 }
 
 lspconfig.pylsp.setup(
-  vim.tbl_extend('error', base_opt('pylsp'), {
+  vim.tbl_extend('error', base_opt, {
     settings = { pylsp = {
       plugins = {
         pylint = {
@@ -66,22 +63,22 @@ lspconfig.pylsp.setup(
 )
 
 lspconfig.clangd.setup(
-  vim.tbl_extend('error', base_opt('clangd'), {
+  vim.tbl_extend('error', base_opt, {
     filetypes = { "c", "cpp", "cuda" },
   })
 )
 
 lspconfig.sumneko_lua.setup (
-  require'lua-dev'.setup { lspconfig = base_opt('sumneko_lua') }
+  require'lua-dev'.setup { lspconfig = base_opt }
 )
 
-lspconfig.vimls.setup(base_opt('vimls'))
+lspconfig.vimls.setup(base_opt)
 
-lspconfig.texlab.setup(base_opt('texlab'))
+lspconfig.texlab.setup(base_opt)
 
 -- run with LspStart ltex
 lspconfig.ltex.setup(
-  vim.tbl_extend('error', base_opt('ltex'), {
+  vim.tbl_extend('error', base_opt, {
     autostart = false,
     settings = { ltex = {
       checkFrequency = "save",
@@ -96,6 +93,6 @@ lspconfig.ltex.setup(
   })
 )
 
-lspconfig.bashls.setup(base_opt('bashls'))
+lspconfig.bashls.setup(base_opt)
 
 -- vim:set et sw=2 ts=8:
