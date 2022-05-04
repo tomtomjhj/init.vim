@@ -46,7 +46,7 @@ end
 
 function source:complete(request, callback)
   local items = {}
-  vim.defer_fn(vim.schedule_wrap(function()
+  vim.defer_fn(function()
     local input = string.sub(request.context.cursor_before_line, request.offset)
     local _, tags = pcall(function()
       return vim.fn.getcompletion(input, "tag")
@@ -69,7 +69,7 @@ function source:complete(request, callback)
       items = items,
       isIncomplete = true
     })
-  end), 100)
+  end, 100)
 end
 
 function source:resolve(completion_item, callback)
