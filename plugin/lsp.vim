@@ -88,9 +88,8 @@ function! SetupLSP()
   nnoremap <buffer><silent><leader>gy    <cmd>lua vim.lsp.buf.type_definition()<CR>
   nnoremap <buffer><silent><leader>rf    <cmd>lua vim.lsp.buf.references()<CR>
   nnoremap <buffer><silent><leader>gd    <cmd>lua vim.lsp.buf.declaration()<CR>
-  nnoremap <buffer><silent><leader>fm    <cmd>lua vim.lsp.buf.formatting()<CR>
-  " TODO: vim.lsp.buf.range_formatting() or vim.lsp.formatexpr() → refactor
-  " into a function that doesn't use v: so that it's usable without gq?
+  nnoremap <buffer><silent><leader>fm    <cmd>lua vim.lsp.buf.format{async=true}<CR>
+  xnoremap <buffer><silent><expr><leader>fm  NvimLSPRangeFormat('')
   nnoremap <buffer><silent><leader>rn    <cmd>lua vim.lsp.buf.rename()<CR>
   nnoremap <buffer><silent><leader>ac    <cmd>lua vim.lsp.buf.code_action()<CR>
   nnoremap <buffer><silent>        [d    <cmd>lua vim.diagnostic.goto_prev{float=false}<CR>
@@ -127,6 +126,14 @@ endfunction
 function! CheckerWarnings()
   let warnings = luaeval('#vim.diagnostic.get(0, {severity=vim.diagnostic.severity.WARN})')
   return warnings ? 'W' . warnings : ''
+endfunction
+
+function! NvimLSPRangeFormat(type) abort
+  if a:type == ''
+    set opfunc=NvimLSPRangeFormat
+    return 'g@'
+  endif
+  lua vim.lsp.buf.range_formatting({}, vim.api.nvim_buf_get_mark(0, '['), vim.api.nvim_buf_get_mark(0, ']'))
 endfunction
 
 augroup GlobalNvimLSPStuff | au!
