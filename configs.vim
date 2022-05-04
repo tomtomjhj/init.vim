@@ -87,7 +87,8 @@ elseif g:ide_client == 'nvim'
     " https://github.com/p00f/clangd_extensions.nvim
 endif
 " TODO: use vsnip? (supports vscode snippets)
-Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets', { 'do': 'rm -f snippets/_.snippets snippets/tex.snippets UltiSnips/all.snippets UltiSnips/tex.snippets' }
 Plug 'tomtomjhj/tpope-vim-markdown'
 Plug 'tomtomjhj/vim-markdown'
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
