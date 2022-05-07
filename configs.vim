@@ -221,6 +221,47 @@ if has('unix')
 endif
 " }}}
 
+" gui settings {{{
+function! s:SetupGUI() abort
+    set guifont=Source\ Code\ Pro:h12
+    nmap <C--> <Cmd>FontSize -v:count1<CR>
+    nmap <C-+> <Cmd>FontSize v:count1<CR>
+    nmap <C-=> <Cmd>FontSize v:count1<CR>
+    command! -nargs=1 FontSize call s:FontSize(<args>)
+    function! s:FontSize(delta)
+        let new_size = matchstr(&guifont, '\d\+') + a:delta
+        let new_size = (new_size < 1) ? 1 : ((new_size > 100) ? 100 : new_size)
+        let &guifont = substitute(&guifont, '\d\+', '\=new_size', '')
+    endfunction
+
+    if has('gui_running') " gvim
+        set guioptions=i
+        set guicursor+=a:blinkon0
+        if has('win32')
+            set guifont=Source_Code_Pro:h12:cANSI:qDRAFT
+        elseif has('unix')
+            set guifont=Source\ Code\ Pro\ 12
+        endif
+    elseif exists('g:GuiLoaded') " nvim-qt
+        GuiTabline 0
+        GuiPopupmenu 0
+    elseif exists('g:started_by_firenvim')
+        set guifont=Source\ Code\ Pro:h20
+    elseif exists('g:neovide')
+        let g:neovide_cursor_animation_length = 0
+    endif
+endfunction
+
+if has('nvim')
+    au UIEnter * ++once if v:event.chan | call s:SetupGUI() | endif
+elseif has('gui_running')
+    call s:SetupGUI()
+endif
+
+" TODO:
+" - neovide doesn't understand <C-M-L>, .. https://github.com/neovide/neovide/issues/994#issuecomment-1063500913 works
+" }}}
+
 " Statusline {{{
 " TODO: buffer_title: merge specialbuf and shortrelpath; and do more fancy stuff for special buffers e.g. w:quickfix_title, term:///, fugitive://, ..
 let g:lightline = {
@@ -1139,15 +1180,6 @@ if exists('g:started_by_firenvim')
                 \ }
     " inoremap <M-CR> <Esc>:w<CR>:call firenvim#press_keys("<LT>CR>")<CR>ggdGa
     set laststatus=0
-    set guifont=Source\ Code\ Pro:h20
-    function! FontSize(delta)
-        let [name, size] = matchlist(&guifont, '\v(.*:h)(\d+)')[1:2]
-        let new_size = str2nr(size) + a:delta
-        let &guifont = name . new_size
-    endfunction
-    map <C--> <Cmd>call FontSize(-v:count1)<CR>
-    map <C-+> <Cmd>call FontSize(v:count1)<CR>
-    map <C-=> <Cmd>call FontSize(v:count1)<CR>
 else
     let g:firenvim_loaded = 1
 endif
