@@ -112,6 +112,7 @@ if has('nvim')
     Plug 'antoinemadec/FixCursorHold.nvim'
 endif
 if s:nvim_latest_stable
+    " NOTE: when using local install of nvim, should reinstall
     Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
     " Plug 'nvim-lua/plenary.nvim'
     Plug 'b3nj5m1n/kommentary', {'on': '<Plug>kommentary'}
@@ -181,11 +182,12 @@ set shortmess+=Ic shortmess-=S
 set belloff=all
 
 set history=1000
-set viminfo=!,'150,<50,s30,h,r/tmp,rterm://,rfugitive://,rfern://
+set viminfo=!,'150,<50,s30,h,r/tmp,r/run,rterm://,rfugitive://,rfern://
 set updatetime=1234
 set noswapfile " set directory=~/.vim/swap//
 set backup backupdir=~/.vim/backup//
 set undofile
+" TODO: backupskip for undofile?
 if has('nvim-0.5') | set undodir=~/.vim/undoo// | else | set undodir=~/.vim/undo// | endif
 
 set autoread
@@ -508,6 +510,8 @@ let g:tex_noindent_env = '\v\w+.?'
 let g:vimtex_fold_enabled = 1
 let g:matchup_override_vimtex = 1
 let g:vimtex_view_method = 'zathura'
+let g:vimtex_quickfix_mode = 0
+" NOTE: If inverse search doesn't work, check if source files are correctly recognized by vimtex.
 function! s:tex() abort
     setlocal shiftwidth=2
     setlocal conceallevel=2
@@ -524,6 +528,7 @@ function! s:tex() abort
     xmap <buffer> ac <Plug>(vimtex-ac)
     omap <buffer> ac <Plug>(vimtex-ac)
     nmap <buffer><silent><leader>oo :call Zathura("<C-r>=expand("%:p:h").'/main.pdf'<CR>")<CR>
+    nmap <buffer>        <leader>C <Plug>(vimtex-compile-ss)
 endfunction
 function! s:bib() abort
     setlocal shiftwidth=2
@@ -778,6 +783,7 @@ func! RgInput(raw)
     endif
 endfunc
 " NOTE: -U (multiline): \s includes \n.
+" TODO: this should be adjusted for bg=light..
 let s:rg_cmd_base = 'rg --column --line-number --no-heading --color=always --colors path:fg:218 --colors match:fg:116 --smart-case '
 func! Ripgrep(query)
     let cmd = s:rg_cmd_base . shellescape(a:query)
@@ -1107,6 +1113,7 @@ function! CursorURL() abort
 endfunction
 nnoremap <silent> gx :call GXBrowse(CursorURL())<cr>
 
+" NOTE: :Fern that isn't drawer does not reuse "authority". Leaves too many garbage buffers.
 let g:fern#default_exclude = '\v(\.glob|\.vo[sk]?|\.o)$'
 nmap <silent><leader>nn <Cmd>Fern . -drawer -toggle<CR>
 nmap <silent><leader>nf <Cmd>Fern . -drawer -reveal=%<CR>

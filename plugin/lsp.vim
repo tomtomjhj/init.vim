@@ -82,24 +82,24 @@ function! SetupLSP()
   augroup LocalNvimLSPStuff | au! * <buffer>
   augroup END
   setlocal tagfunc=v:lua.vim.lsp.tagfunc
-  nnoremap <buffer><silent>        <M-]> <cmd>lua vim.lsp.buf.definition()<CR>
-  nnoremap <buffer><silent>        <M-.> <cmd>lua vim.lsp.buf.hover()<CR>
-  nnoremap <buffer><silent><leader>gi    <cmd>lua vim.lsp.buf.implementation()<CR>
-  nnoremap <buffer><silent><leader>gy    <cmd>lua vim.lsp.buf.type_definition()<CR>
-  nnoremap <buffer><silent><leader>rf    <cmd>lua vim.lsp.buf.references()<CR>
-  nnoremap <buffer><silent><leader>gd    <cmd>lua vim.lsp.buf.declaration()<CR>
-  nnoremap <buffer><silent><leader>fm    <cmd>lua vim.lsp.buf.format{async=true}<CR>
-  xnoremap <buffer><silent><expr><leader>fm  NvimLSPRangeFormat('')
-  nnoremap <buffer><silent><leader>rn    <cmd>lua vim.lsp.buf.rename()<CR>
-  nnoremap <buffer><silent><leader>ac    <cmd>lua vim.lsp.buf.code_action()<CR>
-  nnoremap <buffer><silent>        [d    <cmd>lua vim.diagnostic.goto_prev{float=false}<CR>
-  nnoremap <buffer><silent>        ]d    <cmd>lua vim.diagnostic.goto_next{float=false}<CR>
-  nnoremap <buffer><silent>        <M-,> <cmd>lua vim.diagnostic.open_float(0, {scope="line"})<CR>
-  nnoremap <buffer><silent><leader>dl    <cmd>LspDiagnosticsAll<CR>
-  nnoremap <buffer><silent><leader>ol    <cmd>lua vim.lsp.buf.document_symbol()<CR>
+  nnoremap <buffer>        <M-]> <cmd>lua vim.lsp.buf.definition()<CR>
+  nnoremap <buffer>        <M-.> <cmd>lua vim.lsp.buf.hover()<CR>
+  nnoremap <buffer><leader>gi    <cmd>lua vim.lsp.buf.implementation()<CR>
+  nnoremap <buffer><leader>gy    <cmd>lua vim.lsp.buf.type_definition()<CR>
+  nnoremap <buffer><leader>rf    <cmd>lua vim.lsp.buf.references()<CR>
+  nnoremap <buffer><leader>gd    <cmd>lua vim.lsp.buf.declaration()<CR>
+  nnoremap <buffer><leader>fm    <cmd>lua vim.lsp.buf.format{async=true}<CR>
+  xnoremap <buffer><expr><leader>fm  NvimLSPRangeFormat('')
+  nnoremap <buffer><leader>rn    <cmd>lua vim.lsp.buf.rename()<CR>
+  nnoremap <buffer><leader>ac    <cmd>lua vim.lsp.buf.code_action()<CR>
+  nnoremap <buffer>        [d    <cmd>lua vim.diagnostic.goto_prev{float=false}<CR>
+  nnoremap <buffer>        ]d    <cmd>lua vim.diagnostic.goto_next{float=false}<CR>
+  nnoremap <buffer>        <M-,> <cmd>lua vim.diagnostic.open_float(0, {scope="line"})<CR>
+  nnoremap <buffer><leader>dl    <cmd>LspDiagnosticsAll<CR>
+  nnoremap <buffer><leader>ol    <cmd>lua vim.lsp.buf.document_symbol()<CR>
   " TODO: <ESC> on workspace_symbol prompt doesn't cancel
-  nnoremap <buffer><silent><leader>sb    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
-  inoremap <buffer><silent>        <M-i> <cmd>lua vim.lsp.buf.signature_help()<CR>
+  nnoremap <buffer><leader>sb    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+  inoremap <buffer>        <M-i> <cmd>lua vim.lsp.buf.signature_help()<CR>
   " TODO: codelens? codeaction? how do I run tests??
   " TODO: |lsp-handler| default location_handler
   " * goto def in split, etc https://github.com/neovim/neovim/pull/12966
@@ -113,6 +113,7 @@ endfunction
 " TODO: Do I still need lsp-status? See vim.lsp.util.get_progress_messages(), LspProgressUpdate
 " https://github.com/neovim/neovim/pull/13294
 " https://github.com/teto/home/blob/373966b5cd8cbcc7ca20a07da28de218668a656a/config/nvim/lua/statusline.lua
+" https://github.com/j-hui/fidget.nvim/issues/51
 function! CheckerStatus()
   if luaeval('#vim.lsp.buf_get_clients() > 0')
     return luaeval('require("lsp-status").status_progress()')

@@ -64,4 +64,4 @@ make install
         * https://github.com/junegunn/fzf/issues/1191
     * powershell?
         * 8.2.3079
-        * neovim #14349
+        * neovim #14349, https://github.com/neovim/neovim/pull/16271

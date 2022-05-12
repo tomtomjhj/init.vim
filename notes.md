@@ -245,6 +245,9 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * lightline
     * separator highlighting is optimized for fancy stuff like `'separator': { 'left': '', 'right': '' }, 'subseparator': { 'left': '', 'right': '' }` ([issue](https://github.com/itchyny/lightline.vim/issues/85)) → using `' '` for separator results in some odd whitespaces
     * `component_expand` is not per-window
+    * `lightline#update()`
+        * <https://github.com/itchyny/lightline.vim/issues/352>
+        * <https://github.com/neovim/neovim/issues/16872>
 * `expand()` before passing to `filereadable()` (for `~`)
 * `useopen` applies to `CTRL-W_CTRL-]` and `:sfind` etc but I only want it for quickfix commands.
 * `formatexpr` and `indentexpr` silence errors
@@ -269,7 +272,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
     * best: make it work like normal buffer with `nowrap`
     * running tmux inside the termianl:
         * reflow works but scrolling is broken
-        * automation? maybe check `$VIM` in bashrc
+        * `set shell=tmux` <https://www.reddit.com/r/neovim/comments/umy4gb/tmux_in_neovim/>
 * nvim's `CursorMoved` is differrent from vim's. This makes `vimtex_matchparen` wrongly highlight fzf floatwin.
 * shada merging bad https://github.com/neovim/neovim/issues/4295
     * impossible to wipe marks, registers, jumplist...
@@ -366,6 +369,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
     * https://github.com/TimUntersberger/neogit
     * https://github.com/lewis6991/gitsigns.nvim
     * https://github.com/sindrets/diffview.nvim
+    * https://github.com/ldelossa/gh.nvim
 * https://github.com/nvim-telescope/telescope.nvim
   https://github.com/nvim-telescope/telescope-frecency.nvim
 * https://github.com/vhyrro/neorg
