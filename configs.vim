@@ -224,7 +224,9 @@ endif
 " }}}
 
 " gui settings {{{
+let g:gui_running = get(g:, 'gui_running', 0)
 function! s:SetupGUI() abort
+    let g:gui_running = 1
     set guifont=Source\ Code\ Pro:h12
     nmap <C--> <Cmd>FontSize -v:count1<CR>
     nmap <C-+> <Cmd>FontSize v:count1<CR>
@@ -751,6 +753,13 @@ command! -nargs=? -complete=dir Files call Files(<q-args>)
 " allow search on the full tag info, excluding the appended tagfile name
 " TODO: shift up/down not mapped to preview scroll
 command! -nargs=* Tags call fzf#vim#tags(<q-args>, fzf#vim#with_preview({ "placeholder": "--tag {2}:{-1}:{3..}", 'options': ['-d', '\t', '--nth', '..-2'] }))
+
+if has('nvim')
+    augroup fzf-custom | au!
+        " TODO: Run fzf once, toggle bg, then fzf again → fg color of background window affects the bg color of fzf selected item. Something happens at the first execution of fzf.
+        au FileType fzf if (g:gui_running || &termguicolors) | setlocal winblend=17 | endif
+    augroup END
+endif
 
 func! FzfOpts(arg, spec)
     " TODO: ask the directory to run (double 3), starting from %:p:h
