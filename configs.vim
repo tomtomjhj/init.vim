@@ -1,15 +1,15 @@
 " vim: set foldmethod=marker foldlevel=0:
 
-let s:nvim_latest_stable = has('nvim-0.6.1')
+let s:nvim_latest_stable = has('nvim-0.7')
 let g:ide_client = get(g:, 'ide_client', s:nvim_latest_stable ? 'nvim' : 'coc')
 
 " TODO: packadd-based, lazy-loaded (event, normal, ex), vim/nvim compatible plugin manager?
-" TODO: post-update hook doesn't work on nvim-0.6 Vim(call):E117: Unknown function: mkdp#util#install ...
+" TODO: post-update hook doesn't work on nvim-0.6 Vim(call):E117: Unknown function: mkdp#util#install ... This happens only when installing (not updating). So nvim might be checking existence of the directory when rtp is modified.
 " Plug {{{
 call plug#begin('~/.vim/plugged')
 
 " appearance
-Plug 'itchyny/lightline.vim'
+Plug 'tomtomjhj/lightline.vim' " https://github.com/itchyny/lightline.vim/pull/631
 Plug 'tomtomjhj/taiga.vim'
 
 " editing
@@ -43,9 +43,11 @@ Plug 'tpope/vim-fugitive'
 "   * It's the problem of `vertical belowright Flogsplitcommit`
 "   * flog#run_tmp_command('<mods> Gsplit %h')
 "     nothing wrong with Gsplit
+" * flog-<CR> enables hlsearch in nvim?
 " * respect current layout; don't force vsplit on <CR>
 " * buffer name with URI scheme like fugitive:// and fern://
 " * something like fugitive's cmap <C-r><C-g> in flog graph. there's flog-y<C-G> though
+"   * vmap y<C-G> is annoying
 Plug 'rbong/vim-flog'
 Plug 'rhysd/git-messenger.vim'
 Plug 'skywind3000/asyncrun.vim'
@@ -368,6 +370,7 @@ else
     colorscheme taiga
 endif
 silent! set termguicolors
+command! Bg if &background ==# 'dark' | set background=light | else | set background=dark | endif
 " }}}
 
 " Completion {{{
@@ -682,6 +685,9 @@ function! s:coq_common() abort
 endfunction
 function! s:coq() abort
     setlocal foldmethod=manual
+    if expand("%:p") =~# '_opam/lib/coq'
+        setlocal readonly
+    endif
 endfunction
 function! s:coq_aux() abort
     setlocal foldcolumn=0
@@ -849,7 +855,6 @@ map F <Plug>Sneak_F
 map t <Plug>Sneak_t
 map T <Plug>Sneak_T
 map <M-;> <Plug>Sneak_,
-hi! Sneak guifg=black guibg=#afff00 gui=bold ctermfg=black ctermbg=154 cterm=bold
 " NOTE: my fork
 let g:sneak#alias = {
             \ 'a': '[aα∀]', 'b': '[bβ]', 'c': '[cξ]', 'd': '[dδ]', 'e': '[eε∃]', 'f': '[fφ]', 'g': '[gγ]', 'h': '[hθ]', 'i': '[iι]', 'j': '[jϊ]', 'k': '[kκ]', 'l': '[lλ]', 'm': '[mμ]', 'n': '[nν]', 'o': '[oο]', 'p': '[pπ]', 'q': '[qψ]', 'r': '[rρ]', 's': '[sσ]', 't': '[tτ]', 'u': '[uυ]', 'v': '[vϋ𝓥]', 'w': '[wω]', 'x': '[xχ]', 'y': '[yη]', 'z': '[zζ]',

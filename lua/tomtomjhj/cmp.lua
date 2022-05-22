@@ -23,7 +23,6 @@ end
 -- cmp issues
 -- * matching/filter
 --   * smartcase matching
--- * scroll_docs() should fallback when *documentation window* is not visible
 -- * buffer source
 --   * first letter case adjustment like coc
 --   * Don't add the word currently being editted in the middle e.g. `pre|suffix`.

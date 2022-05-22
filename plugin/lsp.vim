@@ -139,9 +139,9 @@ endfunction
 
 augroup GlobalNvimLSPStuff | au!
   au DiagnosticChanged * call lightline#update()
+  " override lspconfig's LspLog
+  au VimEnter * command! LspLog exe '<mods> pedit +setlocal\ nobuflisted|$' v:lua.vim.lsp.get_log_path()
 augroup end
-
-command! LspLog exe '<mods> pedit +setlocal\ nobuflisted|$' v:lua.vim.lsp.get_log_path()
 " }}}
 
 elseif get(g:, 'ide_client', '') == 'ale' " {{{

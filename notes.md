@@ -184,7 +184,8 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * marks
 * `:global`
     * `:g/foo/z=3`
-    * yank matching lines <https://stackoverflow.com/a/1475069>
+    * `:g/^pat/y A` yank matching lines (run `qaq` first)
+    * `:keepp g/^$/keepp,/./-j` reduces multiple blank lines to a single line. (`:h range`)
 * `zi`
 * `i_CTRL-D`, `i_CTRL-T`, `i_CTRL-F`
 * `:@`, `@:`
@@ -212,6 +213,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * `:cabove`
 * `backtick-expansion`
 * yanking a line character-wise (not using `yy`) so that I can paste without trailing newline
+* appending to register to collect list of something + recording
 
 # pitfalls
 * Cursor movement on concealed string: `set concealcursor=n` doesn't work as expected. <https://vi.stackexchange.com/questions/4530/moving-over-conceal>
@@ -264,6 +266,9 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
     * impatient.nvim makes lua plugin startup fast enough.
 * Once a map prefix is entered, single-char mapping doesn't take the effect.
   Example: With `map! <Nul> <C-Space>` and `noremap! <C-Space><C-Space> XXX`, `<Nul><Nul>` becomes `<C-Space><Nul>`.
+* `vimgrep` ignores `smartcase`
+* Vim TUI doesn't highlight empty cell as `Normal` in most cases (NeoVim does it). This makes cursor less visible (or invisible) for light themes.
+* If `winfixheight` (e.g. preview, quickfix), making it vertical (e.g. `<C-w>L`) and then horizontal back makes it occupy almost entire screen.
 
 # (n)vim issues
 
@@ -353,6 +358,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * https://github.com/Konfekt/vim-compilers
 * https://github.com/dkarter/bullets.vim
 * https://mg979.github.io/tasks.vim
+* https://github.com/mikeslattery/nvim-defaults.vim https://github.com/tpope/dotfiles/blob/master/.vimrc
 * lsp stuff
     * https://github.com/jose-elias-alvarez/null-ls.nvim
     * https://github.com/RishabhRD/nvim-lsputils
@@ -374,13 +380,15 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
   https://github.com/nvim-telescope/telescope-frecency.nvim
 * https://github.com/vhyrro/neorg
   https://github.com/kristijanhusak/orgmode.nvim
-* https://github.com/vijaymarupudi/nvim-fzf
-  **<https://github.com/ibhagwan/fzf-lua>**
-    * live_grep ↔ grep!
-    * Preview buffer's ftdetect uses `:filetype detect`, which is somewhat broken? `*.v` file doesn't get recognized as coq.
-    * Does not reuse the buffer for preview <https://github.com/ibhagwan/fzf-lua/issues/208#issuecomment-962550013>... 
-    * `require'fzf-lua'.setup` takes 5 ms
-  https://github.com/stevearc/dressing.nvim
+* selector
+    * https://github.com/vijaymarupudi/nvim-fzf
+    * **<https://github.com/ibhagwan/fzf-lua>**
+        * live_grep ↔ grep!
+        * Preview buffer's ftdetect uses `:filetype detect`, which is somewhat broken? `*.v` file doesn't get recognized as coq.
+        * Does not reuse the buffer for preview <https://github.com/ibhagwan/fzf-lua/issues/208#issuecomment-962550013>...
+        * `require'fzf-lua'.setup` takes 5 ms
+    * https://github.com/stevearc/dressing.nvim
+    * https://github.com/lifepillar/vim-zeef
 * https://github.com/jbyuki/instant.nvim
   https://github.com/jbyuki/nabla.nvim
   https://github.com/jbyuki/venn.nvim
