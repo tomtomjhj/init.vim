@@ -513,11 +513,13 @@ let g:vimtex_fold_enabled = 1
 let g:matchup_override_vimtex = 1
 let g:vimtex_view_method = 'zathura'
 let g:vimtex_quickfix_mode = 0
+let g:vimtex_indent_on_ampersands = 0
 " NOTE: If inverse search doesn't work, check if source files are correctly recognized by vimtex.
 function! s:tex() abort
     setlocal shiftwidth=2
     setlocal conceallevel=2
-    setlocal foldlevel=99
+    setlocal foldlevel=99 " {[{[
+    setlocal indentkeys-=] indentkeys-=} indentkeys-=\& indentkeys+=0],0}
     " https://github.com/tmsvg/pear-tree/pull/27
     let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), {
                 \ '\\begin{*}': {'closer': '\\end{*}', 'until': '[{}[:space:]]'},
