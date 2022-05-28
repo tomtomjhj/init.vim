@@ -799,16 +799,18 @@ func! RgInput(raw)
         return substitute(a:raw[2:], '\v\\([~/])', '\1', 'g')
     endif
 endfunc
-" NOTE: -U (multiline): \s includes \n.
-" TODO: this should be adjusted for bg=light..
-let s:rg_cmd_base = 'rg --column --line-number --no-heading --color=always --colors path:fg:218 --colors match:fg:116 --smart-case '
+function! s:rg_cmd_base() abort
+    " NOTE: -U (multiline): \s includes \n.
+    let colors = &background ==# 'dark' ? '--colors path:fg:218 --colors match:fg:116 ' : '--colors path:fg:125 --colors match:fg:67 '
+    return "rg --hidden --glob '!**/.git/**' --column --line-number --no-heading --smart-case --color=always " . colors
+endfunction
 func! Ripgrep(query)
-    let cmd = s:rg_cmd_base . shellescape(a:query)
+    let cmd = s:rg_cmd_base() . shellescape(a:query)
     let spec = FzfOpts(v:count, {'options': ['--info=inline', '--layout=reverse-list']})
     call fzf#vim#grep(cmd, 1, spec)
 endfunc
 func! RipgrepFly(query)
-    let command_fmt = s:rg_cmd_base . '-- %s || true'
+    let command_fmt = s:rg_cmd_base() . '-- %s || true'
     let initial_command = printf(command_fmt, shellescape(a:query))
     let reload_command = printf(command_fmt, '{q}')
     let spec = FzfOpts(v:count, {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command, '--info=inline', '--layout=reverse-list']})
