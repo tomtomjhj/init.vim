@@ -762,12 +762,13 @@ command! -nargs=? -complete=dir Files call Files(<q-args>)
 " TODO: shift up/down not mapped to preview scroll
 command! -nargs=* Tags call fzf#vim#tags(<q-args>, fzf#vim#with_preview({ "placeholder": "--tag {2}:{-1}:{3..}", 'options': ['-d', '\t', '--nth', '..-2'] }))
 
-if has('nvim')
-    augroup fzf-custom | au!
-        " TODO: Run fzf once, toggle bg, then fzf again → fg color of background window affects the bg color of fzf selected item. Something happens at the first execution of fzf.
+augroup fzf-custom | au!
+    if has('nvim')
         au FileType fzf if (g:gui_running || &termguicolors) | setlocal winblend=17 | endif
-    augroup END
-endif
+    endif
+    au ColorScheme * call s:fzf_color()
+    au VimEnter * call s:fzf_color()
+augroup END
 
 func! FzfOpts(arg, spec)
     " TODO: ask the directory to run (double 3), starting from %:p:h
@@ -827,6 +828,13 @@ func! Files(query)
     endif
     call fzf#vim#files(l:query, fzf#vim#with_preview(spec, 'right'))
 endfunc
+function! s:fzf_color() abort
+    if match($FZF_DEFAULT_OPTS, '--color') >= 0
+        let $FZF_DEFAULT_OPTS = substitute($FZF_DEFAULT_OPTS, '--color\%(=\|\s\+\)\zs\w\+', &background, 0)
+    else
+        let $FZF_DEFAULT_OPTS .= ' --color=' . &background
+    endif
+endfunction
 " }}}
 
 " Motion, insert mode, ... {{{
