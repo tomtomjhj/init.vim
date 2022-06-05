@@ -33,3 +33,11 @@ function! tomtomjhj#surround#strong(type)
     endif
     return tomtomjhj#surround#(a:type, '**')
 endfunction
+
+function! tomtomjhj#surround#strike(type)
+    if a:type == ''
+        set opfunc=tomtomjhj#surround#strike
+        return 'g@'
+    endif
+    return tomtomjhj#surround#(a:type, '~~')
+endfunction
