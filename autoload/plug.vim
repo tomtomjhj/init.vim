@@ -2638,31 +2638,16 @@ function! s:preview_commit()
     return
   endif
 
-  if exists('g:plug_pwindow') && !s:is_preview_window_open()
-    execute g:plug_pwindow
-    execute 'e' title
-  else
-    execute 'pedit' title
-    wincmd P
-  endif
-  setlocal previewwindow filetype=git buftype=nofile bufhidden=wipe nobuflisted modifiable
-  let batchfile = ''
   try
-    let [sh, shellcmdflag, shrd] = s:chsh(1)
-    let cmd = 'cd '.plug#shellescape(g:plugs[name].dir).' && '.command
-    if s:is_win
-      let [batchfile, cmd] = s:batchfile(cmd)
+    exe 'cd' plug#shellescape(g:plugs[name].dir)
+    if empty(sha)
+      exe 'Git! diff HEAD@{1}'
+    else
+      exe 'Gpedit' sha
     endif
-    execute 'silent %!' cmd
   finally
-    let [&shell, &shellcmdflag, &shellredir] = [sh, shellcmdflag, shrd]
-    if s:is_win && filereadable(batchfile)
-      call delete(batchfile)
-    endif
+      cd -
   endtry
-  setlocal nomodifiable
-  nnoremap <silent> <buffer> q :q<cr>
-  wincmd p
 endfunction
 
 function! s:section(flags)
