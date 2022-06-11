@@ -1031,6 +1031,7 @@ function! s:is_updated(dir)
 endfunction
 
 function! s:do(pull, force, todo)
+  let &rtp = &rtp
   for [name, spec] in items(a:todo)
     if !isdirectory(spec.dir)
       continue
