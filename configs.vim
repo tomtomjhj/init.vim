@@ -1048,25 +1048,18 @@ let g:surround_indent = 0
 let g:surround_{char2nr('c')} = "/* \r */"
 let g:surround_{char2nr('m')} = "(* \r *)"
 
-" 'a'ny block from matchup
-xmap aa a%
-omap aa a%
-xmap ia i%
-omap ia i%
-
-" https://github.com/wellle/targets.vim/issues/233
-call targets#sources#newFactories('')
 augroup MyTargets | au!
     " NOTE: can't expand by repeating → use builtin for simple objects
     " NOTE: can't select **text <newline> text** using i*
     " https://github.com/wellle/targets.vim/issues/175
-    " - a'r'guments, any 'q'uote, any 'b'lock, separators + 'n'ext,'l'ast
-    " - Leave a for matchup any-block.
+    " 'a'rguments, any 'q'uote, any 'b'lock, separators
     autocmd User targets#mappings#user call targets#mappings#extend({
-    \ '(': {}, ')': {}, '{': {}, '}': {}, 'B': {}, '[': {}, ']': {}, '<': {}, '>': {}, '"': {}, "'": {}, '`': {}, 't': {}, 'a': {},
-    \ 'r': {'argument': [{'o': '[([]', 'c': '[])]', 's': ','}]},
+    \ '(': {}, ')': {}, '{': {}, '}': {}, 'B': {}, '[': {}, ']': {}, '<': {}, '>': {}, '"': {}, "'": {}, '`': {}, 't': {},
     \ })
 augroup END
+" https://github.com/wellle/targets.vim/issues/233
+" This should be called after setting up the autocmd
+call targets#sources#newFactories('')
 " }}}
 
 " shell, terminal {{{
