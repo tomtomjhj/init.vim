@@ -144,7 +144,7 @@ set laststatus=2
 set shiftwidth=4
 set expandtab smarttab
 set autoindent
-set formatoptions+=jn
+set formatoptions+=jn formatoptions-=c
 set formatlistpat=\\C^\\s*[\\[({]\\\?\\([0-9]\\+\\\|[iIvVxXlLcCdDmM]\\+\\\|[a-zA-Z]\\)[\\]:.)}]\\s\\+\\\|^\\s*[-+o*]\\s\\+
 set nojoinspaces
 set list listchars=tab:\|\ ,trail:-,nbsp:+,extends:>
@@ -213,7 +213,7 @@ augroup BasicSetup | au!
     au BufRead,BufNewFile *.k setlocal filetype=k
     au BufRead,BufNewFile *.mir setlocal syntax=rust
     au FileType lisp let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} })
-    au FileType help nnoremap <silent><buffer> <M-.> :h <C-r><C-w><CR>
+    au FileType help nnoremap <silent><buffer> <M-.> K
     let &pumheight = min([&window/4, 20])
     au VimResized * let &pumheight = min([&window/4, 20])
 augroup END
@@ -449,6 +449,7 @@ augroup Languages | au!
     au FileType python call s:python()
     au FileType tex call s:tex()
     au FileType rust call s:rust()
+    au FileType vim setlocal formatoptions-=c
     au FileType xml setlocal formatoptions-=r " very broken: <!--<CR> → <!--\n--> █
 augroup END
 
@@ -495,6 +496,7 @@ endfunction
 function s:c_cpp() abort
     setlocal shiftwidth=2
     setlocal commentstring=//%s
+    silent! setlocal formatoptions+=/ " 8.2.4907
     setlocal path+=/usr/include
 endfunction
 " }}}
@@ -516,6 +518,11 @@ let g:matchup_override_vimtex = 1
 let g:vimtex_view_method = 'zathura'
 let g:vimtex_quickfix_mode = 0
 let g:vimtex_indent_on_ampersands = 0
+let g:vimtex_toc_config_matchers = {
+            \ 'todo_notes': {
+                \ 're' : g:vimtex#re#not_comment . '\\\w*%(todo|jaehwang)\w*%(\[[^]]*\])?\{\zs.*',
+                \ 'prefilter_cmds': ['todo', 'jaehwang']}
+            \}
 " NOTE: If inverse search doesn't work, check if source files are correctly recognized by vimtex.
 function! s:tex() abort
     setlocal shiftwidth=2
@@ -559,6 +566,7 @@ let g:markdown_folding = 1
 " let g:mkdp_echo_preview_url = 1
 let g:mkdp_auto_close = 0
 let g:mkdp_page_title = '${name}'
+" TODO: manually scroll to position in browser that matches the cursor position?
 let g:mkdp_preview_options = {
             \ 'mkit': { 'typographer': v:false },
             \ 'disable_sync_scroll': 1 }
@@ -671,6 +679,7 @@ endfunction
 " Coq {{{
 let g:coqtail_nomap = 1
 let g:coqtail_noindent_comment = 1
+let g:coqtail_tagfunc = 0
 function! s:coq_common() abort
     let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} })
     setlocal shiftwidth=2
@@ -703,7 +712,6 @@ endfunction
 " }}}
 
 let g:lisp_rainbow = 1
-let g:vimsyn_embed = 'l' " NOTE: only loads $VIMRUNTIME/syntax/lua.vim
 " }}}
 
 " search & fzf {{{
@@ -1041,7 +1049,7 @@ let g:pear_tree_smart_backspace = 1
 let g:pear_tree_timeout = 23
 let g:pear_tree_repeatable_expand = 0
 " assumes nosmartindent
-imap <expr> <CR> match(getline('.'), '\w') >= 0 ? "\<C-G>u\<Plug>(PearTreeExpand)" : "\<Plug>(PearTreeExpand)"
+imap <expr> <CR> match(getline('.'), '\k') >= 0 ? "\<C-G>u\<Plug>(PearTreeExpand)" : "\<Plug>(PearTreeExpand)"
 imap <BS> <Plug>(PearTreeBackspace)
 
 let g:surround_indent = 0
@@ -1289,6 +1297,9 @@ func! IsVimWide()
 endfunc
 function! Text2Magic(text)
     return escape(a:text, '\.*$^~[]')
+endfunction
+function! Text2VeryMagic(str) abort
+    return escape(a:str, '!#$%&()*+,-./:;<=>?@[\]^{|}~')
 endfunction
 
 function! Execute(cmd, mods) abort

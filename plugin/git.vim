@@ -1,4 +1,4 @@
-" based on fugitive#5ec0793b8808f5d01b8935a1bcb60bf4fddb6807
+" based on fugitive#535389b9a64be18349394c192bcf0348c0dee64e
 
 if exists('+shellslash')
   let s:dir_commit_file = '\c^fugitive://\%(/\a\@=\)\=\(.\{-\}\)//\%(\(\x\{40,\}\|[0-3]\)\(/.*\)\=\)\=$'
@@ -26,7 +26,7 @@ function! GitStatusline() abort
     return ''
   endif
   let commit = s:DirCommitFile_1(@%)
-  let status = FugitiveHead(7, dir)
+  let status = fugitive#Head(7, dir)
   if len(commit)
     let status .= ':' . commit[0:6]
   endif

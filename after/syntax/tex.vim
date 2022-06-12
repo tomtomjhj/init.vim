@@ -6,6 +6,8 @@ hi! def link texCmdStyleItal     texCmdType
 hi! def link texCmdStyleItalBold texCmdType
 hi! def link texZone Special
 
+syntax match texCmdTodo '\\jaehwang'
+
 " conceal inline math only
 syntax clear texMathZone texMathZoneX texMathZoneXX
 syntax region texMathZone   matchgroup=texMathDelimZone concealends contains=@texClusterMath keepend start="\\("  end="\\)"

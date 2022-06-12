@@ -3,11 +3,12 @@ local cmp = require'cmp'
 cmp.register_source('tags', require'tomtomjhj/cmp_tags'.new())
 
 -- TODO: ignore huge buffer, huge buffer updates
+local ignored_buftype = { quickfix = true, terminal = true, prompt = true }
 local function get_visible_bufnrs()
   local bufs = {}
   for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
     local buf = vim.api.nvim_win_get_buf(win)
-    if vim.api.nvim_buf_get_option(buf, 'buflisted') then
+    if vim.api.nvim_buf_get_option(buf, 'buflisted') and not ignored_buftype[vim.api.nvim_buf_get_option(buf, 'buftype')] then
       bufs[#bufs+1] = buf
     end
   end
@@ -26,10 +27,6 @@ end
 -- * buffer source
 --   * first letter case adjustment like coc
 --   * Don't add the word currently being editted in the middle e.g. `pre|suffix`.
--- * Popup from `view.entries = 'native'` unnecessarily bumps b:changedtick
---   (i.e. triggers buffer-updates) which floods cmp-buffer (the changed text
---   is quite weird). cmp.select_next_item and manual Vim ins-completion also
---   bumps b:changedtick multiple times.
 -- * keyword_pattern does 2 things: the pattern for item, and condition to list
 --   the source's item (pattern of the word before cursor)
 

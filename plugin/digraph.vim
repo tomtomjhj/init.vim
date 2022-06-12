@@ -3,6 +3,7 @@
 " * char2nr
 function! s:SetupDigraph()
     digraph mt 8614
+    digraph Mt 10503 " ⤇
     digraph ** 8727
     digraph oo 9679
     digraph OO 9711

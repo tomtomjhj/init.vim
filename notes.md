@@ -180,6 +180,21 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
       Quite ugly.
     * ✓ In `after/syntax/`, put `hi! def link`. Make a function that does per-colorscheme `hi! link`. Immediately call this function and register it to `au ColorScheme`.
 
+
+## buffer-updates
+```
+lua vim.api.nvim_buf_attach(0, false, {on_lines = function(_, bufnr, tick, first, old_last, new_last, _, _, _) vim.pretty_print(tick, first+1, old_last+1, new_last+1) end})
+```
+```
+asdf
+asdf
+asdfqwer < first
+asdfqwer
+    qwer < old_last
+    qwer
+         < new_last
+```
+
 # things that I should make more use of
 * marks
 * `:global`
@@ -215,7 +230,10 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 * yanking a line character-wise (not using `yy`) so that I can paste without trailing newline
 * appending to register to collect list of something + recording
 
-# pitfalls
+
+# (n)vim issues
+
+## pitfalls
 * Cursor movement on concealed string: `set concealcursor=n` doesn't work as expected. <https://vi.stackexchange.com/questions/4530/moving-over-conceal>
 * `:h map-bar`
 * Wrap `autocmd`s with `exec 'au ...'`: may not work as expected because of the interaction w/ `|`
@@ -264,13 +282,45 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
         * `plug#load` only sources `.vim` files. <https://github.com/hrsh7th/nvim-cmp/issues/65>
         * Order of `setup()` and `plugin/*.lua` sourcing?
     * impatient.nvim makes lua plugin startup fast enough.
+    * <https://github.com/junegunn/vim-plug/pull/1157>
 * Once a map prefix is entered, single-char mapping doesn't take the effect.
   Example: With `map! <Nul> <C-Space>` and `noremap! <C-Space><C-Space> XXX`, `<Nul><Nul>` becomes `<C-Space><Nul>`.
-* `vimgrep` ignores `smartcase`
-* Vim TUI doesn't highlight empty cell as `Normal` in most cases (NeoVim does it). This makes cursor less visible (or invisible) for light themes.
+* `vimgrep`, `*`, `gd`, etc ignore `smartcase`
+* Vim TUI doesn't highlight empty cell as `Normal` in most cases. It seems to use terminal's default fg/bg.
+    * This makes cursor less visible (or invisible) for light colorscheme vim + dark colorscheme terminal.
+    * NeoVim highlights all cells as `Normal`.
+    * Taking some actions (e.g. visual selection) adds `Normal` highlight.
 * If `winfixheight` (e.g. preview, quickfix), making it vertical (e.g. `<C-w>L`) and then horizontal back makes it occupy almost entire screen.
-
-# (n)vim issues
+* NeoVim terminal slows down the UI if too much stuff is printed.
+* `api-buffer-updates` is too fine-grained (triggered for each `b:changedtick` update). It's meant to be fine-grained, but it's too fine-grained for most use cases.
+  ```
+  lua vim.api.nvim_buf_attach(0, false, {on_lines = function(_, bufnr, tick, first, old_last, new_last, _, _, _) vim.pretty_print(tick, vim.api.nvim_buf_get_lines(bufnr, first, new_last, true)) end})
+  au TextChanged *  unsilent echom 'TextChanged'  b:changedtick
+  au TextChangedI * unsilent echom 'TextChangedI' b:changedtick
+  au TextChangedP * unsilent echom 'TextChangedP' b:changedtick
+  ```
+    * comparison with other stuff
+        * `TextChanged`/`TextChangedI`/`TextChangedP`: on each redraw (search `EVENT_TEXTCHANGED`; `normal_check`/`normal_check_text_changed`, `ins_redraw`)
+        * changes `:changes`?
+    * case study:
+        * ins-completion and built-in pum: *very* frequent; 3 × length of completed item???
+        * `<C-w>`/`<C-u>`: bump for each char
+        * `gq`: more than once for each line
+        * `=` without indentexpr
+        * `:{range}s`: only once for the whole changes, even if not contiguous. But undo is per line.
+        * undo/redo: ??
+        * `:g`: for each matched line
+    * problems
+        * too much cpu usage: floods cmp-buffer indexer; noticeably slow when using native pum
+        * Nvim lsp client reports diagnostics for each changedtick even if debouncing is used. Example: lua-language-server, `gq` on comments.
+    * solutions
+        * add coarser per-change event?
+            * changes might not be contiguous
+        * generic debouncing + event merging?
+            * `changetracking.prepare` in `lsp.lua`: "This must be done immediately and cannot be delayed. The contents would further change and startline/endline may no longer fit"
+            * cmp-buffer: maintain set of line numbers to be indexed
+    * see also?
+        * <https://github.com/vim/vim/issues/679>
 
 ## bugs
 * terminal reflow https://github.com/neovim/neovim/issues/2514
@@ -315,6 +365,7 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
   wincmd s | wincmd j | set wfh | exe "norm! z14\<CR>" | pedit file
   ```
 * gvim clears clipboard when exiting??
+    * related? <https://github.com/neovim/neovim/issues/5799>
 * `hi def link` + `hi clear` is somewhat broken
 * nvim: If there's a mapping that starts with `<C-c>` in current mode (but not exactly `<C-c>`), `<C-c>` does not interrupt vimscript (loop, `:sleep`, ...). <https://github.com/neovim/neovim/issues/15258>
 * When typing a prefix of imap, the typed char is displayed during the timeout. Is this intended?
@@ -331,13 +382,6 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
 ## wishlist
 * timeout for built-in multi-char commands so that it doesn't interfere with user mappings
 * character classes (like emacs); word ≠ identifier
-* `nvim_buf_attach` event is too fine-grained (per `chagnedtick`?)
-    * Problems:
-        * unwanted diagnostics (e.g. after `gq`, `=`, etc, which bump `changedtick` multiple times) with some language servers (e.g. lua)
-        * cmp-buffer high CPU usage, ...
-    * Solution?
-        * event for each change added to the "change list"?
-        * diagnostics: merge incremental changes in `pending_changes` while debouncing?
 
 
 # stuff
@@ -410,6 +454,8 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
   https://github.com/noahfrederick/vim-noctu
   https://github.com/cocopon/iceberg.vim
 * https://github.com/stevearc/gkeep.nvim
+* https://github.com/m00qek/baleia.nvim
+    * TODO: Use this for better syntax highlighting for diff filetype?
 
 ## new (n)vim stuff
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.
