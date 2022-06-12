@@ -14,7 +14,7 @@ Plug 'tomtomjhj/taiga.vim'
 
 " editing
 Plug 'tomtomjhj/vim-sneak'
-Plug 'tpope/vim-surround'
+Plug 'tomtomjhj/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'tomtomjhj/pear-tree'
 Plug 'andymass/vim-matchup' " i%, a%, ]%, z%, g% TODO: % that seeks backward https://github.com/andymass/vim-matchup/issues/49#issuecomment-470933348
@@ -24,7 +24,7 @@ Plug 'kana/vim-textobj-user'
 Plug 'tomtomjhj/vim-textobj-comment'
 Plug 'pianohacker/vim-textobj-indented-paragraph', { 'do': 'rm -rf plugin' }
 Plug 'Julian/vim-textobj-variable-segment' " iv, av
-Plug 'preservim/nerdcommenter', { 'on': '<Plug>NERDCommenter' }
+Plug 'tomtomjhj/vim-commentary'
 Plug 'godlygeek/tabular', { 'on': 'Tabularize' }
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'whonore/vim-sentencer'
@@ -117,7 +117,6 @@ if s:nvim_latest_stable
     " NOTE: when using local install of nvim, should reinstall
     Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
     " Plug 'nvim-lua/plenary.nvim'
-    Plug 'b3nj5m1n/kommentary', {'on': '<Plug>kommentary'}
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'nvim-treesitter/playground'
     " NOTE: should do `rm ~/.cache/nvim/luacache*` after upgrading nvim
@@ -1045,6 +1044,10 @@ let g:pear_tree_repeatable_expand = 0
 imap <expr> <CR> match(getline('.'), '\w') >= 0 ? "\<C-G>u\<Plug>(PearTreeExpand)" : "\<Plug>(PearTreeExpand)"
 imap <BS> <Plug>(PearTreeBackspace)
 
+let g:surround_indent = 0
+let g:surround_{char2nr('c')} = "/* \r */"
+let g:surround_{char2nr('m')} = "(* \r *)"
+
 " 'a'ny block from matchup
 xmap aa a%
 omap aa a%
@@ -1236,33 +1239,7 @@ call textobj#user#plugin('tomtomjhj', {
 " }}}
 
 " comments {{{
-let g:NERDCreateDefaultMappings = 0
-imap <M-/> <C-G>u<Plug>NERDCommenterInsert
-map <M-/> <Plug>NERDCommenterComment
-xmap <leader>c<Space> <Plug>NERDCommenterToggle
-nmap <leader>c<Space> <Plug>NERDCommenterToggle
-xmap <leader>cs <Plug>NERDCommenterSexy
-nmap <leader>cs <Plug>NERDCommenterSexy
-xmap <leader>cm <Plug>NERDCommenterMinimal
-nmap <leader>cm <Plug>NERDCommenterMinimal
-if s:nvim_latest_stable
-    xmap <leader>cu <Plug>kommentary_visual_decrease<ESC>
-    nmap <leader>cu <Plug>kommentary_line_decrease
-else
-    " NOTE: nerdcommenter uncomments nested comments
-    " (*
-    " (* *)
-    " *)
-    xmap <leader>cu <Plug>NERDCommenterUncomment
-    nmap <leader>cu <Plug>NERDCommenterUncomment
-endif
-let g:NERDSpaceDelims = 1
-let g:NERDCustomDelimiters = {
-            \ 'python' : { 'left': '#', 'leftAlt': '#' },
-            \ 'c': { 'left': '//', 'leftAlt': '/*', 'rightAlt': '*/' },
-            \ 'coq': { 'left': '(*', 'right': '*)', 'nested': 1 },
-            \}
-let g:NERDDefaultAlign = 'left'
+imap <M-/> <C-G>u<Plug>CommentaryInsert
 " }}}
 
 " etc plugins {{{
