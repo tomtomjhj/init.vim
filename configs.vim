@@ -14,14 +14,13 @@ Plug 'tomtomjhj/taiga.vim'
 
 " editing
 Plug 'tomtomjhj/vim-sneak'
-Plug 'tomtomjhj/vim-surround'
+Plug 'machakann/vim-sandwich'
 Plug 'tpope/vim-repeat'
 Plug 'tomtomjhj/pear-tree'
 Plug 'andymass/vim-matchup' " i%, a%, ]%, z%, g% TODO: % that seeks backward https://github.com/andymass/vim-matchup/issues/49#issuecomment-470933348
 Plug 'wellle/targets.vim' " multi (e.g. ib, iq), separator, argument
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'kana/vim-textobj-user'
-Plug 'tomtomjhj/vim-textobj-comment'
 Plug 'pianohacker/vim-textobj-indented-paragraph', { 'do': 'rm -rf plugin' }
 Plug 'Julian/vim-textobj-variable-segment' " iv, av
 Plug 'tomtomjhj/vim-commentary'
@@ -1052,22 +1051,49 @@ let g:pear_tree_repeatable_expand = 0
 imap <expr> <CR> match(getline('.'), '\k') >= 0 ? "\<C-G>u\<Plug>(PearTreeExpand)" : "\<Plug>(PearTreeExpand)"
 imap <BS> <Plug>(PearTreeBackspace)
 
-let g:surround_indent = 0
-let g:surround_{char2nr('c')} = "/* \r */"
-let g:surround_{char2nr('m')} = "(* \r *)"
+" NOTE
+" - https://github.com/machakann/vim-sandwich/wiki/Magic-characters
+" - Sandwich doesn't have insert mode mapping https://github.com/machakann/vim-sandwich/issues/100 → use snippets
+" - In tex, first sandwich very slow? slow when texlab hasn't initilalized yet?
 
 augroup MyTargets | au!
     " NOTE: can't expand by repeating → use builtin for simple objects
     " NOTE: can't select **text <newline> text** using i*
     " https://github.com/wellle/targets.vim/issues/175
-    " 'a'rguments, any 'q'uote, any 'b'lock, separators
+    " Use 'a'rguments, separators only
     autocmd User targets#mappings#user call targets#mappings#extend({
-    \ '(': {}, ')': {}, '{': {}, '}': {}, 'B': {}, '[': {}, ']': {}, '<': {}, '>': {}, '"': {}, "'": {}, '`': {}, 't': {},
+    \ '(': {}, ')': {}, '{': {}, '}': {}, 'B': {}, '[': {}, ']': {}, '<': {}, '>': {}, '"': {}, "'": {}, '`': {}, 't': {}, 'b': {}, 'q': {},
     \ })
 augroup END
 " https://github.com/wellle/targets.vim/issues/233
 " This should be called after setting up the autocmd
 call targets#sources#newFactories('')
+
+let g:operator#sandwich#highlight_duration = 30
+runtime macros/sandwich/keymap/surround.vim
+" surround with whitespace
+let g:sandwich#recipes += [
+      \   {'buns': ['{ ', ' }'], 'nesting': 1, 'match_syntax': 1, 'kind': ['add', 'replace'], 'action': ['add'], 'input': ['{']},
+      \   {'buns': ['[ ', ' ]'], 'nesting': 1, 'match_syntax': 1, 'kind': ['add', 'replace'], 'action': ['add'], 'input': ['[']},
+      \   {'buns': ['( ', ' )'], 'nesting': 1, 'match_syntax': 1, 'kind': ['add', 'replace'], 'action': ['add'], 'input': ['(']},
+      \   {'buns': ['{\s*', '\s*}'],   'nesting': 1, 'regex': 1, 'match_syntax': 1, 'kind': ['delete', 'replace', 'textobj'], 'action': ['delete'], 'input': ['{']},
+      \   {'buns': ['\[\s*', '\s*\]'], 'nesting': 1, 'regex': 1, 'match_syntax': 1, 'kind': ['delete', 'replace', 'textobj'], 'action': ['delete'], 'input': ['[']},
+      \   {'buns': ['(\s*', '\s*)'],   'nesting': 1, 'regex': 1, 'match_syntax': 1, 'kind': ['delete', 'replace', 'textobj'], 'action': ['delete'], 'input': ['(']},
+      \ ]
+" ML-style comment
+let g:sandwich#recipes += [
+      \   {'buns': ['(* ', ' *)'], 'nesting': 1, 'motionwise': ['char', 'block'], 'kind': ['add'], 'action': ['add'], 'input': ['m']},
+      \   {'buns': ['(*', '*)'], 'nesting': 1, 'motionwise': ['line'], 'autoindent': 0, 'kind': ['add'], 'action': ['add'], 'input': ['m']},
+      \   {'buns': ['\V(*\s\*', '\V\s\**)'], 'nesting': 1, 'regex': 1, 'kind': ['delete', 'textobj'], 'action': ['delete'], 'input': ['m']},
+      \ ]
+omap ib <Plug>(textobj-sandwich-auto-i)
+xmap ib <Plug>(textobj-sandwich-auto-i)
+omap ab <Plug>(textobj-sandwich-auto-a)
+xmap ab <Plug>(textobj-sandwich-auto-a)
+" omap is <Plug>(textobj-sandwich-query-i)
+" xmap is <Plug>(textobj-sandwich-query-i)
+" omap as <Plug>(textobj-sandwich-query-a)
+" xmap as <Plug>(textobj-sandwich-query-a)
 " }}}
 
 " shell, terminal {{{
