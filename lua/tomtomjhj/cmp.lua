@@ -42,7 +42,7 @@ cmp.setup {
     { name = 'path' },
     { name = 'buffer',
       option = {
-        keyword_pattern = [[\K\k\{-,38}\>]], -- TODO: per-ft keyword pattern? e.g. no \k for help file
+        keyword_pattern = [[\<\K\k\{-,38}\>]], -- TODO: per-ft keyword pattern? e.g. no \k for help file
         get_bufnrs = get_visible_bufnrs,
       }
     },

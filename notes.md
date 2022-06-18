@@ -318,9 +318,12 @@ asdfqwer
             * changes might not be contiguous
         * generic debouncing + event merging?
             * `changetracking.prepare` in `lsp.lua`: "This must be done immediately and cannot be delayed. The contents would further change and startline/endline may no longer fit"
+                * maintain set of line numbers to be diffed, adjust like what cmp-buffer does
+                * snapshot of buffer for each debounced period?
             * cmp-buffer: maintain set of line numbers to be indexed
     * see also?
         * <https://github.com/vim/vim/issues/679>
+* `map` includes `smap`
 
 ## bugs
 * terminal reflow https://github.com/neovim/neovim/issues/2514
@@ -358,11 +361,11 @@ asdfqwer
 * https://github.com/neovim/neovim/issues/14298
   Similar issue in vim without tmux when mapping `<M-]>`.
   `vim --clean -c 'map <ESC>] <M-]>'` to reproduce.
-* previewheight is ignored if pedit is run on window with
-  `vim --clean`, `set lines=74`
+* `pedit` on horizontal split ignores `previewheight` if `winhight(0) < previewheight + 1`
   ```
-  wincmd s | wincmd j | set wfh | exe "norm! z13\<CR>" | pedit file
-  wincmd s | wincmd j | set wfh | exe "norm! z14\<CR>" | pedit file
+  vim --clean # previewheight=12
+  wincmd s | exe "norm! z13\<CR>" | pedit file
+  wincmd s | exe "norm! z14\<CR>" | pedit file
   ```
 * gvim clears clipboard when exiting??
     * related? <https://github.com/neovim/neovim/issues/5799>

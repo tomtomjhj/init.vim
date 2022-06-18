@@ -49,6 +49,7 @@ Plug 'tpope/vim-fugitive'
 "   * vmap y<C-G> is annoying
 Plug 'rbong/vim-flog'
 Plug 'rhysd/git-messenger.vim'
+Plug 'tpope/vim-rhubarb'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': has('unix') ? './install --all' : { -> fzf#install() } }
@@ -86,6 +87,7 @@ elseif g:ide_client == 'nvim'
     Plug 'folke/lua-dev.nvim'
     Plug 'simrat39/rust-tools.nvim'
     " https://github.com/p00f/clangd_extensions.nvim
+    Plug 'vigoux/ltex-ls.nvim'
 endif
 " TODO: use vsnip? (supports vscode snippets)
 Plug 'SirVer/ultisnips'
@@ -540,12 +542,13 @@ function! s:tex() abort
     xmap <buffer> ac <Plug>(vimtex-ac)
     omap <buffer> ac <Plug>(vimtex-ac)
     nmap <buffer><silent><leader>oo :call Zathura("<C-r>=expand("%:p:h").'/main.pdf'<CR>")<CR>
-    nmap <buffer>        <leader>C <Plug>(vimtex-compile-ss)
+    nmap <buffer>        <leader>C <Cmd>update<CR><Plug>(vimtex-compile-ss)
 endfunction
 function! s:bib() abort
     setlocal shiftwidth=2
     " unmap broken vimtex-% in bib
     silent! unmap <buffer> %
+    nmap <buffer>        <leader>C <Cmd>update<CR><Plug>(vimtex-compile-ss)
 endfunction
 " }}}
 
@@ -955,6 +958,7 @@ noremap <leader>do :diffget<CR>
 " clipboard.
 inoremap <C-v> <C-g>u<C-r><C-o>+
 noremap <M-c> "+y
+nnoremap <silent> yY :let _view = winsaveview() \| exe 'keepjumps keepmarks norm ggVG"+y' \| call winrestview(_view) \| unlet _view<cr>
 
 " buf/filename
 noremap <leader>fn 2<C-g>
@@ -984,6 +988,8 @@ xnoremap u <nop>
 
 " delete without clearing regs
 noremap x "_x
+
+nnoremap gV `[v`]
 
 " repetitive pastes using designated register @p
 noremap <M-y> "py
@@ -1212,7 +1218,7 @@ augroup fern-custom | au!
 augroup END
 " }}}
 
-" git {{{
+" Git. See also plugin/git.vim {{{
 let g:flog_default_arguments = { 'max_count': 512, 'all': 1, }
 let g:flog_permanent_default_arguments = { 'date': 'short', }
 
@@ -1221,9 +1227,13 @@ augroup git-custom | au!
     au FileType git,fugitive,gitcommit
         \ nnoremap <buffer>zM :setlocal foldmethod=syntax\|unmap <lt>buffer>zM<CR>zM
         \|silent! unmap <buffer> *
-    au User FugitiveObject,FugitiveIndex silent! unmap <buffer> *
+        \|map <buffer> <localleader>* <Plug>fugitive:*
+    au User FugitiveObject,FugitiveIndex
+        \ silent! unmap <buffer> *
+        \|map <buffer> <localleader>* <Plug>fugitive:*
     au User FugitiveChanged if &ft ==# 'floggraph' | call flog#populate_graph_buffer() | endif
     au FileType floggraph silent! nunmap <buffer> <Tab>
+    " TODO: diff mapping for gitcommit
 augroup END
 " }}}
 
