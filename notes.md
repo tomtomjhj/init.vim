@@ -62,13 +62,17 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * abbrev tex commands with unicode
 * https://github.com/lervag/vimtex/issues/1937
 * `debug-mode`?
-* how to make `Gdiffsplit` do `--follow`?
+* how to make `Gdiffsplit`, `G blame` do `--follow`?
 * Textobj plugins can be lazy-loaded with manual `s:lod_map`
 * search without confirming search, window-local search, jump with `/_CTRL-G`, ...
 * refreshing clipboard `call setenv('DISPLAY', '...')`: The new value can be obtained by launching another shell.. how to automate? Note: `call serverlist()` seems to work
     * https://stackoverflow.com/questions/13634697/openssh-client-hangs-on-logout-when-forwarding-x-connections
 * Shouldn't `buftype=nofile` buffers be ignored from viminfo (so that they don't clutter oldfiles)?
     * It seems that the buffer is not added to viminfo if it doesn't have marks. Clear the marks when deleting nofile buffer?
+* `:e X.v`, enter insert mode, `:e` again → prints this
+  ```
+  i  <Plug>(PearTreeCloser_)) *@pear_tree#insert_mode#HandleCloser(')')
+  ```
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
@@ -291,6 +295,7 @@ asdfqwer
     * NeoVim highlights all cells as `Normal`.
     * Taking some actions (e.g. visual selection) adds `Normal` highlight.
 * If `winfixheight` (e.g. preview, quickfix), making it vertical (e.g. `<C-w>L`) and then horizontal back makes it occupy almost entire screen.
+    * For preview window, apply `previewheight`? Note: `:pedit` doesn't accept `{height}`, unlike `:copen`.
 * NeoVim terminal slows down the UI if too much stuff is printed.
 * `api-buffer-updates` is too fine-grained (triggered for each `b:changedtick` update). It's meant to be fine-grained, but it's too fine-grained for most use cases.
   ```
@@ -372,6 +377,7 @@ asdfqwer
 * `hi def link` + `hi clear` is somewhat broken
 * nvim: If there's a mapping that starts with `<C-c>` in current mode (but not exactly `<C-c>`), `<C-c>` does not interrupt vimscript (loop, `:sleep`, ...). <https://github.com/neovim/neovim/issues/15258>
 * When typing a prefix of imap, the typed char is displayed during the timeout. Is this intended?
+* In nvim, tex, `lazyredraw`, cursor on `\` of `\someTexCommand`, type `ve` instantaneously. Highlighted region is not drawn. (FixCursorHold.nvim triggers redraw after a while.) Vim and nvim 0.6.1 works correctly. Also reproducible in neovide and goneovim. Can't reproduce with `--clean`. Reproducible without vimtex.
 
 ## ...
 * `ge` ... design of inclusive/exclusive stuff

@@ -11,6 +11,11 @@ function! s:colors()
     hi! CoqtailSent ctermbg=146 guibg=#afafd7
   endif
 
+  " hi def link CoqtailDiffAdded DiffText
+  hi! link CoqtailDiffAddedBg NONE " DiffChange
+  " hi def link CoqtailDiffRemoved DiffDelete
+  hi! link CoqtailDiffRemovedBg NONE " DiffDelete
+
   if get(g:, 'colors_name', '') ==# 'zenbruh'
     hi! link coqTactic            ZenbruhGreen
     hi! link coqLtac              ZenbruhGreen

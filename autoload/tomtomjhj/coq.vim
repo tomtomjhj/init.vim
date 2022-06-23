@@ -108,6 +108,15 @@ function! tomtomjhj#coq#mappings()
         nmap <buffer> [[ <Cmd>call tomtomjhj#coq#goal_section(1)<CR>
         nmap <buffer> ]] <Cmd>call tomtomjhj#coq#goal_section(0)<CR>
     endif
+
+    " (v : t) → v
+    nmap <buffer> ds<M-;> <Cmd>call <SID>simpl_binder()<CR>
+endfunction
+
+" NOTE: repeating didn't work when not using function
+function! s:simpl_binder() abort
+    exe "normal vab\<Esc>dF:hxdss"
+    call repeat#set("ds\<M-;>", v:count)
 endfunction
 
 " TODO: normal gotodef-ing in aux buf makes it 'buflisted'

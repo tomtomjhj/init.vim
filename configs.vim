@@ -3,8 +3,16 @@
 let s:nvim_latest_stable = has('nvim-0.7')
 let g:ide_client = get(g:, 'ide_client', s:nvim_latest_stable ? 'nvim' : 'coc')
 
+if !has('nvim')
+    let g:loaded_getscriptPlugin = 1
+    let g:loaded_rrhelper = 1
+    let g:loaded_logiPat = 1
+endif
+let g:loaded_spellfile_plugin = 1
+
 " TODO: packadd-based, lazy-loaded (event, normal, ex), vim/nvim compatible plugin manager?
 " TODO: post-update hook doesn't work on nvim-0.6 Vim(call):E117: Unknown function: mkdp#util#install ... This happens only when installing (not updating). So nvim might be checking existence of the directory when rtp is modified.
+" https://github.com/neovim/neovim/issues/18822
 " Plug {{{
 call plug#begin('~/.vim/plugged')
 
@@ -28,6 +36,7 @@ Plug 'godlygeek/tabular', { 'on': 'Tabularize' }
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'whonore/vim-sentencer'
 
+Plug 'tpope/vim-git' " to use the latest version not yet included in vim runtime
 " etc
 " TODO:
 " * :G log unicode broken
@@ -78,6 +87,7 @@ elseif g:ide_client == 'nvim'
     Plug 'hrsh7th/cmp-buffer'
     " Plug 'hrsh7th/cmp-cmdline'
     Plug 'hrsh7th/cmp-nvim-lsp'
+    " hrsh7th/cmp-nvim-lsp-signature-help
     Plug 'hrsh7th/cmp-path'
     Plug 'quangnguyen30192/cmp-nvim-ultisnips'
     Plug 'neovim/nvim-lspconfig'
@@ -138,7 +148,7 @@ set mouse=a
 set number signcolumn=number
 set ruler showcmd
 set foldcolumn=1 foldnestmax=5
-set scrolloff=2 sidescrolloff=2 sidescroll=1 nostartofline
+set scrolloff=2 sidescrolloff=2 sidescroll=1 startofline
 set showtabline=1
 set laststatus=2
 
@@ -1014,8 +1024,6 @@ nnoremap <C-l> <C-W>l
 
 command! -count Wfh setlocal winfixheight | if <count> | exe "normal! z".<count>."\<CR>" | endif
 
-noremap <leader>q :<C-u>q<CR>
-noremap q, :<C-u>q<CR>
 nnoremap <leader>w :<C-u>up<CR>
 nnoremap ZAQ :<C-u>qa!<CR>
 cnoreabbrev <expr> W <SID>cabbrev('W', 'w')
@@ -1087,10 +1095,14 @@ let g:sandwich#recipes += [
       \   {'buns': ['(\s*', '\s*)'],   'nesting': 1, 'regex': 1, 'match_syntax': 1, 'kind': ['delete', 'replace', 'textobj'], 'action': ['delete'], 'input': ['(']},
       \ ]
 " ML-style comment
+" NOTE: including \s* in the pattern breaks many stuff, e.g.
+" (*
+" (*  *)
+" *)
 let g:sandwich#recipes += [
       \   {'buns': ['(* ', ' *)'], 'nesting': 1, 'motionwise': ['char', 'block'], 'kind': ['add'], 'action': ['add'], 'input': ['m']},
       \   {'buns': ['(*', '*)'], 'nesting': 1, 'motionwise': ['line'], 'autoindent': 0, 'kind': ['add'], 'action': ['add'], 'input': ['m']},
-      \   {'buns': ['\V(*\s\*', '\V\s\**)'], 'nesting': 1, 'regex': 1, 'kind': ['delete', 'textobj'], 'action': ['delete'], 'input': ['m']},
+      \   {'buns': ['\v\(\*\_s', '\v(^|\s)\*\)'], 'nesting': 1, 'regex': 1, 'kind': ['delete', 'textobj'], 'action': ['delete'], 'input': ['m']},
       \ ]
 omap ib <Plug>(textobj-sandwich-auto-i)
 xmap ib <Plug>(textobj-sandwich-auto-i)
@@ -1394,4 +1406,6 @@ if !has('nvim')
     command! -nargs=+ -complete=shellcmd Man delcommand Man | runtime ftplugin/man.vim | if winwidth(0) > 170 | exe 'vert Man' <q-args> | else | exe 'Man' <q-args> | endif
     command! SW w !sudo tee % > /dev/null
 endif
+
+command! Profile profile start profile.log | profile func * | profile file *
 " }}}
