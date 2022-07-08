@@ -42,21 +42,6 @@ Plug 'tpope/vim-git' " to use the latest version not yet included in vim runtime
 " * :G log unicode broken
 " * '--git-completion-helper'-based completion (#1265) doesn't complete many things for git log e.g. --grep
 Plug 'tpope/vim-fugitive'
-" TODO:
-" * Command argument design is somewhat ad-hoc. Why do we need them? Why not
-"   just git-log stuff and fugitive#LogComplete?
-" * inline the patch in the flog buffer?
-" * map <C-n> and <C-p> in the temporary fugitive:// window
-" * BUG: When there is a flog-temp-window and the cursor is near the right side of the window, flog-<CR> scrolls the window to the right.
-"   * It's the problem of `vertical belowright Flogsplitcommit`
-"   * flog#run_tmp_command('<mods> Gsplit %h')
-"     nothing wrong with Gsplit
-" * flog-<CR> enables hlsearch in nvim?
-" * respect current layout; don't force vsplit on <CR>
-" * buffer name with URI scheme like fugitive:// and fern://
-" * something like fugitive's cmap <C-r><C-g> in flog graph. there's flog-y<C-G> though
-"   * vmap y<C-G> is annoying
-Plug 'rbong/vim-flog'
 Plug 'rhysd/git-messenger.vim'
 Plug 'tpope/vim-rhubarb'
 Plug 'skywind3000/asyncrun.vim'
