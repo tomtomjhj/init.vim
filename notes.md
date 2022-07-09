@@ -69,10 +69,6 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
     * https://stackoverflow.com/questions/13634697/openssh-client-hangs-on-logout-when-forwarding-x-connections
 * Shouldn't `buftype=nofile` buffers be ignored from viminfo (so that they don't clutter oldfiles)?
     * It seems that the buffer is not added to viminfo if it doesn't have marks. Clear the marks when deleting nofile buffer?
-* `:e X.v`, enter insert mode, `:e` again → prints this
-  ```
-  i  <Plug>(PearTreeCloser_)) *@pear_tree#insert_mode#HandleCloser(')')
-  ```
 
 ## Done
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????

@@ -208,7 +208,7 @@ augroup BasicSetup | au!
     au BufWritePost ~/.vim/configs.vim nested source ~/.vim/configs.vim
     au BufRead,BufNewFile *.k setlocal filetype=k
     au BufRead,BufNewFile *.mir setlocal syntax=rust
-    au FileType lisp let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} })
+    au FileType lisp let b:pear_tree_pairs = deepcopy(g:pear_tree_pairs) | call remove(b:pear_tree_pairs, "'")
     au FileType help nnoremap <silent><buffer> <M-.> K
     let &pumheight = min([&window/4, 20])
     au VimResized * let &pumheight = min([&window/4, 20])
@@ -678,7 +678,8 @@ let g:coqtail_nomap = 1
 let g:coqtail_noindent_comment = 1
 let g:coqtail_tagfunc = 0
 function! s:coq_common() abort
-    let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), { "'": {'closer': ''} })
+    let b:pear_tree_pairs = deepcopy(g:pear_tree_pairs)
+    call remove(b:pear_tree_pairs, "'")
     setlocal shiftwidth=2
     " no middle piece & comment leader
     setlocal comments=s:(*,e:*) formatoptions=qnj
