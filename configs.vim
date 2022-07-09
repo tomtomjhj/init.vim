@@ -1227,9 +1227,6 @@ augroup END
 " }}}
 
 " Git. See also plugin/git.vim {{{
-let g:flog_default_arguments = { 'max_count': 512, 'all': 1, }
-let g:flog_permanent_default_arguments = { 'date': 'short', }
-
 augroup git-custom | au!
     " TODO: Very slow and doesn't fold each hunk.
     au FileType git,fugitive,gitcommit
@@ -1239,8 +1236,6 @@ augroup git-custom | au!
     au User FugitiveObject,FugitiveIndex
         \ silent! unmap <buffer> *
         \|map <buffer> <localleader>* <Plug>fugitive:*
-    au User FugitiveChanged if &ft ==# 'floggraph' | call flog#populate_graph_buffer() | endif
-    au FileType floggraph silent! nunmap <buffer> <Tab>
     " TODO: diff mapping for gitcommit
 augroup END
 " }}}
