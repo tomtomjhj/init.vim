@@ -195,6 +195,72 @@ asdfqwer
          < new_last
 ```
 
+## operators
+* use `relativenumber` for operator pending mode?
+* `:h omap-info`
+
+## commenting
+Commentary
+* Commetary is for quickly commenting out **lines of code** and reverting it.
+    * Out of scope: fancy comments.
+        * three-piece comment `/*\n *\n */` (`:Commentary!` somewhat works, though)
+        * Rust doc comment `///`, `//!`.
+* text object: don't span multiple paragraphs by default?
+    * Current behavior is ok since commentary doesn't add comment marker to empty lines.
+    * Paragraph motion doesn't work well for this case → just add an empty line.
+      ```
+      // commented code 1
+
+      // commented code 2
+      code
+      ```
+    * Make a visual mode mapping for text object, so that this can be adjusted when needed?
+* Distinguishing actual comment and commented out code is not necessary if the comment is nested:
+  ```
+  // // comment
+  // code
+  ```
+* `/1* *1/` thing for non-nesting comments (`strlen(r) > 2`)
+    * not compatible with other editors
+    * uncommenting works well without it
+    * doesn't work for html? <https://github.com/tpope/vim-commentary/issues/65> it actually works now
+    * make it customizable?
+* forcing comment? (reverse of `:Commentary!`)
+* Doesn't work well with empty comment line. Note that commentary doesn't add comment marker to empty lines.
+    * Doesn't strip leading whitespace of non-empty comment line.
+      ```
+      # comment
+      #
+      ```
+    * Leaves whitespace when when uncommenting indented empty comment line
+      ```
+        # comment
+        #
+      ```
+
+## git log viewer
+* maps
+    * [ ] `FlogVDiffSplitRight`
+    * [ ] show more commits
+* implementation
+    * `:{range}Git! -p`
+      ```
+      command! -bang -nargs=? -range -complete=customlist,fugitive#LogComplete GL <mods> <line1>,<line2>Git<bang> -p log --graph --format=format:'%h %as [%an]%d %s' -1111 <args>
+      ```
+        * This still creates temp file..
+        * It's async.
+          ```
+          E21: Cannot make changes, 'modifiable' is off: keepalt 1111read /tmp/v35WKhM/10|silent 1,1111delete_|diffupdate
+          ```
+    * `:Git log` everytime
+        * Refreshing: Run `<Plug>fugitive:gq` and re-run command with previous options.
+        * `++curwin`
+    * ✗ `fugitive#LogCommand()`: This is for `Gclog`
+    * `fugitive#Command()` runs the command, and returns string of commands to run (e.g. to see the result).
+        * example: `fugitive#Command(0,0,0,0,0, 'log',)`
+    * `FugitiveExecute(args : list string)`
+        * It doesn't use `s:SplitExpandChain()` (splits `<q-args>`, expands `%` and `fugitive-object`)
+
 # things that I should make more use of
 * marks
 * `:global`
@@ -231,9 +297,12 @@ asdfqwer
 * appending to register to collect list of something + recording
 
 
-# (n)vim issues
+# issues
 
-## pitfalls
+Not triaged
+* While editing tex, something is doing async redraw. Incsearch highlight disappears.
+
+## (n)vim pitfalls
 * Cursor movement on concealed string: `set concealcursor=n` doesn't work as expected. <https://vi.stackexchange.com/questions/4530/moving-over-conceal>
 * `:h map-bar`
 * Wrap `autocmd`s with `exec 'au ...'`: may not work as expected because of the interaction w/ `|`
@@ -325,8 +394,10 @@ asdfqwer
     * see also?
         * <https://github.com/vim/vim/issues/679>
 * `map` includes `smap`
+* Nvim silences errors in autocmd. This is not related to [`shortmess`](https://github.com/neovim/neovim/wiki/FAQ#calling-inputlist-echomsg--in-filetype-plugins-and-autocmd-does-not-work). This makes debugging ftplugin difficult.
 
-## bugs
+
+## (n)vim bugs
 * terminal reflow https://github.com/neovim/neovim/issues/2514
     * best: make it work like normal buffer with `nowrap`
     * running tmux inside the termianl:
@@ -373,7 +444,13 @@ asdfqwer
 * `hi def link` + `hi clear` is somewhat broken
 * nvim: If there's a mapping that starts with `<C-c>` in current mode (but not exactly `<C-c>`), `<C-c>` does not interrupt vimscript (loop, `:sleep`, ...). <https://github.com/neovim/neovim/issues/15258>
 * When typing a prefix of imap, the typed char is displayed during the timeout. Is this intended?
-* In nvim, tex, `lazyredraw`, cursor on `\` of `\someTexCommand`, type `ve` instantaneously. Highlighted region is not drawn. (FixCursorHold.nvim triggers redraw after a while.) Vim and nvim 0.6.1 works correctly. Also reproducible in neovide and goneovim. Can't reproduce with `--clean`. Reproducible without vimtex.
+* In nvim, tex, `lazyredraw`, cursor on `\` of `\someTexCommand`, type `ve` instantaneously. Highlighted region is not drawn. (FixCursorHold.nvim triggers redraw after a while.)
+    * bisected: https://github.com/neovim/neovim/pull/17913
+    * Also reproducible in neovide and goneovim.
+    * Can't reproduce with `--clean`.
+    * Reproducible without vimtex.
+        * reproducible with `g:vimtex_syntax_conceal_disable = 1`
+    * Reproduction requires lightline.
 
 ## ...
 * `ge` ... design of inclusive/exclusive stuff
