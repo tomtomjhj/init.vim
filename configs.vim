@@ -264,33 +264,31 @@ endif
 " }}}
 
 " Statusline {{{
-" TODO: buffer_title: merge specialbuf and shortrelpath; and do more fancy stuff for special buffers e.g. w:quickfix_title, term:///, fugitive://, ..
 let g:lightline = {
       \ 'colorscheme': 'powerwombat',
       \ 'active': {
       \   'left': [ ['mode', 'paste'],
-      \             ['readonly', 'specialbuf', 'shortrelpath', 'modified'],
+      \             ['specialwin', 'title', 'bufstate'],
       \             ['curr_func', 'git'] ],
       \   'right': [ ['lineinfo'], ['percent'],
       \              ['checker_errors', 'checker_warnings', 'checker_status'],
       \              ['searchcount', 'asyncrun'] ]
       \ },
       \ 'inactive': {
-      \   'left': [ ['specialbuf', 'shortrelpath'],
+      \   'left': [ ['specialwin', 'title'],
       \             ['bufnr_winnr'] ],
       \   'right': [ ['lineinfo'], ['percent'],
       \              ['checker_errors_inactive', 'checker_warnings_inactive'] ]
       \ },
       \ 'component': {
-      \   'readonly': '%{&readonly && &filetype !=# "help" ? "🔒" : ""}',
-      \   'specialbuf': '%q%w',
-      \   'modified': '%{&filetype==#"help"?"":&modified?"+":&modifiable?"":"-"}',
-      \   'asyncrun': '%{g:asyncrun_status[:3]}',
+      \   'specialwin': '%w%q%h',
+      \   'asyncrun': '%{get(g:,"asyncrun_status","")[:3]}',
       \   'bufnr_winnr': '%n@%{winnr()}'
       \ },
       \ 'component_function': {
       \   'git': 'GitStatusline',
-      \   'shortrelpath': 'ShortRelPath',
+      \   'title': 'STLTitle',
+      \   'bufstate': 'STLBufState',
       \   'curr_func': 'CurrentFunction',
       \   'checker_status': 'CheckerStatus',
       \   'checker_errors_inactive': 'CheckerErrors',
@@ -306,10 +304,13 @@ let g:lightline = {
       \     'checker_warnings': 'warning',
       \ },
       \ 'component_visible_condition': {
-      \   'readonly': '(&filetype!=#"help"&& &readonly)',
-      \   'modified': '(&filetype!=#"help"&&(&modified||!&modifiable))',
-      \   'specialbuf': '&pvw||&buftype==#"quickfix"',
-      \   'asyncrun': '!empty(g:asyncrun_status)',
+      \   'specialwin': '&previewwindow||&buftype==#"quickfix"||&buftype==#"help"',
+      \   'asyncrun': '!empty(get(g:,"asyncrun_status",""))',
+      \ },
+      \ 'component_function_visible_condition': {
+      \   'searchcount': 'v:hlsearch',
+      \   'title': 1,
+      \   'git': '!empty(FugitiveGitDir())',
       \ },
       \ 'mode_map': {
       \     'n' : 'N ',
@@ -325,15 +326,44 @@ let g:lightline = {
       \     't': 'T ',
       \ }
       \ }
-function! ShortRelPath()
-    if &filetype ==# 'fern'
-        return pathshorten(fnamemodify(b:fern.root._path, ":~"))
+function! STLTitle() abort
+    let bt = &buftype
+    let ft = &filetype
+    let bname = bufname('%')
+    " NOTE: bt=quickfix,help decides filetype
+    if bt is# 'quickfix'
+        " NOTE: getwininfo() to differentiate quickfix window and location window
+        return get(w:, 'quickfix_title', ':')
+    elseif bt is# 'help'
+        return fnamemodify(bname, ':t')
+    elseif bt is# 'terminal'
+        return has('nvim') ? '!' . matchstr(bname, 'term://\f\{-}//\d\+:\zs.*') : bname
+    elseif ft is# 'fern'
+        return pathshorten(fnamemodify(b:fern.root._path, ":~")) . '/'
+    elseif bname =~# '^fugitive://'
+        let [obj, gitdir] = FugitiveParse(bname)
+        let matches = matchlist(obj, '\v(:\d?|\x+)(:\f*)?')
+        return pathshorten(fnamemodify(gitdir, ":~:h")) . ' ' . matches[1][:9] . matches[2]
+    elseif get(b:, 'fugitive_type', '') is# 'temp'
+        return pathshorten(fnamemodify(bname, ":~:.")) . ' :Git ' . join(FugitiveResult(bname)['args'], ' ')
+    elseif ft is# 'gl'
+        return ':GL' . join([''] + b:gl_args, ' ')
+    elseif empty(bname)
+        return empty(bt) ? '[No Name]' : bt is# 'nofile' ? '[Scratch]' : '?'
+    else
+        return pathshorten(fnamemodify(bname, ":~:."))
     endif
-    let name = bufname('%')
-    if empty(name)
-        return empty(&buftype) ? '[No Name]' : &buftype ==# 'nofile' ? '[Scratch]' : ''
+endfunction
+function! STLBufState() abort
+    let bt = &buftype
+    let ft = &filetype
+    let bname = bufname('%')
+    if !(empty(bt) || bt is# 'acwrite' || bt is# 'nofile' || bt is# 'nowrite')
+      \ || ft is# 'fern' || ft is# 'git' || ft is# 'gl'
+      \ || (exists('b:fugitive_type') && b:fugitive_type isnot# 'blob')
+        return ''
     endif
-    return pathshorten(fnamemodify(name, ":~:."))
+    return (&readonly ? '🔒' : '') . (&modified ? '[+]' : &modifiable ? '' : '[-]')
 endfunction
 function! SearchCount()
     if !v:hlsearch | return '' | endif
