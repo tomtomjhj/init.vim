@@ -1,10 +1,5 @@
 local lspconfig = require('lspconfig')
 local lsp_status = require('lsp-status')
--- TODO: Lazy load this entire file on the first FileType that uses lsp?
--- Note that the server is launched in FileType.
--- https://github.com/neovim/nvim-lspconfig/issues/970
--- https://github.com/williamboman/nvim-lsp-installer/issues/244
--- https://github.com/gpanders/dotfiles/commit/01464e949574dcb9752e8dc92f39a7cee91446b7
 
 require('mason').setup()
 require('mason-lspconfig').setup() -- registers some hooks for lspconfig setup
@@ -89,6 +84,12 @@ require'ltex-ls'.setup(
       -- TODO: Make dictionary work as intended. In the meantime, use the built-in spellchecker.
       disabledRules = {
         ["en-US"] = { "MORFOLOGIK_RULE_EN_US" }
+      },
+      latex = {
+        commands = {
+          ["\\todo{}"] = "ignore",
+          ["\\jaehwang{}"] = "ignore",
+        }
       },
     }}
   })

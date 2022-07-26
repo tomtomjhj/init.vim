@@ -22,7 +22,7 @@ augroup NvimStuff | au!
 augroup END
 
 " TODO: how to customize highlighting queries? → read readme
-if has('nvim-0.5')
+if has('nvim-0.7')
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
   ensure_installed = {},

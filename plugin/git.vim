@@ -86,7 +86,6 @@ function! GLRun(...) abort
   keepjumps normal! 1G
   call search(jumpto, 'c', 0, 0, '')
   clearjumps
-  echo 'git log' b:gl_args
 endfunction
 
 function! s:toggle(args, opt) abort

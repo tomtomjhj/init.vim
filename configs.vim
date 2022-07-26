@@ -129,7 +129,9 @@ endif
 " }}}
 
 " Basic {{{
-set mouse=a
+set encoding=utf-8
+
+set mouse=nvi
 set number signcolumn=number
 set ruler showcmd
 set foldcolumn=1 foldnestmax=5
@@ -145,14 +147,13 @@ set formatlistpat=\\C^\\s*[\\[({]\\\?\\([0-9]\\+\\\|[iIvVxXlLcCdDmM]\\+\\\|[a-zA
 set nojoinspaces
 set list listchars=tab:\|\ ,trail:-,nbsp:+,extends:>
 
-set wrap linebreak breakindent showbreak=>\ 
+set wrap linebreak breakindent showbreak=↪\ 
 let &backspace = (has('patch-8.2.0590') || has('nvim-0.5')) ? 3 : 2
 set whichwrap+=<,>,[,],h,l
 set cpoptions-=_
 
 let $LANG='en'
 set langmenu=en
-set encoding=utf-8
 set spellfile=~/.vim/spell/en.utf-8.add
 set spelllang=en,cjk
 
@@ -549,6 +550,7 @@ let g:vimtex_toc_config_matchers = {
                 \ 're' : g:vimtex#re#not_comment . '\\\w*%(todo|jaehwang)\w*%(\[[^]]*\])?\{\zs.*',
                 \ 'prefilter_cmds': ['todo', 'jaehwang']}
             \}
+let g:vimtex_syntax_nospell_comments = 1
 " NOTE: If inverse search doesn't work, check if source files are correctly recognized by vimtex.
 function! s:tex() abort
     setlocal shiftwidth=2
@@ -613,12 +615,10 @@ function! s:markdown() abort
     " * list item text object
     " * make paragraph, sentence text object list-aware
 
-    " too intrusive
+    " <> pair is too intrusive
     setlocal matchpairs-=<:>
-    " $VIMRUNTIME/ftplugin/html.vim:31 → remove `<:>,`
-    if b:match_words[:3] ==# '<:>,'
-        let b:match_words = b:match_words[4:]
-    endif
+    " Set from $VIMRUNTIME/ftplugin/html.vim
+    let b:match_words = substitute(b:match_words, '<:>,', '', '')
 
     nmap     <buffer>             <leader>pd :setlocal ft=pandoc\|unmap <lt>buffer><lt>leader>pd<CR>
     nnoremap <buffer><expr> <localleader>b tomtomjhj#surround#strong('')
@@ -807,6 +807,7 @@ augroup fzf-custom | au!
     au VimEnter * call s:fzf_color()
 augroup END
 
+" TODO option to pass --no-ignore to rg and fd
 func! FzfOpts(arg, spec)
     " TODO: ask the directory to run (double 3), starting from %:p:h
     let l:opts = string(a:arg)
@@ -1242,6 +1243,7 @@ function! s:init_fern() abort
     silent! nunmap <buffer> N
     nmap <buffer> - <Plug>(fern-action-leave)
     map <buffer> x <Plug>(fern-action-mark)
+    map <buffer> gx <Plug>(fern-action-open:system)
     map <buffer> <C-n> <Plug>(fern-action-new-file)
     " or use the 'ex' action
     cmap <buffer> <C-r><C-p> <C-r><C-r>=b:fern.root._path<CR>

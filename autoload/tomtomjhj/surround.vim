@@ -26,7 +26,7 @@ function! tomtomjhj#surround#(type, ends) abort
     endtry
 endfunction
 
-function! tomtomjhj#surround#strong(type)
+function! tomtomjhj#surround#strong(type) abort
     if a:type == ''
         set opfunc=tomtomjhj#surround#strong
         return 'g@'
@@ -34,7 +34,7 @@ function! tomtomjhj#surround#strong(type)
     return tomtomjhj#surround#(a:type, '**')
 endfunction
 
-function! tomtomjhj#surround#strike(type)
+function! tomtomjhj#surround#strike(type) abort
     if a:type == ''
         set opfunc=tomtomjhj#surround#strike
         return 'g@'

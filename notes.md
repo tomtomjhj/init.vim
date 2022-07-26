@@ -299,7 +299,7 @@ Commentary
 
 # issues
 
-Not triaged
+## Not triaged
 * While editing tex, something is doing async redraw. Incsearch highlight disappears.
 
 ## (n)vim pitfalls
@@ -395,6 +395,7 @@ Not triaged
         * <https://github.com/vim/vim/issues/679>
 * `map` includes `smap`
 * Nvim silences errors in autocmd. This is not related to [`shortmess`](https://github.com/neovim/neovim/wiki/FAQ#calling-inputlist-echomsg--in-filetype-plugins-and-autocmd-does-not-work). This makes debugging ftplugin difficult.
+* `filename-modifiers` should be provided in the order defined in the documentation. `fnamemodify(name, ':h:~')` is wrong.
 
 
 ## (n)vim bugs
@@ -451,6 +452,8 @@ Not triaged
     * Reproducible without vimtex.
         * reproducible with `g:vimtex_syntax_conceal_disable = 1`
     * Reproduction requires lightline.
+* matchit, matchup: In markdown, if line is like this: `< cursor ( )`, `%` doesn't work. `<` should be matched with `>`???
+    *  Not related to 2022-07-25 html ftplugin update.
 
 ## ...
 * `ge` ... design of inclusive/exclusive stuff
@@ -492,6 +495,7 @@ Not triaged
     * https://github.com/stevearc/aerial.nvim
     * https://github.com/gfanto/fzf-lsp.nvim
     * https://github.com/j-hui/fidget.nvim
+    * https://git.sr.ht/%7Ewhynothugo/lsp_lines.nvim
 * https://github.com/RRethy/nvim-treesitter-textsubjects
   https://github.com/vigoux/architext.nvim
   https://github.com/abecodes/tabout.nvim
