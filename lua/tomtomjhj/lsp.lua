@@ -6,7 +6,8 @@ local lsp_status = require('lsp-status')
 -- https://github.com/williamboman/nvim-lsp-installer/issues/244
 -- https://github.com/gpanders/dotfiles/commit/01464e949574dcb9752e8dc92f39a7cee91446b7
 
-require('nvim-lsp-installer').setup{} -- registers some hooks for lspconfig setup
+require('mason').setup()
+require('mason-lspconfig').setup() -- registers some hooks for lspconfig setup
 lsp_status.register_progress()
 require('lspfuzzy').setup{}
 
