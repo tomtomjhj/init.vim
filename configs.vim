@@ -36,7 +36,6 @@ Plug 'godlygeek/tabular', { 'on': 'Tabularize' }
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'whonore/vim-sentencer'
 
-Plug 'tpope/vim-git' " to use the latest version not yet included in vim runtime
 " etc
 " TODO:
 " * :G log unicode broken
@@ -1260,9 +1259,10 @@ augroup END
 
 " Git. See also plugin/git.vim {{{
 augroup git-custom | au!
-    " TODO: Very slow and doesn't fold each hunk.
+    au FileType diff
+        \ nnoremap <silent><buffer>zM :setlocal foldmethod=expr foldexpr=GitDiffFoldExpr(v:lnum)\|unmap <lt>buffer>zM<CR>zM
     au FileType git,fugitive,gitcommit
-        \ nnoremap <buffer>zM :setlocal foldmethod=syntax\|unmap <lt>buffer>zM<CR>zM
+        \ nnoremap <silent><buffer>zM :setlocal foldmethod=expr foldexpr=GitDiffFoldExpr(v:lnum)\|unmap <lt>buffer>zM<CR>zM
         \|silent! unmap <buffer> *
         \|map <buffer> <localleader>* <Plug>fugitive:*
     au User FugitiveObject,FugitiveIndex
@@ -1270,6 +1270,20 @@ augroup git-custom | au!
         \|map <buffer> <localleader>* <Plug>fugitive:*
     " TODO: diff mapping for gitcommit
 augroup END
+
+" See also:
+" - https://github.com/sgeb/vim-diff-fold/blob/master/ftplugin/diff.vim
+" - https://vim.fandom.com/wiki/Folding_for_diff_files
+function! GitDiffFoldExpr(lnum)
+    let line = getline(a:lnum)
+    if line =~# '^diff'
+        return '>1'
+    elseif line =~# '^@@'
+        return '>2'
+    else
+        return '='
+    endif
+endfunction
 " }}}
 
 " firenvim {{{
