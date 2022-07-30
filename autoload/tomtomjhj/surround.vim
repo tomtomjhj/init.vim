@@ -41,3 +41,33 @@ function! tomtomjhj#surround#strike(type) abort
     endif
     return tomtomjhj#surround#(a:type, '~~')
 endfunction
+
+" nest = 0: Don't consider nesting.
+" nest > 0: Select nest-th surround.
+function! tomtomjhj#surround#textobj(open, close, nest) abort
+    " searchpair()'s 'c' flag matches both start and end.
+    " Append '\zs' to the closer pattern so that it doesn't match the closer on the cursor.
+    let found = searchpair(a:open, '', a:close.'\zs', 'bcW')
+    if found <= 0
+        return
+    endif
+    if a:nest > 0
+        for _ in range(a:nest - 1)
+            let found = searchpair(a:open, '', a:close, 'bW')
+            if found <= 0
+                return
+            endif
+        endfor
+    endif
+    norm! v
+    if a:nest is# 0
+        call search(a:open, 'ceW')
+        let found = search(a:close, 'eW')
+    else
+        let found = searchpair(a:open, '', a:close, 'W')
+        call search(a:close, 'ceW')
+    endif
+    if found <= 0
+        exe "norm! \<Esc>"
+    endif
+endfunction
