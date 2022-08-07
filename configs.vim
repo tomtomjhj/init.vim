@@ -1056,9 +1056,6 @@ cnoreabbrev <expr> tsf <SID>cabbrev('tsf', "tab sf**/<Left><Left><Left>")
 nnoremap <leader>cx :tabclose<CR>
 nnoremap <leader>td :tab split<CR>
 nnoremap <leader>tt :tabedit<CR>
-nnoremap <leader>cd :cd <c-r>=expand("%:p:h")<cr>/
-nnoremap <leader>e  :e! <c-r>=expand("%:p:h")<cr>/
-nnoremap <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 nnoremap <leader>fe :e!<CR>
 
 cnoremap <C-r><C-v> <C-r>=join(tomtomjhj#util#visual_selection_lines(), ' ')<CR>
@@ -1219,13 +1216,15 @@ nnoremap <silent> gx :call GXBrowse(CursorURL())<cr>
 
 " NOTE: :Fern that isn't drawer does not reuse "authority". Leaves too many garbage buffers.
 let g:fern#default_exclude = '\v(\.glob|\.vo[sk]?|\.o)$'
-nmap <silent><leader>nn <Cmd>Fern . -drawer -toggle<CR>
-nmap <silent><leader>nf <Cmd>Fern . -drawer -reveal=%<CR>
-" TODO: %:h doesn't work for fern buffer
-nmap <silent><leader>-  <Cmd>Fern %:h<CR>
-nmap <silent><C-w>es :Fern %:h -opener=split<CR>
-nmap <silent><C-w>ev :Fern %:h -opener=vsplit<CR>
-nmap <silent><C-w>et :Fern %:h -opener=tabedit<CR>
+nnoremap <leader>nn <Cmd>Fern . -drawer -toggle<CR>
+nnoremap <leader>nf <Cmd>Fern . -drawer -reveal=%<CR>
+nnoremap <expr><leader>-  '<Cmd>Fern ' . BufDir() . ' -reveal=% <CR>'
+nnoremap <expr><C-w>es    '<Cmd>Fern ' . BufDir() . ' -reveal=%  -opener=split<CR>'
+nnoremap <expr><C-w>ev    '<Cmd>Fern ' . BufDir() . ' -reveal=%  -opener=vsplit<CR>'
+nnoremap <expr><C-w>et    '<Cmd>Fern ' . BufDir() . ' -reveal=%  -opener=tabedit<CR>'
+nnoremap <leader>cd :cd <Plug>BufDir/
+nnoremap <leader>e  :e! <Plug>BufDir/
+nnoremap <leader>te :tabedit <Plug>BufDir/
 function! s:init_fern() abort
     let helper = fern#helper#new()
     if helper.sync.is_drawer()
@@ -1246,10 +1245,7 @@ function! s:init_fern() abort
     map <buffer> gx <Plug>(fern-action-open:system)
     map <buffer> <C-n> <Plug>(fern-action-new-file)
     " or use the 'ex' action
-    cmap <buffer> <C-r><C-p> <C-r><C-r>=b:fern.root._path<CR>
-    nmap <buffer> <leader>cd :cd <C-r><C-p>/
-    nmap <buffer> <leader>e  :e! <C-r><C-p>/
-    nmap <buffer> <leader>te :tabedit <C-r><C-p>/
+    cmap <buffer> <C-r><C-p> <Plug>BufDir
     " toggle both hidden and exclude
     nmap <buffer> <expr> ! "\<Plug>(fern-action-exclude=)\<C-u>" . (!b:fern.hidden ? "" : g:fern#default_exclude) . "\<CR>" . "\<Plug>(fern-action-hidden:toggle)"
 endfunction
@@ -1257,6 +1253,22 @@ endfunction
 augroup fern-custom | au!
   autocmd FileType fern call s:init_fern()
 augroup END
+
+noremap! <Plug>BufDir <C-r><C-r>=BufDir()<CR>
+function! BufDir(...) abort
+    let b = a:0 ? a:1 : bufnr('')
+    let bname = bufname(b)
+    let ft = getbufvar(b, '&filetype')
+    if ft is# 'fugitive'
+        return fnamemodify(FugitiveGitDir(b), ':h')
+    elseif bname =~# '^fugitive://'
+        return fnamemodify(FugitiveReal(bname), ':h')
+    elseif bname =~# '^fern://'
+        return getbufvar(b, 'fern').root._path
+    else
+        return fnamemodify(bname, ':p:h')
+    endif
+endfunction
 " }}}
 
 " Git. See also plugin/git.vim {{{
