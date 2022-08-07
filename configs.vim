@@ -401,8 +401,8 @@ command! Bg if &background ==# 'dark' | set background=light | else | set backgr
 
 " Completion {{{
 if g:ide_client == 'coc'
-    inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : <SID>check_back_space() ? "\<Tab>" : coc#refresh()
-    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+    inoremap <expr> <Tab> coc#pum#visible() ? coc#pum#next(1): <SID>check_back_space() ? '<Tab>' : '<Cmd>call coc#start()<CR>'
+    inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : <SID>check_back_space() ? '<C-h>' : '<Cmd>call coc#start()<CR>'
 elseif g:ide_client == 'nvim'
     lua require'tomtomjhj/cmp'
 endif

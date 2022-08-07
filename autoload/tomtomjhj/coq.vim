@@ -25,13 +25,12 @@ function! tomtomjhj#coq#mappings()
     command! -buffer -bang -nargs=1 CoqGotoDefSplit call tomtomjhj#coq#goto_def('split', <f-args>, <bang>0)
 
     " nvim may hang in `-- (insert) --` with `<C-\><C-o>:CoqNext<CR>` (vim somehow recovers).
-    " Use <C-y> to prevent race between CoqNext and <Plug>CocRefresh when pumvisible.
-    inoremap <buffer><expr> <Plug>CoqNext        (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqNext\<CR>"
-    inoremap <buffer><expr> <Plug>CoqUndo        (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqUndo\<CR>"
-    inoremap <buffer><expr> <Plug>CoqToLine      (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqToLine\<CR>"
-    inoremap <buffer><expr> <Plug>CoqToTop       (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqToTop\<CR>"
-    inoremap <buffer><expr> <Plug>CoqJumpToEnd   (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqJumpToEnd\<CR>"
-    inoremap <buffer><expr> <Plug>CoqJumpToError (pumvisible() ? "\<C-y>" : "") . "\<Cmd>CoqJumpToError\<CR>"
+    inoremap <buffer> <Plug>CoqNext        <Cmd>CoqNext<CR>
+    inoremap <buffer> <Plug>CoqUndo        <Cmd>CoqUndo<CR>
+    inoremap <buffer> <Plug>CoqToLine      <Cmd>CoqToLine<CR>
+    inoremap <buffer> <Plug>CoqToTop       <Cmd>CoqToTop<CR>
+    inoremap <buffer> <Plug>CoqJumpToEnd   <Cmd>CoqJumpToEnd<CR>
+    inoremap <buffer> <Plug>CoqJumpToError <Cmd>CoqJumpToError<CR>
 
     nmap <buffer> <localleader>s <Plug>CoqInterrupt<Plug>CoqStop
     nmap <buffer> <localleader>i <Plug>CoqInterrupt
