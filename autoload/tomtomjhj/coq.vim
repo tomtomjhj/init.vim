@@ -1,6 +1,5 @@
 " TODO
 " * <Plug>CoqJumpToEnd blocks while processing
-" * hlsearch disabled while processing
 " * how to hide a buffer without error? (+ bdelete)
 " * queries: if no session for current buffer, check if there is a session for
 "   a visible buffer and use it.
@@ -15,7 +14,6 @@
 " * disable path completion trigger (`/`)
 " * show diff of unification error
 " * completion source to get names from goal/info panel
-" * make undo work more consistently in goal/info panel
 " * compatibility with :Gedit
 
 " NOTE:

@@ -73,6 +73,7 @@ lspconfig.vimls.setup(base_opt)
 lspconfig.texlab.setup(base_opt)
 
 -- run with LspStart ltex
+-- TODO: https://github.com/barreiroleo/ltex_extra.nvim
 require'ltex-ls'.setup(
   vim.tbl_extend('error', base_opt, {
     autostart = false,

@@ -261,6 +261,20 @@ Commentary
     * `FugitiveExecute(args : list string)`
         * It doesn't use `s:SplitExpandChain()` (splits `<q-args>`, expands `%` and `fugitive-object`)
 
+
+## plain text diagrams
+https://blog.regehr.org/archives/1653
+
+tools
+* asciiflow
+* DrawIt
+* venn.nvim
+* artist-mode
+* https://buttersquid.ink
+* https://github.com/ArthurSonzogni/Diagon
+* https://ivanceras.github.io/svgbob-editor
+
+
 # things that I should make more use of
 * marks
 * `:global`

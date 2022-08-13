@@ -364,7 +364,7 @@ function! STLBufState() abort
       \ || (exists('b:fugitive_type') && b:fugitive_type isnot# 'blob')
         return ''
     endif
-    return (&readonly ? '🔒' : '') . (&modified ? '[+]' : &modifiable ? '' : '[-]')
+    return (&readonly ? '🔒' : '') . (&modified ? '[+]' : '') . (&modifiable ? '' : '[-]')
 endfunction
 function! SearchCount()
     if !v:hlsearch | return '' | endif
@@ -937,7 +937,7 @@ endfunc
 cnoremap <C-j> <S-Right>
 cnoremap <C-k> <S-Left>
 
-inoremap <expr> <C-u> match(getline('.'), '\S') >= 0 ? "\<C-g>u<C-u>" : "<C-u>"
+inoremap <expr> <C-u> match(getline('.'), '\S') >= 0 ? '<C-g>u<C-u>' : '<C-u>'
 " Delete a single character of other non-blank chars
 inoremap <silent><expr><C-w>  FineGrainedICtrlW(0)
 " Like above, but first consume whitespace
@@ -1247,7 +1247,7 @@ function! s:init_fern() abort
     " or use the 'ex' action
     cmap <buffer> <C-r><C-p> <Plug>BufDir
     " toggle both hidden and exclude
-    nmap <buffer> <expr> ! "\<Plug>(fern-action-exclude=)\<C-u>" . (!b:fern.hidden ? "" : g:fern#default_exclude) . "\<CR>" . "\<Plug>(fern-action-hidden:toggle)"
+    nmap <buffer> <expr> ! '<Plug>(fern-action-exclude=)<C-u>' . (!b:fern.hidden ? '' : g:fern#default_exclude) . '<CR>' . '<Plug>(fern-action-hidden:toggle)'
 endfunction
 
 augroup fern-custom | au!
