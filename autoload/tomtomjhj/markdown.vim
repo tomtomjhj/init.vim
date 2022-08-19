@@ -81,13 +81,7 @@ endfunc
 " * project-local include?
 " * more run options
 "   * AsyncRun -save=1 -cwd=%:p:h pandoc %:p --from commonmark_x -o %:p:h/%:t:r.docx
-"   * AsyncRun -save=1 -cwd=%:p:h pandoc %:p -o %:p:h/%:t:r.txt --strip-comments
-"     * NOTE: --strip-comment doesn't work for commonmark_x. Manual says "This
-"       does not apply to HTML comments inside raw HTML blocks when the
-"       markdown_in_html_blocks extension is not set.". Regardless of whether
-"       commonmark_x supports markdown_in_html_blocks, shouldn't it strip
-"       top-level comments?
-"       https://github.com/jgm/pandoc/issues/2552
+"   * AsyncRun -save=1 -cwd=%:p:h pandoc %:p --from commonmark_x -o %:p:h/%:t:r.txt --strip-comments
 func! tomtomjhj#markdown#RunPandoc(open)
     let src = expand("%:p")
     let out = expand("%:p:h") . '/' . expand("%:t:r") . '.pdf'

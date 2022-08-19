@@ -172,7 +172,7 @@ let s:wildignore_dirs = ['.git', '__pycache__', 'target']
 set complete-=i complete-=u
 set path=.,,
 
-set ignorecase smartcase tagcase=followscs
+set ignorecase smartcase tagcase=match
 set hlsearch incsearch
 
 set noerrorbells novisualbell t_vb=
@@ -527,7 +527,7 @@ function s:c_cpp() abort
     setlocal shiftwidth=2
     setlocal commentstring=//%s
     silent! setlocal formatoptions+=/ " 8.2.4907
-    setlocal path+=/usr/include
+    setlocal path+=include,/usr/include
 endfunction
 " }}}
 
