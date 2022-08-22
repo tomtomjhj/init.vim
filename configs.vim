@@ -226,9 +226,12 @@ let g:gui_running = get(g:, 'gui_running', 0)
 function! s:SetupGUI() abort
     let g:gui_running = 1
     set guifont=Source\ Code\ Pro:h12
-    nmap <C--> <Cmd>FontSize -v:count1<CR>
-    nmap <C-+> <Cmd>FontSize v:count1<CR>
-    nmap <C-=> <Cmd>FontSize v:count1<CR>
+    nnoremap <C--> <Cmd>FontSize -v:count1<CR>
+    if has('gui_running')
+        nnoremap <C-_> <Cmd>FontSize -v:count1<CR>
+    endif
+    nnoremap <C-+> <Cmd>FontSize v:count1<CR>
+    nnoremap <C-=> <Cmd>FontSize v:count1<CR>
     command! -nargs=1 FontSize call s:FontSize(<args>)
     function! s:FontSize(delta)
         let new_size = matchstr(&guifont, '\d\+') + a:delta
