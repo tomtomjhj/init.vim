@@ -1370,6 +1370,10 @@ nmap m<BS> <Plug>MarkToggle
 
 " etc util {{{
 " helpers {{{
+" Expands cmdline-special
+function! s:expand_cmdline_special(txt) abort
+    return substitute(a:txt, '\v\\@<!(\%|#%(\<?\d+|#)?)', '\=expand(submatch(1))', 'g')
+endfunction
 function! s:cabbrev(lhs, rhs) abort
     return (getcmdtype() == ':' && getcmdline() ==# a:lhs) ? a:rhs : a:lhs
 endfunction
@@ -1404,13 +1408,25 @@ function! Text2VeryMagic(str) abort
     return escape(a:str, '!#$%&()*+,-./:;<=>?@[\]^{|}~')
 endfunction
 
-function! Execute(cmd, mods) abort
-    let output = execute(a:cmd)
+function! TempBuf(mods, ...) abort
     exe a:mods 'new'
-    setlocal nobuflisted buftype=nofile bufhidden=wipe noswapfile
-    call setline(1, split(output, "\n"))
+    setlocal nobuflisted buftype=nofile bufhidden=wipe noswapfile nomodeline
+    if a:0
+        call setline(1, a:1)
+    endif
 endfunction
-command! -nargs=* -complete=command Execute silent call Execute(<q-args>, '<mods>')
+function! Execute(cmd, mods) abort
+    call TempBuf(a:mods, split(execute(a:cmd), "\n"))
+endfunction
+function! WriteC(cmd, mods) range abort
+    call TempBuf(a:mods, systemlist(s:expand_cmdline_special(a:cmd), getline(a:firstline, a:lastline)))
+endfunction
+function! Bang(cmd, mods) abort
+    call TempBuf(a:mods, systemlist(s:expand_cmdline_special(a:cmd)))
+endfunction
+command! -nargs=* -complete=command Execute call Execute(<q-args>, '<mods>')
+command! -nargs=* -range=% -complete=shellcmd WC <line1>,<line2>call WriteC(<q-args>, '<mods>')
+command! -nargs=* -complete=shellcmd Bang call Bang(<q-args>, '<mods>')
 
 command! -range=% TrimWhitespace
             \ let _view = winsaveview()
