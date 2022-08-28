@@ -8,12 +8,16 @@ hi! def link texZone Special
 
 syntax match texCmdTodo '\\jaehwang'
 
-" conceal inline math only
-syntax clear texMathZone texMathZoneX texMathZoneXX
-syntax region texMathZone   matchgroup=texMathDelimZone concealends contains=@texClusterMath keepend start="\\("  end="\\)"
-syntax region texMathZone   matchgroup=texMathDelimZone             contains=@texClusterMath keepend start="\\\[" end="\\]"
-syntax region texMathZoneX  matchgroup=texMathDelimZone concealends contains=@texClusterMath         start="\$"   skip="\\\\\|\\\$"  end="\$"
-syntax region texMathZoneXX matchgroup=texMathDelimZone             contains=@texClusterMath keepend start="\$\$" end="\$\$"
+" Don't conceal \[..\] and $$..$$, since they usually delimit longer complex math stuff.
+syntax clear texMathZoneLD texMathZoneTD
+execute 'syntax region texMathZoneLD matchgroup=texMathDelimZoneLD'
+        \ 'start="\\\["'
+        \ 'end="\\]"'
+        \ 'contains=@texClusterMath'
+execute 'syntax region texMathZoneTD matchgroup=texMathDelimZoneTD'
+        \ 'start="\$\$"'
+        \ 'end="\$\$"'
+        \ 'contains=@texClusterMath keepend'
 
 " Symbols
 syntax match texMathSymbol "\\Box\>"                 contained conceal cchar=☐
@@ -26,15 +30,3 @@ syntax match texMathSymbol "\\rightsquigarrow\>"     contained conceal cchar=⇝
 syntax match texMathSymbol "\\triangleq\>"           contained conceal cchar=≜
 syntax match texMathSymbol "\\trianglelefteq\>"      contained conceal cchar=⊴
 syntax match texMathSymbol "\\trianglerighteq\>"     contained conceal cchar=⊵
-
-syntax match texMathSuper /\^\\top\>/ contained conceal cchar=ᵀ contains=texMathOper
-
-" https://github.com/vim/vim/blob/cd67059c0c3abf1e28aa66458abdf6f338252eb2/runtime/doc/todo.txt#L1893-L1895
-" syn region texBarMathText matchgroup=texStatement start='\\\(bar\|overline\){' end='}' concealends cchar=‾ contains=@texMathZoneGroup containedin=texMathMatcher
-syn match texBarMathText '\\bar\>' contained conceal cchar=‾ containedin=texMathMatcher
-syn match texBarMathText '\\overline\>' contained conceal cchar=‾ containedin=texMathMatcher
-hi link texBarMathText texMathSymbol
-syn cluster texMathZoneGroup add=texBarMathText
-
-" syn region texSansMathText matchgroup=texCmdStyle start='\\\(textsf\|texttt\){' end='}' concealends contains=@texMathZoneGroup containedin=texMathMatcher
-" syn cluster texMathZoneGroup add=texSansMathText
