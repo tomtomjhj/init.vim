@@ -93,7 +93,7 @@ function! tomtomjhj#coq#mappings()
     nmap <buffer> gq   <cmd>set opfunc=tomtomjhj#coq#gq<CR>g@
     nmap <buffer> gqq  <cmd>set opfunc=tomtomjhj#coq#gq<CR>g@l
     nmap <buffer> gqgq <cmd>set opfunc=tomtomjhj#coq#gq<CR>g@l
-    vmap <buffer> gq   <cmd>call tomtomjhj#coq#gq(visualmode(), 1)<CR>
+    xmap <buffer> gq   <cmd>call tomtomjhj#coq#gq(visualmode(), 1)<CR>
 
     nmap <buffer> <localleader><C-L> <Cmd>call tomtomjhj#coq#clearhl()<CR>
 

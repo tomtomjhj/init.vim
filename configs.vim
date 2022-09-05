@@ -27,7 +27,7 @@ Plug 'tpope/vim-repeat'
 Plug 'tomtomjhj/pear-tree'
 Plug 'andymass/vim-matchup' " i%, a%, ]%, z%, g% TODO: % that seeks backward https://github.com/andymass/vim-matchup/issues/49#issuecomment-470933348
 Plug 'wellle/targets.vim' " multi (e.g. ib, iq), separator, argument
-Plug 'michaeljsmith/vim-indent-object'
+Plug 'tomtomjhj/vim-indent-object'
 Plug 'kana/vim-textobj-user'
 Plug 'pianohacker/vim-textobj-indented-paragraph', { 'do': 'rm -rf plugin' }
 Plug 'Julian/vim-textobj-variable-segment' " iv, av
@@ -129,6 +129,9 @@ endif
 " }}}
 
 " Basic {{{
+command! -nargs=1 Noremap exe 'nnoremap' <q-args> | exe 'xnoremap' <q-args> | exe 'onoremap' <q-args> 
+command! -nargs=1 Map exe 'nmap' <q-args> | exe 'xmap' <q-args> | exe 'omap' <q-args>
+
 set encoding=utf-8
 
 set mouse=nvi
@@ -158,13 +161,13 @@ set spellfile=~/.vim/spell/en.utf-8.add
 set spelllang=en,cjk
 
 let mapleader = "\<Space>"
-noremap <Space> <Nop>
+Noremap <Space> <Nop>
 let maplocalleader = ","
-noremap , <Nop>
-noremap <M-;> ,
+Noremap , <Nop>
+Noremap <M-;> ,
 " scrolling with only left hand
-noremap <C-Space> <C-u>
-noremap <Space><Space> <C-d>
+Noremap <C-Space> <C-u>
+Noremap <Space><Space> <C-d>
 
 set wildmenu wildmode=longest:full,full
 let s:wildignore_files = ['*~', '%*', '*.o', '*.so', '*.pyc', '*.pdf', '*.v.d', '*.vo*', '*.glob', '*.cm*', '*.aux']
@@ -456,8 +459,8 @@ nmap <leader>fm <Plug>(ale_fix)
 nmap <M-,> <Plug>(ale_detail)<C-W>p
 nmap ]d <Plug>(ale_next_wrap)
 nmap [d <Plug>(ale_previous_wrap)
-noremap  <M-.> K
-noremap  <M-]> <C-]>
+Noremap  <M-.> K
+Noremap  <M-]> <C-]>
 nnoremap <M-o> <C-o>
 nnoremap <M-i> <C-i>
 " }}}
@@ -516,7 +519,7 @@ function! s:rust() abort
         command! -buffer ExpandMacro CocCommand rust-analyzer.expandMacro
     endif
     nmap <buffer><leader>C :AsyncRun -program=make -post=CW test --no-run<CR>
-    vmap <buffer><leader>fm :RustFmtRange<CR>
+    xmap <buffer><leader>fm :RustFmtRange<CR>
     nmap <silent><buffer> [[ :call tomtomjhj#rust#section(1)<CR>
     nmap <silent><buffer> ]] :call tomtomjhj#rust#section(0)<CR>
 endfunction
@@ -629,7 +632,7 @@ function! s:markdown() abort
     nnoremap <buffer><expr> <localleader>~ tomtomjhj#surround#strike('')
     xnoremap <buffer><expr> <localleader>~ tomtomjhj#surround#strike('')
     nmap     <buffer>          <MiddleMouse> <LeftMouse><localleader>biw
-    vmap     <buffer>          <MiddleMouse> <localleader>b
+    xmap     <buffer>          <MiddleMouse> <localleader>b
     nnoremap <buffer><silent>     <leader>tf :TableFormat<CR>
 endfunction
 function! s:pandoc() abort
@@ -892,20 +895,20 @@ xnoremap <expr> J mode() !=# 'v' \|\| v:count ? 'j' : 'gj'
 xnoremap <expr> K mode() !=# 'v' \|\| v:count ? 'k' : 'gk'
 onoremap <expr> J mode() !=# 'v' \|\| v:count ? 'j' : 'gj'
 onoremap <expr> K mode() !=# 'v' \|\| v:count ? 'k' : 'gk'
-noremap <leader>J J
-noremap <expr> H v:count ? 'H' : 'h'
-noremap <expr> L v:count ? 'L' : 'l'
+Noremap <leader>J J
+Noremap <expr> H v:count ? 'H' : 'h'
+Noremap <expr> L v:count ? 'L' : 'l'
 
-noremap <M-0> ^w
+Noremap <M-0> ^w
 
 let g:sneak#s_next = 0
 let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
-map f <Plug>Sneak_f
-map F <Plug>Sneak_F
-map t <Plug>Sneak_t
-map T <Plug>Sneak_T
-map <M-;> <Plug>Sneak_,
+Map f <Plug>Sneak_f
+Map F <Plug>Sneak_F
+Map t <Plug>Sneak_t
+Map T <Plug>Sneak_T
+Map <M-;> <Plug>Sneak_,
 " NOTE: my fork
 let g:sneak#alias = {
             \ 'a': '[aα∀]', 'b': '[bβ]', 'c': '[cξ]', 'd': '[dδ]', 'e': '[eε∃]', 'f': '[fφ]', 'g': '[gγ]', 'h': '[hθ]', 'i': '[iι]', 'j': '[jϊ]', 'k': '[kκ]', 'l': '[lλ]', 'm': '[mμ]', 'n': '[nν]', 'o': '[oο]', 'p': '[pπ]', 'q': '[qψ]', 'r': '[rρ]', 's': '[sσ]', 't': '[tτ]', 'u': '[uυ]', 'v': '[vϋ𝓥]', 'w': '[wω]', 'x': '[xχ]', 'y': '[yη]', 'z': '[zζ]',
@@ -982,16 +985,16 @@ nnoremap <leader>sp :set paste! paste?<CR>
 nnoremap <leader>sw :setlocal wrap! wrap?<CR>
 nnoremap <leader>ic :set ignorecase! smartcase! ignorecase?<CR>
 
-noremap <leader>dp :diffput<CR>
-noremap <leader>do :diffget<CR>
+Noremap <leader>dp :diffput<CR>
+Noremap <leader>do :diffget<CR>
 
 " clipboard.
 inoremap <C-v> <C-g>u<C-r><C-o>+
-noremap <M-c> "+y
+Noremap <M-c> "+y
 nnoremap <silent> yY :let _view = winsaveview() \| exe 'keepjumps keepmarks norm ggVG"+y' \| call winrestview(_view) \| unlet _view<cr>
 
 " buf/filename
-noremap <leader>fn 2<C-g>
+nnoremap <leader>fn 2<C-g>
 
 noremap <F1> <Esc>
 inoremap <F1> <Esc>
@@ -1007,24 +1010,24 @@ cnoremap <M-n> <Down>
 
 " disable annoying q and Q (use c_CTRL-F and gQ) and streamline record/execute
 " TODO: q quits hit-enter and *starts recording* unlike q of more-prompt → open a vim issue
-noremap q: :
-noremap q <nop>
-noremap <M-q> q
-noremap <expr> qq empty(reg_recording()) ? 'qq' : 'q'
-noremap Q @q
+Noremap q: :
+Noremap q <nop>
+Noremap <M-q> q
+Noremap <expr> qq empty(reg_recording()) ? 'qq' : 'q'
+Noremap Q @q
 
 " v_u mistake is  hard to notice. Use gu instead (works for visual mode too).
 xnoremap u <nop>
 
 " delete without clearing regs
-noremap x "_x
+Noremap x "_x
 
 nnoremap gV `[v`]
 
 " repetitive pastes using designated register @p
-noremap <M-y> "py
-noremap <M-p> "pp
-noremap <M-P> "pP
+Noremap <M-y> "py
+Noremap <M-p> "pp
+Noremap <M-P> "pP
 
 nnoremap Y y$
 onoremap <silent> ge :execute "normal! " . v:count1 . "ge<space>"<cr>
@@ -1032,9 +1035,9 @@ nnoremap <silent> & :&&<cr>
 xnoremap <silent> & :&&<cr>
 
 " set nrformats+=alpha
-noremap  <M-+> <C-a>
+Noremap  <M-+> <C-a>
 xnoremap <M-+> g<C-a>
-noremap  <M--> <C-x>
+Noremap  <M--> <C-x>
 xnoremap <M--> g<C-x>
 
 nnoremap <C-j> <C-W>j
@@ -1065,8 +1068,8 @@ cnoremap <C-r><C-v> <C-r>=join(tomtomjhj#util#visual_selection_lines(), ' ')<CR>
 inoremap <C-r><C-v> <C-r>=join(tomtomjhj#util#visual_selection_lines(), ' ')<CR>
 
 let g:conflict_marker_pat = '\(' . '^<<<<<<< \@=' . '\|' . '^||||||| .*$' . '\|' . '^=======$' . '\|' . '^>>>>>>> \@=' . '\)'
-noremap <silent> [x <Cmd>call search(g:conflict_marker_pat, 'bW')<CR>
-noremap <silent> ]x <Cmd>call search(g:conflict_marker_pat, 'W')<CR>
+Noremap <silent> [x <Cmd>call search(g:conflict_marker_pat, 'bW')<CR>
+Noremap <silent> ]x <Cmd>call search(g:conflict_marker_pat, 'W')<CR>
 " }}}
 
 " pairs {{{
@@ -1137,10 +1140,10 @@ if has('nvim')
     tnoremap <expr> <M-r> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 endif
 
-map <leader>R :AsyncRun<space>
-map <leader>ST :AsyncStop\|let g:asyncrun_status = ''<CR>
+Noremap <leader>R :AsyncRun<space>
+nnoremap <leader>ST :AsyncStop\|let g:asyncrun_status = ''<CR>
 command! -bang -nargs=* -complete=file Make AsyncRun -auto=make -program=make @ <args>
-map <leader>M :Make<space>
+nnoremap <leader>M :Make<space>
 command! -bang -bar -nargs=* -complete=customlist,fugitive#PushComplete Gpush  execute 'AsyncRun<bang> -cwd=' . fnameescape(FugitiveGitDir()) 'git push' <q-args>
 command! -bang -bar -nargs=* -complete=customlist,fugitive#FetchComplete Gfetch execute 'AsyncRun<bang> -cwd=' . fnameescape(FugitiveGitDir()) 'git fetch' <q-args>
 
@@ -1244,9 +1247,9 @@ function! s:init_fern() abort
     silent! nunmap <buffer> s
     silent! nunmap <buffer> N
     nmap <buffer> - <Plug>(fern-action-leave)
-    map <buffer> x <Plug>(fern-action-mark)
-    map <buffer> gx <Plug>(fern-action-open:system)
-    map <buffer> <C-n> <Plug>(fern-action-new-file)
+    Map <buffer> x <Plug>(fern-action-mark)
+    nmap <buffer> gx <Plug>(fern-action-open:system)
+    nmap <buffer> <C-n> <Plug>(fern-action-new-file)
     " or use the 'ex' action
     cmap <buffer> <C-r><C-p> <Plug>BufDir
     " toggle both hidden and exclude
@@ -1281,10 +1284,10 @@ augroup git-custom | au!
     au FileType git,fugitive,gitcommit
         \ nnoremap <silent><buffer>zM :setlocal foldmethod=expr foldexpr=GitDiffFoldExpr(v:lnum)\|unmap <lt>buffer>zM<CR>zM
         \|silent! unmap <buffer> *
-        \|map <buffer> <localleader>* <Plug>fugitive:*
+        \|Map <buffer> <localleader>* <Plug>fugitive:*
     au User FugitiveObject,FugitiveIndex
         \ silent! unmap <buffer> *
-        \|map <buffer> <localleader>* <Plug>fugitive:*
+        \|Map <buffer> <localleader>* <Plug>fugitive:*
     " TODO: diff mapping for gitcommit
 augroup END
 

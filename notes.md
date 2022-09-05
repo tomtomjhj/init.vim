@@ -411,6 +411,7 @@ tools
 * Nvim silences errors in autocmd. This is not related to [`shortmess`](https://github.com/neovim/neovim/wiki/FAQ#calling-inputlist-echomsg--in-filetype-plugins-and-autocmd-does-not-work). This makes debugging ftplugin difficult.
 * `filename-modifiers` should be provided in the order defined in the documentation. `fnamemodify(name, ':h:~')` is wrong.
 * ([#10900](https://github.com/vim/vim/issues/10900)) In vim, handling the output of `:!`, `:write_c`, etc is UI-specific. It's not possible to uniformly capture the output using `execute()`. Must use `system()` for shell commands.
+* `:map` includes select mode.
 
 
 ## (n)vim bugs

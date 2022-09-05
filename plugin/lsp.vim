@@ -19,7 +19,7 @@ function! SetupLSP()
   nmap     <silent><buffer><leader>rf    <Plug>(coc-references-used)
   nmap             <buffer><leader>rn    <Plug>(coc-rename)
   nmap     <silent><buffer><leader>fm    <Plug>(coc-format)
-  vmap     <silent><buffer><leader>fm    <Plug>(coc-format-selected)
+  xmap     <silent><buffer><leader>fm    <Plug>(coc-format-selected)
   nmap     <silent><buffer><leader>fd    :exe 'normal! zE'\|Fold<CR>
   nnoremap <silent><buffer><leader><tab> v:<C-u>call CocAction('rangeSelect', visualmode(),  v:true)<CR>
   xnoremap <silent><buffer><leader><tab>  :<C-u>call CocAction('rangeSelect', visualmode(),  v:true)<CR>
