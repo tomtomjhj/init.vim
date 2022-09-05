@@ -97,6 +97,6 @@ func! tomtomjhj#markdown#RunPandoc(open)
     augroup END
     call asyncrun#run(0,
                 \ {'save': 1, 'cwd': expand("%:p:h"), 'auto': 'pandoc', 'post': l:post },
-                \ 'pandoc ' . shellescape(l:src, 1) . ' -o ' . shellescape(l:out, 1) . ' ' . shellescape(l:params, 1))
+                \ 'pandoc ' . shellescape(l:src) . ' -o ' . shellescape(l:out) . ' ' . l:params)
 endfunc
 " vim: set fdm=marker fdl=0:
