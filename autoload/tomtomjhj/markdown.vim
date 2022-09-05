@@ -87,16 +87,16 @@ func! tomtomjhj#markdown#RunPandoc(open)
     let out = expand("%:p:h") . '/' . expand("%:t:r") . '.pdf'
     let params = '-Vurlcolor=blue --highlight-style=kate'
     let post = a:open ? "call Zathura('" . l:out . "',!g:asyncrun_code)" : ''
-    let post = escape(post, ' ')
     " set manually or by local vimrc, override header-includes in yaml metadata
     " TODO: local_vimrc or editorconfig hook
     if exists('b:custom_pandoc_include_file')
         let l:params .= ' --include-in-header=' . b:custom_pandoc_include_file
     endif
-    let cmd = 'pandoc ' . l:src . ' -o ' . l:out . ' ' . l:params
     augroup pandoc_quickfix | au!
         au QuickFixCmdPost pandoc ++once belowright copen 8 | winc p
     augroup END
-    exec 'AsyncRun -save=1 -cwd=' . expand("%:p:h") '-auto=pandoc' '-post=' . l:post l:cmd
+    call asyncrun#run(0,
+                \ {'save': 1, 'cwd': expand("%:p:h"), 'auto': 'pandoc', 'post': l:post },
+                \ 'pandoc ' . shellescape(l:src, 1) . ' -o ' . shellescape(l:out, 1) . ' ' . shellescape(l:params, 1))
 endfunc
 " vim: set fdm=marker fdl=0:
