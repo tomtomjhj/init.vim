@@ -1224,10 +1224,11 @@ nnoremap <silent> gx :call GXBrowse(CursorURL())<cr>
 let g:fern#default_exclude = '\v(\.glob|\.vo[sk]?|\.o)$'
 nnoremap <leader>nn <Cmd>Fern . -drawer -toggle<CR>
 nnoremap <leader>nf <Cmd>Fern . -drawer -reveal=%<CR>
-nnoremap <expr><leader>-  '<Cmd>Fern ' . BufDir() . ' -reveal=% <CR>'
-nnoremap <expr><C-w>es    '<Cmd>Fern ' . BufDir() . ' -reveal=%  -opener=split<CR>'
-nnoremap <expr><C-w>ev    '<Cmd>Fern ' . BufDir() . ' -reveal=%  -opener=vsplit<CR>'
-nnoremap <expr><C-w>et    '<Cmd>Fern ' . BufDir() . ' -reveal=%  -opener=tabedit<CR>'
+" <f-args>, -bar
+nnoremap <leader>-  <Cmd>exe 'Fern' escape(BufDir(), ' \<Bar>') '-reveal=%'<CR>
+nnoremap <C-w>es    <Cmd>exe 'Fern' escape(BufDir(), ' \<Bar>') '-reveal=% -opener=split'<CR>
+nnoremap <C-w>ev    <Cmd>exe 'Fern' escape(BufDir(), ' \<Bar>') '-reveal=% -opener=vsplit'<CR>
+nnoremap <C-w>et    <Cmd>exe 'Fern' escape(BufDir(), ' \<Bar>') '-reveal=% -opener=tabedit'<CR>
 nnoremap <leader>cd :cd <Plug>BufDir/
 nnoremap <leader>e  :e! <Plug>BufDir/
 nnoremap <leader>te :tabedit <Plug>BufDir/
@@ -1260,7 +1261,7 @@ augroup fern-custom | au!
   autocmd FileType fern call s:init_fern()
 augroup END
 
-noremap! <Plug>BufDir <C-r><C-r>=BufDir()<CR>
+noremap! <Plug>BufDir <C-r><C-r>=fnameescape(BufDir())<CR>
 function! BufDir(...) abort
     let b = a:0 ? a:1 : bufnr('')
     let bname = bufname(b)
