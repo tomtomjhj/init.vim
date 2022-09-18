@@ -184,7 +184,7 @@ set shortmess+=Ic shortmess-=S
 set belloff=all
 
 set history=1000
-set viminfo=!,'150,<50,s30,h,r/tmp,r/run,rterm://,rfugitive://,rfern://
+set viminfo=!,'150,<50,s30,h,r/tmp,r/run,rterm://,rfugitive://,rfern://,rman://
 set updatetime=1234
 set noswapfile " set directory=~/.vim/swap//
 set backup backupdir=~/.vim/backup//
@@ -217,6 +217,11 @@ augroup BasicSetup | au!
     au FileType help nnoremap <silent><buffer> <M-.> K
     let &pumheight = min([&window/4, 20])
     au VimResized * let &pumheight = min([&window/4, 20])
+    if has('nvim')
+        au TermOpen *        setlocal nonumber norelativenumber foldcolumn=0 signcolumn=no
+    elseif has('##TerminalWinOpen')
+        au TerminalWinOpen * setlocal nonumber norelativenumber foldcolumn=0 signcolumn=no
+    endif
 augroup END
 
 if has('unix')
@@ -545,7 +550,7 @@ endfunction
 " }}}
 
 " LaTex {{{
-let g:tex_flavor = "latex"
+let g:tex_flavor = 'latex'
 let g:tex_noindent_env = '\v\w+.?'
 let g:vimtex_fold_enabled = 1
 let g:matchup_override_vimtex = 1
@@ -1069,9 +1074,12 @@ nnoremap <leader>fe :e!<CR>
 cnoremap <C-r><C-v> <C-r>=join(tomtomjhj#util#visual_selection_lines(), ' ')<CR>
 inoremap <C-r><C-v> <C-r>=join(tomtomjhj#util#visual_selection_lines(), ' ')<CR>
 
-let g:conflict_marker_pat = '\(' . '^<<<<<<< \@=' . '\|' . '^||||||| .*$' . '\|' . '^=======$' . '\|' . '^>>>>>>> \@=' . '\)'
-Noremap <silent> [x <Cmd>call search(g:conflict_marker_pat, 'bW')<CR>
-Noremap <silent> ]x <Cmd>call search(g:conflict_marker_pat, 'W')<CR>
+Noremap <silent> [x <Cmd>call <SID>jump_git_conflict(1)<CR>
+Noremap <silent> ]x <Cmd>call <SID>jump_git_conflict(0)<CR>
+function! s:jump_git_conflict(back) abort
+    let conflict_marker_pat = '\(' . '^<<<<<<< \@=' . '\|' . '^||||||| .*$' . '\|' . '^=======$' . '\|' . '^>>>>>>> \@=' . '\)'
+    return search(conflict_marker_pat, a:back ? 'bsW' : 'sW')
+endfunction
 " }}}
 
 " pairs {{{

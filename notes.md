@@ -318,7 +318,6 @@ tools
 
 ## (n)vim pitfalls
 * Cursor movement on concealed string: `set concealcursor=n` doesn't work as expected. <https://vi.stackexchange.com/questions/4530/moving-over-conceal>
-* `:h map-bar`
 * Wrap `autocmd`s with `exec 'au ...'`: may not work as expected because of the interaction w/ `|`
 * Matching `errorformat` may fail if the output from `:AsyncRun ...` is complex & quickfix is already open.
   Probably the output should be buffered.
@@ -374,6 +373,8 @@ tools
     * NeoVim highlights all cells as `Normal`.
     * Taking some actions (e.g. visual selection) adds `Normal` highlight.
 * If `winfixheight` (e.g. preview, quickfix), making it vertical (e.g. `<C-w>L`) and then horizontal back makes it occupy almost entire screen.
+    * Detect this on `WinScrolled` (new feature)?
+        * NOTE: `WinScrolled` fired when entering preview window for the first time
     * For preview window, apply `previewheight`? Note: `:pedit` doesn't accept `{height}`, unlike `:copen`.
 * NeoVim terminal slows down the UI if too much stuff is printed.
 * `api-buffer-updates` is too fine-grained (triggered for each `b:changedtick` update). It's meant to be fine-grained, but it's too fine-grained for most use cases.
@@ -411,7 +412,22 @@ tools
 * Nvim silences errors in autocmd. This is not related to [`shortmess`](https://github.com/neovim/neovim/wiki/FAQ#calling-inputlist-echomsg--in-filetype-plugins-and-autocmd-does-not-work). This makes debugging ftplugin difficult.
 * `filename-modifiers` should be provided in the order defined in the documentation. `fnamemodify(name, ':h:~')` is wrong.
 * ([#10900](https://github.com/vim/vim/issues/10900)) In vim, handling the output of `:!`, `:write_c`, etc is UI-specific. It's not possible to uniformly capture the output using `execute()`. Must use `system()` for shell commands.
+* `-complete=file` et al. triggers expansion of `cmdline-special` in args.
+  ```
+  command! -nargs=* Asdf echo [<f-args>]
+  command! -nargs=* -complete=file Asdf echo [<f-args>]
+  command! -nargs=* -complete=dir Asdf echo [<f-args>]
+  ```
 * `:map` includes select mode.
+* escaping
+    * escaping functions: `escape()`, `fnameescape()`, `shellescape()`
+    * avoid using Ex-command when possible
+    * `:command` parsing options: `<f-args>`, `-bar`, `-complete=file`, `-nargs`, ...
+    * `:set` escaping
+    * ``++opt`, `+cmd` options for e.g. `:edit`
+        * `:file` and `:cd` don't take those options but works fine when `+` is escaped.
+    * `map-bar`
+    * ...
 
 
 ## (n)vim bugs
@@ -420,6 +436,7 @@ tools
     * running tmux inside the termianl:
         * reflow works but scrolling is broken
         * `set shell=tmux` <https://www.reddit.com/r/neovim/comments/umy4gb/tmux_in_neovim/>
+    * vim: big `termwinsize` width? ⇒ After the job finishes, hightlight position is wrong.
 * nvim's `CursorMoved` is differrent from vim's. This makes `vimtex_matchparen` wrongly highlight fzf floatwin.
 * shada merging bad https://github.com/neovim/neovim/issues/4295
     * impossible to wipe marks, registers, jumplist...
@@ -461,15 +478,18 @@ tools
 * `hi def link` + `hi clear` is somewhat broken
 * nvim: If there's a mapping that starts with `<C-c>` in current mode (but not exactly `<C-c>`), `<C-c>` does not interrupt vimscript (loop, `:sleep`, ...). <https://github.com/neovim/neovim/issues/15258>
 * When typing a prefix of imap, the typed char is displayed during the timeout. Is this intended?
-* In nvim, tex, `lazyredraw`, cursor on `\` of `\someTexCommand`, type `ve` instantaneously. Highlighted region is not drawn. (FixCursorHold.nvim triggers redraw after a while.)
-    * bisected: https://github.com/neovim/neovim/pull/17913
+* In nvim, tex, `lazyredraw`, cursor on `\` of `\someTexCommand`, type `ve` instantaneously. Highlighted region is not drawn and the cursor is not redrawn at proper position. The statusline is redrawn (FixCursorHold.nvim triggers redraw after a while.)
+    * bisected: https://github.com/neovim/neovim/pull/17913 a9665bb12cd8cbacbc6ef6df66c1989b0c6f9fcc
     * Also reproducible in neovide and goneovim.
     * Can't reproduce with `--clean`.
     * Reproducible without vimtex.
         * reproducible with `g:vimtex_syntax_conceal_disable = 1`
     * Reproduction requires lightline.
+        * From `lightline#link()`, delete `lightline#highlight()`. This removes the bug.
+            * TODO: Invetigate interaction between `ex_highlight()` and `update_screen(0)`. `update_screen()` redraws the statusline
 * matchit, matchup: In markdown, if line is like this: `< cursor ( )`, `%` doesn't work. `<` should be matched with `>`???
     *  Not related to 2022-07-25 html ftplugin update.
+* 2022-09-20: lua heredoc syntax broken after recent lua syntax update
 
 ## ...
 * `ge` ... design of inclusive/exclusive stuff
@@ -493,7 +513,6 @@ tools
 * https://github.com/tweekmonster/helpful.vim https://www.arp242.net/vimlog/ https://axelf.nu/vim-helptag-versions/
 
 ## plugins
-* https://github.com/machakann/vim-sandwich
 * https://github.com/mg979/vim-visual-multi
 * https://github.com/chrisbra/unicode.vim
 * https://github.com/chaoren/vim-wordmotion
@@ -503,6 +522,7 @@ tools
 * https://github.com/Konfekt/vim-compilers
 * https://github.com/dkarter/bullets.vim
 * https://mg979.github.io/tasks.vim
+* https://github.com/tpope/vim-tbone
 * https://github.com/mikeslattery/nvim-defaults.vim https://github.com/tpope/dotfiles/blob/master/.vimrc
 * lsp stuff
     * https://github.com/jose-elias-alvarez/null-ls.nvim
@@ -549,6 +569,7 @@ tools
 * https://github.com/chipsenkbeil/distant.nvim
 * https://github.com/tomtom/tcomment_vim
   https://github.com/numToStr/Comment.nvim
+  https://github.com/tyru/caw.vim
 * https://github.com/mcchrish/vim-no-color-collections
   https://github.com/fxn/vim-monochrome
   https://git.sr.ht/~romainl/vim-bruin

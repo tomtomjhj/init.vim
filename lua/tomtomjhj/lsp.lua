@@ -64,9 +64,8 @@ lspconfig.clangd.setup(
   })
 )
 
-lspconfig.sumneko_lua.setup (
-  require'lua-dev'.setup { lspconfig = base_opt }
-)
+require("lua-dev").setup()
+lspconfig.sumneko_lua.setup(base_opt)
 
 lspconfig.vimls.setup(base_opt)
 

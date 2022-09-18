@@ -71,9 +71,8 @@ command! -nargs=? Fold   call CocAction('fold', <f-args>)
 " }}}
 
 elseif get(g:, 'ide_client', '') == 'nvim' " {{{
-lua << EOF
-tomtomjhj.lsp = require('tomtomjhj/lsp')
-EOF
+
+lua tomtomjhj.lsp = require('tomtomjhj/lsp')
 
 " lsp_markdown can't be customized..
 hi! link markdownError NONE
