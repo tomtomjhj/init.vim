@@ -50,6 +50,7 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': has('unix') ? './install --all' : 
 " Make sth similar to that for small.vim
 " See also https://github.com/junegunn/fzf.vim/pull/1239
 Plug 'junegunn/fzf.vim'
+Plug 'roosta/fzf-folds.vim'
 Plug 'Konfekt/FastFold' " only useful for non-manual folds
 Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
@@ -797,6 +798,7 @@ nnoremap <C-f>      :<C-u>Files<CR>
 " TODO: filter out stuff that matches wildignore e.g. .git/index, .git/COMMIT_EDITMSG
 nnoremap <leader>hh :<C-u>History<CR>
 nnoremap <leader><C-t> :Tags ^<C-r><C-w>\  <CR>
+nnoremap <leader>fl :Folds<CR>
 
 command! -nargs=? Grep  call Ripgrep(<q-args>)
 command! -nargs=? Grepf call RipgrepFly(<q-args>)
