@@ -1,6 +1,6 @@
 " vim: set foldmethod=marker foldlevel=0:
 
-let s:nvim_latest_stable = has('nvim-0.7')
+let s:nvim_latest_stable = has('nvim-0.8')
 let g:ide_client = get(g:, 'ide_client', s:nvim_latest_stable ? 'nvim' : 'coc')
 
 if !has('nvim')
@@ -112,7 +112,7 @@ Plug 'tbastos/vim-lua'
 " Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] } | let g:grammarous#use_location_list = 1
 
 " etc etc
-if has('nvim')
+if has('nvim') && !has('nvim-0.8')
     Plug 'antoinemadec/FixCursorHold.nvim'
 endif
 if s:nvim_latest_stable
@@ -407,9 +407,7 @@ endfunction
 " }}}
 
 " ColorScheme {{{
-let g:taiga_full_special_attrs_support = 1
-if exists('g:colors_name') " loading the color again breaks lightline
-else
+if !exists('g:colors_name') " loading the color again breaks lightline
     colorscheme taiga
 endif
 silent! set termguicolors
@@ -494,7 +492,7 @@ augroup Languages | au!
     au FileType tex call s:tex()
     au FileType rust call s:rust()
     au FileType vim setlocal formatoptions-=c
-    au FileType xml setlocal formatoptions-=r " very broken: <!--<CR> → <!--\n--> █
+    au FileType xml setlocal formatoptions-=r formatoptions-=o " very broken: <!--<CR> → <!--\n--> █
 augroup END
 
 " Haskell {{{

@@ -487,6 +487,7 @@ tools
     * Reproduction requires lightline.
         * From `lightline#link()`, delete `lightline#highlight()`. This removes the bug.
             * TODO: Invetigate interaction between `ex_highlight()` and `update_screen(0)`. `update_screen()` redraws the statusline
+    * doesn't seem to be related to `ttimeoutlen`
 * matchit, matchup: In markdown, if line is like this: `< cursor ( )`, `%` doesn't work. `<` should be matched with `>`???
     *  Not related to 2022-07-25 html ftplugin update.
 * 2022-09-20: lua heredoc syntax broken after recent lua syntax update
@@ -537,6 +538,7 @@ tools
   https://github.com/abecodes/tabout.nvim
 * git
     * https://github.com/rhysd/conflict-marker.vim
+      https://github.com/akinsho/git-conflict.nvim
     * https://github.com/pwntester/octo.nvim
     * https://github.com/TimUntersberger/neogit
     * https://github.com/lewis6991/gitsigns.nvim
@@ -552,7 +554,7 @@ tools
         * live_grep ↔ grep!
         * Preview buffer's ftdetect uses `:filetype detect`, which is somewhat broken? `*.v` file doesn't get recognized as coq.
         * Does not reuse the buffer for preview <https://github.com/ibhagwan/fzf-lua/issues/208#issuecomment-962550013>...
-        * `require'fzf-lua'.setup` takes 5 ms
+        * `require'fzf-lua'.setup` takes 5 ms. Fixed? https://github.com/ibhagwan/fzf-lua/issues/511
     * https://github.com/stevearc/dressing.nvim
     * https://github.com/lifepillar/vim-zeef
 * https://github.com/jbyuki/instant.nvim

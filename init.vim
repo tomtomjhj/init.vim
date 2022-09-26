@@ -22,13 +22,16 @@ augroup NvimStuff | au!
 augroup END
 
 " TODO: how to customize highlighting queries? → read readme
-if has('nvim-0.7')
+if has('nvim-0.8')
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
   ensure_installed = {},
   highlight = {
     enable = true;
-    disable = {"python", "vim"};
+    disable = {"python",
+               "vim",  -- less complete
+               "help", -- conceal broken
+    };
   },
   indent = {
     enable = true;
