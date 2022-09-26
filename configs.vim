@@ -51,6 +51,10 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': has('unix') ? './install --all' : 
 " Make sth similar to that for small.vim
 " See also https://github.com/junegunn/fzf.vim/pull/1239
 Plug 'junegunn/fzf.vim'
+if has('nvim')
+    " TODO: Replace lspfuzzy with fzf-lua? Override vim.lsp.handlers?
+    Plug 'ibhagwan/fzf-lua'
+endif
 Plug 'roosta/fzf-folds.vim'
 Plug 'Konfekt/FastFold' " only useful for non-manual folds
 Plug 'romainl/vim-qf'
@@ -887,6 +891,14 @@ function! s:fzf_color() abort
         let $FZF_DEFAULT_OPTS .= ' --color=' . &background
     endif
 endfunction
+
+" TODO: fzf stuff
+" - reorg this section. split fzf and search things.
+" - thin compat layer for fzf.vim and fzf-lua?
+if has('nvim')
+    lua require('tomtomjhj/fzf')
+endif
+
 " }}}
 
 " Motion, insert mode, ... {{{
