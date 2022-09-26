@@ -42,6 +42,7 @@ Plug 'whonore/vim-sentencer'
 " * '--git-completion-helper'-based completion (#1265) doesn't complete many things for git log e.g. --grep
 Plug 'tpope/vim-fugitive'
 Plug 'rhysd/git-messenger.vim'
+Plug 'rhysd/conflict-marker.vim'
 Plug 'tpope/vim-rhubarb'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
@@ -1073,13 +1074,6 @@ nnoremap <leader>fe :e!<CR>
 
 cnoremap <C-r><C-v> <C-r>=join(tomtomjhj#util#visual_selection_lines(), ' ')<CR>
 inoremap <C-r><C-v> <C-r>=join(tomtomjhj#util#visual_selection_lines(), ' ')<CR>
-
-Noremap <silent> [x <Cmd>call <SID>jump_git_conflict(1)<CR>
-Noremap <silent> ]x <Cmd>call <SID>jump_git_conflict(0)<CR>
-function! s:jump_git_conflict(back) abort
-    let conflict_marker_pat = '\(' . '^<<<<<<< \@=' . '\|' . '^||||||| .*$' . '\|' . '^=======$' . '\|' . '^>>>>>>> \@=' . '\)'
-    return search(conflict_marker_pat, a:back ? 'bsW' : 'sW')
-endfunction
 " }}}
 
 " pairs {{{
@@ -1315,6 +1309,28 @@ function! GitDiffFoldExpr(lnum)
         return '='
     endif
 endfunction
+
+" TODO: matchit integration doesn't work?
+let g:conflict_marker_highlight_group = ''
+function! s:conflict_marker_hi() abort
+    if &background is# 'light'
+        hi ConflictMarkerBegin guibg=#3f9989
+        hi ConflictMarkerOurs guibg=#74ccba
+        hi ConflictMarkerTheirs guibg=#699fd1
+        hi ConflictMarkerEnd guibg=#2f628e
+        hi ConflictMarkerCommonAncestorsHunk guibg=#c57cd9
+    else
+        hi ConflictMarkerBegin guibg=#2f7366
+        hi ConflictMarkerOurs guibg=#2e5049
+        hi ConflictMarkerTheirs guibg=#344f69
+        hi ConflictMarkerEnd guibg=#2f628e
+        hi ConflictMarkerCommonAncestorsHunk guibg=#754a81
+    endif
+endfunction
+call s:conflict_marker_hi()
+augroup conflict-marker-custom | au!
+    au ColorScheme * call s:conflict_marker_hi()
+augroup END
 " }}}
 
 " firenvim {{{
