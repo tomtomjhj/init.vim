@@ -983,9 +983,10 @@ func! FineGrainedICtrlW(finer)
             return "\<C-w>"
         endif
         let l:sts = &softtabstop
-        setlocal softtabstop=0
+        let l:vsts = &varsofttabstop
+        setlocal softtabstop=0 varsofttabstop=
         return repeat("\<BS>", l:idx)
-                    \ . "\<C-R>=execute('setl sts=".l:sts."')\<CR>"
+                    \ . "\<C-R>=execute('".printf('setl sts=%d vsts=%s', l:sts, l:vsts)."')\<CR>"
                     \ . (a:finer ? "" : "\<C-R>=pear_tree#insert_mode#Backspace()\<CR>")
     elseif l:chars[-1] !~ '\k'
         return pear_tree#insert_mode#Backspace()
