@@ -451,19 +451,6 @@ let g:coc_fzf_preview = 'up:66%'
 " for https://github.com/valentjn/vscode-ltex/issues/425
 let g:coc_filetype_map = {'tex': 'latex'}
 
-" :h coc-highlights
-hi! def link CocFadeOut             LspCodeLens
-hi! def link CocErrorSign           DiagnosticSignError
-hi! def link CocWarningSign         DiagnosticSignWarn
-hi! def link CocInfoSign            DiagnosticSignInfo
-hi! def link CocHintSign            DiagnosticSignHint
-hi! def link CocErrorVirtualText    DiagnosticVirtualTextError
-hi! def link CocWarningVirtualText  DiagnosticVirtualTextWarn
-hi! def link CocInfoVirtualText     DiagnosticVirtualTextInfo
-hi! def link CocHintVirtualText     DiagnosticVirtualTextHint
-hi! def link CocRustTypeHint LspCodeLens
-hi! def link CocRustChainingHint LspCodeLens
-
 nmap <leader>fm <Plug>(ale_fix)
 nmap <M-,> <Plug>(ale_detail)<C-W>p
 nmap ]d <Plug>(ale_next_wrap)

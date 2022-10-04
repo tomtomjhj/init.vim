@@ -1,5 +1,7 @@
 {
-    // NOTE: make the keys totally flat (instead of nested objects)
+    // NOTE
+    // - make the keys totally flat (instead of nested objects)
+    // - no trailing comma allowed
     "coc.preferences.extensionUpdateCheck": "never", // :CocUpdate
     "hover.target": "float",
     "hover.previewMaxHeight": 20,
@@ -21,24 +23,14 @@
     "codeLens.enable": true,
     "codeLens.subseparator": " | ",
     "suggest.noselect": true,
-    "suggest.maxPreviewWidth": 100,
-    "diagnostic.maxWindowWidth": 100,
     "languageserver": {
         "ocaml-lsp": {
             "command": "opam",
             "args": ["config", "exec", "--", "ocamllsp"],
             "filetypes": ["ocaml"]
-        },
+        }
     },
-    "rust-analyzer.server.path": "~/.local/share/nvim/lsp_servers/rust/rust-analyzer",
     "rust-analyzer.diagnostics.enable": true,
     "rust-analyzer.checkOnSave.enable": true,
-    "rust-analyzer.inlayHints.typeHintsSeparator": "‣ ",
-    "rust-analyzer.inlayHints.chainingHintsSeparator": "‣ ",
-    "rust.racer_completion": false,
-    "python.linting.pylintArgs": ["-dR", "-dC", "-dW0511", "-dW0614", "-dW0621"],
-    "python.linting.mypyEnabled": false,
-    "python.linting.mypyArgs": ["--no-warn-unused-ignores"],
-    "coc.source.ultisnips.priority": 80,
-    "coc.source.word.shortcut": "W",
+    "coc.source.ultisnips.priority": 80
 }
