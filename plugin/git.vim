@@ -1,15 +1,3 @@
-" statusline {{{
-" TODO: `git status --porcelain bufname` with caching, like small.vim. Or take stuff from gitsigns.nvim, etc?
-function! GitStatusline() abort
-  let dir = FugitiveGitDir(bufnr(''))
-  if empty(dir)
-    return ''
-  endif
-  let status = fugitive#Head(7, dir)
-  return '['.status.']'
-endfunction
-" }}}
-
 " git log viewer {{{
 command! -nargs=? -complete=customlist,fugitive#LogComplete GL call GLStart(<q-mods>, empty(trim(<q-args>)) ? '--all' : <q-args>)
 

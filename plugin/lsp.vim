@@ -56,7 +56,7 @@ endfunction
 augroup GlobalCocStuff
   autocmd!
   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
+  autocmd User CocStatusChange,CocDiagnosticChange redrawstatus
   autocmd BufLeave list://* hi! CursorLine cterm=NONE gui=NONE
   autocmd BufEnter list://* hi! CursorLine cterm=underline gui=underline
   " https://github.com/neoclide/coc.nvim/issues/2043
@@ -142,7 +142,7 @@ function! NvimLSPRangeFormat(type) abort
 endfunction
 
 augroup GlobalNvimLSPStuff | au!
-  au DiagnosticChanged * call lightline#update()
+  au DiagnosticChanged * redrawstatus
   " override lspconfig's LspLog
   au VimEnter * command! LspLog exe '<mods> pedit +setlocal\ nobuflisted|$' v:lua.vim.lsp.get_log_path()
 augroup end

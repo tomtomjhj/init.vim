@@ -17,7 +17,6 @@ let g:loaded_spellfile_plugin = 1
 call plug#begin('~/.vim/plugged')
 
 " appearance
-Plug 'tomtomjhj/lightline.vim' " https://github.com/itchyny/lightline.vim/pull/631
 Plug 'tomtomjhj/taiga.vim'
 
 " editing
@@ -281,91 +280,121 @@ endif
 " - neovide doesn't understand <C-M-L>, .. https://github.com/neovide/neovide/issues/994#issuecomment-1063500913 works
 " }}}
 
-" Statusline {{{
-let g:lightline = {
-      \ 'colorscheme': 'powerwombat',
-      \ 'active': {
-      \   'left': [ ['mode', 'paste'],
-      \             ['specialwin', 'title', 'bufstate'],
-      \             ['curr_func', 'git'] ],
-      \   'right': [ ['lineinfo'], ['percent'],
-      \              ['checker_errors', 'checker_warnings', 'checker_status'],
-      \              ['searchcount', 'asyncrun'] ]
-      \ },
-      \ 'inactive': {
-      \   'left': [ ['specialwin', 'title'],
-      \             ['bufnr_winnr'] ],
-      \   'right': [ ['lineinfo'], ['percent'],
-      \              ['checker_errors_inactive', 'checker_warnings_inactive'] ]
-      \ },
-      \ 'component': {
-      \   'specialwin': '%w%q%h',
-      \   'asyncrun': '%{get(g:,"asyncrun_status","")[:3]}',
-      \   'bufnr_winnr': '%n@%{winnr()}'
-      \ },
-      \ 'component_function': {
-      \   'git': 'GitStatusline',
-      \   'title': 'STLTitle',
-      \   'bufstate': 'STLBufState',
-      \   'curr_func': 'CurrentFunction',
-      \   'checker_status': 'CheckerStatus',
-      \   'checker_errors_inactive': 'CheckerErrors',
-      \   'checker_warnings_inactive': 'CheckerWarnings',
-      \   'searchcount': 'SearchCount',
-      \ },
-      \ 'component_expand': {
-      \  'checker_errors': 'CheckerErrors',
-      \  'checker_warnings': 'CheckerWarnings',
-      \ },
-      \ 'component_type': {
-      \     'checker_errors': 'error',
-      \     'checker_warnings': 'warning',
-      \ },
-      \ 'component_visible_condition': {
-      \   'specialwin': '&previewwindow||&buftype==#"quickfix"||&buftype==#"help"',
-      \   'asyncrun': '!empty(get(g:,"asyncrun_status",""))',
-      \ },
-      \ 'component_function_visible_condition': {
-      \   'searchcount': 'v:hlsearch',
-      \   'title': 1,
-      \   'git': '!empty(FugitiveGitDir())',
-      \ },
-      \ 'mode_map': {
-      \     'n' : 'N ',
-      \     'i' : 'I ',
-      \     'R' : 'R ',
-      \     'v' : 'V ',
-      \     'V' : 'VL',
-      \     "\<C-v>": 'VB',
-      \     'c' : 'C ',
-      \     's' : 'S ',
-      \     'S' : 'SL',
-      \     "\<C-s>": 'SB',
-      \     't': 'T ',
-      \ }
-      \ }
-function! STLTitle() abort
-    let bt = &buftype
-    let ft = &filetype
-    let bname = bufname('%')
+" statusline & tabline {{{
+set statusline=%!STLFunc()
+set tabline=%!TALFunc()
+let g:qf_disable_statusline = 1
+
+let s:stl_mode_map = {'n' : 'N ', 'i' : 'I ', 'R' : 'R ', 'v' : 'V ', 'V' : 'VL', "\<C-v>": 'VB', 'c' : 'C ', 's' : 'S ', 'S' : 'SL', "\<C-s>": 'SB', 't': 'T '}
+let s:stl_inactive_hl = [''                  , '%#STLInactive2#'   , '%#STLInactive3#'   , '%#STLInactive4#' , ]
+let s:stl_active_hl = {
+            \ 'n' :     ['%#STLModeNormal1#' , '%#STLModeNormal2#' , '%#STLModeNormal3#' , '%#STLModeNormal4#' , ],
+            \ 'i' :     ['%#STLModeInsert1#' , '%#STLModeInsert2#' , '%#STLModeInsert3#' , '%#STLModeInsert4#' , ],
+            \ 'R' :     ['%#STLModeReplace#' , '%#STLModeNormal2#' , '%#STLModeNormal3#' , '%#STLModeNormal4#' , ],
+            \ 'v' :     ['%#STLModeVisual#'  , '%#STLModeNormal2#' , '%#STLModeNormal3#' , '%#STLModeNormal4#' , ],
+            \ 'c' :     ['%#STLModeCmdline1#', '%#STLModeCmdline2#', '%#STLModeCmdline3#', '%#STLModeCmdline4#', ],
+            \}
+let s:stl_active_hl['V'] = s:stl_active_hl['v']
+let s:stl_active_hl["\<C-v>"] = s:stl_active_hl['v']
+let s:stl_active_hl['s'] = s:stl_active_hl['i']
+let s:stl_active_hl['S'] = s:stl_active_hl['i']
+let s:stl_active_hl["\<C-s>"] = s:stl_active_hl['i']
+let s:stl_active_hl['t'] = s:stl_active_hl['i']
+
+function! StatuslineHighlightInit()
+    hi! STLModeNormal1  guifg=#005f00 ctermfg=22  guibg=#afdf00 ctermbg=148 gui=bold cterm=bold
+    hi! STLModeNormal2  guifg=#ffffff ctermfg=231 guibg=#626262 ctermbg=241
+    hi! STLModeNormal3  guifg=#bcbcbc ctermfg=250 guibg=#303030 ctermbg=236
+    hi! STLModeNormal4  guifg=#585858 ctermfg=240 guibg=#d0d0d0 ctermbg=252
+    hi! STLModeVisual   guifg=#870000 ctermfg=88  guibg=#ff8700 ctermbg=208 gui=bold cterm=bold
+    hi! STLModeReplace  guifg=#ffffff ctermfg=231 guibg=#df0000 ctermbg=160 gui=bold cterm=bold
+    hi! STLModeInsert1  guifg=#005f5f ctermfg=23  guibg=#ffffff ctermbg=231 gui=bold cterm=bold
+    hi! STLModeInsert2  guifg=#ffffff ctermfg=231 guibg=#0087af ctermbg=31
+    hi! STLModeInsert3  guifg=#afd7ff ctermfg=153 guibg=#005f87 ctermbg=24
+    hi! STLModeInsert4  guifg=#005f5f ctermfg=23  guibg=#87dfff ctermbg=117
+    hi! STLModeCmdline1 guifg=#262626 ctermfg=235 guibg=#ffffff ctermbg=231 gui=bold cterm=bold
+    hi! STLModeCmdline2 guifg=#303030 ctermfg=236 guibg=#d0d0d0 ctermbg=252
+    hi! STLModeCmdline3 guifg=#303030 ctermfg=236 guibg=#8a8a8a ctermbg=245
+    hi! STLModeCmdline4 guifg=#585858 ctermfg=240 guibg=#ffffff ctermbg=231
+
+    hi! STLInactive2  guifg=#8a8a8a ctermfg=245 guibg=#1c1c1c ctermbg=234
+    hi! STLInactive3  guifg=#8a8a8a ctermfg=245 guibg=#303030 ctermbg=236
+    hi! STLInactive4  guifg=#262626 ctermfg=235 guibg=#606060 ctermbg=241
+
+    hi! STLError   guifg=#262626 ctermfg=235 guibg=#ff5f5f ctermbg=203
+    hi! STLWarning guifg=#262626 ctermfg=235 guibg=#ffaf5f ctermbg=215
+endfunction
+call StatuslineHighlightInit()
+
+function! STLFunc() abort
+    if g:statusline_winid is# win_getid()
+        let m = mode()[0]
+        let [hl1, hl2, hl3, hl4] = s:stl_active_hl[m]
+        return join([ hl1, ' ' . s:stl_mode_map[m] . ' ',
+                    \ hl2, '%( %w%q%h%)%( %{STLTitle()}%) %<',
+                    \ hl3, '%( %{STLBufState()}%{get(b:stl, "git", "")}%)%( %{CurrentFunction()}%)',
+                    \ '%=',
+                    \ hl3, '%(%{SearchCount()} %)',
+                    \ '%#STLError#%( %{CheckerErrors()} %)',
+                    \ '%#STLWarning#%( %{CheckerWarnings()} %)',
+                    \ hl3, '%( %{CheckerStatus()} %)',
+                    \ hl2, ' %3p%% ',
+                    \ hl4, ' %3l:%-2c '
+                    \], '')
+    else
+        let [hl1, hl2, hl3, hl4] = s:stl_inactive_hl
+        return join([ hl2, '%( %w%q%h%)%( %{STLTitle()}%) %<',
+                    \ hl3, '%( @%{winnr()}%)%( %{STLBufState()}%{get(b:stl, "git", "")}%)',
+                    \ '%=',
+                    \ hl3, '%( %{CheckerErrors()} %)',
+                    \ hl3, '%( %{CheckerWarnings()} %)',
+                    \ hl2, ' %3p%% ',
+                    \ hl4, ' %3l:%-2c '
+                    \], '')
+    endif
+endfunction
+
+function! TALFunc() abort
+    let s = ''
+    for i in range(tabpagenr('$'))
+        let s .= (i + 1 == tabpagenr()) ? '%#TabLineSel#' : '%#TabLine#'
+        let s .= '%' . (i + 1) . 'T ' . (i + 1) . ': %{TALLabel(' . (i + 1) . ')} '
+    endfor
+    let s .= '%T%#TabLineFill#'
+    return s
+endfunction
+
+function! TALLabel(n) abort
+    let buflist = tabpagebuflist(a:n)
+    let winnr = tabpagewinnr(a:n)
+    return STLTitle(buflist[winnr - 1])
+endfunction
+
+function! STLTitle(...) abort
+    let b = a:0 ? a:1 : bufnr('')
+    let bt = getbufvar(b, '&buftype')
+    let ft = getbufvar(b, '&filetype')
+    let bname = bufname(b)
     " NOTE: bt=quickfix,help decides filetype
     if bt is# 'quickfix'
         " NOTE: getwininfo() to differentiate quickfix window and location window
         return get(w:, 'quickfix_title', ':')
     elseif bt is# 'help'
         return fnamemodify(bname, ':t')
+    elseif ft is# 'fzf'
+        return 'fzf'
     elseif bt is# 'terminal'
         return has('nvim') ? '!' . matchstr(bname, 'term://\f\{-}//\d\+:\zs.*') : bname
     elseif ft is# 'fern'
-        return pathshorten(fnamemodify(b:fern.root._path, ":~")) . '/'
+        return pathshorten(fnamemodify(getbufvar(b, 'fern').root._path, ":~")) . '/'
     elseif bname =~# '^fugitive://'
         let [obj, gitdir] = FugitiveParse(bname)
         let matches = matchlist(obj, '\v(:\d?|\x+)(:\f*)?')
         return pathshorten(fnamemodify(gitdir, ":~:h")) . ' ' . matches[1][:9] . matches[2]
-    elseif get(b:, 'fugitive_type', '') is# 'temp'
+    elseif getbufvar(b, 'fugitive_type', '') is# 'temp'
         return pathshorten(fnamemodify(bname, ":~:.")) . ' :Git ' . join(FugitiveResult(bname)['args'], ' ')
     elseif ft is# 'gl'
-        return ':GL' . join([''] + b:gl_args, ' ')
+        return ':GL' . join([''] + getbufvar(b, 'gl_args'), ' ')
     elseif empty(bname)
         return empty(bt) ? '[No Name]' : bt is# 'nofile' ? '[Scratch]' : '?'
     else
@@ -404,10 +433,32 @@ function! SearchCount()
         return ''
     endtry
 endfunction
+
+" sets b:stl.git for real files that may be tracked by some git repo
+function! UpdateGitStatus(buf) abort
+    let bname = fnamemodify(bufname(a:buf), ':p')
+    if !empty(getbufvar(a:buf, '&buftype')) || !filereadable(bname) || empty(FugitiveGitDir(a:buf)) | return | endif
+    let status = ''
+    let result = FugitiveExecute(['status', '--porcelain', bname], a:buf)
+    if result.exit_status == 0
+        let status = '[' . FugitiveHead(10, a:buf) . (empty(result.stdout[0]) ? '' : ':' . result.stdout[0][:1]) . ']'
+    endif
+    let stl = getbufvar(a:buf, 'stl')
+    let stl.git = status
+endfunction
+
+augroup Statusline | au!
+    " ensure b:stl in all buffers (note that buf vars are deleted on :bdelete)
+    au BufNew,VimEnter,BufReadPost * if !has_key(getbufvar(str2nr(expand('<abuf>')), ''), 'stl') | call setbufvar(str2nr(expand('<abuf>')), 'stl', {}) | endif
+    au BufReadPost,BufWritePost * call UpdateGitStatus(str2nr(expand('<abuf>')))
+    " unloaded buffers will be refreshed on BufReadPost
+    au User FugitiveChanged call map(getbufinfo({'bufloaded':1}), 'UpdateGitStatus(v:val.bufnr)')
+    au ColorScheme * call StatuslineHighlightInit()
+augroup END
 " }}}
 
 " ColorScheme {{{
-if !exists('g:colors_name') " loading the color again breaks lightline
+if !exists('g:colors_name')
     colorscheme taiga
 endif
 silent! set termguicolors
