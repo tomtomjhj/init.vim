@@ -14,6 +14,7 @@ let g:loaded_spellfile_plugin = 1
 " TODO: post-update hook doesn't work on nvim-0.6 Vim(call):E117: Unknown function: mkdp#util#install ... This happens only when installing (not updating). So nvim might be checking existence of the directory when rtp is modified.
 " https://github.com/neovim/neovim/issues/18822
 " Plug {{{
+if has('vim_starting')
 call plug#begin('~/.vim/plugged')
 
 " appearance
@@ -127,6 +128,7 @@ endif
 " NOTE: This runs `filetype plugin indent on`, which registers au FileType.
 " Custom au FileType should be registered after this.
 call plug#end()
+endif
 
 if s:nvim_latest_stable
     lua require('impatient')
@@ -137,6 +139,7 @@ endif
 command! -nargs=1 Noremap exe 'nnoremap' <q-args> | exe 'xnoremap' <q-args> | exe 'onoremap' <q-args> 
 command! -nargs=1 Map exe 'nmap' <q-args> | exe 'xmap' <q-args> | exe 'omap' <q-args>
 
+if has('vim_starting')
 set encoding=utf-8
 
 set mouse=nvi
@@ -206,6 +209,7 @@ set modeline " debian unsets this
 set exrc secure
 if has('nvim-0.3.2') || has("patch-8.1.0360")
     set diffopt+=algorithm:histogram,indent-heuristic
+endif
 endif
 
 augroup BasicSetup | au!
