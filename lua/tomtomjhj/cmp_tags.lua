@@ -1,6 +1,5 @@
 -- Based on https://github.com/quangnguyen30192/cmp-nvim-tags
 local cmp = require('cmp')
-local util = require('vim.lsp.util')
 
 local source = {}
 

@@ -274,6 +274,33 @@ tools
 * https://github.com/ArthurSonzogni/Diagon
 * https://ivanceras.github.io/svgbob-editor
 
+## statusline & tabline
+
+NOTE
+* Subseparator is not necessary, and its implementation is complex.
+* Systematic spacing: `'%( a)%( b)%( c) '`
+* `STLFunc()` should do `component_expand` thing... but that doesn't seem to be necessary.
+* In default tabline, cmp's pum is also counted as a window.
+
+
+What to do with "global" things?
+* what's global?
+    * "workspace" things: are they actually global?. There's :lcd.
+        * git HEAD vs. file status (`status --porcelain`)
+        * diagnotics vs. buf diagnotics
+    * actually global
+        * `g:` things, like asyncrun status
+* implementation
+    * global statusline + winbar: wastes a line (separator) for each horizontal split
+    * put global stuff in tabline and `showtabline=2`
+    * when persistence is not needed, notification also works
+
+git
+* bulk update on `FugitiveChanged` (needed for e.g. git reset)? This requires some work.
+    1. Group buffers by FugitiveGitDir
+    2. git-status each group
+    3. Match the output. If no output for a buffer, then "no change".
+
 
 # things that I should make more use of
 * marks
@@ -428,6 +455,7 @@ tools
         * `:file` and `:cd` don't take those options but works fine when `+` is escaped.
     * `map-bar`
     * ...
+* `bufadd()` doesn't trigger `BufAdd`. What you want is `BufNew`.
 
 
 ## (n)vim bugs
@@ -480,17 +508,26 @@ tools
 * When typing a prefix of imap, the typed char is displayed during the timeout. Is this intended?
 * In nvim, tex, `lazyredraw`, cursor on `\` of `\someTexCommand`, type `ve` instantaneously. Highlighted region is not drawn and the cursor is not redrawn at proper position. The statusline is redrawn (FixCursorHold.nvim triggers redraw after a while.)
     * bisected: https://github.com/neovim/neovim/pull/17913 a9665bb12cd8cbacbc6ef6df66c1989b0c6f9fcc
-    * Also reproducible in neovide and goneovim.
-    * Can't reproduce with `--clean`.
-    * Reproducible without vimtex.
-        * reproducible with `g:vimtex_syntax_conceal_disable = 1`
-    * Reproduction requires lightline.
-        * From `lightline#link()`, delete `lightline#highlight()`. This removes the bug.
-            * TODO: Invetigate interaction between `ex_highlight()` and `update_screen(0)`. `update_screen()` redraws the statusline
-    * doesn't seem to be related to `ttimeoutlen`
+    * Reproduction: `:highlight` when evaluating statusline (lightline), in buffer with a lot of text and complex syntax like latex or markdown
+      ```vim
+      let s:count = 0
+      function! Hi()
+          exe 'hi StatusLine' ('cterm=NONE') ('ctermfg=' . s:count) ('ctermbg=' . s:count)
+          let s:count = (s:count + 1) % 256
+          return ''
+      endfunction
+      set statusline=%{Hi()}
+      set lazyredraw
+      ```
+    * analysis
+        * `update_screen()` redraws the statusline
+        * After typing `e`, the buggy version doesn't call `grid_cursor_goto` and `inbuf_poll`.
 * matchit, matchup: In markdown, if line is like this: `< cursor ( )`, `%` doesn't work. `<` should be matched with `>`???
     *  Not related to 2022-07-25 html ftplugin update.
-* 2022-09-20: lua heredoc syntax broken after recent lua syntax update
+* `:syn-include` lua (e.g. lua heredoc, markdown) broken after recent lua syntax update:
+  <https://github.com/neovim/neovim/pull/20240/files#diff-2419d762b0d117afe1c1f9c392b9ea3e2ba4270341e576ea6b0533d1ff583351>
+  <https://github.com/marcuscf/vim-lua>.
+  <https://github.com/vim/vim/issues/11277>
 
 ## ...
 * `ge` ... design of inclusive/exclusive stuff

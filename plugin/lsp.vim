@@ -148,7 +148,7 @@ augroup GlobalNvimLSPStuff | au!
 augroup end
 " }}}
 
-elseif get(g:, 'ide_client', '') == 'ale' " {{{
+else " ale {{{
 function! SetupLSP()
   nmap <buffer><M-.> <Plug>(ale_hover)
   nmap <buffer><M-]> <Plug>(ale_go_to_definition)
@@ -156,6 +156,9 @@ function! SetupLSP()
   nmap <buffer><silent><leader><M-\> :if IsWide() \| ALEGoToDefinitionInVSplit \| else \| ALEGoToDefinitionInSplit \| endif<CR>
   nmap <buffer><leader>rn :ALERename<CR>
   nmap <buffer><leader>rf <Plug>(ale_find_references)
+endfunction
+function! CurrentFunction()
+  return ''
 endfunction
 function! CheckerStatus()
   return ''

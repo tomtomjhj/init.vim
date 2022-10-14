@@ -85,7 +85,7 @@ elseif g:ide_client == 'nvim'
     Plug 'williamboman/mason-lspconfig.nvim'
     Plug 'ojroques/nvim-lspfuzzy'
     Plug 'nvim-lua/lsp-status.nvim'
-    Plug 'folke/lua-dev.nvim'
+    Plug 'folke/neodev.nvim'
     Plug 'simrat39/rust-tools.nvim'
     " https://github.com/p00f/clangd_extensions.nvim
     Plug 'vigoux/ltex-ls.nvim'
@@ -279,9 +279,6 @@ if has('nvim')
 elseif has('gui_running')
     call s:SetupGUI()
 endif
-
-" TODO:
-" - neovide doesn't understand <C-M-L>, .. https://github.com/neovide/neovide/issues/994#issuecomment-1063500913 works
 " }}}
 
 " statusline & tabline {{{
@@ -915,7 +912,7 @@ func! RipgrepFly(query)
 endfunc
 func! Files(query)
     let spec = FzfOpts(v:count, {})
-    if empty(a:query) && !empty(get(spec, 'dir', ''))
+    if empty(a:query) && has_key(spec, 'dir')
         let l:query = spec['dir']
         unlet spec['dir']
         let spec['options'] = ['--prompt', fnamemodify(l:query, ':~:.') . '/']
@@ -1197,8 +1194,9 @@ if has('nvim')
     tnoremap <expr> <M-r> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 endif
 
+let g:asyncrun_exit = exists('*nvim_notify') ? 'lua vim.notify(vim.g.asyncrun_status .. ": AsyncRun " .. vim.g.asyncrun_info)' : 'echom g:asyncrun_status . ": AsyncRun " . g:asyncrun_info'
 Noremap <leader>R :AsyncRun<space>
-nnoremap <leader>ST :AsyncStop\|let g:asyncrun_status = ''<CR>
+nnoremap <leader>ST :AsyncStop<CR>
 command! -bang -nargs=* -complete=file Make AsyncRun -auto=make -program=make @ <args>
 nnoremap <leader>M :Make<space>
 command! -bang -bar -nargs=* -complete=customlist,fugitive#PushComplete Gpush  execute 'AsyncRun<bang> -cwd=' . fnameescape(FugitiveGitDir()) 'git push' <q-args>
@@ -1438,7 +1436,7 @@ nnoremap U :UndotreeToggle<CR>
 " sentencer
 let g:sentencer_filetypes = []
 let g:sentencer_textwidth = 79 " formatexpr doesn't work like built-in gq for textwidth=0
-let g:sentencer_ignore = ['\<i.e', '\<e.g', '\<vs', '\<Dr', '\<Mr', '\<Mrs', '\<Ms', '\<et al']
+let g:sentencer_ignore = ['\<i.e', '\<e.g', '\<vs', '\<Dr', '\<Mr', '\<Mrs', '\<Ms', '\<et al', '\<fig']
 
 " vim-mark
 let g:mwMaxMatchPriority = -2
@@ -1453,7 +1451,7 @@ nmap m<BS> <Plug>MarkToggle
 
 " etc util {{{
 " helpers {{{
-" Expands cmdline-special
+" Expands cmdline-special. Note: not correct because '\' can be escaped.
 function! s:expand_cmdline_special(txt) abort
     return substitute(a:txt, '\v\\@<!(\%|#%(\<?\d+|#)?)', '\=expand(submatch(1))', 'g')
 endfunction
