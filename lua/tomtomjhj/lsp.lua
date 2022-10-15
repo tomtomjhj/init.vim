@@ -13,7 +13,7 @@ vim.diagnostic.config {
   serverity_sort = true,
 }
 
-local capabilities = require('cmp_nvim_lsp').update_capabilities(lsp_status.capabilities)
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 local base_opt = {
   on_attach = function(client, bufnr)

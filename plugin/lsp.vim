@@ -62,7 +62,7 @@ augroup GlobalCocStuff
   " https://github.com/neoclide/coc.nvim/issues/2043
   autocmd VimLeave * call coc#rpc#kill()
   " NOTE: some langs need to override Coc mappings
-  autocmd FileType c,cpp,python,lua,go,ocaml,rust,tex,json,sh,javascript,typescript call SetupLSP() | call SetupLSPPost()
+  autocmd FileType c,cpp,python,lua,go,ocaml,rust,tex,json,sh,javascript,typescript,vim call SetupLSP() | call SetupLSPPost()
 augroup end
 
 command! -nargs=0 Format call CocAction('format')
