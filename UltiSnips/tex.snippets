@@ -12,32 +12,212 @@ def env(name):
 
 endglobal
 
-snippet \ "\\...{...}" i
-\\$0{${VISUAL}}
+# meta <!--
+snippet nc "\newcommand"
+\newcommand{\${1:cmd}}[${2:opt}]{${3:realcmd}} ${0}
+endsnippet
+# -->
+
+# \left \right <!--
+
+# ( ... )
+# ^^^^^^ highlight this part
+snippet lr "\left\right" i
+\left${1:${VISUAL}}\right$0
 endsnippet
 
-snippet lr "left(right)" i
-\left(${1:${VISUAL}}\right)$0
+# no closing paren here, since it's usually automatically added
+snippet lr( "left( right)" i
+\\left(${1:${VISUAL}}\\right${0}
+endsnippet
+snippet lr{ "left\{ right\}" i
+\\left\\{${1:${VISUAL}}\\right\\${0}
+endsnippet
+snippet lr[ "left[ right]" i
+\\left[${1:${VISUAL}}\\right${0}
 endsnippet
 
+snippet lra "langle rangle" i
+\\langle ${1:${VISUAL}}\\rangle${0}
+endsnippet
+snippet lr| "left| right|" i
+\\left|${1:${VISUAL}}\\right|${0}
+endsnippet
+# -->
+
+# environment <!--
 snippet beg "\\begin{..}" i
 \begin{$1}
-	${0:${VISUAL}}
+${0:${VISUAL}}
 \end{$1}
-endsnippet
-
-snippet it "\\item" b
-\item $0
 endsnippet
 
 snippet item "\\begin{itemize}" b
 \begin{itemize}
-	\item $0
+$0
 \end{itemize}
 endsnippet
 
 snippet enum "\\begin{enumerate}" b
 \begin{enumerate}
-	\item $0
+$0
 \end{enumerate}
 endsnippet
+
+snippet it "\\item" b
+\item $0
+endsnippet
+# -->
+
+# font <!--
+snippet mf "mathfrak" i
+\mathfrak{$0}
+endsnippet
+snippet mc "mathcal" i
+\mathcal{$0}
+endsnippet
+snippet ms "mathscr" i
+\mathscr{$0}
+endsnippet
+snippet bf "mathbf" i
+\mathbf{$0}
+endsnippet
+snippet bb "mathbb" i
+\mathbb{$0}
+endsnippet
+snippet sf "textsf" i
+\textsf{$0}
+endsnippet
+snippet tt "\text{}" i
+\text{ ${0:${VISUAL}}}
+endsnippet
+snippet cd "\texttt{}" i
+\texttt{${0:${VISUAL}}}
+endsnippet
+snippet yf "symbf" i
+\symbf{$0}
+endsnippet
+# -->
+
+# math stuff <!--
+snippet math "\[..\]" i
+\[${0:${VISUAL}}\]
+endsnippet
+
+snippet __ "_{}" iA
+_{$0}
+endsnippet
+snippet ^^ "^{}" iA
+^{$0}
+endsnippet
+snippet inv "^{-1}" i
+^{-1}
+endsnippet
+snippet TT "^\top" i
+^\top
+endsnippet
+snippet in "\in" i
+\in
+endsnippet
+
+snippet bar "\bar{}" i
+\bar{$0}
+endsnippet
+snippet over "\overline{}" i
+\overline{${0:${VISUAL}}}
+endsnippet
+snippet hat "\hat{}" i
+\hat{$0}
+endsnippet
+snippet sq "\sqrt{}" i
+\sqrt{${0:${VISUAL}}}
+endsnippet
+snippet mod "\pmod{}" i
+\pmod{$0}
+endsnippet
+
+snippet norm "norm" i
+\|${1:${VISUAL}}\|$0
+endsnippet
+
+snippet for "\forall \in" i
+\forall $1\in $2
+endsnippet
+snippet all "\forall" i
+\forall
+endsnippet
+snippet ext "\exists \in" i
+\exists $1\in $2
+endsnippet
+snippet some "\exists" i
+\exists
+endsnippet
+snippet => "implies" i
+\implies
+endsnippet
+
+snippet frac "\frac{}{}" i
+\\frac{${1}}{${0}}
+endsnippet
+snippet sum "\sum^{}_{}" i
+\\sum^{${1:n}}_{${2:i=1}}${0}
+endsnippet
+snippet prod "\prod^{}_{}" i
+\\prod^{${1:n}}_{${2:i=1}}${0}
+endsnippet
+snippet lim "\lim_{}" i
+\\lim_{${1:n\\to\\infty}}${0}
+endsnippet
+
+snippet set "\{ \}" i
+\\{${0:${VISUAL}}\\}
+endsnippet
+
+snippet bmat "begin{bmatrix} / end{bmatrix}" w
+\begin{bmatrix}$0\end{bmatrix}
+endsnippet
+
+# TODO detect math context using tex.vim syntax info and auto convert
+snippet bZ "\mathbb{Z}" iA
+\mathbb{Z}
+endsnippet
+snippet bN "\mathbb{N}" iA
+\mathbb{N}
+endsnippet
+snippet bR "\mathbb{R}" iA
+\mathbb{R}
+endsnippet
+snippet bQ "\mathbb{Q}" iA
+\mathbb{Q}
+endsnippet
+snippet bS "\mathbb{S}" iA
+\mathbb{S}
+endsnippet
+snippet bF "\mathbb{F}" iA
+\mathbb{F}
+endsnippet
+snippet bC "\mathbb{C}" iA
+\mathbb{C}
+endsnippet
+# -->
+
+# tikz <!--
+snippet tikz "tikz figure" w
+\begin{figure}
+\centering
+\begin{tikzpicture}
+${0}
+\end{tikzpicture}
+\end{figure}
+endsnippet
+
+snippet tn "Tikz node" w
+\node (${1/[^0-9a-zA-Z']//g}${2}) ${3:[${4}]} {$${1}$};
+endsnippet
+
+snippet td "Tikz draw" w
+\draw[${4:-}] (${1}) to node {${3}} (${2});
+endsnippet
+# -->
+
+# vim:set noet fdm=marker fmr=<!--,-->:
