@@ -1,0 +1,47 @@
+{
+  "pure": {
+    "prefix": "pure",
+    "description": "⌜...⌝",
+    "body": "⌜${TM_SELECTED_TEXT}$0⌝"
+  },
+  "embed": {
+    "prefix": "embed",
+    "description": "⎡...⎤",
+    "body": "⎡${TM_SELECTED_TEXT}$0⎤"
+  },
+  "sp1": {
+    "prefix": "sp1",
+    "description": "Set Printing Coercions/Implicit.",
+    "body": "Set Printing Coercions. Set Printing Implicit."
+  },
+  "sp2": {
+    "prefix": "sp2",
+    "description": "Unset Printing Notations.",
+    "body": "Unset Printing Notations."
+  },
+  "sp3": {
+    "prefix": "sp3",
+    "description": "Set Printing All.",
+    "body": "Set Printing All."
+  },
+  "diff": {
+    "prefix": "diff",
+    "description": "Set Diffs on",
+    "body": "Set Diffs \"on\"."
+  },
+  "nest": {
+    "prefix": "nest",
+    "description": "Set Nested Proofs Allowed",
+    "body": "Set Nested Proofs Allowed."
+  },
+  "sealed": {
+    "prefix": "sealed",
+    "description": "sealed definition",
+    "body": [
+      "Definition ${1:${TM_SELECTED_TEXT}}_def $0 : .",
+      "Definition $1_aux : seal (@$1_def). Proof. by eexists. Qed.",
+      "Definition $1 := $1_aux.(unseal).",
+      "Definition $1_unseal : @$1 = @$1_def := $1_aux.(seal_eq)."
+    ]
+  }
+}

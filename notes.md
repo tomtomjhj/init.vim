@@ -302,6 +302,34 @@ git
     3. Match the output. If no output for a buffer, then "no change".
 
 
+## Snippet
+snippet conversion with <https://github.com/smjonas/snippet-converter.nvim>
+1. `source lua/tomtomjhj/snippets.lua`, `:ConvertSnippets`.
+1. remove package.json
+1. rename all.json → global.json
+1. remove the empty pandoc snippet file
+1.  fix `$VISUAL`
+    ```
+    vimgrep VISUAL vsnip/**
+    cdo s/VISUAL/TM_SELECTED_TEXT
+    cfdo update
+    ```
+1. manually port unconverted snippets
+
+CoC
+* CoC can use vsnip snippets if it has package.json.
+  (snippet-converter makes generates that.)
+  Just add add `vsnip/` to rtp.
+  CoC will recognize it as a CoC extension.
+
+LuaSnip
+* many features comparable to ultisnips
+* conversion
+  <https://www.reddit.com/r/neovim/comments/xq8n3d/i_made_a_guide_on_converting_ultisnips_to_luasnip/>
+  <https://github.com/evesdropper/dotfiles/tree/130676a682fda4cde5f28a28cf29028e16f2695c/nvim/luasnip#readme>
+* slow startup
+
+
 # things that I should make more use of
 * marks
 * `:global`

@@ -1,0 +1,7 @@
+{
+  "uns": {
+    "prefix": "uns",
+    "description": "unsafe { ... }",
+    "body": "unsafe { ${TM_SELECTED_TEXT}$0 }"
+  }
+}

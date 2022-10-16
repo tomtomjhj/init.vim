@@ -79,7 +79,8 @@ elseif g:ide_client == 'nvim'
     Plug 'hrsh7th/cmp-nvim-lsp'
     " hrsh7th/cmp-nvim-lsp-signature-help
     Plug 'hrsh7th/cmp-path'
-    Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+    Plug 'tomtomjhj/vim-vsnip' " my fork with in-word expansion and better undo
+    Plug 'hrsh7th/cmp-vsnip'
     Plug 'neovim/nvim-lspconfig'
     Plug 'williamboman/mason.nvim'
     Plug 'williamboman/mason-lspconfig.nvim'
@@ -90,9 +91,7 @@ elseif g:ide_client == 'nvim'
     " https://github.com/p00f/clangd_extensions.nvim
     Plug 'vigoux/ltex-ls.nvim'
 endif
-" TODO: use vsnip? (supports vscode snippets)
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets', { 'do': 'rm -f snippets/_.snippets snippets/tex.snippets UltiSnips/all.snippets UltiSnips/tex.snippets' }
+Plug 'rafamadriz/friendly-snippets', { 'do': 'rm -rf snippets/global.json snippets/latex.json snippets/latex' }
 Plug 'tomtomjhj/tpope-vim-markdown'
 Plug 'tomtomjhj/vim-markdown'
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
@@ -468,18 +467,30 @@ command! Bg if &background ==# 'dark' | set background=light | else | set backgr
 
 " Completion {{{
 if g:ide_client == 'coc'
+    let g:coc_snippet_prev = '<C-h>'
+    let g:coc_snippet_next = '<C-l>'
+
     inoremap <expr> <Tab> coc#pum#visible() ? coc#pum#next(1): <SID>check_back_space() ? '<Tab>' : '<Cmd>call coc#start()<CR>'
     inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : <SID>check_back_space() ? '<C-h>' : '<Cmd>call coc#start()<CR>'
+    inoremap <expr> <C-l> coc#expandableOrJumpable() ? '<Cmd>call coc#rpc#request("doKeymap", ["snippets-expand-jump",""])<CR>' : '<C-l>'
+
+    function! s:check_back_space() abort
+      let col = col('.') - 1
+      return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
+
 elseif g:ide_client == 'nvim'
     lua require'tomtomjhj/cmp'
+
+    let g:vsnip_snippet_dir = expand('~/.vim/vsnip')
+    let g:vsnip_filetypes = { 'pandoc': ['markdown', 'tex'] }
+
+    imap <expr> <C-l> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+    smap <expr> <C-l> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+    imap <expr> <C-h> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)'      : '<C-h>'
+    smap <expr> <C-h> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)'      : '<C-h>'
+    xmap        <C-l> <Plug>(vsnip-cut-text)
 endif
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-let g:UltiSnipsExpandTrigger = '<c-l>'
 " }}}
 
 " ALE, LSP, ... global settings. See ./plugin/lsp.vim {{{
@@ -497,7 +508,7 @@ let g:ale_linters_explicit = 1
 
 let g:coc_config_home = '~/.vim'
 " coc-rust-analyzer coc-pyright coc-texlab coc-clangd coc-tsserver coc-go coc-tag
-let g:coc_global_extensions = ['coc-vimlsp', 'coc-ultisnips', 'coc-json']
+let g:coc_global_extensions = ['coc-snippets', 'coc-vimlsp', 'coc-json']
 let g:coc_quickfix_open_command = 'CW'
 let g:coc_fzf_preview = 'up:66%'
 " for https://github.com/valentjn/vscode-ltex/issues/425

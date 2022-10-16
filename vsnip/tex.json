@@ -1,0 +1,281 @@
+{
+  "nc": {
+    "prefix": "nc",
+    "description": "\\newcommand",
+    "body": "\\newcommand{${1:cmd}}[${2:opt}]{${3:realcmd}} $0"
+  },
+  "lr": {
+    "prefix": "lr",
+    "description": "\\left\\right",
+    "body": "\\left${1:${TM_SELECTED_TEXT}}\\right$0"
+  },
+  "lr(": {
+    "prefix": "lr(",
+    "description": "left( right)",
+    "body": "\\left(${1:${TM_SELECTED_TEXT}}\\right$0"
+  },
+  "lr{": {
+    "prefix": "lr{",
+    "description": "left\\{ right\\}",
+    "body": "\\left\\{${1:${TM_SELECTED_TEXT}}\\right\\$0"
+  },
+  "lr[": {
+    "prefix": "lr[",
+    "description": "left[ right]",
+    "body": "\\left[${1:${TM_SELECTED_TEXT}}\\right$0"
+  },
+  "lra": {
+    "prefix": "lra",
+    "description": "langle rangle",
+    "body": "\\langle ${1:${TM_SELECTED_TEXT}}\\rangle$0"
+  },
+  "lr|": {
+    "prefix": "lr|",
+    "description": "left| right|",
+    "body": "\\left|${1:${TM_SELECTED_TEXT}}\\right|$0"
+  },
+  "beg": {
+    "prefix": "beg",
+    "description": "\\\\begin{..}",
+    "body": [
+      "\\begin{$1}",
+      "${0:${TM_SELECTED_TEXT}}",
+      "\\end{$1}"
+    ]
+  },
+  "item": {
+    "prefix": "item",
+    "description": "\\\\begin{itemize}",
+    "body": [
+      "\\begin{itemize}",
+      "$0",
+      "\\end{itemize}"
+    ]
+  },
+  "enum": {
+    "prefix": "enum",
+    "description": "\\\\begin{enumerate}",
+    "body": [
+      "\\begin{enumerate}",
+      "$0",
+      "\\end{enumerate}"
+    ]
+  },
+  "it": {
+    "prefix": "it",
+    "description": "\\\\item",
+    "body": "\\item $0"
+  },
+  "mf": {
+    "prefix": "mf",
+    "description": "mathfrak",
+    "body": "\\mathfrak{$0}"
+  },
+  "mc": {
+    "prefix": "mc",
+    "description": "mathcal",
+    "body": "\\mathcal{$0}"
+  },
+  "ms": {
+    "prefix": "ms",
+    "description": "mathscr",
+    "body": "\\mathscr{$0}"
+  },
+  "bf": {
+    "prefix": "bf",
+    "description": "mathbf",
+    "body": "\\mathbf{$0}"
+  },
+  "bb": {
+    "prefix": "bb",
+    "description": "mathbb",
+    "body": "\\mathbb{$0}"
+  },
+  "sf": {
+    "prefix": "sf",
+    "description": "textsf",
+    "body": "\\textsf{$0}"
+  },
+  "tt": {
+    "prefix": "tt",
+    "description": "\\text{}",
+    "body": "\\text{ ${0:${TM_SELECTED_TEXT}}}"
+  },
+  "cd": {
+    "prefix": "cd",
+    "description": "\\texttt{}",
+    "body": "\\texttt{${0:${TM_SELECTED_TEXT}}}"
+  },
+  "yf": {
+    "prefix": "yf",
+    "description": "symbf",
+    "body": "\\symbf{$0}"
+  },
+  "math": {
+    "prefix": "math",
+    "description": "\\[..\\]",
+    "body": "\\[${0:${TM_SELECTED_TEXT}}\\]"
+  },
+  "__": {
+    "prefix": "__",
+    "description": "_{}",
+    "body": "_{$0}"
+  },
+  "^^": {
+    "prefix": "^^",
+    "description": "^{}",
+    "body": "^{$0}"
+  },
+  "inv": {
+    "prefix": "inv",
+    "description": "^{-1}",
+    "body": "^{-1}"
+  },
+  "TT": {
+    "prefix": "TT",
+    "description": "^\\top",
+    "body": "^\\top"
+  },
+  "in": {
+    "prefix": "in",
+    "description": "\\in",
+    "body": "\\in"
+  },
+  "bar": {
+    "prefix": "bar",
+    "description": "\\bar{}",
+    "body": "\\bar{$0}"
+  },
+  "over": {
+    "prefix": "over",
+    "description": "\\overline{}",
+    "body": "\\overline{${0:${TM_SELECTED_TEXT}}}"
+  },
+  "hat": {
+    "prefix": "hat",
+    "description": "\\hat{}",
+    "body": "\\hat{$0}"
+  },
+  "sq": {
+    "prefix": "sq",
+    "description": "\\sqrt{}",
+    "body": "\\sqrt{${0:${TM_SELECTED_TEXT}}}"
+  },
+  "mod": {
+    "prefix": "mod",
+    "description": "\\pmod{}",
+    "body": "\\pmod{$0}"
+  },
+  "norm": {
+    "prefix": "norm",
+    "description": "norm",
+    "body": "\\|${1:${TM_SELECTED_TEXT}}\\|$0"
+  },
+  "for": {
+    "prefix": "for",
+    "description": "\\forall \\in",
+    "body": "\\forall $1\\in $2"
+  },
+  "all": {
+    "prefix": "all",
+    "description": "\\forall",
+    "body": "\\forall"
+  },
+  "ext": {
+    "prefix": "ext",
+    "description": "\\exists \\in",
+    "body": "\\exists $1\\in $2"
+  },
+  "some": {
+    "prefix": "some",
+    "description": "\\exists",
+    "body": "\\exists"
+  },
+  "=>": {
+    "prefix": "=>",
+    "description": "implies",
+    "body": "\\implies"
+  },
+  "frac": {
+    "prefix": "frac",
+    "description": "\\frac{}{}",
+    "body": "\\frac{$1}{$0}"
+  },
+  "sum": {
+    "prefix": "sum",
+    "description": "\\sum^{}_{}",
+    "body": "\\sum^{${1:n}}_{${2:i=1}}$0"
+  },
+  "prod": {
+    "prefix": "prod",
+    "description": "\\prod^{}_{}",
+    "body": "\\prod^{${1:n}}_{${2:i=1}}$0"
+  },
+  "lim": {
+    "prefix": "lim",
+    "description": "\\lim_{}",
+    "body": "\\lim_{${1:n\\to\\infty}}$0"
+  },
+  "set": {
+    "prefix": "set",
+    "description": "\\{ \\}",
+    "body": "\\{${0:${TM_SELECTED_TEXT}}\\}"
+  },
+  "bmat": {
+    "prefix": "bmat",
+    "description": "begin{bmatrix} / end{bmatrix}",
+    "body": "\\begin{bmatrix}$0\\end{bmatrix}"
+  },
+  "bZ": {
+    "prefix": "bZ",
+    "description": "\\mathbb{Z}",
+    "body": "\\mathbb{Z}"
+  },
+  "bN": {
+    "prefix": "bN",
+    "description": "\\mathbb{N}",
+    "body": "\\mathbb{N}"
+  },
+  "bR": {
+    "prefix": "bR",
+    "description": "\\mathbb{R}",
+    "body": "\\mathbb{R}"
+  },
+  "bQ": {
+    "prefix": "bQ",
+    "description": "\\mathbb{Q}",
+    "body": "\\mathbb{Q}"
+  },
+  "bS": {
+    "prefix": "bS",
+    "description": "\\mathbb{S}",
+    "body": "\\mathbb{S}"
+  },
+  "bF": {
+    "prefix": "bF",
+    "description": "\\mathbb{F}",
+    "body": "\\mathbb{F}"
+  },
+  "bC": {
+    "prefix": "bC",
+    "description": "\\mathbb{C}",
+    "body": "\\mathbb{C}"
+  },
+  "tikz": {
+    "prefix": "tikz",
+    "description": "tikz figure",
+    "body": [
+      "\\begin{figure}",
+      "\\centering",
+      "\\begin{tikzpicture}",
+      "$0",
+      "\\end{tikzpicture}",
+      "\\end{figure}"
+    ]
+  },
+  "td": {
+    "prefix": "td",
+    "description": "Tikz draw",
+    "body": "\\draw[${4:-}] ($1) to node {$3} ($2);"
+  }
+}

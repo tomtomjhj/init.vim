@@ -46,7 +46,7 @@ cmp.setup {
         get_bufnrs = get_visible_bufnrs,
       }
     },
-    { name = 'ultisnips' },
+    { name = 'vsnip' },
     { name = 'tags' },
   },
   experimental = {
@@ -81,7 +81,7 @@ cmp.setup {
   },
   snippet = {
     expand = function(args)
-      vim.fn["UltiSnips#Anon"](args.body)
+      vim.fn["vsnip#anonymous"](args.body)
     end,
   },
   formatting = {
@@ -93,7 +93,7 @@ cmp.setup {
       vim_item.menu = ({
           buffer = "[B]",
           nvim_lsp = "[LS]",
-          ultisnips = "[US]",
+          vsnip = "[SN]",
           tags = "[T]",
         })[entry.source.name]
       return vim_item
