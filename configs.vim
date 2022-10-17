@@ -443,13 +443,19 @@ function! UpdateGitStatus(buf) abort
     if result.exit_status == 0
         let status = '[' . FugitiveHead(10, a:buf) . (empty(result.stdout[0]) ? '' : ':' . result.stdout[0][:1]) . ']'
     endif
-    let stl = getbufvar(a:buf, 'stl')
+    let stl = s:ensure_stl(a:buf)
     let stl.git = status
 endfunction
 
+function! s:ensure_stl(buf) abort
+    if !has_key(getbufvar(a:buf, ''), 'stl')
+        call setbufvar(a:buf, 'stl', {})
+    endif
+    return getbufvar(a:buf, 'stl')
+endfunction
+
 augroup Statusline | au!
-    " ensure b:stl in all buffers (note that buf vars are deleted on :bdelete)
-    au BufNew,VimEnter,BufReadPost * if !has_key(getbufvar(str2nr(expand('<abuf>')), ''), 'stl') | call setbufvar(str2nr(expand('<abuf>')), 'stl', {}) | endif
+    au BufWinEnter * call s:ensure_stl(str2nr(expand('<abuf>')))
     au BufReadPost,BufWritePost * call UpdateGitStatus(str2nr(expand('<abuf>')))
     " unloaded buffers will be refreshed on BufReadPost
     au User FugitiveChanged call map(getbufinfo({'bufloaded':1}), 'UpdateGitStatus(v:val.bufnr)')
