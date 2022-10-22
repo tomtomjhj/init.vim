@@ -358,21 +358,20 @@ function! TALFunc() abort
     return s
 endfunction
 
-function! TALLabel(n) abort
-    let buflist = tabpagebuflist(a:n)
-    let winnr = tabpagewinnr(a:n)
-    return STLTitle(buflist[winnr - 1])
+function! TALLabel(t) abort
+    return STLTitle(win_getid(tabpagewinnr(a:t), a:t))
 endfunction
 
 function! STLTitle(...) abort
-    let b = a:0 ? a:1 : bufnr('')
+    let w = a:0 ? a:1 : win_getid()
+    let b = winbufnr(w)
     let bt = getbufvar(b, '&buftype')
     let ft = getbufvar(b, '&filetype')
     let bname = bufname(b)
     " NOTE: bt=quickfix,help decides filetype
     if bt is# 'quickfix'
         " NOTE: getwininfo() to differentiate quickfix window and location window
-        return get(w:, 'quickfix_title', ':')
+        return gettabwinvar(win_id2tabwin(w)[0], w, 'quickfix_title', ':')
     elseif bt is# 'help'
         return fnamemodify(bname, ':t')
     elseif ft is# 'fzf'
