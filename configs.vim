@@ -615,6 +615,7 @@ let g:vimtex_toc_config_matchers = {
                 \ 'prefilter_cmds': ['todo', 'jaehwang']}
             \}
 let g:vimtex_syntax_nospell_comments = 1
+let g:vimtex_text_obj_variant = 'vimtex' " ic is buggy(?) and I don't use those targets.vim features
 " NOTE: If inverse search doesn't work, check if source files are correctly recognized by vimtex.
 function! s:tex() abort
     setlocal shiftwidth=2
@@ -623,15 +624,9 @@ function! s:tex() abort
     setlocal indentkeys-=] indentkeys-=} indentkeys-=\& indentkeys+=0],0}
     " https://github.com/tmsvg/pear-tree/pull/27
     let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), {
-                \ '\\begin{*}': {'closer': '\\end{*}', 'until': '[{}[:space:]]'},
                 \ '$$': {'closer': '$$'},
                 \ '$': {'closer': '$'}
                 \ }, 'keep')
-    " override textobj-comment
-    xmap <buffer> ic <Plug>(vimtex-ic)
-    omap <buffer> ic <Plug>(vimtex-ic)
-    xmap <buffer> ac <Plug>(vimtex-ac)
-    omap <buffer> ac <Plug>(vimtex-ac)
     nmap <buffer><silent><leader>oo :call Zathura("<C-r>=expand("%:p:h").'/main.pdf'<CR>")<CR>
     nmap <buffer>        <leader>C <Cmd>update<CR><Plug>(vimtex-compile-ss)
 endfunction

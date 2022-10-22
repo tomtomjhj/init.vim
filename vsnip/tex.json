@@ -219,7 +219,7 @@
   "set": {
     "prefix": "set",
     "description": "\\{ \\}",
-    "body": "\\{${0:${TM_SELECTED_TEXT}}\\}"
+    "body": "\\{${0:${TM_SELECTED_TEXT}}\\\\}"
   },
   "bmat": {
     "prefix": "bmat",
