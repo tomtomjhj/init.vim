@@ -62,7 +62,6 @@ Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'lambdalisue/fern.vim'
 Plug 'lambdalisue/fern-hijack.vim'
-Plug 'kassio/neoterm'
 Plug 'inkarkat/vim-mark', { 'on': ['<Plug>MarkS', 'Mark'] }
 Plug 'inkarkat/vim-ingo-library'
 
@@ -224,11 +223,6 @@ augroup BasicSetup | au!
     au FileType help nnoremap <silent><buffer> <M-.> K
     let &pumheight = min([&window/4, 20])
     au VimResized * let &pumheight = min([&window/4, 20])
-    if has('nvim')
-        au TermOpen,WinEnter *           if &buftype is# 'terminal' | setlocal nonumber norelativenumber foldcolumn=0 signcolumn=no | endif
-    elseif exists('##TerminalWinOpen')
-        au TerminalWinOpen,BufWinEnter * if &buftype is# 'terminal' | setlocal nonumber norelativenumber foldcolumn=0 signcolumn=no | endif
-    endif
 augroup END
 
 if has('unix')
@@ -1209,7 +1203,18 @@ xmap ab <Plug>(textobj-sandwich-auto-a)
 if has('nvim')
     tnoremap <M-[> <C-\><C-n>
     tnoremap <expr> <M-r> '<C-\><C-N>"'.nr2char(getchar()).'pi'
+    command! -nargs=? T <mods> split | exe "terminal" <q-args> | if empty(<q-args>) | startinsert | endif
+else
+    command! -nargs=? T exe <q-mods> "terminal" <q-args>
 endif
+
+augroup terminal-custom | au!
+    if has('nvim')
+        au TermOpen,WinEnter *           if &buftype is# 'terminal' | setlocal nonumber norelativenumber foldcolumn=0 signcolumn=no | endif
+    elseif exists('##TerminalWinOpen')
+        au TerminalWinOpen,BufWinEnter * if &buftype is# 'terminal' | setlocal nonumber norelativenumber foldcolumn=0 signcolumn=no | endif
+    endif
+augroup END
 
 let g:asyncrun_exit = exists('*nvim_notify') ? 'lua vim.notify(vim.g.asyncrun_status .. ": AsyncRun " .. vim.g.asyncrun_info)' : 'echom g:asyncrun_status . ": AsyncRun " . g:asyncrun_info'
 Noremap <leader>R :AsyncRun<space>
@@ -1218,9 +1223,6 @@ command! -bang -nargs=* -complete=file Make AsyncRun -auto=make -program=make @ 
 nnoremap <leader>M :Make<space>
 command! -bang -bar -nargs=* -complete=customlist,fugitive#PushComplete Gpush  execute 'AsyncRun<bang> -cwd=' . fnameescape(FugitiveGitDir()) 'git push' <q-args>
 command! -bang -bar -nargs=* -complete=customlist,fugitive#FetchComplete Gfetch execute 'AsyncRun<bang> -cwd=' . fnameescape(FugitiveGitDir()) 'git fetch' <q-args>
-
-let g:neoterm_default_mod = 'rightbelow'
-let g:neoterm_automap_keys = '<leader>T'
 " }}}
 
 " quickfix, loclist, ... {{{
