@@ -1,5 +1,37 @@
 {
-  "//": {
+  "yaml metadata block": {
+    "prefix": "yaml",
+    "body": ["---", "$0", "---"]
+  },
+  "inline link": {
+    "prefix": ["ilink"],
+    "body": ["[${1}](${2}) ${0}"],
+    "description": "inline link"
+  },
+  "reference link": {
+    "prefix": ["rlink"],
+    "body": ["[${1}][${2}] ${0}"],
+    "description": "reference link"
+  },
+  "task list item": {
+    "prefix": "task",
+    "body": ["* [${1: }] ${0}"]
+  },
+  "fenced code block": {
+    "prefix": "code",
+    "body": ["```${1}", "${0:${TM_SELECTED_TEXT}}", "```"]
+  },
+  "2x2 table": {
+    "prefix": "table",
+    "body": [
+      "| ${1}               | ${2}               |",
+      "|----------------|----------------|",
+      "| ${3}               | ${4}               |",
+      "${0}"
+    ],
+    "description": "2x2 table"
+  },
+  "html comment": {
     "prefix": "//",
     "description": "<!-- ... -->",
     "body": [

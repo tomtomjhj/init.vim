@@ -90,7 +90,7 @@ elseif g:ide_client == 'nvim'
     " https://github.com/p00f/clangd_extensions.nvim
     Plug 'vigoux/ltex-ls.nvim'
 endif
-Plug 'rafamadriz/friendly-snippets', { 'do': 'rm -rf snippets/global.json snippets/latex.json snippets/latex' }
+Plug 'rafamadriz/friendly-snippets', { 'do': 'rm -rf snippets/global.json snippets/latex.json snippets/latex snippets/markdown.json' }
 Plug 'tomtomjhj/tpope-vim-markdown'
 Plug 'tomtomjhj/vim-markdown'
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
