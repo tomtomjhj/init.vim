@@ -3,10 +3,13 @@ set -euo pipefail
 IFS=$'\n\t'
 shopt -s nullglob
 
-cd $(dirname $0)
+cd -P -- "$(dirname -- "$0")"
 for PATCHFILE in *.patch; do
     PLUGIN=${PATCHFILE%.patch}
-    pushd ../plugged/$PLUGIN
-    git apply ../../patches/$PATCHFILE
-    popd
+    (
+        cd ../plugged/$PLUGIN
+        echo "applying $PATCHFILE"
+        git apply "../../patches/${PATCHFILE}" || true
+        echo ""
+    )
 done

@@ -1,0 +1,28 @@
+diff --git a/autoload/vimtex/parser/tex.vim b/autoload/vimtex/parser/tex.vim
+index c844d7ba..d7d6eb10 100644
+--- a/autoload/vimtex/parser/tex.vim
++++ b/autoload/vimtex/parser/tex.vim
+@@ -105,8 +105,9 @@ endfunction
+ " }}}1
+ 
+ function! vimtex#parser#tex#input_parser(line, current_file, root) abort " {{{1
++  let l:sanitized_line = strpart(a:line, match(a:line, g:vimtex#re#tex_input . '|^\s*\\loadglsentries'))
+   " Handle \space commands
+-  let l:file = substitute(a:line, '\\space\s*', ' ', 'g')
++  let l:file = substitute(l:sanitized_line, '\\space\s*', ' ', 'g')
+ 
+   " Handle import and subfile package commands
+   if l:file =~# g:vimtex#re#tex_input_import
+diff --git a/autoload/vimtex/re.vim b/autoload/vimtex/re.vim
+index 2b47cc2c..cba47cfb 100644
+--- a/autoload/vimtex/re.vim
++++ b/autoload/vimtex/re.vim
+@@ -22,7 +22,7 @@ let g:vimtex#re#tex_input_import = '\v\\%('
+ let g:vimtex#re#tex_input_package =
+       \ '\v\\%(usepackage|RequirePackage)%(\s*\[[^]]*\])?\s*\{\zs[^}]*\ze\}'
+ 
+-let g:vimtex#re#tex_input = '\v^\s*\zs%(' . join([
++let g:vimtex#re#tex_input = '\v^\s*\{?\s*\zs%(' . join([
+       \   g:vimtex#re#tex_input_latex,
+       \   g:vimtex#re#tex_input_import,
+       \ ], '|') . ')'

@@ -1,0 +1,64 @@
+diff --git a/package.json b/package.json
+index 654f0a8..8cee52b 100644
+--- a/package.json
++++ b/package.json
+@@ -5,17 +5,6 @@
+   },
+   "contributes": {
+     "snippets": [
+-      {
+-        "language": [
+-          "plaintext",
+-          "markdown",
+-          "tex",
+-          "html",
+-          "global",
+-          "all"
+-        ],
+-        "path": "./snippets/global.json"
+-      },
+       {
+         "language": "c",
+         "path": "./snippets/c.json"
+@@ -135,20 +124,6 @@
+         ],
+         "path": "./snippets/shell.json"
+       },
+-      {
+-        "language": [
+-          "markdown",
+-          "rmd"
+-        ],
+-        "path": "./snippets/markdown.json"
+-      },
+-      {
+-        "language": [
+-          "plaintex",
+-          "tex"
+-        ],
+-        "path": "./snippets/latex.json"
+-      },
+       {
+         "language": "plantuml",
+         "path": "./snippets/plantuml.json"
+@@ -336,20 +311,6 @@
+         "language": "kotlin",
+         "path": "./snippets/kotlin.json"
+       },
+-      {
+-        "language": [
+-          "plaintex",
+-          "tex"
+-        ],
+-        "path": "./snippets/latex/latex-snippets.json"
+-      },
+-      {
+-        "language": [
+-          "plaintex",
+-          "tex"
+-        ],
+-        "path": "./snippets/latex/vscode-latex-snippets.json"
+-      },
+       {
+         "language": "twig",
+         "path": "./snippets/frameworks/twig.json"
