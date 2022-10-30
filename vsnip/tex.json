@@ -99,7 +99,7 @@
   "tt": {
     "prefix": "tt",
     "description": "\\text{}",
-    "body": "\\text{ ${0:${TM_SELECTED_TEXT}}}"
+    "body": "\\text{${0:${TM_SELECTED_TEXT}}}"
   },
   "cd": {
     "prefix": "cd",

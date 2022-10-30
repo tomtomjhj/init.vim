@@ -29,6 +29,7 @@ end
 --   * Don't add the word currently being editted in the middle e.g. `pre|suffix`.
 -- * keyword_pattern does 2 things: the pattern for item, and condition to list
 --   the source's item (pattern of the word before cursor)
+-- * sometimes pum position wrong in diff mode
 
 vim.opt.completeopt:append('menuone')
 cmp.setup {

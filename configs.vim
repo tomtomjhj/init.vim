@@ -325,8 +325,8 @@ function! STLFunc() abort
         let m = mode()[0]
         let [hl1, hl2, hl3, hl4] = s:stl_active_hl[m]
         return join([ hl1, ' ' . s:stl_mode_map[m] . ' ',
-                    \ hl2, '%( %w%q%h%)%( %{STLTitle()}%) %<',
-                    \ hl3, '%( %{STLBufState()}%{get(b:stl, "git", "")}%)%( %{CurrentFunction()}%)',
+                    \ hl2, '%( %w%q%h%)%( %{STLTitle()}%) ',
+                    \ hl3, '%( %{STLBufState()}%{get(b:stl, "git", "")}%)', '%<', '%( %{CurrentFunction()}%)',
                     \ '%=',
                     \ hl3, '%(%{SearchCount()} %)',
                     \ '%#STLError#%( %{CheckerErrors()} %)',
@@ -337,8 +337,8 @@ function! STLFunc() abort
                     \], '')
     else
         let [hl1, hl2, hl3, hl4] = s:stl_inactive_hl
-        return join([ hl2, '%( %w%q%h%)%( %{STLTitle()}%) %<',
-                    \ hl3, '%( @%{winnr()}%)%( %{STLBufState()}%{get(b:stl, "git", "")}%)',
+        return join([ hl2, '%( %w%q%h%)%( %{STLTitle()}%) ',
+                    \ hl3, '%( @%{winnr()}%)%( %{STLBufState()}', '%<', '%{get(b:stl, "git", "")}%)',
                     \ '%=',
                     \ hl3, '%( %{CheckerErrors()} %)',
                     \ hl3, '%( %{CheckerWarnings()} %)',
@@ -661,15 +661,14 @@ let g:mkdp_preview_options = {
 function! s:markdown() abort
     setlocal foldlevel=6
 
-    let s:mkd_textobj = {
-                \   'code': {
-                    \     'select-a-function': 'tomtomjhj#markdown#FencedCodeBlocka',
-                    \     'select-a': '<buffer> ad',
-                    \     'select-i-function': 'tomtomjhj#markdown#FencedCodeBlocki',
-                    \     'select-i': '<buffer> id',
-                    \   },
-                    \ }
-    silent! call textobj#user#plugin('markdown', s:mkd_textobj)
+    silent! call textobj#user#plugin('markdown', {
+                \ 'code': {
+                \    'select-a-function': 'tomtomjhj#markdown#FencedCodeBlocka',
+                \    'select-a': '<buffer> ad',
+                \    'select-i-function': 'tomtomjhj#markdown#FencedCodeBlocki',
+                \    'select-i': '<buffer> id',
+                \   },
+                \ })
     " TODO:
     " * list item text object
     " * make paragraph, sentence text object list-aware
@@ -1064,7 +1063,8 @@ inoremap <F1> <Esc>
 nmap     <C-q> <Esc>
 cnoremap <C-q> <C-c>
 inoremap <C-q> <Esc>
-vnoremap <C-q> <Esc>
+xnoremap <C-q> <Esc>
+snoremap <C-q> <Esc>
 onoremap <C-q> <Esc>
 noremap! <C-M-q> <C-q>
 
@@ -1221,6 +1221,7 @@ command! -bang -bar -nargs=* -complete=customlist,fugitive#FetchComplete Gfetch 
 
 " quickfix, loclist, ... {{{
 " TODO: manually adding lines to qf?
+" TODO: Too many functionalities use quickfix. Use location list for some of them.
 let g:qf_window_bottom = 0
 let g:qf_loclist_window_bottom = 0
 let g:qf_auto_open_quickfix = 0
@@ -1374,7 +1375,9 @@ function! GitDiffFoldExpr(lnum)
     endif
 endfunction
 
-" TODO: matchit integration doesn't work?
+" TODO:
+" - matchit integration doesn't work with matchup
+" - no command/mapping for selecting diff3 style merge base
 let g:conflict_marker_highlight_group = ''
 function! s:conflict_marker_hi() abort
     if &background is# 'light'

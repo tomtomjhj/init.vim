@@ -479,11 +479,13 @@ LuaSnip
     * avoid using Ex-command when possible
     * `:command` parsing options: `<f-args>`, `-bar`, `-complete=file`, `-nargs`, ...
     * `:set` escaping
-    * ``++opt`, `+cmd` options for e.g. `:edit`
+    * `++opt`, `+cmd` options for e.g. `:edit`
         * `:file` and `:cd` don't take those options but works fine when `+` is escaped.
     * `map-bar`
     * ...
 * `bufadd()` doesn't trigger `BufAdd`. What you want is `BufNew`.
+* `getwinvar()` doesn't work for window ID of window in different tab.
+* filetype.lua makes it difficult to debug vim ftplugin
 
 
 ## (n)vim bugs
@@ -550,12 +552,14 @@ LuaSnip
     * analysis
         * `update_screen()` redraws the statusline
         * After typing `e`, the buggy version doesn't call `grid_cursor_goto` and `inbuf_poll`.
+    * related? <https://github.com/neovim/neovim/pull/20582>
 * matchit, matchup: In markdown, if line is like this: `< cursor ( )`, `%` doesn't work. `<` should be matched with `>`???
     *  Not related to 2022-07-25 html ftplugin update.
 * `:syn-include` lua (e.g. lua heredoc, markdown) broken after recent lua syntax update:
   <https://github.com/neovim/neovim/pull/20240/files#diff-2419d762b0d117afe1c1f9c392b9ea3e2ba4270341e576ea6b0533d1ff583351>
   <https://github.com/marcuscf/vim-lua>.
   <https://github.com/vim/vim/issues/11277>
+* if a statusline compotent contains newline ("^@"), highlight is shifted
 
 ## ...
 * `ge` ... design of inclusive/exclusive stuff

@@ -1,4 +1,9 @@
 " git log viewer {{{
+" NOTE: queries that take too long
+" - don't auto-rerun if query is complex?
+" - just manually pass -1 in
+" - Do something like fugitive's :Git! and CTRL-D to show the ouput so far?
+
 command! -nargs=? -complete=customlist,fugitive#LogComplete GL call GLStart(<q-mods>, empty(trim(<q-args>)) ? '--all' : <q-args>)
 
 augroup GL | au!
@@ -66,12 +71,12 @@ function! GLRun(...) abort
   let args = ['log', '--graph', '--format=format:%h%d %as %s [%an]', '-1111'] + b:gl_args
   let res = FugitiveExecute(args, b:git_dir)
   setlocal modifiable
-  " NOTE: This invalidates jumplist and marks.
-  %delete _
+  " NOTE: This invalidates jumplist and marks. Use :lockmarks when refreshing?
+  silent %delete _
   call setline(1, res.exit_status is# 0 ? res.stdout : res.stderr)
   setlocal nomodifiable
 
-  keepjumps normal! 1G
+  call cursor(1, 1)
   call search(jumpto, 'c', 0, 0, '')
   clearjumps
 endfunction

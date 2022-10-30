@@ -56,7 +56,11 @@ endfunction
 augroup GlobalCocStuff
   autocmd!
   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  autocmd User CocStatusChange,CocDiagnosticChange redrawstatus
+  " TODO: Cursor disappears after redrawstatus in terminal vim.
+  " CocStatusChange is fired on the first CursorHold after moving Cursor.
+  if has('nvim') || has('gui_running')
+    autocmd User CocStatusChange,CocDiagnosticChange redrawstatus
+  endif
   autocmd BufLeave list://* hi! CursorLine cterm=NONE gui=NONE
   autocmd BufEnter list://* hi! CursorLine cterm=underline gui=underline
   " https://github.com/neoclide/coc.nvim/issues/2043
