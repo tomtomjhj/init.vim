@@ -1302,6 +1302,14 @@ function! s:update_finish()
       if !pos
         continue
       endif
+      " NOTE: checkout doesn't support --autostash
+      " https://lore.kernel.org/git/8ab7d980-9584-4ce7-b4ee-9acac62c030c@www.fastmail.com/#r
+      " Alternative: checkout --merge. But, this is more diffcult to recover from a conflict.
+      call s:system('git diff --quiet', spec.dir)
+      let dirty = v:shell_error
+      if dirty
+          call s:system('git stash 2>&1', spec.dir)
+      endif
       if has_key(spec, 'commit')
         call s:log4(name, 'Checking out '.spec.commit)
         let out = s:checkout(spec)
@@ -1322,6 +1330,12 @@ function! s:update_finish()
         call s:log4(name, 'Merging origin/'.s:esc(branch))
         let out = s:system('git checkout -q '.plug#shellescape(branch).' -- 2>&1'
               \. (has_key(s:update.new, name) ? '' : ('&& git merge --ff-only '.plug#shellescape('origin/'.branch).' 2>&1')), spec.dir)
+      endif
+      if dirty
+          let stash_pop_out = s:system('git stash pop 2>&1', spec.dir)
+          if v:shell_error
+              let out .= stash_pop_out
+          endif
       endif
       if !v:shell_error && filereadable(spec.dir.'/.gitmodules') &&
             \ (s:update.force || has_key(s:update.new, name) || s:is_updated(spec.dir))
