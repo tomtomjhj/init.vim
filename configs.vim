@@ -96,17 +96,14 @@ Plug 'tomtomjhj/vim-markdown'
 let g:pandoc#filetypes#pandoc_markdown = 0 | Plug 'vim-pandoc/vim-pandoc'
 Plug 'tomtomjhj/vim-pandoc-syntax'
 Plug 'tomtomjhj/vim-rust-syntax-ext'| Plug 'rust-lang/rust.vim'
-Plug 'tomtomjhj/vim-ocaml'
-Plug 'tomtomjhj/haskell-vim', { 'branch': 'custom' }
+Plug 'ocaml/vim-ocaml'
+Plug 'neovimhaskell/haskell-vim'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'lervag/vimtex'
 Plug 'tomtomjhj/Coqtail'
 " Plug 'puremourning/vimspector' | let g:vimspector_enable_mappings = 'HUMAN'
-Plug 'neoclide/jsonc.vim'
 Plug 'rhysd/vim-llvm'
-Plug 'fatih/vim-go', { 'do': 'rm -rf plugin ftplugin' }
 Plug 'vim-python/python-syntax'
-Plug 'tbastos/vim-lua'
 " Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] } | let g:grammarous#use_location_list = 1
 
 " etc etc
@@ -721,9 +718,6 @@ function! s:pandoc() abort
     let b:match_words = &l:matchpairs .
                 \ ',' . '\%(^\s*\)\@<=\\begin{\(\w\+\*\?\)}' . ':' . '\%(^\s*\)\@<=\\end{\1}'
 
-    " set to notoplevel in haskell.vim
-    syntax spell toplevel
-
     command! -buffer -bang Pandoc call tomtomjhj#markdown#RunPandoc(<bang>0)
 
     nmap <buffer><silent><leader>C :Pandoc<CR>
@@ -744,6 +738,8 @@ let g:ale_ocaml_ocamlformat_options = '--enable-outside-detected-project'
 let g:ocaml_highlight_operators = 1
 function! s:ocaml() abort
     setlocal tabstop=2 shiftwidth=2
+    setlocal comments=sr:(*,mb:*,ex:*)
+    setlocal formatoptions=tjncqor
     nmap <buffer><leader>C :AsyncRun -program=make -post=CocRestart<CR>
 endfunction
 " }}}
@@ -776,6 +772,10 @@ function! s:coq_common() abort
     " TODO: coq uses zero-based column index..                     vv
     setlocal errorformat=File\ \"%f\"\\,\ line\ %l\\,\ characters\ %c-%*[0-9]:
     setlocal matchpairs+=⌜:⌝,⎡:⎤
+    " These trigger indent even if `+` is not the first character
+    " 0--,0++,0<*><*>,0---,0+++,0<*><*><*>
+    setlocal indentkeys=o,O,0=end,0=End,0=in,0=\|,0=Qed,0=Defined,0=Abort,0=Admitted,0},0),0-,0+,0<*>
+    setlocal indentkeys+=!^F
     setlocal path+=theories,_opam/lib/coq/theories,_opam/lib/coq/user-contrib/*
     call tomtomjhj#coq#mappings()
 endfunction
