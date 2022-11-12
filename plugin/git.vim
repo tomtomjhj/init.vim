@@ -48,10 +48,10 @@ function! GLStart(mods, args) abort
   syn match GLDecorate '\v\([^)]+\)' containedin=GL contained
   syn match GLAuthor '\v\[[^][]*\]$'
 
-  hi! link GLHash Identifier
-  hi! link GLDate Number
-  hi! link GLDecorate Label
-  hi! link GLAuthor String
+  hi def link GLHash Identifier
+  hi def link GLDate Number
+  hi def link GLDecorate Label
+  hi def link GLAuthor String
 
   call GLRun(args)
 

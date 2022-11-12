@@ -202,8 +202,13 @@ set lazyredraw
 
 set modeline " debian unsets this
 set exrc secure
+
 if has('nvim-0.3.2') || has("patch-8.1.0360")
     set diffopt+=algorithm:histogram,indent-heuristic
+endif
+if has('nvim-0.9')
+    " NOTE: this makes `dp` finer-grained than needed
+    set diffopt+=linematch:60
 endif
 endif
 
@@ -454,10 +459,10 @@ augroup END
 " }}}
 
 " ColorScheme {{{
+silent! set termguicolors
 if !exists('g:colors_name')
     colorscheme taiga
 endif
-silent! set termguicolors
 command! Bg if &background ==# 'dark' | set background=light | else | set background=dark | endif
 " }}}
 
@@ -1453,6 +1458,7 @@ nnoremap U :UndotreeToggle<CR>
 let g:sentencer_filetypes = []
 let g:sentencer_textwidth = 79 " formatexpr doesn't work like built-in gq for textwidth=0
 let g:sentencer_ignore = ['\<i.e', '\<e.g', '\<vs', '\<Dr', '\<Mr', '\<Mrs', '\<Ms', '\<et al', '\<fig']
+xnoremap <leader>us :Unpdf<CR>gv:Sentencer<CR>
 
 " vim-mark
 let g:mwMaxMatchPriority = -2

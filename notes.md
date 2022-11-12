@@ -63,6 +63,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * https://github.com/lervag/vimtex/issues/1937
 * `debug-mode`?
 * how to make `Gdiffsplit`, `G blame` do `--follow`?
+    * <https://github.com/tpope/vim-fugitive/issues/2070>
 * Textobj plugins can be lazy-loaded with manual `s:lod_map`
 * search without confirming search, window-local search, jump with `/_CTRL-G`, ...
 * refreshing clipboard `call setenv('DISPLAY', '...')`: The new value can be obtained by launching another shell.. how to automate? Note: `call serverlist()` seems to work
@@ -429,7 +430,13 @@ LuaSnip
     * Taking some actions (e.g. visual selection) adds `Normal` highlight.
 * If `winfixheight` (e.g. preview, quickfix), making it vertical (e.g. `<C-w>L`) and then horizontal back makes it occupy almost entire screen.
     * Detect this on `WinScrolled` (new feature)?
-        * NOTE: `WinScrolled` fired when entering preview window for the first time
+      ```vim
+      au WinScrolled * if &previewwindow && (winnr('j') != winnr() || winnr('k') != winnr())
+                     \|  noautocmd exe 'normal! z' . &previewheight . "\<CR>"
+                     \|  noautocmd vertical wincmd =
+                     \|endif
+      ```
+      Bug? `WinScrolled` is fired when entering preview window for the first time.
     * For preview window, apply `previewheight`? Note: `:pedit` doesn't accept `{height}`, unlike `:copen`.
 * NeoVim terminal slows down the UI if too much stuff is printed.
 * `api-buffer-updates` is too fine-grained (triggered for each `b:changedtick` update). It's meant to be fine-grained, but it's too fine-grained for most use cases.
@@ -573,6 +580,7 @@ LuaSnip
 ## wishlist
 * timeout for built-in multi-char commands so that it doesn't interfere with user mappings
 * character classes (like emacs); word ≠ identifier
+* smarter folding
 
 
 # stuff
@@ -602,6 +610,7 @@ LuaSnip
     * https://github.com/gfanto/fzf-lsp.nvim
     * https://github.com/j-hui/fidget.nvim
     * https://git.sr.ht/%7Ewhynothugo/lsp_lines.nvim
+    * https://github.com/ii14/lsp-command/
 * https://github.com/RRethy/nvim-treesitter-textsubjects
   https://github.com/vigoux/architext.nvim
   https://github.com/abecodes/tabout.nvim
@@ -626,6 +635,7 @@ LuaSnip
         * `require'fzf-lua'.setup` takes 5 ms. Fixed? https://github.com/ibhagwan/fzf-lua/issues/511
     * https://github.com/stevearc/dressing.nvim
     * https://github.com/lifepillar/vim-zeef
+    * https://github.com/mfussenegger/nvim-qwahl
 * https://github.com/jbyuki/instant.nvim
   https://github.com/jbyuki/nabla.nvim
   https://github.com/jbyuki/venn.nvim
