@@ -304,7 +304,9 @@ git
 
 
 ## Snippet
-snippet conversion with <https://github.com/smjonas/snippet-converter.nvim>
+
+### snippet conversion
+<https://github.com/smjonas/snippet-converter.nvim>
 1. `source lua/tomtomjhj/snippets.lua`, `:ConvertSnippets`.
 1. remove package.json
 1. rename all.json → global.json
@@ -317,18 +319,30 @@ snippet conversion with <https://github.com/smjonas/snippet-converter.nvim>
     ```
 1. manually port unconverted snippets
 
-CoC
+### vsnip
+* bug: <https://github.com/hrsh7th/vim-vsnip/issues/254>
+  vsnip detects out-of-snippet-placeholder edits by diffing.
+  But diff cannot point out where I inserted char if the same char is repeated.
+
+### CoC
 * CoC can use vsnip snippets if it has package.json.
   (snippet-converter makes generates that.)
   Just add add `vsnip/` to rtp.
   CoC will recognize it as a CoC extension.
 
-LuaSnip
+### LuaSnip
 * many features comparable to ultisnips
 * conversion
   <https://www.reddit.com/r/neovim/comments/xq8n3d/i_made_a_guide_on_converting_ultisnips_to_luasnip/>
   <https://github.com/evesdropper/dotfiles/tree/130676a682fda4cde5f28a28cf29028e16f2695c/nvim/luasnip#readme>
 * slow startup
+* patch: add undo before expansion
+* port snippets
+    * Don't use snipmate format. Auto trigger, in-word expansion not supported in snipmate snippets? (snippy's support is proprietary)
+    * for simple snippets without vim-specific stuff, use vscode snippet format. Reuse vsnip snippets.
+        * note that they can have auto trigger (autotrigger), in-word expansion options (`wordTrig = false`) under `"luasnip"` key
+    * for complex snippets (vim-specific, ...), use lua format
+* <https://github.com/molleweide/LuaSnip-snippets.nvim>
 
 
 # things that I should make more use of
@@ -493,6 +507,9 @@ LuaSnip
 * `bufadd()` doesn't trigger `BufAdd`. What you want is `BufNew`.
 * `getwinvar()` doesn't work for window ID of window in different tab.
 * filetype.lua makes it difficult to debug vim ftplugin
+* Many nvim lua plugins don't set `loaded_X`.
+  So loading plugins is not idempotent.
+  E.g. cmp source registration.
 
 
 ## (n)vim bugs

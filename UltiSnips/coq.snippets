@@ -31,8 +31,8 @@ Set Nested Proofs Allowed.
 endsnippet
 
 snippet sealed "sealed definition" b
-Definition ${1:${VISUAL}}_def $0 : .
-Definition $1_aux : seal (@$1_def). Proof. by eexists. Qed.
+Local Definition ${1:${VISUAL}}_def $0 : .
+Local Definition $1_aux : seal (@$1_def). Proof. by eexists. Qed.
 Definition $1 := $1_aux.(unseal).
-Definition $1_unseal : @$1 = @$1_def := $1_aux.(seal_eq).
+Local Definition $1_unseal : @$1 = @$1_def := $1_aux.(seal_eq).
 endsnippet

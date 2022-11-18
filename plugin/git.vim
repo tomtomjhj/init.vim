@@ -16,7 +16,9 @@ function! GLStart(mods, args) abort
   " NOTE: Args may contain things like %, so should be expanded here.
   let [args, after] = GLSplitExpandChain(a:args, tree)
 
-  exe a:mods 'new'
+  if !(empty(bufname('')) && b:changedtick <= 2 && line('$') == 1 && empty(getline(1)))
+    exe a:mods 'new'
+  endif
   setfiletype gl
   let b:git_dir = git_dir
   let b:gl_tree = tree

@@ -1,5 +1,5 @@
 diff --git a/lua/lspfuzzy.lua b/lua/lspfuzzy.lua
-index fac5c6c..5fa1c83 100644
+index fac5c6c..29ff2e4 100644
 --- a/lua/lspfuzzy.lua
 +++ b/lua/lspfuzzy.lua
 @@ -92,7 +92,7 @@ local function jump(entries)
@@ -11,15 +11,18 @@ index fac5c6c..5fa1c83 100644
      vim.cmd 'copen'
      vim.cmd 'wincmd p'
    end
-@@ -109,6 +109,7 @@ end
+@@ -109,9 +109,9 @@ end
  local function build_fzf_opts(label, preview, multi)
    local prompt = fmt('%s> ', label)
    local fzf_opts = {
 +    '--layout=reverse-list',
      '--ansi',
      '--delimiter', ':',
-     '--keep-right',
-@@ -207,7 +208,7 @@ local function diagnostics_cmd(diagnostics)
+-    '--keep-right',
+     '--prompt', prompt,
+   }
+ 
+@@ -207,7 +207,7 @@ local function diagnostics_cmd(diagnostics)
      severity = diagnostics_fmt[diagnostic.severity]
      table.insert(items, {
        filename = vim.api.nvim_buf_get_name(diagnostic.bufnr),
@@ -28,7 +31,7 @@ index fac5c6c..5fa1c83 100644
        lnum = diagnostic.lnum + 1,
        col = diagnostic.col + 1,
      })
-@@ -315,7 +316,11 @@ return {
+@@ -315,7 +315,11 @@ return {
      diagnostics_cmd(vim.diagnostic.get(bufnr))
    end,
    diagnostics_all = function()
