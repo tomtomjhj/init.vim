@@ -78,8 +78,8 @@ elseif g:ide_client == 'nvim'
     Plug 'hrsh7th/cmp-nvim-lsp'
     " hrsh7th/cmp-nvim-lsp-signature-help
     Plug 'hrsh7th/cmp-path'
-    Plug 'tomtomjhj/vim-vsnip' " my fork with in-word expansion and better undo
-    Plug 'hrsh7th/cmp-vsnip'
+    Plug 'L3MON4D3/LuaSnip', { 'on': [] }
+    Plug 'saadparwaiz1/cmp_luasnip', { 'on': [] }
     Plug 'neovim/nvim-lspconfig'
     Plug 'williamboman/mason.nvim'
     Plug 'williamboman/mason-lspconfig.nvim'
@@ -483,14 +483,26 @@ if g:ide_client == 'coc'
 elseif g:ide_client == 'nvim'
     lua require'tomtomjhj/cmp'
 
-    let g:vsnip_snippet_dir = expand('~/.vim/vsnip')
-    let g:vsnip_filetypes = { 'pandoc': ['markdown', 'tex'] }
+    " lazy-load luasnip
+    let s:loaded_luasnip = get(s:, 'loaded_luasnip', 0)
+    function! s:LoadLuaSnip() abort
+        if s:loaded_luasnip | return | endif
+        call plug#load('LuaSnip', 'cmp_luasnip')
 
-    imap <expr> <C-l> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
-    smap <expr> <C-l> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
-    imap <expr> <C-h> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)'      : '<C-h>'
-    smap <expr> <C-h> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)'      : '<C-h>'
-    xmap        <C-l> <Plug>(vsnip-cut-text)
+        lua require("luasnip.loaders.from_vscode").lazy_load { paths = { "~/.vim/vsnip", "~/.vim/plugged/friendly-snippets" } }
+        lua require("luasnip.loaders.from_lua").lazy_load { paths = "~/.vim/lsnip/" }
+        lua require("luasnip").config.setup { store_selection_keys = "<C-L>" }
+
+        imap <silent><expr> <C-l> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<C-l>'
+        inoremap <silent> <C-h> <Cmd>lua require('luasnip').jump(-1)<CR>
+        snoremap <silent> <C-l> <Cmd>lua require('luasnip').jump(1)<CR>
+        snoremap <silent> <C-h> <Cmd>lua require('luasnip').jump(-1)<CR>
+    endfunction
+
+    if has('vim_starting')
+        au InsertEnter * ++once call s:LoadLuaSnip()
+        xnoremap <silent> <C-l> :<C-u>call <SID>LoadLuaSnip()<CR>gv<Cmd>call feedkeys("<C-l>")<CR>
+    endif
 endif
 " }}}
 

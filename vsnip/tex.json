@@ -7,32 +7,38 @@
   "lr": {
     "prefix": "lr",
     "description": "\\left\\right",
-    "body": "\\left${1:${TM_SELECTED_TEXT}}\\right$0"
+    "body": "\\left${1:${TM_SELECTED_TEXT}}\\right$0",
+    "luasnip": { "wordTrig": false }
   },
   "lr(": {
     "prefix": "lr(",
     "description": "left( right)",
-    "body": "\\left(${1:${TM_SELECTED_TEXT}}\\right$0"
+    "body": "\\left(${1:${TM_SELECTED_TEXT}}\\right$0",
+    "luasnip": { "wordTrig": false }
   },
   "lr{": {
     "prefix": "lr{",
     "description": "left\\{ right\\}",
-    "body": "\\left\\{${1:${TM_SELECTED_TEXT}}\\right\\$0"
+    "body": "\\left\\{${1:${TM_SELECTED_TEXT}}\\right\\$0",
+    "luasnip": { "wordTrig": false }
   },
   "lr[": {
     "prefix": "lr[",
     "description": "left[ right]",
-    "body": "\\left[${1:${TM_SELECTED_TEXT}}\\right$0"
+    "body": "\\left[${1:${TM_SELECTED_TEXT}}\\right$0",
+    "luasnip": { "wordTrig": false }
   },
   "lra": {
     "prefix": "lra",
     "description": "langle rangle",
-    "body": "\\langle ${1:${TM_SELECTED_TEXT}}\\rangle$0"
+    "body": "\\langle ${1:${TM_SELECTED_TEXT}}\\rangle$0",
+    "luasnip": { "wordTrig": false }
   },
   "lr|": {
     "prefix": "lr|",
     "description": "left| right|",
-    "body": "\\left|${1:${TM_SELECTED_TEXT}}\\right|$0"
+    "body": "\\left|${1:${TM_SELECTED_TEXT}}\\right|$0",
+    "luasnip": { "wordTrig": false }
   },
   "beg": {
     "prefix": "beg",
@@ -69,47 +75,56 @@
   "mf": {
     "prefix": "mf",
     "description": "mathfrak",
-    "body": "\\mathfrak{$0}"
+    "body": "\\mathfrak{$0}",
+    "luasnip": { "wordTrig": false }
   },
   "mc": {
     "prefix": "mc",
     "description": "mathcal",
-    "body": "\\mathcal{$0}"
+    "body": "\\mathcal{$0}",
+    "luasnip": { "wordTrig": false }
   },
   "ms": {
     "prefix": "ms",
     "description": "mathscr",
-    "body": "\\mathscr{$0}"
+    "body": "\\mathscr{$0}",
+    "luasnip": { "wordTrig": false }
   },
   "bf": {
     "prefix": "bf",
     "description": "mathbf",
-    "body": "\\mathbf{$0}"
+    "body": "\\mathbf{$0}",
+    "luasnip": { "wordTrig": false }
   },
   "bb": {
     "prefix": "bb",
     "description": "mathbb",
-    "body": "\\mathbb{$0}"
+    "body": "\\mathbb{$0}",
+    "luasnip": { "wordTrig": false }
   },
   "sf": {
     "prefix": "sf",
     "description": "textsf",
-    "body": "\\textsf{$0}"
+    "body": "\\textsf{$0}",
+    "luasnip": { "wordTrig": false }
   },
   "tt": {
     "prefix": "tt",
     "description": "\\text{}",
-    "body": "\\text{${0:${TM_SELECTED_TEXT}}}"
+    "body": "\\text{${0:${TM_SELECTED_TEXT}}}",
+    "luasnip": { "wordTrig": false }
   },
   "cd": {
     "prefix": "cd",
     "description": "\\texttt{}",
-    "body": "\\texttt{${0:${TM_SELECTED_TEXT}}}"
+    "body": "\\texttt{${0:${TM_SELECTED_TEXT}}}",
+    "luasnip": { "wordTrig": false }
   },
   "yf": {
     "prefix": "yf",
     "description": "symbf",
-    "body": "\\symbf{$0}"
+    "body": "\\symbf{$0}",
+    "luasnip": { "wordTrig": false }
   },
   "math": {
     "prefix": "math",
@@ -119,57 +134,68 @@
   "__": {
     "prefix": "__",
     "description": "_{}",
-    "body": "_{$0}"
+    "body": "_{$0}",
+    "luasnip": { "wordTrig": false }
   },
   "^^": {
     "prefix": "^^",
     "description": "^{}",
-    "body": "^{$0}"
+    "body": "^{$0}",
+    "luasnip": { "wordTrig": false }
   },
   "inv": {
     "prefix": "inv",
     "description": "^{-1}",
-    "body": "^{-1}"
+    "body": "^{-1}",
+    "luasnip": { "wordTrig": false }
   },
   "TT": {
     "prefix": "TT",
     "description": "^\\top",
-    "body": "^\\top"
+    "body": "^\\top",
+    "luasnip": { "wordTrig": false }
   },
   "in": {
     "prefix": "in",
     "description": "\\in",
-    "body": "\\in"
+    "body": "\\in",
+    "luasnip": { "wordTrig": false }
   },
   "bar": {
     "prefix": "bar",
     "description": "\\bar{}",
-    "body": "\\bar{$0}"
+    "body": "\\bar{$0}",
+    "luasnip": { "wordTrig": false }
   },
   "over": {
     "prefix": "over",
     "description": "\\overline{}",
-    "body": "\\overline{${0:${TM_SELECTED_TEXT}}}"
+    "body": "\\overline{${0:${TM_SELECTED_TEXT}}}",
+    "luasnip": { "wordTrig": false }
   },
   "hat": {
     "prefix": "hat",
     "description": "\\hat{}",
-    "body": "\\hat{$0}"
+    "body": "\\hat{$0}",
+    "luasnip": { "wordTrig": false }
   },
   "sq": {
     "prefix": "sq",
     "description": "\\sqrt{}",
-    "body": "\\sqrt{${0:${TM_SELECTED_TEXT}}}"
+    "body": "\\sqrt{${0:${TM_SELECTED_TEXT}}}",
+    "luasnip": { "wordTrig": false }
   },
   "mod": {
     "prefix": "mod",
     "description": "\\pmod{}",
-    "body": "\\pmod{$0}"
+    "body": "\\pmod{$0}",
+    "luasnip": { "wordTrig": false }
   },
   "norm": {
     "prefix": "norm",
     "description": "norm",
-    "body": "\\|${1:${TM_SELECTED_TEXT}}\\|$0"
+    "body": "\\|${1:${TM_SELECTED_TEXT}}\\|$0",
+    "luasnip": { "wordTrig": false }
   },
   "for": {
     "prefix": "for",
@@ -199,7 +225,8 @@
   "frac": {
     "prefix": "frac",
     "description": "\\frac{}{}",
-    "body": "\\frac{$1}{$0}"
+    "body": "\\frac{$1}{$0}",
+    "luasnip": { "wordTrig": false }
   },
   "sum": {
     "prefix": "sum",
@@ -219,7 +246,8 @@
   "set": {
     "prefix": "set",
     "description": "\\{ \\}",
-    "body": "\\{${0:${TM_SELECTED_TEXT}}\\\\}"
+    "body": "\\{${0:${TM_SELECTED_TEXT}}\\\\}",
+    "luasnip": { "wordTrig": false }
   },
   "bmat": {
     "prefix": "bmat",
@@ -229,37 +257,44 @@
   "bZ": {
     "prefix": "bZ",
     "description": "\\mathbb{Z}",
-    "body": "\\mathbb{Z}"
+    "body": "\\mathbb{Z}",
+    "luasnip": { "wordTrig": false }
   },
   "bN": {
     "prefix": "bN",
     "description": "\\mathbb{N}",
-    "body": "\\mathbb{N}"
+    "body": "\\mathbb{N}",
+    "luasnip": { "wordTrig": false }
   },
   "bR": {
     "prefix": "bR",
     "description": "\\mathbb{R}",
-    "body": "\\mathbb{R}"
+    "body": "\\mathbb{R}",
+    "luasnip": { "wordTrig": false }
   },
   "bQ": {
     "prefix": "bQ",
     "description": "\\mathbb{Q}",
-    "body": "\\mathbb{Q}"
+    "body": "\\mathbb{Q}",
+    "luasnip": { "wordTrig": false }
   },
   "bS": {
     "prefix": "bS",
     "description": "\\mathbb{S}",
-    "body": "\\mathbb{S}"
+    "body": "\\mathbb{S}",
+    "luasnip": { "wordTrig": false }
   },
   "bF": {
     "prefix": "bF",
     "description": "\\mathbb{F}",
-    "body": "\\mathbb{F}"
+    "body": "\\mathbb{F}",
+    "luasnip": { "wordTrig": false }
   },
   "bC": {
     "prefix": "bC",
     "description": "\\mathbb{C}",
-    "body": "\\mathbb{C}"
+    "body": "\\mathbb{C}",
+    "luasnip": { "wordTrig": false }
   },
   "tikz": {
     "prefix": "tikz",

@@ -47,7 +47,7 @@ cmp.setup {
         get_bufnrs = get_visible_bufnrs,
       }
     },
-    { name = 'vsnip' },
+    { name = 'luasnip' },
     { name = 'tags' },
   },
   experimental = {
@@ -82,7 +82,7 @@ cmp.setup {
   },
   snippet = {
     expand = function(args)
-      vim.fn["vsnip#anonymous"](args.body)
+      require('luasnip').lsp_expand(args.body)
     end,
   },
   formatting = {
@@ -94,7 +94,7 @@ cmp.setup {
       vim_item.menu = ({
           buffer = "[B]",
           nvim_lsp = "[LS]",
-          vsnip = "[SN]",
+          luasnip = "[SN]",
           tags = "[T]",
         })[entry.source.name]
       return vim_item

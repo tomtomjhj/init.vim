@@ -1,0 +1,12 @@
+diff --git a/lua/luasnip/init.lua b/lua/luasnip/init.lua
+index 99e9284..e62b88a 100644
+--- a/lua/luasnip/init.lua
++++ b/lua/luasnip/init.lua
+@@ -284,6 +284,7 @@ local function expand(opts)
+ 		local jump_into_func = opts and opts.jump_into_func
+ 
+ 		local cursor = util.get_cursor_0ind()
++		vim.cmd[[let &undolevels = &undolevels]]
+ 		-- override snip with expanded copy.
+ 		snip = snip_expand(snip, {
+ 			expand_params = expand_params,

@@ -1,0 +1,39 @@
+{
+  "name": "vscode snippets for luasnip",
+  "contributes": {
+    "snippets": [
+      {
+        "language": [
+          "markdown",
+          "pandoc"
+        ],
+        "path": "./markdown.json"
+      },
+      {
+        "language": [
+          "all"
+        ],
+        "path": "./global.json"
+      },
+      {
+        "language": [
+          "coq"
+        ],
+        "path": "./coq.json"
+      },
+      {
+        "language": [
+          "rust"
+        ],
+        "path": "./rust.json"
+      },
+      {
+        "language": [
+          "tex",
+          "pandoc"
+        ],
+        "path": "./tex.json"
+      }
+    ]
+  }
+}
