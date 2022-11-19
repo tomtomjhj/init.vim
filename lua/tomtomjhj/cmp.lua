@@ -79,6 +79,18 @@ cmp.setup {
         fallback()
       end
     end,
+    ['<C-l>'] = function(fallback)
+      -- If selected, confirm. Otherwise, try luasnip.
+      -- Since we're in insert mode luasnip is in rtp.
+      local luasnip = require'luasnip'
+      if cmp.get_selected_entry() then
+        cmp.confirm()
+      elseif luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+      else
+        fallback()
+      end
+    end,
   },
   snippet = {
     expand = function(args)
