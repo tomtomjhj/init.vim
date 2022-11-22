@@ -598,20 +598,6 @@ function! s:doautocmd(...)
   endif
 endfunction
 
-function! s:dobufread(names)
-  for name in a:names
-    let path = s:rtp(g:plugs[name])
-    for dir in ['ftdetect', 'ftplugin', 'after/ftdetect', 'after/ftplugin']
-      if len(finddir(dir, path))
-        if exists('#BufRead')
-          doautocmd BufRead
-        endif
-        return
-      endif
-    endfor
-  endfor
-endfunction
-
 function! plug#load(...)
   if a:0 == 0
     return s:err('Argument missing: plugin name(s) required')
@@ -630,7 +616,6 @@ function! plug#load(...)
     for name in unloaded
       call s:lod([name], ['ftdetect', 'after/ftdetect', 'plugin', 'after/plugin'])
     endfor
-    call s:dobufread(unloaded)
     return 1
   end
   return 0
@@ -685,13 +670,11 @@ endfunction
 
 function! s:lod_cmd(cmd, bang, l1, l2, args, names)
   call s:lod(a:names, ['ftdetect', 'after/ftdetect', 'plugin', 'after/plugin'])
-  call s:dobufread(a:names)
   execute printf('%s%s%s %s', (a:l1 == a:l2 ? '' : (a:l1.','.a:l2)), a:cmd, a:bang, a:args)
 endfunction
 
 function! s:lod_map(map, names, with_prefix, prefix)
   call s:lod(a:names, ['ftdetect', 'after/ftdetect', 'plugin', 'after/plugin'])
-  call s:dobufread(a:names)
   let extra = ''
   while 1
     let c = getchar(0)
