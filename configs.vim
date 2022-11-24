@@ -225,6 +225,9 @@ augroup BasicSetup | au!
     au FileType help nnoremap <silent><buffer> <M-.> K
     let &pumheight = min([&window/4, 20])
     au VimResized * let &pumheight = min([&window/4, 20])
+    if has('nvim-0.5')
+        au TextYankPost * silent! lua vim.highlight.on_yank()
+    endif
 augroup END
 
 if has('unix')
@@ -538,6 +541,10 @@ nnoremap <M-i> <C-i>
 " }}}
 
 " Languages {{{
+if has('nvim-0.8')
+    lua require('tomtomjhj/treesitter')
+endif
+
 " see also {,after/}{indent,ftplugin}/, SetupLSP(), SetupLSPPost()
 augroup Languages | au!
     au FileType bib call s:bib()
