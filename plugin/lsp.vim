@@ -84,8 +84,10 @@ hi! link markdownError NONE
 function! SetupLSP()
   augroup LocalNvimLSPStuff | au! * <buffer>
   augroup END
-  " NOTE: default in 0.8
-  setlocal tagfunc=v:lua.vim.lsp.tagfunc
+  " vim.lsp.formatexpr() doesn't format comments like built-in gq.
+  " So use my custom wrapper for vim.lsp.buf.format().
+  setlocal formatexpr=
+
   nnoremap <buffer>        <M-]> <cmd>lua vim.lsp.buf.definition()<CR>
   nnoremap <buffer>        <M-.> <cmd>lua vim.lsp.buf.hover()<CR>
   nnoremap <buffer><leader>gi    <cmd>lua vim.lsp.buf.implementation()<CR>
@@ -133,16 +135,12 @@ function! CheckerWarnings()
   return warnings ? 'W' . warnings : ''
 endfunction
 
-" NOTE: 0.8 defaults formatprg to v:lua.vim.lsp.formatexpr() if server supports range formatting.
-" - All servers I use don't support it.
-" - Probably would break usual comment formatting.
-" - I already made my wrapper. So unset it.
 function! NvimLSPRangeFormat(type) abort
   if a:type == ''
     set opfunc=NvimLSPRangeFormat
     return 'g@'
   endif
-  lua vim.lsp.buf.range_formatting({}, vim.api.nvim_buf_get_mark(0, '['), vim.api.nvim_buf_get_mark(0, ']'))
+  lua vim.lsp.buf.format{ range = { start = vim.api.nvim_buf_get_mark(0, '['), ['end'] = vim.api.nvim_buf_get_mark(0, ']') } }
 endfunction
 
 augroup GlobalNvimLSPStuff | au!
