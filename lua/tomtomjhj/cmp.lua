@@ -134,3 +134,13 @@ cmp.setup {
 --     { name = 'cmdline' }
 --   })
 -- })
+
+-- Workaround for https://github.com/hrsh7th/nvim-cmp/issues/1322
+local ag = vim.api.nvim_create_augroup("cmp-custom", { clear = true })
+vim.api.nvim_create_autocmd(
+  { "BufNew" },
+  { group = ag, pattern = "*",
+    desc = [[Enforce initialization of cmp keymaps.]],
+    callback = function() cmp.core:prepare() end
+  }
+)
