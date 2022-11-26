@@ -31,6 +31,8 @@ end
 --   the source's item (pattern of the word before cursor)
 -- * sometimes pum position wrong in diff mode
 
+-- NOTE: make sure that luasnip is in rtp at require'luasnip'
+
 vim.opt.completeopt:append('menuone')
 cmp.setup {
   completion = {
@@ -80,15 +82,21 @@ cmp.setup {
       end
     end,
     ['<C-l>'] = function(fallback)
-      -- If selected, confirm. Otherwise, try luasnip.
-      -- Since we're in insert mode luasnip is in rtp.
       local luasnip = require'luasnip'
-      if cmp.get_selected_entry() then
+      -- Try expanding before cofirm, because otherwise the snippet won't expand if
+      -- the selected (and inserted) entry has the same text as the snippet's prefix.
+      if luasnip.expandable() then
+        luasnip.expand()
+      elseif cmp.get_selected_entry() then
         cmp.confirm()
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
       else
-        fallback()
+        -- Don't jump to out-of-region snippet from the past.
+        luasnip.exit_out_of_region(luasnip.session.current_nodes[vim.api.nvim_get_current_buf()])
+        if luasnip.jumpable(1) then
+          luasnip.jump(1)
+        else
+          fallback()
+        end
       end
     end,
   },
