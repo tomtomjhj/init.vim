@@ -8,10 +8,21 @@ local basic_entries = { name = true, filename = true, cmd = true, kind = true, s
 local function buildDocumentation(word)
   local document = {}
 
+  -- Even if tagfunc is set, getcompletion(.., 'tag') does NOT use tagfunc and
+  -- gets tags from the tags file. But taglist() uses the tagfunc.
+  -- When vim.lsp.tagfunc() is used, it will call `workspace/symbol` method,
+  -- which may generate noisy errors if it's not supported by the server.
+  -- So unset tagfunc temporarily.
+  local tagfunc = nil
+  if vim.bo.tagfunc ~= "" then
+    vim.bo.tagfunc = ""
+    tagfunc = vim.bo.tagfunc
+  end
   local tags = vim.fn.taglist('\\C^' .. word .. '$')
-  local doc = ''
+  if tagfunc then vim.bo.tagfunc = tagfunc end
+
   for _, tag in ipairs(tags) do
-    doc =  '[' .. tag.kind .. '] ' .. tag.filename .. (tag.static == 1 and ' (static)' or '')
+    local doc =  '[' .. tag.kind .. '] ' .. tag.filename .. (tag.static == 1 and ' (static)' or '')
     if #tag.cmd >= 5 then
       -- TODO: show the context?
       doc = doc .. '\n  ' .. tag.cmd:sub(3, -3)
