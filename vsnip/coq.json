@@ -34,6 +34,11 @@
     "description": "Set Nested Proofs Allowed",
     "body": "Set Nested Proofs Allowed."
   },
+  "tcdebug": {
+    "prefix": "tcdebug",
+    "description": "Set Typeclasses Debug",
+    "body": "Set Typeclasses Debug."
+  },
   "sealed": {
     "prefix": "sealed",
     "description": "sealed definition",

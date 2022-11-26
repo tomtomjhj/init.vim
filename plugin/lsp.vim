@@ -98,6 +98,9 @@ function! SetupLSP()
   xnoremap <buffer><expr><leader>fm  NvimLSPRangeFormat('')
   nnoremap <buffer><leader>rn    <cmd>lua vim.lsp.buf.rename()<CR>
   nnoremap <buffer><leader>ac    <cmd>lua vim.lsp.buf.code_action()<CR>
+  nnoremap <buffer><localleader>*    <cmd>lua vim.lsp.buf.document_highlight()<CR>
+  nnoremap <buffer><localleader><CR> <cmd>lua vim.lsp.buf.clear_references()<CR>
+
   nnoremap <buffer>        [d    <cmd>lua vim.diagnostic.goto_prev{float=false}<CR>
   nnoremap <buffer>        ]d    <cmd>lua vim.diagnostic.goto_next{float=false}<CR>
   nnoremap <buffer>        <M-,> <cmd>lua vim.diagnostic.open_float(0, {scope="line"})<CR>
@@ -106,7 +109,7 @@ function! SetupLSP()
   " TODO: <ESC> on workspace_symbol prompt doesn't cancel
   nnoremap <buffer><leader>sb    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
   inoremap <buffer>        <M-i> <cmd>lua vim.lsp.buf.signature_help()<CR>
-  " TODO: codelens? codeaction? how do I run tests??
+  " TODO: codelens? codeaction? how do I run tests?? |lsp-codelens|
   " TODO: |lsp-handler| default location_handler
   " * goto def in split, etc https://github.com/neovim/neovim/pull/12966
   " * hover in preview window

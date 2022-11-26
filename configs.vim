@@ -487,9 +487,7 @@ elseif g:ide_client == 'nvim'
     lua require'tomtomjhj/cmp'
 
     " lazy-load luasnip
-    let s:loaded_luasnip = get(s:, 'loaded_luasnip', 0)
     function! s:LoadLuaSnip() abort
-        if s:loaded_luasnip | return | endif
         call plug#load('LuaSnip', 'cmp_luasnip')
 
         lua require("luasnip.loaders.from_vscode").lazy_load { paths = { "~/.vim/vsnip", "~/.vim/plugged/friendly-snippets" } }
@@ -504,7 +502,7 @@ elseif g:ide_client == 'nvim'
 
     if has('vim_starting')
         au InsertEnter * ++once call s:LoadLuaSnip()
-        xnoremap <silent> <C-l> :<C-u>call <SID>LoadLuaSnip()<CR>gv<Cmd>call feedkeys("<C-l>")<CR>
+        xnoremap <silent> <C-l> <Cmd>call <SID>LoadLuaSnip()\|call feedkeys("<C-l>")<CR>
     endif
 endif
 " }}}
@@ -904,8 +902,7 @@ func! FzfOpts(arg, spec)
     endif
     " from project root
     if l:opts =~ '3'
-        " TODO: don't use this function and lazy-load asyncrun
-        let a:spec['dir'] = asyncrun#get_root("%")
+        let a:spec['dir'] = fnamemodify(FugitiveGitDir(), ':h')
     endif
     return fzf#vim#with_preview(a:spec, l:preview_window)
 endfunc

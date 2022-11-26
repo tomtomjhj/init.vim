@@ -30,7 +30,7 @@ function! tomtomjhj#coq#mappings()
     inoremap <buffer> <Plug>CoqJumpToEnd   <Cmd>CoqJumpToEnd<CR>
     inoremap <buffer> <Plug>CoqJumpToError <Cmd>CoqJumpToError<CR>
 
-    nmap <buffer> <localleader>s <Plug>CoqInterrupt<Plug>CoqStop
+    nmap <buffer> <localleader>S <Plug>CoqInterrupt<Plug>CoqStop
     nmap <buffer> <localleader>i <Plug>CoqInterrupt
 
     " NOTE: [count]

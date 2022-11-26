@@ -39,5 +39,14 @@
       "${0:${TM_SELECTED_TEXT}}",
       "-->"
     ]
+  },
+  "details": {
+    "prefix": "details",
+    "description": "<details><summary>",
+    "body": [
+      "<details>",
+      "<summary>$0</summary>",
+      "</details>"
+    ]
   }
 }

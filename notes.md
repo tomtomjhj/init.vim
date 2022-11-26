@@ -333,8 +333,8 @@ git
 ### LuaSnip
 * many features comparable to ultisnips
 * conversion
-  <https://www.reddit.com/r/neovim/comments/xq8n3d/i_made_a_guide_on_converting_ultisnips_to_luasnip/>
-  <https://github.com/evesdropper/dotfiles/tree/130676a682fda4cde5f28a28cf29028e16f2695c/nvim/luasnip#readme>
+    * <https://github.com/evesdropper/dotfiles/tree/130676a682fda4cde5f28a28cf29028e16f2695c/nvim/luasnip#readme>
+    * <https://www.ejmastnak.com/tutorials/vim-latex/luasnip.html>
 * slow startup
 * patch: add undo before expansion
 * port snippets
@@ -385,6 +385,10 @@ git
 
 ## Not triaged
 * While editing tex, something is doing async redraw. Incsearch highlight disappears.
+
+```
+./src/nvim/normal.c:2471: nv_screengo: Assertion `curwin->w_curswant <= INT_MAX - w' failed.
+```
 
 ## (n)vim pitfalls
 * Cursor movement on concealed string: `set concealcursor=n` doesn't work as expected. <https://vi.stackexchange.com/questions/4530/moving-over-conceal>
@@ -451,6 +455,7 @@ git
                      \|endif
       ```
       Bug? `WinScrolled` is fired when entering preview window for the first time.
+    * 9.0.0917 `WinResized`?
     * For preview window, apply `previewheight`? Note: `:pedit` doesn't accept `{height}`, unlike `:copen`.
 * NeoVim terminal slows down the UI if too much stuff is printed.
 * `api-buffer-updates` is too fine-grained (triggered for each `b:changedtick` update). It's meant to be fine-grained, but it's too fine-grained for most use cases.
@@ -659,7 +664,7 @@ git
 * https://github.com/mfussenegger/nvim-dap
 * https://github.com/lukas-reineke/indent-blankline.nvim NOTE: conflict with tab listchar
 * https://github.com/phaazon/hop.nvim/
-  https://github.com/ggandor/lightspeed.nvim
+  https://github.com/ggandor/leap.nvim
 * https://github.com/rktjmp/lush.nvim interesting lua hack for DSL
 * https://github.com/hkupty/iron.nvim
 * https://github.com/Julian/lean.nvim
