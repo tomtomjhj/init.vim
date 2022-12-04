@@ -13,18 +13,19 @@ local function buildDocumentation(word)
   -- When vim.lsp.tagfunc() is used, it will call `workspace/symbol` method,
   -- which may generate noisy errors if it's not supported by the server.
   -- So unset tagfunc temporarily.
+  -- Another option: require empty tagfunc in is_available().
   local tagfunc = nil
   if vim.bo.tagfunc ~= "" then
     vim.bo.tagfunc = ""
     tagfunc = vim.bo.tagfunc
   end
-  local tags = vim.fn.taglist('\\C^' .. word .. '$')
+  -- The pattern should be exactly '^word$' to enable exact binary search. NO '\C'.
+  local tags = vim.fn.taglist('^' .. word .. '$', vim.api.nvim_buf_get_name(0))
   if tagfunc then vim.bo.tagfunc = tagfunc end
 
   for _, tag in ipairs(tags) do
     local doc =  '[' .. tag.kind .. '] ' .. tag.filename .. (tag.static == 1 and ' (static)' or '')
     if #tag.cmd >= 5 then
-      -- TODO: show the context?
       doc = doc .. '\n  ' .. tag.cmd:sub(3, -3)
     end
     local etc = {}
@@ -47,7 +48,7 @@ source.new = function()
 end
 
 source.get_keyword_pattern = function()
-  return [[\k\+]]
+  return [[\K\k*]]
 end
 
 function source:get_debug_name()
@@ -55,31 +56,27 @@ function source:get_debug_name()
 end
 
 function source:complete(request, callback)
+  local input = string.sub(request.context.cursor_before_line, request.offset)
+  if #input < 2 then
+    -- without this, cmp doesn't trigger completion in this session(?)
+    return callback({ items = {}, isIncomplete = true })
+  end
+
+  -- Catch E433. Note that #tagfiles() > 0 can't detect it (e.g. in fugitive:// buffer).
+  local ok, tags = pcall(vim.fn.getcompletion, input, "tag")
+  if not ok then
+    -- no need to trigger in this session since it will fail anyway
+    return
+  end
+
   local items = {}
-  vim.defer_fn(function()
-    local input = string.sub(request.context.cursor_before_line, request.offset)
-    local _, tags = pcall(function()
-      return vim.fn.getcompletion(input, "tag")
-    end)
+  for _, tag in pairs(tags) do
+    items[#items+1] = { word = tag, label = tag, kind = cmp.lsp.CompletionItemKind.Tag, }
+  end
 
-    if type(tags) ~= 'table' then
-      return {}
-    end
-    tags = tags or {}
-    for _, value in pairs(tags) do
-      local item = {
-        word =  value,
-        label =  value,
-        kind = cmp.lsp.CompletionItemKind.Tag,
-      }
-      items[#items+1] = item
-    end
-
-    callback({
-      items = items,
-      isIncomplete = true
-    })
-  end, 100)
+  -- isIncomplete is not necessary if #tags < TAG_MANY,
+  -- but that makes it difficult to recover from typo (<BS> doesn't trigger completion).
+  callback({ items = items, isIncomplete = true })
 end
 
 function source:resolve(completion_item, callback)
