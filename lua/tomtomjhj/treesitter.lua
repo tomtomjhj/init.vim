@@ -5,8 +5,7 @@ require'nvim-treesitter.configs'.setup {
     disable = {
       "python",
       "vim",  -- less complete
-      "help", -- conceal broken
-      "markdown" -- slow
+      "markdown" -- slow on big files; fenced code block @text.literal is not cleared
     };
   },
   indent = {
@@ -23,3 +22,8 @@ require'nvim-treesitter.configs'.setup {
     },
   },
 }
+
+-- TODO: how to add additional pattern-based highlight?
+-- * matchadd(): this is window-local
+-- * https://github.com/folke/paint.nvim
+-- * enable regex highlight, set b:current_syntax to disable the usual syntax/*.vim, and add :syn as needed

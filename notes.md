@@ -511,6 +511,7 @@ git
     * ...
 * `bufadd()` doesn't trigger `BufAdd`. What you want is `BufNew`.
 * `getwinvar()` doesn't work for window ID of window in different tab.
+  Use `gettabwinvar(win_id2tabwin(w)[0], w, ...)` instead.
 * filetype.lua makes it difficult to debug vim ftplugin
 * Many nvim lua plugins don't set `loaded_X`.
   So loading plugins is not idempotent.
@@ -551,6 +552,11 @@ git
     * sometimes both vim syntax and treesitter hightlighting are on
     * breaks `<cword>`?
     * frequently broken by diff mode
+    * If multiple captures apply, their hightlights overlap.
+      Only the most precise one should be applied.
+        * Example: In `Box::new()`, "Box" is `@variable`, `@type`, `@namespace`, `@type`, and all of those highlights are applied.
+          Only `@type` should be applied.
+        * Example: Markdown fenced code block: `@text.literal` + highlights of the injected language.
 * https://github.com/neovim/neovim/issues/14298
   Similar issue in vim without tmux when mapping `<M-]>`.
   `vim --clean -c 'map <ESC>] <M-]>'` to reproduce.
@@ -633,6 +639,8 @@ git
     * https://github.com/j-hui/fidget.nvim
     * https://git.sr.ht/%7Ewhynothugo/lsp_lines.nvim
     * https://github.com/ii14/lsp-command/
+    * https://github.com/lvimuser/lsp-inlayhints.nvim
+    * https://github.com/hrsh7th/nvim-gtd
 * https://github.com/RRethy/nvim-treesitter-textsubjects
   https://github.com/vigoux/architext.nvim
   https://github.com/abecodes/tabout.nvim

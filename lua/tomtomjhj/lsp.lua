@@ -97,4 +97,10 @@ require'ltex-ls'.setup(
 
 lspconfig.bashls.setup(base_opt)
 
+lspconfig.marksman.setup(
+  vim.tbl_extend('error', base_opt, {
+    autostart = false,
+  })
+)
+
 -- vim:set et sw=2 ts=8:

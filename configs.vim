@@ -41,7 +41,6 @@ Plug 'whonore/vim-sentencer'
 " * :G log unicode broken
 " * '--git-completion-helper'-based completion (#1265) doesn't complete many things for git log e.g. --grep
 Plug 'tpope/vim-fugitive'
-Plug 'rhysd/git-messenger.vim'
 Plug 'rhysd/conflict-marker.vim'
 Plug 'tpope/vim-rhubarb'
 Plug 'skywind3000/asyncrun.vim'
@@ -107,6 +106,9 @@ Plug 'vim-python/python-syntax'
 " Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] } | let g:grammarous#use_location_list = 1
 
 " etc etc
+if has('nvim')
+    Plug 'nvim-lua/plenary.nvim', { 'do': 'rm -rf plugin' }
+endif
 if has('nvim') && !has('nvim-0.8')
     Plug 'antoinemadec/FixCursorHold.nvim'
 endif
@@ -704,6 +706,7 @@ function! s:markdown() abort
     xnoremap <buffer><expr> <localleader>~ tomtomjhj#surround#strike('')
     nmap     <buffer>          <MiddleMouse> <LeftMouse><localleader>biw
     xmap     <buffer>          <MiddleMouse> <localleader>b
+    " NOTE: `:[range]!pandoc -t commonmark_x` also works.
     nnoremap <buffer><silent>     <leader>tf :TableFormat<CR>
 endfunction
 function! s:pandoc() abort
@@ -1218,9 +1221,12 @@ xmap ab <Plug>(textobj-sandwich-auto-a)
 if has('nvim')
     tnoremap <M-[> <C-\><C-n>
     tnoremap <expr> <M-r> '<C-\><C-N>"'.nr2char(getchar()).'pi'
-    command! -nargs=? T <mods> split | exe "terminal" <q-args> | if empty(<q-args>) | startinsert | endif
+    command! -nargs=? -complete=shellcmd T <mods> split | exe "terminal" <q-args> | if empty(<q-args>) | startinsert | endif
 else
-    command! -nargs=? T exe <q-mods> "terminal" <q-args>
+    " NOTE: If 'hidden' is set and arg is provided, job finished + window closed doesn't wipe the buffer, in contrary to the doc:
+    " > When the job has finished and no changes were made to the buffer: closing the
+    " > window will wipe out the buffer.
+    command! -nargs=? -complete=shellcmd T exe <q-mods> "terminal" <q-args>
 endif
 
 augroup terminal-custom | au!
@@ -1597,4 +1603,5 @@ if !has('nvim')
 endif
 
 command! Profile profile start profile.log | profile func * | profile file *
+" NOTE: lua profile https://github.com/nvim-lua/plenary.nvim#plenaryprofile
 " }}}
