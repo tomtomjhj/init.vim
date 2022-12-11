@@ -17,12 +17,13 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 local base_opt = {
   on_attach = function(client, bufnr)
+    -- Disable semantic highlight for now.
+    client.server_capabilities.semanticTokensProvider = nil
     vim.fn['SetupLSP']()
     vim.fn['SetupLSPPost']()
     lsp_status.on_attach(client, bufnr)
   end,
   capabilities = capabilities,
-  flags = { debounce_text_changes = 123 }
 }
 
 require('rust-tools').setup {

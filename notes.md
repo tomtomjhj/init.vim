@@ -344,6 +344,21 @@ git
     * for complex snippets (vim-specific, ...), use lua format
 * <https://github.com/molleweide/LuaSnip-snippets.nvim>
 
+## window-local mode
+* Vim doesn't have window-local mapping, etc.
+    * <https://github.com/neovim/neovim/issues/16263>
+    * <https://github.com/vim/vim/issues/9339>
+* <https://github.com/anuvyklack/hydra.nvim>
+* autocmds + `<buffer>` + `b:`, `w:`
+  ```
+  au BufLeave * unsilent echom 'BufLeave' bufnr() win_getid()
+  au WinLeave * unsilent echom 'WinLeave' bufnr() win_getid()
+  au WinEnter * unsilent echom 'WinEnter' bufnr() win_getid()
+  au BufEnter * unsilent echom 'BufEnter' bufnr() win_getid()
+  ```
+    * BufEnter not triggerd when switching to window with the same buffer
+    * BufLeave → WinLeave → WinEnter → BufEnter
+
 
 # things that I should make more use of
 * marks
@@ -392,7 +407,8 @@ git
 
 ## (n)vim pitfalls
 * Cursor movement on concealed string: `set concealcursor=n` doesn't work as expected. <https://vi.stackexchange.com/questions/4530/moving-over-conceal>
-* Wrap `autocmd`s with `exec 'au ...'`: may not work as expected because of the interaction w/ `|`
+* Wrap `autocmd`s with `exec 'au ...'`: may not work as expected because of the interaction w/ `|`.
+  Fixed in 8.2.3626.
 * Matching `errorformat` may fail if the output from `:AsyncRun ...` is complex & quickfix is already open.
   Probably the output should be buffered.
 * Terminals can't distinguish some keys e.g. `<ESC>` and `<C-[>`, .. . `<M-[>` is prefix of `<PageUp>`, ...
@@ -489,7 +505,6 @@ git
             * cmp-buffer: maintain set of line numbers to be indexed
     * see also?
         * <https://github.com/vim/vim/issues/679>
-* `map` includes `smap`
 * Nvim silences errors in autocmd. This is not related to [`shortmess`](https://github.com/neovim/neovim/wiki/FAQ#calling-inputlist-echomsg--in-filetype-plugins-and-autocmd-does-not-work). This makes debugging ftplugin difficult.
 * `filename-modifiers` should be provided in the order defined in the documentation. `fnamemodify(name, ':h:~')` is wrong.
 * ([#10900](https://github.com/vim/vim/issues/10900)) In vim, handling the output of `:!`, `:write_c`, etc is UI-specific. It's not possible to uniformly capture the output using `execute()`. Must use `system()` for shell commands.
@@ -525,6 +540,7 @@ git
         * reflow works but scrolling is broken
         * `set shell=tmux` <https://www.reddit.com/r/neovim/comments/umy4gb/tmux_in_neovim/>
     * vim: big `termwinsize` width? ⇒ After the job finishes, hightlight position is wrong.
+    * <https://github.com/neovim/neovim/pull/21124>
 * nvim's `CursorMoved` is differrent from vim's. This makes `vimtex_matchparen` wrongly highlight fzf floatwin.
 * shada merging bad https://github.com/neovim/neovim/issues/4295
     * impossible to wipe marks, registers, jumplist...
@@ -554,9 +570,18 @@ git
     * frequently broken by diff mode
     * If multiple captures apply, their hightlights overlap.
       Only the most precise one should be applied.
-        * Example: In `Box::new()`, "Box" is `@variable`, `@type`, `@namespace`, `@type`, and all of those highlights are applied.
+      Maybe it should be configurable, because overlapping is sometimes useful.
+      Examples
+        * In `Box::new()`, "Box" is `@variable`, `@type`, `@namespace`, `@type`, and all of those highlights are applied.
           Only `@type` should be applied.
-        * Example: Markdown fenced code block: `@text.literal` + highlights of the injected language.
+        * Markdown fenced code block: `@text.literal` + highlights of the injected language.
+          If `@text.literal` is bg-only, then should overlap.
+        * If title is underlined, it should overlap.
+
+      `hl_mode` (`:h nvim_buf_set_extmark`) supports `"replace"`, `"combine"`, `"blend"`, but only for virt text.
+
+    * c: `preproc_arg → @function.macro` highlights macro definition body.
+
 * https://github.com/neovim/neovim/issues/14298
   Similar issue in vim without tmux when mapping `<M-]>`.
   `vim --clean -c 'map <ESC>] <M-]>'` to reproduce.
@@ -595,6 +620,7 @@ git
   <https://github.com/marcuscf/vim-lua>.
   <https://github.com/vim/vim/issues/11277>
 * if a statusline compotent contains newline ("^@"), highlight is shifted
+* syntax/diff.vim: `^---` can be deleted `--` comment
 
 ## ...
 * `ge` ... design of inclusive/exclusive stuff

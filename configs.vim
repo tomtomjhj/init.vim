@@ -55,7 +55,10 @@ if has('nvim')
     Plug 'ibhagwan/fzf-lua'
 endif
 Plug 'roosta/fzf-folds.vim'
-Plug 'Konfekt/FastFold' " only useful for non-manual folds
+" TODO: expr fold (e.g. markdown) → Gdiffsplit → close diff → nofoldenable with residual diff fold when enabled.
+" :diffoff disables fold if fdm was manual (FastFold sets fdm=manual).
+" https://github.com/vim/vim/blob/3ea8a1b1296af5b0c6a163ab995aa16d49ac5f10/src/diff.c#L1591-L1595
+Plug 'Konfekt/FastFold'
 Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
@@ -117,6 +120,7 @@ if s:nvim_latest_stable
     Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
     " Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+    " Plug 'nvim-treesitter/nvim-treesitter-context' " Make it use winbar instead of floating window?
     Plug 'nvim-treesitter/playground'
     " NOTE: should do `rm ~/.cache/nvim/luacache*` after upgrading nvim
     Plug 'lewis6991/impatient.nvim'
@@ -399,7 +403,7 @@ function! STLTitle(...) abort
     elseif empty(bname)
         return empty(bt) ? '[No Name]' : bt is# 'nofile' ? '[Scratch]' : '?'
     else
-        return pathshorten(fnamemodify(bname, ":~:."))
+        return pathshorten(fnamemodify(simplify(bname), ":~:."))
     endif
 endfunction
 function! STLBufState() abort
@@ -535,10 +539,6 @@ nmap <leader>fm <Plug>(ale_fix)
 nmap <M-,> <Plug>(ale_detail)<C-W>p
 nmap ]d <Plug>(ale_next_wrap)
 nmap [d <Plug>(ale_previous_wrap)
-Noremap  <M-.> K
-Noremap  <M-]> <C-]>
-nnoremap <M-o> <C-o>
-nnoremap <M-i> <C-i>
 " }}}
 
 " Languages {{{
@@ -709,6 +709,7 @@ function! s:markdown() abort
     xmap     <buffer>          <MiddleMouse> <localleader>b
     " NOTE: `:[range]!pandoc -t commonmark_x` also works.
     nnoremap <buffer><silent>     <leader>tf :TableFormat<CR>
+    nnoremap <buffer>             gO          <Cmd>Toc<CR>
 endfunction
 function! s:pandoc() abort
     runtime! ftplugin/markdown.vim
