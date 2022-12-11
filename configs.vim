@@ -120,6 +120,7 @@ if s:nvim_latest_stable
     Plug 'nvim-treesitter/playground'
     " NOTE: should do `rm ~/.cache/nvim/luacache*` after upgrading nvim
     Plug 'lewis6991/impatient.nvim'
+    Plug 'jbyuki/venn.nvim'
 endif
 
 " NOTE: This runs `filetype plugin indent on`, which registers au FileType.
@@ -1491,6 +1492,37 @@ nmap m/ <Plug>MarkSearchAnyNext
 nmap m? <Plug>MarkSearchAnyPrev
 nmap m<BS> <Plug>MarkToggle
 " TODO: stuff using api-highlights, like codepainter
+
+" venn
+command! Venn call s:toggle_venn()
+function! s:toggle_venn() abort
+    if !exists('b:venn')
+        let b:venn = #{ virtualedit: &l:virtualedit, H: maparg('H', 'n', 0, 1), J: maparg('J', 'n', 0, 1), K: maparg('K', 'n', 0, 1), L: maparg('L', 'n', 0, 1), V: maparg('V', 'x', 0, 1) }
+        " undojoin strokes to the same direction?
+        nnoremap <buffer><nowait><silent> H <C-v>h:VBox<CR>
+        nnoremap <buffer><nowait><silent> J <C-v>j:VBox<CR>
+        nnoremap <buffer><nowait><silent> K <C-v>k:VBox<CR>
+        nnoremap <buffer><nowait><silent> L <C-v>l:VBox<CR>
+        xnoremap <buffer><nowait><silent> V :VBox<CR>
+        " buffer-local virtualedit
+        setlocal virtualedit=all
+        augroup venn-mode | au!
+            au BufLeave * if exists('b:venn') | let &l:virtualedit = b:venn.virtualedit | endif
+            au BufEnter * if exists('b:venn') | setlocal virtualedit=all | endif
+        augroup END
+    else
+        au! venn-mode
+        let &l:virtualedit = b:venn.virtualedit
+        for [m, k] in [['n', 'H'], ['n', 'J'], ['n', 'K'], ['n', 'L'], ['n', 'V']]
+            if empty(b:venn[k])
+                silent! exe m . 'unmap <buffer>' k
+            else
+                call mapset(m, 0, b:venn[k])
+            endif
+        endfor
+        unlet b:venn
+    endif
+endfunction
 " }}}
 
 " etc util {{{
