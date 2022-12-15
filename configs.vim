@@ -474,6 +474,26 @@ if !exists('g:colors_name')
     colorscheme taiga
 endif
 command! Bg if &background ==# 'dark' | set background=light | else | set background=dark | endif
+
+" set env vars controlling terminal app themes based on vim colorscheme
+function! s:env_colors() abort
+    if match($FZF_DEFAULT_OPTS, '--color') >= 0
+        let $FZF_DEFAULT_OPTS = substitute($FZF_DEFAULT_OPTS, '--color\%(=\|\s\+\)\zs\w\+', &background, 0)
+    else
+        let $FZF_DEFAULT_OPTS .= ' --color=' . &background
+    endif
+    " features dark/light are defined in my .gitconfig
+    if match($DELTA_FEATURES, '\<\(dark\|light\)\>') >= 0
+        let $DELTA_FEATURES = substitute($DELTA_FEATURES, '\<\(dark\|light\)\>', &background, 0)
+    else
+        let $DELTA_FEATURES .= ' ' . &background
+    endif
+endfunction
+
+augroup colors | au!
+    au ColorScheme * call s:env_colors()
+    au VimEnter * call s:env_colors()
+augroup END
 " }}}
 
 " Completion {{{
@@ -889,8 +909,6 @@ augroup fzf-custom | au!
     if has('nvim')
         au FileType fzf if (g:gui_running || &termguicolors) | setlocal winblend=17 | endif
     endif
-    au ColorScheme * call s:fzf_color()
-    au VimEnter * call s:fzf_color()
 augroup END
 
 " TODO option to pass --no-ignore to rg and fd
@@ -951,13 +969,6 @@ func! Files(query)
     endif
     call fzf#vim#files(l:query, fzf#vim#with_preview(spec, 'right'))
 endfunc
-function! s:fzf_color() abort
-    if match($FZF_DEFAULT_OPTS, '--color') >= 0
-        let $FZF_DEFAULT_OPTS = substitute($FZF_DEFAULT_OPTS, '--color\%(=\|\s\+\)\zs\w\+', &background, 0)
-    else
-        let $FZF_DEFAULT_OPTS .= ' --color=' . &background
-    endif
-endfunction
 
 " TODO: fzf stuff
 " - reorg this section. split fzf and search things.
