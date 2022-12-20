@@ -1,16 +1,3 @@
-# Tex & pandoc
-## pandoc math highlight is broken in numbered lists, hard-wrapped lines
-List itself is not broken. Because of the preceding 4 spaces, the line is recognized as a code block.
-`let g:pandoc#syntax#protect#codeblocks = 0` fixes it.
-
-## `gq` in pandoc lists is broken
-Vim runs `undo_ftplugin` for pandoc because default `Filetype markdown` gets triggered at first `InsertEnter`.
-This will reset several format-related settings, which breaks `gq` for markdown lists.
-To fix this, manually reset all of the relevant settings in `Filetype pandoc`.
-
-The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
-
-
 # TODO:
 * Better interaction of `hlsearch` and conceal?
     * disable conceal when hlsearch set?
@@ -75,7 +62,7 @@ The root cause was lazy-loading ultisnip at InsertEnter. Removed the hack.
 * Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
   This breaks non-idempotent operations at `FileType` like `AutoPairsDefine({}, ["'"])`
     * Just disable lazy load as it turns out that loading ultisnip isn't slow.
-    * The root cause might be related to loading something that contains filetype plugin.
+    * The root cause: vim-plug does `doautocmd BufRead` when lazy-loaded plugin is loaded.
 * Restore default `iskeyword` inside pandoc code block: it's impossible.
 * width of unicode characters: 가(2) vs ◯(1)
     * ambiguous width characters
@@ -360,6 +347,13 @@ git
     * BufLeave → WinLeave → WinEnter → BufEnter
 
 
+## automatic parenthesis closing
+* no automatic balancing?
+    * map opener to opener + closer
+    * map `<C-g>` opener to opener
+    * don't map closer
+
+
 # things that I should make more use of
 * marks
 * `:global`
@@ -581,6 +575,7 @@ git
       `hl_mode` (`:h nvim_buf_set_extmark`) supports `"replace"`, `"combine"`, `"blend"`, but only for virt text.
 
     * c: `preproc_arg → @function.macro` highlights macro definition body.
+    * `@function` → `@function.definition`?
 
 * https://github.com/neovim/neovim/issues/14298
   Similar issue in vim without tmux when mapping `<M-]>`.
@@ -667,6 +662,7 @@ git
     * https://github.com/ii14/lsp-command/
     * https://github.com/lvimuser/lsp-inlayhints.nvim
     * https://github.com/hrsh7th/nvim-gtd
+    * https://github.com/SmiteshP/nvim-navic
 * https://github.com/RRethy/nvim-treesitter-textsubjects
   https://github.com/vigoux/architext.nvim
   https://github.com/abecodes/tabout.nvim

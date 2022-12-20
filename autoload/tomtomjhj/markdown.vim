@@ -73,30 +73,25 @@ func! tomtomjhj#markdown#PandocDollarMathMathi()
 endfunc
 
 " etc {{{1
-" TODO: refactor
 " * --defaults file in dots repo https://pandoc.org/MANUAL.html#default-files
 " * option for --pdf-engine=xelatex .. or more general command
 " * --from=commonmark_x by default? https://github.com/jgm/pandoc/wiki/Roadmap#pandocs-markdown-transition-to-commonmark
-"   * NOTE: commonmark_x seems to break latex in header-includes..
+" * -V mainfont="DejaVu Serif" if the doc contains unicode chars (this is NOT fallback mechanism)
 " * project-local include?
 " * more run options
 "   * AsyncRun -save=1 -cwd=%:p:h pandoc %:p --from commonmark_x -o %:p:h/%:t:r.docx
 "   * AsyncRun -save=1 -cwd=%:p:h pandoc %:p --from commonmark_x -o %:p:h/%:t:r.txt --strip-comments
+" * for complex sets of options, use make or something
 func! tomtomjhj#markdown#RunPandoc(open)
     let src = expand("%:p")
-    let out = expand("%:p:h") . '/' . expand("%:t:r") . '.pdf'
+    let out = expand('%:p:s?[.]\w*$?.pdf?')
     let params = '-Vurlcolor=blue --highlight-style=kate'
-    let post = a:open ? "call Zathura('" . l:out . "',!g:asyncrun_code)" : ''
-    " set manually or by local vimrc, override header-includes in yaml metadata
-    " TODO: local_vimrc or editorconfig hook
-    if exists('b:custom_pandoc_include_file')
-        let l:params .= ' --include-in-header=' . b:custom_pandoc_include_file
+    let post = 'cwindow'
+    if a:open
+        let post .= printf(' | if !g:asyncrun_code | call Zathura(%s) | endif', string(l:out))
     endif
-    augroup pandoc_quickfix | au!
-        au QuickFixCmdPost pandoc ++once belowright copen 8 | winc p
-    augroup END
     call asyncrun#run(0,
-                \ {'save': 1, 'cwd': expand("%:p:h"), 'auto': 'pandoc', 'post': l:post },
+                \ {'save': 1, 'cwd': expand("%:p:h"), 'post': l:post },
                 \ 'pandoc ' . shellescape(l:src) . ' -o ' . shellescape(l:out) . ' ' . l:params)
 endfunc
 " vim: set fdm=marker fdl=0:

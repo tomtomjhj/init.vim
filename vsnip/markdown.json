@@ -5,13 +5,11 @@
   },
   "inline link": {
     "prefix": ["ilink"],
-    "body": ["[${1}](${2}) ${0}"],
-    "description": "inline link"
+    "body": ["[${1:${TM_SELECTED_TEXT}}](${2:${TM_SELECTED_TEXT}})"]
   },
   "reference link": {
     "prefix": ["rlink"],
-    "body": ["[${1}][${2}] ${0}"],
-    "description": "reference link"
+    "body": ["[${1}][${2}]"]
   },
   "task list item": {
     "prefix": "task",
@@ -28,8 +26,7 @@
       "|----------------|----------------|",
       "| ${3}               | ${4}               |",
       "${0}"
-    ],
-    "description": "2x2 table"
+    ]
   },
   "html comment": {
     "prefix": "//",
@@ -42,7 +39,6 @@
   },
   "details": {
     "prefix": "details",
-    "description": "<details><summary>",
     "body": [
       "<details>",
       "<summary>$0</summary>",

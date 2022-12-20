@@ -284,6 +284,7 @@ if has('nvim')
 elseif has('gui_running')
     call s:SetupGUI()
 endif
+" TODO: neovide: can't input hangul with nimf??
 " }}}
 
 " statusline & tabline {{{
@@ -338,7 +339,7 @@ function! STLFunc() abort
         let [hl1, hl2, hl3, hl4] = s:stl_active_hl[m]
         return join([ hl1, ' ' . s:stl_mode_map[m] . ' ',
                     \ hl2, '%( %w%q%h%)%( %{STLTitle()}%) ',
-                    \ hl3, '%( %{STLBufState()}%{get(b:stl, "git", "")}%)', '%<', '%( %{CurrentFunction()}%)',
+                    \ hl3, '%( %{STLBufState()}%{exists("b:stl")?get(b:stl, "git", ""):""}%)', '%<', '%( %{CurrentFunction()}%)',
                     \ '%=',
                     \ hl3, '%(%{SearchCount()} %)',
                     \ '%#STLError#%( %{CheckerErrors()} %)',
@@ -350,7 +351,7 @@ function! STLFunc() abort
     else
         let [hl1, hl2, hl3, hl4] = s:stl_inactive_hl
         return join([ hl2, '%( %w%q%h%)%( %{STLTitle()}%) ',
-                    \ hl3, '%( @%{winnr()}%)%( %{STLBufState()}', '%<', '%{get(b:stl, "git", "")}%)',
+                    \ hl3, '%( @%{winnr()}%)%( %{STLBufState()}', '%<', '%{exists("b:stl")?get(b:stl, "git", ""):""}%)',
                     \ '%=',
                     \ hl3, '%( %{CheckerErrors()} %)',
                     \ hl3, '%( %{CheckerWarnings()} %)',
@@ -460,7 +461,6 @@ function! s:ensure_stl(buf) abort
 endfunction
 
 augroup Statusline | au!
-    au BufWinEnter * call s:ensure_stl(str2nr(expand('<abuf>')))
     au BufReadPost,BufWritePost * call UpdateGitStatus(str2nr(expand('<abuf>')))
     " unloaded buffers will be refreshed on BufReadPost
     au User FugitiveChanged call map(getbufinfo({'bufloaded':1}), 'UpdateGitStatus(v:val.bufnr)')
@@ -618,10 +618,10 @@ function! s:rust() abort
     if g:ide_client == 'coc'
         command! -buffer ExpandMacro CocCommand rust-analyzer.expandMacro
     endif
-    nmap <buffer><leader>C :AsyncRun -program=make -post=CW test --no-run<CR>
-    xmap <buffer><leader>fm :RustFmtRange<CR>
-    nmap <silent><buffer> [[ :call tomtomjhj#rust#section(1)<CR>
-    nmap <silent><buffer> ]] :call tomtomjhj#rust#section(0)<CR>
+    nnoremap <buffer><leader>C :AsyncRun -program=make -post=CW test --no-run<CR>
+    xnoremap <buffer><leader>fm :RustFmtRange<CR>
+    Noremap <silent><buffer> [[ <Cmd>call tomtomjhj#rust#section(1)<CR>
+    Noremap <silent><buffer> ]] <Cmd>call tomtomjhj#rust#section(0)<CR>
 endfunction
 " }}}
 
@@ -767,16 +767,14 @@ function! s:pandoc() abort
 
     command! -buffer -bang Pandoc call tomtomjhj#markdown#RunPandoc(<bang>0)
 
-    nmap <buffer><silent><leader>C :Pandoc<CR>
-    nmap <buffer><silent><leader>O :Pandoc!<CR>
-    nmap <buffer><silent><leader>oo :call Zathura("<C-r>=expand("%:p:h").'/'.expand("%:t:r").'.pdf'<CR>")<CR>
+    nnoremap <buffer><silent><leader>C <Cmd>Pandoc<CR>
+    nnoremap <buffer><silent><leader>O <Cmd>Pandoc!<CR>
+    nnoremap <buffer><silent><leader>oo <Cmd>call Zathura(expand('%:p:s?[.]\w*$?.pdf?'))<CR>
     nmap <buffer><silent>gx <Plug>(pandoc-hypertext-open-system)
-    nmap <buffer>zM :call pandoc#folding#Init()\|unmap <lt>buffer>zM<CR>zM
+    nnoremap <buffer>zM <Cmd>call pandoc#folding#Init()\|unmap <lt>buffer>zM<CR>zM
 endfunction
-function! Zathura(file, ...)
-    if get(a:, 1, 1)
-        call jobstart(['zathura', a:file, '--fork'])
-    endif
+function! Zathura(file)
+    call jobstart(['zathura', a:file, '--fork'])
 endfunction
 " }}}
 
@@ -787,7 +785,6 @@ function! s:ocaml() abort
     setlocal tabstop=2 shiftwidth=2
     setlocal comments=sr:(*,mb:*,ex:*)
     setlocal formatoptions=tjncqor
-    nmap <buffer><leader>C :AsyncRun -program=make -post=CocRestart<CR>
 endfunction
 " }}}
 
@@ -1550,9 +1547,10 @@ endfunction
 
 func! ShowSyntaxInfo()
     if s:nvim_latest_stable
-        TSHighlightCapturesUnderCursor
+        Inspect
+    else
+        echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")') '->' synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name')
     endif
-    echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")') '->' synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name')
 endfunc
 nmap <silent><leader>st :<C-u>call ShowSyntaxInfo()<CR>
 func! InSynStack(pat, ...)
@@ -1636,6 +1634,8 @@ if !exists('g:wildignore_files')
     call AddWildignore(s:wildignore_dirs, 1)
 endif
 
+" Doesn't work with hard wrapped list.
+" Alternative: %!pandoc --from=commonmark_x --to=commonmark_x --wrap=none
 command! -range=% ZulipMarkdown
             \ keeppatterns keepjumps <line1>,<line2>substitute/^    \ze[-+*]\s/  /e
             \|keeppatterns keepjumps <line1>,<line2>substitute/^        \ze[-+*]\s/    /e
