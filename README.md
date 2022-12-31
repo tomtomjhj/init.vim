@@ -5,8 +5,8 @@ git clone https://github.com/tomtomjhj/init.vim ~/.vim
 
 # -nix
 mkdir ~/.config/nvim -p
-cd ~/.config/nvim && ln -s ~/.vim/init.vim && ln -s ~/.vim/ginit.vim
-cd && ln -s ~/.vim/.vimrc && ln -s ~/.vim/.gvimrc
+cd ~/.config/nvim && ln -s ~/.vim/init.vim
+cd && ln -s ~/.vim/.vimrc
 
 # windows (administrator)
 mklink C:\Users\you\AppData\Local\nvim\init.vim C:\Users\you\.vim\init.vim
@@ -15,6 +15,8 @@ mklink C:\Users\you\_vimrc C:\Users\you\.vim\.vimrc
 mklink C:\Users\you\_gvimrc C:\Users\you\.vim\.gvimrc
 
 nvim -c PlugInstall
+cd ~/.vim
+./patches/apply.sh
 ```
 
 # External dependencies

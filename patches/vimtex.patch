@@ -1,3 +1,25 @@
+diff --git a/autoload/vimtex/fzf.vim b/autoload/vimtex/fzf.vim
+index 980543b5..3eeaac9d 100644
+--- a/autoload/vimtex/fzf.vim
++++ b/autoload/vimtex/fzf.vim
+@@ -76,7 +76,7 @@ def format_number(n):
+ def colorize(e):
+   try:
+     from colorama import Fore, Style
+-    color = {'content' : Fore.WHITE,
++    color = {'content' : "",
+              'include' : Fore.BLUE,
+              'label' : Fore.GREEN,
+              'todo' : Fore.RED}[e['type']]
+@@ -87,7 +87,7 @@ def colorize(e):
+       # Colour support on Windows requires Colorama
+       return f"{e['title']:65}"
+     else:
+-      color = {'content' : "\u001b[37m",
++      color = {'content' : "",
+                'include' : "\u001b[34m",
+                'label' : "\u001b[32m",
+                'todo' : "\u001b[31m"}[e['type']]
 diff --git a/autoload/vimtex/parser/tex.vim b/autoload/vimtex/parser/tex.vim
 index c844d7ba..d7d6eb10 100644
 --- a/autoload/vimtex/parser/tex.vim

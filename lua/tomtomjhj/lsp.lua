@@ -37,7 +37,12 @@ require('rust-tools').setup {
     },
   },
   -- lspconfig.rust_analyzer.setup
-  server = base_opt
+  server = vim.tbl_extend('error', base_opt, {
+    settings = { ["rust-analyzer"] = {
+      -- https://github.com/simrat39/rust-tools.nvim/issues/300
+      inlayHints = { locationLinks = false },
+    }}
+  })
 }
 
 lspconfig.pylsp.setup(

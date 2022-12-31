@@ -643,7 +643,7 @@ function! s:python() abort
 endfunction
 " }}}
 
-" LaTex {{{
+" LaTeX {{{
 let g:tex_flavor = 'latex'
 let g:tex_noindent_env = '\v\w+.?'
 let g:vimtex_fold_enabled = 1
@@ -671,6 +671,7 @@ function! s:tex() abort
                 \ }, 'keep')
     nmap <buffer><silent><leader>oo :call Zathura("<C-r>=expand("%:p:h").'/main.pdf'<CR>")<CR>
     nmap <buffer>        <leader>C <Cmd>update<CR><Plug>(vimtex-compile-ss)
+    nmap <buffer>        <localleader>t <Cmd>call vimtex#fzf#run('ctli', g:fzf_layout)<CR>
 endfunction
 function! s:bib() abort
     setlocal shiftwidth=2
@@ -920,9 +921,12 @@ func! FzfOpts(arg, spec)
     else
         let l:preview_window = IsVimWide() ? 'right' : 'up'
     endif
-    " from project root
     if l:opts =~ '3'
-        let a:spec['dir'] = fnamemodify(FugitiveGitDir(), ':h')
+        if &filetype ==# 'fern' " from fern's cwd
+            let a:spec['dir'] = b:fern.root._path
+        else " from project root
+            let a:spec['dir'] = fnamemodify(FugitiveGitDir(), ':h')
+        endif
     endif
     return fzf#vim#with_preview(a:spec, l:preview_window)
 endfunc
@@ -1330,11 +1334,10 @@ nnoremap <silent> gx :call GXBrowse(CursorURL())<cr>
 let g:fern#default_exclude = '\v(\.glob|\.vo[sk]?|\.o)$'
 nnoremap <leader>nn <Cmd>Fern . -drawer -toggle<CR>
 nnoremap <leader>nf <Cmd>Fern . -drawer -reveal=%<CR>
-" <f-args>, -bar
-nnoremap <leader>-  <Cmd>exe 'Fern' escape(BufDir(), ' \<Bar>') '-reveal=%'<CR>
-nnoremap <C-w>es    <Cmd>exe 'Fern' escape(BufDir(), ' \<Bar>') '-reveal=% -opener=split'<CR>
-nnoremap <C-w>ev    <Cmd>exe 'Fern' escape(BufDir(), ' \<Bar>') '-reveal=% -opener=vsplit'<CR>
-nnoremap <C-w>et    <Cmd>exe 'Fern' escape(BufDir(), ' \<Bar>') '-reveal=% -opener=tabedit'<CR>
+nnoremap <leader>-  <Cmd>call fern#internal#command#fern#command('', [BufDir(), '-reveal='.expand('%:t')])<CR>
+nnoremap <C-w>es    <Cmd>call fern#internal#command#fern#command('', [BufDir(), '-reveal='.expand('%:t'), '-opener=split'])<CR>
+nnoremap <C-w>ev    <Cmd>call fern#internal#command#fern#command('', [BufDir(), '-reveal='.expand('%:t'), '-opener=vsplit'])<CR>
+nnoremap <C-w>et    <Cmd>call fern#internal#command#fern#command('', [BufDir(), '-reveal='.expand('%:t'), '-opener=tabedit'])<CR>
 nnoremap <leader>cd :cd <Plug>BufDir/
 nnoremap <leader>e  :e! <Plug>BufDir/
 nnoremap <leader>te :tabedit <Plug>BufDir/
@@ -1353,6 +1356,7 @@ function! s:init_fern() abort
     silent! nunmap <buffer> <BS>
     silent! nunmap <buffer> s
     silent! nunmap <buffer> N
+    nnoremap <buffer> ~ <Cmd>Fern ~<CR>
     nmap <buffer> - <Plug>(fern-action-leave)
     Map <buffer> x <Plug>(fern-action-mark)
     nmap <buffer> gx <Plug>(fern-action-open:system)
