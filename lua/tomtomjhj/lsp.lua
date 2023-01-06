@@ -15,10 +15,23 @@ vim.diagnostic.config {
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
+-- NOTE: see also GlobalNvimLSPStuff
+local ag = vim.api.nvim_create_augroup("nvim-lsp-custom", { clear = true })
+-- Disable semantic highlight for now.
+-- TODO: I want to do this on_attach, but this error is still not fixed
+-- Error SERVER_REQUEST_HANDLER_ERROR: "/usr/share/nvim/runtime/lua/vim/lsp/semantic_tokens.lua:253: attempt to index field 'semanticTokensProvider' (a nil value)"
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = ag,
+  desc = "disable semanticTokensProvider",
+  callback = function(args)
+    local bufnr = args.buf
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    client.server_capabilities.semanticTokensProvider = nil
+  end,
+})
+
 local base_opt = {
   on_attach = function(client, bufnr)
-    -- Disable semantic highlight for now.
-    client.server_capabilities.semanticTokensProvider = nil
     vim.fn['SetupLSP']()
     vim.fn['SetupLSPPost']()
     lsp_status.on_attach(client, bufnr)
