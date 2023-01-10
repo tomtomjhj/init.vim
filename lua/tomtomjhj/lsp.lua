@@ -39,7 +39,8 @@ local base_opt = {
   capabilities = capabilities,
 }
 
-require('rust-tools').setup {
+local rust_tools = require('rust-tools')
+rust_tools.setup {
   tools = {
     runnables = { use_telescope = false },
     debuggables = { use_telescope = false },
@@ -50,12 +51,13 @@ require('rust-tools').setup {
     },
   },
   -- lspconfig.rust_analyzer.setup
-  server = vim.tbl_extend('error', base_opt, {
-    settings = { ["rust-analyzer"] = {
-      -- https://github.com/simrat39/rust-tools.nvim/issues/300
-      inlayHints = { locationLinks = false },
-    }}
-  })
+  server = vim.tbl_extend('force', base_opt, {
+    on_attach = function(client, bufnr)
+      base_opt.on_attach(client, bufnr)
+      vim.keymap.set("n", "<M-.>", rust_tools.hover_actions.hover_actions, { buffer = bufnr })
+      vim.keymap.set("n", "<leader>ac", rust_tools.code_action_group.code_action_group, { buffer = bufnr })
+    end,
+  }),
 }
 
 lspconfig.pylsp.setup(
