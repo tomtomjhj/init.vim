@@ -604,7 +604,7 @@ endfunction
 " Rust {{{
 " RLS hover info is more accurate than rust-analyzer!
 " https://doc.ecoscentric.com/gnutools/doc/gdb/Rust.html
-" let g:termdebugger = 'rust-gdb'
+let g:termdebugger = 'rust-gdb'
 " TODO: add completion in cargo command
 let g:cargo_shell_command_runner = 'AsyncRun -post=CW'
 " https://github.com/rust-lang/rust-clippy/issues/4612
@@ -657,7 +657,7 @@ let g:vimtex_toc_config_matchers = {
                 \ 'prefilter_cmds': ['todo', 'jaehwang']}
             \}
 let g:vimtex_syntax_nospell_comments = 1
-let g:vimtex_text_obj_variant = 'vimtex' " ic is buggy(?) and I don't use those targets.vim features
+let g:vimtex_text_obj_variant = 'vimtex' " I don't use those targets.vim features and its ic is buggy(?)
 " NOTE: If inverse search doesn't work, check if source files are correctly recognized by vimtex.
 function! s:tex() abort
     setlocal shiftwidth=2
@@ -843,6 +843,7 @@ endfunction
 " }}}
 
 let g:lisp_rainbow = 1
+let g:is_posix = 1
 " }}}
 
 " search & fzf {{{
@@ -911,7 +912,6 @@ augroup END
 
 " TODO option to pass --no-ignore to rg and fd
 func! FzfOpts(arg, spec)
-    " TODO: ask the directory to run (double 3), starting from %:p:h
     let l:opts = string(a:arg)
     " Preview on right if ¬fullscreen & wide
     " fullscreen
@@ -928,7 +928,7 @@ func! FzfOpts(arg, spec)
             let a:spec['dir'] = fnamemodify(FugitiveGitDir(), ':h')
         endif
     endif
-    return fzf#vim#with_preview(a:spec, l:preview_window)
+    return fzf#vim#with_preview(a:spec, l:preview_window, 'ctrl-/')
 endfunc
 func! RgInput(raw)
     if g:search_mode ==# 'n'
@@ -956,7 +956,7 @@ func! RipgrepFly(query)
     let command_fmt = s:rg_cmd_base() . '-- %s || true'
     let initial_command = printf(command_fmt, shellescape(a:query))
     let reload_command = printf(command_fmt, '{q}')
-    let spec = FzfOpts(v:count, {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command, '--info=inline', '--layout=reverse-list']})
+    let spec = FzfOpts(v:count, {'options': ['--disabled', '--query', a:query, '--bind', 'change:reload:'.reload_command, '--info=inline', '--layout=reverse-list']})
     call fzf#vim#grep(initial_command, 1, spec)
 endfunc
 func! Files(query)
@@ -1235,6 +1235,7 @@ xmap ab <Plug>(textobj-sandwich-auto-a)
 if has('nvim')
     tnoremap <M-[> <C-\><C-n>
     tnoremap <expr> <M-r> '<C-\><C-N>"'.nr2char(getchar()).'pi'
+    " TODO: When [Process exited $EXIT_CODE] in terminal mode, pressing any key wipes the terminal buffer. Require specific command to do that.
     command! -nargs=? -complete=shellcmd T <mods> split | exe "terminal" <q-args> | if empty(<q-args>) | startinsert | endif
 else
     " NOTE: If 'hidden' is set and arg is provided, job finished + window closed doesn't wipe the buffer, in contrary to the doc:
@@ -1484,6 +1485,8 @@ imap <M-/> <C-G>u<Plug>CommentaryInsert
 " }}}
 
 " etc plugins {{{
+" disable nvim :h editorconfig
+let g:editorconfig_enable = v:false
 let g:EditorConfig_exclude_patterns = ['.*[.]git/.*', 'fugitive://.*', 'scp://.*']
 
 " undotree

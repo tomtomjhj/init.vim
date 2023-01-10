@@ -105,6 +105,7 @@ function! SetupLSP()
   nnoremap <buffer>        ]d    <cmd>lua vim.diagnostic.goto_next{float=false, severity={min=vim.diagnostic.severity.WARN}}<CR>
   nnoremap <buffer>        <M-,> <cmd>lua vim.diagnostic.open_float(0, {scope="line"})<CR>
   nnoremap <buffer><leader>dl    <cmd>LspDiagnosticsAll<CR>
+  " TODO: show definition hierarchy?
   nnoremap <buffer><leader>ol    <cmd>lua vim.lsp.buf.document_symbol()<CR>
   " TODO: <ESC> on workspace_symbol prompt doesn't cancel
   nnoremap <buffer><leader>sb    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
@@ -178,6 +179,7 @@ endif " }}}
 
 " common {{{
 " Override things done in SetupLSP
+" TODO: in general, should run my FileType after SetupLSP
 function! SetupLSPPost()
   " lsp format didn't work well for these filetypes. Format using ale.
   if &filetype =~# '\v^(go|ocaml)$'

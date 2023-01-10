@@ -663,9 +663,10 @@ git
     * https://github.com/lvimuser/lsp-inlayhints.nvim
     * https://github.com/hrsh7th/nvim-gtd
     * https://github.com/SmiteshP/nvim-navic
-* https://github.com/RRethy/nvim-treesitter-textsubjects
-  https://github.com/vigoux/architext.nvim
-  https://github.com/abecodes/tabout.nvim
+* treesitter
+    * https://github.com/RRethy/nvim-treesitter-textsubjects
+    * https://github.com/vigoux/architext.nvim
+    * https://github.com/abecodes/tabout.nvim
 * git
     * https://github.com/rhysd/conflict-marker.vim
       https://github.com/akinsho/git-conflict.nvim
@@ -674,10 +675,13 @@ git
     * https://github.com/lewis6991/gitsigns.nvim
     * https://github.com/sindrets/diffview.nvim
     * https://github.com/ldelossa/gh.nvim
+* dir
+    * https://github.com/stevearc/oil.nvim
 * https://github.com/nvim-telescope/telescope.nvim
   https://github.com/nvim-telescope/telescope-frecency.nvim
-* https://github.com/vhyrro/neorg
-  https://github.com/kristijanhusak/orgmode.nvim
+* note
+    * https://github.com/vhyrro/neorg
+    * https://github.com/kristijanhusak/orgmode.nvim
 * selector
     * https://github.com/vijaymarupudi/nvim-fzf
     * **<https://github.com/ibhagwan/fzf-lua>**
