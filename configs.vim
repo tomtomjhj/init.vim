@@ -1273,18 +1273,7 @@ let g:qf_max_height = 12
 let g:qf_auto_quit = 0
 
 packadd cfilter
-command! -bar CW
-            \ if IsWinWide() |
-            \   exec 'vert copen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p |
-            \ else |
-            \   belowright copen 12 | winc p |
-            \ endif
-command! -bar LW
-            \ if IsWinWide() |
-            \   exec 'vert lopen' min([&columns-112,&columns/2]) | setlocal nowrap | winc p |
-            \ else |
-            \   belowright lopen 12 | winc p |
-            \ endif
+
 nmap <silent><leader>cw :CW<CR>
 nmap <silent><leader>lw :LW<CR>
 nmap <silent><leader>x  :pc\|ccl\|lcl<CR>
@@ -1292,6 +1281,20 @@ nmap <silent>]q <Plug>(qf_qf_next)
 nmap <silent>[q <Plug>(qf_qf_previous)
 nmap <silent>]l <Plug>(qf_loc_next)
 nmap <silent>[l <Plug>(qf_loc_previous)
+
+" like cwindow, but don't jump to the window
+command! -bar CW call s:cwindow(0)
+command! -bar LW call s:cwindow(1)
+function! s:cwindow(loclist) abort
+    let curwin = winnr()
+    let view = winsaveview()
+    if a:loclist | lwindow | else | cwindow | endif
+    " jumped to qf/loc window. return.
+    if curwin != winnr() && &buftype ==# 'quickfix'
+        wincmd p
+        call winrestview(view)
+    endif
+endfunction
 
 function s:qf() abort
     nmap <buffer> <Left>  <Plug>(qf_older)
