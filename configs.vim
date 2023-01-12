@@ -27,7 +27,7 @@ Plug 'tpope/vim-repeat'
 Plug 'tomtomjhj/pear-tree'
 Plug 'andymass/vim-matchup' " i%, a%, ]%, z%, g% TODO: % that seeks backward https://github.com/andymass/vim-matchup/issues/49#issuecomment-470933348
 Plug 'wellle/targets.vim' " multi (e.g. ib, iq), separator, argument
-Plug 'tomtomjhj/vim-indent-object'
+Plug 'urxvtcd/vim-indent-object'
 Plug 'kana/vim-textobj-user'
 Plug 'pianohacker/vim-textobj-indented-paragraph', { 'do': 'rm -rf plugin' }
 Plug 'Julian/vim-textobj-variable-segment' " iv, av
@@ -1466,6 +1466,15 @@ endif
 " }}}
 
 " textobj {{{
+xmap ii <Plug>(indent-object_linewise-none)
+omap ii <Plug>(indent-object_blockwise-none)
+xmap ai <Plug>(indent-object_linewise-start)
+omap ai <Plug>(indent-object_linewise-start)
+xmap iI <Plug>(indent-object_linewise-end)
+omap iI <Plug>(indent-object_linewise-end)
+xmap aI <Plug>(indent-object_linewise-both)
+omap aI <Plug>(indent-object_linewise-both)
+
 call textobj#user#plugin('tomtomjhj', {
 \   'url_or_filename': { 'pattern': '\('.s:url_regex.'\|\f\+\)', 'select': ['au', 'iu'] },
 \   'indented_paragraph': {
