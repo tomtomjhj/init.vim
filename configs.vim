@@ -1286,11 +1286,11 @@ nmap <silent>[l <Plug>(qf_loc_previous)
 command! -bar CW call s:cwindow(0)
 command! -bar LW call s:cwindow(1)
 function! s:cwindow(loclist) abort
-    let curwin = winnr()
+    let curwin = win_getid()
     let view = winsaveview()
     if a:loclist | lwindow | else | cwindow | endif
     " jumped to qf/loc window. return.
-    if curwin != winnr() && &buftype ==# 'quickfix'
+    if curwin != win_getid() && &buftype ==# 'quickfix'
         wincmd p
         call winrestview(view)
     endif
