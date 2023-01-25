@@ -525,6 +525,15 @@ git
 * Many nvim lua plugins don't set `loaded_X`.
   So loading plugins is not idempotent.
   E.g. cmp source registration.
+* window-local options are unintuitive
+    * window split and new tab copies window-local options (`:h local-options`).
+      Is this actually better than not copying?
+    * <https://github.com/neovim/neovim/issues/11525>
+    * options
+        * fold
+        * **diff**
+            * when using diff mode, it's impossible to create a new clean window/tab
+        * ...
 
 
 ## (n)vim bugs
@@ -576,6 +585,7 @@ git
 
     * c: `preproc_arg → @function.macro` highlights macro definition body.
     * `@function` → `@function.definition`?
+    * slow with big region: <https://gist.github.com/tomtomjhj/95c2feec72f35e6a6942fd792587bb4e>
 
 * https://github.com/neovim/neovim/issues/14298
   Similar issue in vim without tmux when mapping `<M-]>`.
@@ -616,6 +626,7 @@ git
   <https://github.com/vim/vim/issues/11277>
 * if a statusline compotent contains newline ("^@"), highlight is shifted
 * syntax/diff.vim: `^---` can be deleted `--` comment
+* nvim: after recent ui update, sometimes matchup hightlights (based on extmark) are not shown
 
 ## ...
 * `ge` ... design of inclusive/exclusive stuff

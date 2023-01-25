@@ -19,6 +19,7 @@ call plug#begin('~/.vim/plugged')
 
 " appearance
 Plug 'tomtomjhj/taiga.vim'
+Plug 'tomtomjhj/quite.vim'
 
 " editing
 Plug 'tomtomjhj/vim-sneak'
@@ -471,7 +472,7 @@ augroup END
 " ColorScheme {{{
 silent! set termguicolors
 if !exists('g:colors_name')
-    colorscheme taiga
+    colorscheme quite
 endif
 command! Bg if &background ==# 'dark' | set background=light | else | set background=dark | endif
 
@@ -609,7 +610,7 @@ let g:termdebugger = 'rust-gdb'
 let g:cargo_shell_command_runner = 'AsyncRun -post=CW'
 " https://github.com/rust-lang/rust-clippy/issues/4612
 command! -nargs=* Cclippy call cargo#cmd("+nightly clippy -Zunstable-options " . <q-args>)
-command! -range=% PrettifyRustSymbol <line1>,<line2>SubstituteDict { '$SP$': '@', '$BP$': '*', '$RF$': '&', '$LT$': '<', '$GT$': '>', '$LP$': '(', '$RP$': ')', '$C$' : ',',  '$u20$': ' ', '$u7b$': '{', '$u7d$': '}', }
+command! -range=% PrettifyRustSymbol <line1>,<line2>SubstituteDict { '$SP$': '@', '$BP$': '*', '$RF$': '&', '$LT$': '<', '$GT$': '>', '$LP$': '(', '$RP$': ')', '$C$' : ',',  '$u20$': ' ', '$u5b$': '[', '$u5d$': ']', '$u7b$': '{', '$u7d$': '}', }
 function! s:rust() abort
     setlocal path+=src
     " TODO fix 'spellcapcheck' for `//!` comments, also fix <leader>sc mapping
@@ -1283,12 +1284,12 @@ nmap <silent>]l <Plug>(qf_loc_next)
 nmap <silent>[l <Plug>(qf_loc_previous)
 
 " like cwindow, but don't jump to the window
-command! -bar CW call s:cwindow(0)
-command! -bar LW call s:cwindow(1)
-function! s:cwindow(loclist) abort
+command! -bar -nargs=? CW call s:cwindow(0, <q-mods>, <q-args>)
+command! -bar -nargs=? LW call s:cwindow(1, <q-mods>, <q-args>)
+function! s:cwindow(loclist, mods, args) abort
     let curwin = win_getid()
     let view = winsaveview()
-    if a:loclist | lwindow | else | cwindow | endif
+    exe a:mods . (a:loclist ? ' lwindow' : ' cwindow') a:args
     " jumped to qf/loc window. return.
     if curwin != win_getid() && &buftype ==# 'quickfix'
         wincmd p
