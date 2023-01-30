@@ -1471,7 +1471,7 @@ endif
 
 " textobj {{{
 xmap ii <Plug>(indent-object_linewise-none)
-omap ii <Plug>(indent-object_blockwise-none)
+omap ii <Plug>(indent-object_linewise-none)
 xmap ai <Plug>(indent-object_linewise-start)
 omap ai <Plug>(indent-object_linewise-start)
 xmap iI <Plug>(indent-object_linewise-end)
@@ -1499,7 +1499,7 @@ imap <M-/> <C-G>u<Plug>CommentaryInsert
 
 " etc plugins {{{
 " disable nvim :h editorconfig
-let g:editorconfig_enable = v:false
+let g:editorconfig = v:false
 let g:EditorConfig_exclude_patterns = ['.*[.]git/.*', 'fugitive://.*', 'scp://.*']
 
 " undotree

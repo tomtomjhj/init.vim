@@ -16,8 +16,8 @@ local function buildDocumentation(word)
   -- Another option: require empty tagfunc in is_available().
   local tagfunc = nil
   if vim.bo.tagfunc ~= "" then
-    vim.bo.tagfunc = ""
     tagfunc = vim.bo.tagfunc
+    vim.bo.tagfunc = ""
   end
   -- The pattern should be exactly '^word$' to enable exact binary search. NO '\C'.
   local tags = vim.fn.taglist('^' .. word .. '$', vim.api.nvim_buf_get_name(0))

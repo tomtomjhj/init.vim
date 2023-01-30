@@ -23,6 +23,8 @@ function! s:colors()
   elseif get(g:, 'colors_name', '') ==# 'taiga'
     " NOTE: wip coqIdentDef stuff
     hi! link coqIdentDef          TaigaGreenHigh
+  elseif get(g:, 'colors_name', '') ==# 'quite'
+    hi! link coqIdentDef          Label
   endif
 endfunction
 call s:colors()
