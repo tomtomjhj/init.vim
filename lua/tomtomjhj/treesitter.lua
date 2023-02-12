@@ -23,6 +23,19 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
+-- local ag = vim.api.nvim_create_augroup("treesitter-custom", { clear = true })
+-- vim.api.nvim_create_autocmd(
+--   { "FileType" },
+--   { group = ag, pattern = "markdown",
+--     desc = 'treesitter fold',
+--     callback = function()
+--       vim.wo.foldmethod = 'expr'
+--       vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
+--       vim.wo.foldtext = 'foldtext()'
+--     end
+--   }
+-- )
+
 -- TODO: how to add additional pattern-based highlight?
 -- * matchadd(): this is window-local
 -- * https://github.com/folke/paint.nvim

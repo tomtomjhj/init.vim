@@ -39,6 +39,16 @@ local base_opt = {
   capabilities = capabilities,
 }
 
+-- local path = require "mason-core.path"
+-- local mason_path = path.concat { vim.fn.stdpath("data"), "mason" , "packages" }
+-- local codelldb_path = path.concat { mason_path, "codelldb", "extension" }
+-- dap = {
+--   adapter = require('rust-tools.dap').get_codelldb_adapter(
+--     path.concat { codelldb_path, "adapter", "codelldb" },
+--     path.concat { codelldb_path, "lldb", "lib", "liblldb.so" }
+--   )
+-- }
+
 local rust_tools = require('rust-tools')
 rust_tools.setup {
   tools = {
@@ -86,7 +96,7 @@ lspconfig.clangd.setup(
 )
 
 require("neodev").setup()
-lspconfig.sumneko_lua.setup(base_opt)
+lspconfig.lua_ls.setup(base_opt)
 
 lspconfig.vimls.setup(base_opt)
 

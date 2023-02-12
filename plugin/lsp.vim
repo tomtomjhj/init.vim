@@ -78,9 +78,6 @@ elseif get(g:, 'ide_client', '') == 'nvim' " {{{
 
 lua require('tomtomjhj/lsp')
 
-" lsp_markdown can't be customized..
-hi! link markdownError NONE
-
 function! SetupLSP()
   augroup LocalNvimLSPStuff | au! * <buffer>
   augroup END
@@ -105,15 +102,11 @@ function! SetupLSP()
   nnoremap <buffer>        ]d    <cmd>lua vim.diagnostic.goto_next{float=false, severity={min=vim.diagnostic.severity.WARN}}<CR>
   nnoremap <buffer>        <M-,> <cmd>lua vim.diagnostic.open_float(0, {scope="line"})<CR>
   nnoremap <buffer><leader>dl    <cmd>LspDiagnosticsAll<CR>
-  " TODO: show definition hierarchy?
+  " TODO: document_symbol: tree-shaped hierarchy of symbols or breadcrumb
   nnoremap <buffer><leader>ol    <cmd>lua vim.lsp.buf.document_symbol()<CR>
-  " TODO: <ESC> on workspace_symbol prompt doesn't cancel
   nnoremap <buffer><leader>sb    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
   inoremap <buffer>        <M-i> <cmd>lua vim.lsp.buf.signature_help()<CR>
-  " TODO: codelens? codeaction? how do I run tests?? |lsp-codelens|
-  " TODO: |lsp-handler| default location_handler
-  " * goto def in split, etc https://github.com/neovim/neovim/pull/12966
-  " * hover in preview window
+  " TODO: codelens?
 endfunction
 
 function! CurrentFunction()

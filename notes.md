@@ -399,6 +399,21 @@ git
 ./src/nvim/normal.c:2471: nv_screengo: Assertion `curwin->w_curswant <= INT_MAX - w' failed.
 ```
 
+nvim: quickly split a fern; :Buffers.
+```
+Error detected while processing function fzf#vim#buffers[6]..<SNR>114_fzf[21]..fzf#run[81]..function fzf#vim#buffers[6]..<SNR>114_fzf[21]..fzf#run[64]..<SNR>71_execute_term[3]..<SNR>71_split[14]..<SNR>71_popup[21]..<SNR>71_create_popup:
+line    3:
+E5555: API call: Window was closed immediately
+```
+Maybe related to something async in fern.
+<https://github.com/neovim/neovim/pull/11476>
+```
+  if (!win_valid(wp)) {
+    api_set_error(err, kErrorTypeException, "Window was closed immediately");
+    return 0;
+  }
+```
+
 ## (n)vim pitfalls
 * Cursor movement on concealed string: `set concealcursor=n` doesn't work as expected. <https://vi.stackexchange.com/questions/4530/moving-over-conceal>
 * Wrap `autocmd`s with `exec 'au ...'`: may not work as expected because of the interaction w/ `|`.
@@ -652,6 +667,7 @@ git
 
 ## plugins
 * https://github.com/mg979/vim-visual-multi
+* https://github.com/inkarkat/vim-visualrepeat
 * https://github.com/chrisbra/unicode.vim
 * https://github.com/chaoren/vim-wordmotion
 * https://github.com/tpope/vim-obsession
@@ -674,6 +690,8 @@ git
     * https://github.com/lvimuser/lsp-inlayhints.nvim
     * https://github.com/hrsh7th/nvim-gtd
     * https://github.com/SmiteshP/nvim-navic
+    * https://github.com/utilyre/barbecue.nvim
+    * https://github.com/kevinhwang91/nvim-ufo
 * treesitter
     * https://github.com/RRethy/nvim-treesitter-textsubjects
     * https://github.com/vigoux/architext.nvim
@@ -693,6 +711,7 @@ git
 * note
     * https://github.com/vhyrro/neorg
     * https://github.com/kristijanhusak/orgmode.nvim
+    * https://github.com/epwalsh/obsidian.nvim
 * selector
     * https://github.com/vijaymarupudi/nvim-fzf
     * **<https://github.com/ibhagwan/fzf-lua>**

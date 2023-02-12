@@ -926,7 +926,7 @@ func! FzfOpts(arg, spec)
         if &filetype ==# 'fern' " from fern's cwd
             let a:spec['dir'] = b:fern.root._path
         else " from project root
-            let a:spec['dir'] = fnamemodify(FugitiveGitDir(), ':h')
+            let a:spec['dir'] = FugitiveWorkTree()
         endif
     endif
     return fzf#vim#with_preview(a:spec, l:preview_window, 'ctrl-/')
@@ -1565,14 +1565,12 @@ function! s:cabbrev(lhs, rhs) abort
 endfunction
 " }}}
 
-func! ShowSyntaxInfo()
-    if s:nvim_latest_stable
-        Inspect
-    else
-        echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")') '->' synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name')
-    endif
-endfunc
-nmap <silent><leader>st :<C-u>call ShowSyntaxInfo()<CR>
+if has('nvim-0.9')
+    nnoremap <leader>st <Cmd>Inspect<CR>
+else
+    nnoremap <silent><leader>st :<C-u>echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")') '->' synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name')<CR>
+endif
+
 func! InSynStack(pat, ...)
     let synstack = a:0 ? a:1 : synstack(line('.'), col('.'))
     for i in synstack

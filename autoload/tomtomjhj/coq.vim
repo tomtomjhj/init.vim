@@ -26,6 +26,7 @@ function! tomtomjhj#coq#mappings()
     inoremap <buffer> <Plug>CoqNext        <Cmd>CoqNext<CR>
     inoremap <buffer> <Plug>CoqUndo        <Cmd>CoqUndo<CR>
     inoremap <buffer> <Plug>CoqToLine      <Cmd>CoqToLine<CR>
+    inoremap <buffer> <Plug>CoqOmitToLine  <Cmd>CoqOmitToLine<CR>
     inoremap <buffer> <Plug>CoqToTop       <Cmd>CoqToTop<CR>
     inoremap <buffer> <Plug>CoqJumpToEnd   <Cmd>CoqJumpToEnd<CR>
     inoremap <buffer> <Plug>CoqJumpToError <Cmd>CoqJumpToError<CR>
@@ -57,6 +58,7 @@ function! tomtomjhj#coq#mappings()
         imap <buffer> <C-g>l         <Plug>CoqToLine
         imap <buffer> <C-g><C-l>     <Plug>CoqToLine
         imap <buffer> <C-M-l>        <Plug>CoqToLine
+        nmap <buffer> <localleader>L <Plug>CoqOmitToLine
     endif
 
     nmap <buffer> <C-w>s <Cmd>call tomtomjhj#coq#split('split')<CR>
