@@ -92,6 +92,7 @@ elseif g:ide_client == 'nvim'
     Plug 'simrat39/rust-tools.nvim'
     " https://github.com/p00f/clangd_extensions.nvim
     Plug 'vigoux/ltex-ls.nvim'
+    Plug 'tomtomjhj/coq-lsp.nvim'
 endif
 Plug 'rafamadriz/friendly-snippets'
 Plug 'tomtomjhj/tpope-vim-markdown'

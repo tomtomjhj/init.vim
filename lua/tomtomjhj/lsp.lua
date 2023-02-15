@@ -134,4 +134,10 @@ lspconfig.marksman.setup(
   })
 )
 
+require'coq-lsp'.setup(
+  vim.tbl_extend('error', base_opt, {
+    autostart = false,
+  })
+)
+
 -- vim:set et sw=2 ts=8:
