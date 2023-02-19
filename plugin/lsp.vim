@@ -86,6 +86,7 @@ function! SetupLSP()
   setlocal formatexpr=
 
   nnoremap <buffer>        <M-]> <cmd>lua vim.lsp.buf.definition()<CR>
+  " TODO: hover floating window width is not sufficient
   nnoremap <buffer>        <M-.> <cmd>lua vim.lsp.buf.hover()<CR>
   nnoremap <buffer><leader>gi    <cmd>lua vim.lsp.buf.implementation()<CR>
   nnoremap <buffer><leader>gy    <cmd>lua vim.lsp.buf.type_definition()<CR>

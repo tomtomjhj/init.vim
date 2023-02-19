@@ -1,16 +1,17 @@
 local fzf = require('fzf-lua')
 local actions = require('fzf-lua.actions')
 
-fzf.setup {
+fzf.setup(vim.tbl_deep_extend('force', require('fzf-lua.profiles.fzf-native'), {
+  fzf_opts = {
+    ['--border']      = 'top',
+  },
+  global_file_icons = false,
   winopts = {
     border = false, -- Use fzf's --border=top instead
     height = 0.5,
     width = 1,
     row = 1,
     col = 0,
-    preview = {
-      default = 'bat',
-    }
   },
   actions = {
     files = {
@@ -32,9 +33,6 @@ fzf.setup {
       ["ctrl-t"]      = actions.buf_tabedit,
     }
   },
-  fzf_opts = {
-    ['--border']      = 'top',
-  }
-}
+}))
 
 fzf.register_ui_select()
