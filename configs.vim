@@ -122,8 +122,7 @@ if s:nvim_latest_stable
     Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
     " Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-    " Plug 'nvim-treesitter/nvim-treesitter-context' " Make it use winbar instead of floating window?
-    Plug 'nvim-treesitter/playground'
+    Plug 'folke/paint.nvim'
     " NOTE: should do `rm ~/.cache/nvim/luacache*` after upgrading nvim
     Plug 'lewis6991/impatient.nvim'
     Plug 'jbyuki/venn.nvim'
