@@ -436,7 +436,6 @@ Maybe related to something async in fern.
     * auto-pairs adds weird indent if the previous line ends with `,`. Indent size if the size of the first word in the previous line.
         * `<CR><C-c>O` (`nosmartindent`) vs. `<CR><C-c>=ko` (`&indentexpr != ''`)
 * stuff highlighted as `Normal` -> bg doesn't match in floatwin
-* lightline + cursorline + lazyredraw + large &lines = performance drop
 * recording doesn't work well with async completion → **TODO** `wildcharm`?
 * `gq` internal formatting uses `indentexpr` (not documented?)
 * `<C-k><space><space>` is non-break space! Can't disable with
@@ -585,7 +584,7 @@ Maybe related to something async in fern.
 * treesitter
     * sometimes both vim syntax and treesitter hightlighting are on
     * breaks `<cword>`?
-    * frequently broken by diff mode
+    * frequently broken by diff mode → should be fixed by my fix
     * If multiple captures apply, their hightlights overlap.
       Only the most precise one should be applied.
       Maybe it should be configurable, because overlapping is sometimes useful.
@@ -633,6 +632,9 @@ Maybe related to something async in fern.
         * `update_screen()` redraws the statusline
         * After typing `e`, the buggy version doesn't call `grid_cursor_goto` and `inbuf_poll`.
     * related? <https://github.com/neovim/neovim/pull/20582>
+* If `'lazyredraw'`, when spamming j/k, cursor is not redrawn at the proper position.
+  Un-conceal works properly.
+  Sometimes reproducible with vimtex with large `'lines'`.
 * matchit, matchup: In markdown, if line is like this: `< cursor ( )`, `%` doesn't work. `<` should be matched with `>`???
     *  Not related to 2022-07-25 html ftplugin update.
 * `:syn-include` lua (e.g. lua heredoc, markdown) broken after recent lua syntax update:
@@ -640,7 +642,6 @@ Maybe related to something async in fern.
   <https://github.com/marcuscf/vim-lua>.
   <https://github.com/vim/vim/issues/11277>
 * if a statusline compotent contains newline ("^@"), highlight is shifted
-* syntax/diff.vim: `^---` can be deleted `--` comment
 * nvim: after recent ui update, sometimes matchup hightlights (based on extmark) are not shown
 
 ## ...
@@ -664,6 +665,7 @@ Maybe related to something async in fern.
 * https://blog.fsouza.dev/prettierd-neovim-format-on-save/
 * http://nikhilm.github.io/uvbook/ https://github.com/luvit/luv/tree/master/examples/uvbook
 * https://github.com/tweekmonster/helpful.vim https://www.arp242.net/vimlog/ https://axelf.nu/vim-helptag-versions/
+* https://zignar.net/2022/11/06/structuring-neovim-lua-plugins/
 
 ## plugins
 * https://github.com/mg979/vim-visual-multi

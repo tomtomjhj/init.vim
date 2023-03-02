@@ -840,6 +840,8 @@ endfunction
 let g:lua_syntax_noextendedstdlib = 1
 function! s:lua() abort
     setlocal shiftwidth=2
+    setlocal comments=:---,:--
+    setlocal commentstring=--%s
 endfunction
 " }}}
 
@@ -898,6 +900,7 @@ nnoremap <leader>hh :<C-u>History<CR>
 nnoremap <leader><C-t> :Tags ^<C-r><C-w>\  <CR>
 nnoremap <leader>fl :Folds<CR>
 
+" TODO: ++option for fd/rg. --no-ignore, ...
 command! -nargs=? Grep  call Ripgrep(<q-args>)
 command! -nargs=? Grepf call RipgrepFly(<q-args>)
 command! -nargs=? -complete=dir Files call Files(<q-args>)
@@ -911,7 +914,6 @@ augroup fzf-custom | au!
     endif
 augroup END
 
-" TODO option to pass --no-ignore to rg and fd
 func! FzfOpts(arg, spec)
     let l:opts = string(a:arg)
     " Preview on right if ¬fullscreen & wide

@@ -78,6 +78,9 @@ elseif get(g:, 'ide_client', '') == 'nvim' " {{{
 
 lua require('tomtomjhj/lsp')
 
+" syntax/lsp_markdown.vim :syn-clears it, but not cleared??/
+hi! link markdownError NONE
+
 function! SetupLSP()
   augroup LocalNvimLSPStuff | au! * <buffer>
   augroup END
@@ -140,12 +143,6 @@ function! NvimLSPRangeFormat(type) abort
   endif
   lua vim.lsp.buf.format{ range = { start = vim.api.nvim_buf_get_mark(0, '['), ['end'] = vim.api.nvim_buf_get_mark(0, ']') } }
 endfunction
-
-augroup GlobalNvimLSPStuff | au!
-  au DiagnosticChanged * redrawstatus
-  " override lspconfig's LspLog
-  au VimEnter * command! LspLog exe '<mods> pedit +setlocal\ nobuflisted|$' v:lua.vim.lsp.get_log_path()
-augroup end
 " }}}
 
 else " ale {{{

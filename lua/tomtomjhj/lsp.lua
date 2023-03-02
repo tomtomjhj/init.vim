@@ -13,31 +13,43 @@ vim.diagnostic.config {
   serverity_sort = true,
 }
 
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
-
--- NOTE: see also GlobalNvimLSPStuff
 local ag = vim.api.nvim_create_augroup("nvim-lsp-custom", { clear = true })
--- Disable semantic highlight for now.
--- TODO: I want to do this on_attach, but this error is still not fixed
--- Error SERVER_REQUEST_HANDLER_ERROR: "/usr/share/nvim/runtime/lua/vim/lsp/semantic_tokens.lua:253: attempt to index field 'semanticTokensProvider' (a nil value)"
-vim.api.nvim_create_autocmd("LspAttach", {
+
+vim.api.nvim_create_autocmd("DiagnosticChanged", {
   group = ag,
-  desc = "disable semanticTokensProvider",
-  callback = function(args)
-    local bufnr = args.buf
-    local client = vim.lsp.get_client_by_id(args.data.client_id)
-    client.server_capabilities.semanticTokensProvider = nil
-  end,
+  pattern = '*',
+  command = 'redrawstatus',
+})
+-- override lspconfig's LspLog
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = ag,
+  pattern = '*',
+  callback = function()
+    vim.api.nvim_create_user_command('LspLog',
+      function(opts)
+        vim.cmd.pedit {
+          args = { '+setlocal nobuflisted|$', vim.lsp.get_log_path() },
+          mods = opts.smods,
+        }
+      end,
+      { force = true, }
+    )
+  end
 })
 
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local base_opt = {
   on_attach = function(client, bufnr)
     vim.fn['SetupLSP']()
     vim.fn['SetupLSPPost']()
+    -- Disable semantic highlight for now.
+    client.server_capabilities.semanticTokensProvider = nil
     lsp_status.on_attach(client, bufnr)
   end,
   capabilities = capabilities,
 }
+
+-- server configs {{{
 
 -- local path = require "mason-core.path"
 -- local mason_path = path.concat { vim.fn.stdpath("data"), "mason" , "packages" }
@@ -145,5 +157,6 @@ require'coq-lsp'.setup {
     -- trace = 'verbose',
   }),
 }
+-- }}}
 
--- vim:set et sw=2 ts=8:
+-- vim:set et sw=2 ts=8 foldmethod=marker foldlevel=0:
