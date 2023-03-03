@@ -250,7 +250,7 @@ function! s:SetupGUI() abort
     let g:gui_running = 1
     set guifont=Source\ Code\ Pro:h12
     nnoremap <C--> <Cmd>FontSize -v:count1<CR>
-    if has('gui_running')
+    if !has('nvim')
         nnoremap <C-_> <Cmd>FontSize -v:count1<CR>
     endif
     nnoremap <C-+> <Cmd>FontSize v:count1<CR>
@@ -262,7 +262,7 @@ function! s:SetupGUI() abort
         let &guifont = substitute(&guifont, '\d\+', '\=new_size', '')
     endfunction
 
-    if has('gui_running') " gvim
+    if !has('nvim')
         set guioptions=i
         set guicursor+=a:blinkon0
         if has('win32')
@@ -280,10 +280,10 @@ function! s:SetupGUI() abort
     endif
 endfunction
 
-if has('nvim')
-    au UIEnter * ++once if v:event.chan | call s:SetupGUI() | endif
-elseif has('gui_running')
+if has('gui_running')
     call s:SetupGUI()
+elseif has('nvim') && !has('nvim-0.9')
+    au UIEnter * ++once if v:event.chan | call s:SetupGUI() | endif
 endif
 " TODO: neovide: can't input hangul with nimf??
 " }}}
