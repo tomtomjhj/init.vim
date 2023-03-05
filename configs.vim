@@ -87,7 +87,6 @@ elseif g:ide_client == 'nvim'
     Plug 'williamboman/mason.nvim'
     Plug 'williamboman/mason-lspconfig.nvim'
     Plug 'ojroques/nvim-lspfuzzy'
-    Plug 'nvim-lua/lsp-status.nvim'
     Plug 'folke/neodev.nvim'
     Plug 'simrat39/rust-tools.nvim'
     " https://github.com/p00f/clangd_extensions.nvim

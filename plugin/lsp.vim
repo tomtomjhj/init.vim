@@ -106,7 +106,6 @@ function! SetupLSP()
   nnoremap <buffer>        ]d    <cmd>lua vim.diagnostic.goto_next{float=false, severity={min=vim.diagnostic.severity.WARN}}<CR>
   nnoremap <buffer>        <M-,> <cmd>lua vim.diagnostic.open_float(0, {scope="line"})<CR>
   nnoremap <buffer><leader>dl    <cmd>LspDiagnosticsAll<CR>
-  " TODO: document_symbol: tree-shaped hierarchy of symbols or breadcrumb
   nnoremap <buffer><leader>ol    <cmd>lua vim.lsp.buf.document_symbol()<CR>
   nnoremap <buffer><leader>sb    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
   inoremap <buffer>        <M-i> <cmd>lua vim.lsp.buf.signature_help()<CR>
@@ -114,17 +113,9 @@ function! SetupLSP()
 endfunction
 
 function! CurrentFunction()
-  return get(b:,'lsp_current_function', '')
+  return get(b:,'breadcrumb', '')
 endfunction
-" TODO: Too much stl flickering when typing if the message is too long.
-" TODO: Do I still need lsp-status? See vim.lsp.util.get_progress_messages(), LspProgressUpdate
-" https://github.com/neovim/neovim/pull/13294
-" https://github.com/teto/home/blob/373966b5cd8cbcc7ca20a07da28de218668a656a/config/nvim/lua/statusline.lua
-" https://github.com/j-hui/fidget.nvim/issues/51
 function! CheckerStatus()
-  if luaeval('#vim.lsp.buf_get_clients() > 0')
-    return luaeval('require("lsp-status").status_progress()')
-  endif
   return ''
 endfunction
 function! CheckerErrors()

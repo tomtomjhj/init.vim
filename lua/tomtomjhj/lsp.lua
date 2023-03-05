@@ -1,9 +1,115 @@
 local lspconfig = require('lspconfig')
-local lsp_status = require('lsp-status')
+
+-- utils {{{
+
+local function position_mark_to_api(position)
+  return { position[1] - 1, position[2] }
+end
+
+local function position_api_to_lsp(bufnr, position, offset_encoding)
+  local row, col = unpack(position)
+  local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, true)[1]
+  if not line then
+    return { line = 0, character = 0 }
+  end
+  return { line = row, character = vim.lsp.util._str_utfindex_enc(line, col, offset_encoding) }
+end
+
+local function in_range(pos, range)
+  if pos.line < range.start.line or pos.line > range['end'].line then return false end
+  if
+    pos.line == range.start.line and pos.character < range.start.character or
+    pos.line == range['end'].line and pos.character > range['end'].character
+  then
+    return false
+  end
+  return true
+end
+--- }}}
+
+-- breadcrumb {{{
+
+-- TODO: activate winbar for window with buffer attached to lsp supporting documentSymbol..
+-- Just check the existence of vim.b.breadcrumb?
+
+-- NOTE: Symbol kind stuff is very arbitary. rust-analyzer uses "Object" for `impl`. lua-ls uses "Package" for `if`.
+local breadcrumb_kind = {}
+for _, kind in ipairs { "Class", "Function", "Method", "Struct", "Enum", "Interface", "Namespace", "Module", } do
+  breadcrumb_kind[vim.lsp.protocol.SymbolKind[kind]] = true
+end
+
+local function build_breadcrumb(symbols, cursor)
+  local stack = {}
+  local function search(cur)
+    if cur == nil then return end
+    for _, symbol in ipairs(cur) do
+      if in_range(cursor, symbol.range) then
+        if breadcrumb_kind[symbol.kind] then
+          stack[#stack+1] = symbol.name
+        end
+        return search(symbol.children)
+      end
+    end
+  end
+  search(symbols)
+  return table.concat(stack, " > ")
+end
+
+local function update_breadcrumb()
+  local params = { textDocument = vim.lsp.util.make_text_document_params() }
+  vim.lsp.buf_request_all(0, 'textDocument/documentSymbol', params, function(results)
+    local offset_encoding, symbols
+    for _client_id, _result in pairs(results) do
+      if _result.error == nil then
+        offset_encoding = vim.lsp.get_client_by_id(_client_id).offset_encoding
+        symbols = _result.result
+        break
+      end
+    end
+    vim.b.breadcrumb = ''
+    if symbols == nil then return end
+    local cursor = position_api_to_lsp(0, position_mark_to_api(vim.api.nvim_win_get_cursor(0)), offset_encoding)
+    vim.b.breadcrumb = build_breadcrumb(symbols, cursor)
+  end)
+end
+
+local function register_breadcrumb(ag, client, bufnr)
+  if client.server_capabilities.documentSymbolProvider then
+    vim.api.nvim_create_autocmd("CursorHold", {
+      group = ag,
+      buffer = bufnr,
+      desc = "update breadcrumb",
+      callback = update_breadcrumb,
+    })
+  end
+end
+-- }}}
+
+-- TODO: hierarchical document_symbol {{{
+
+-- }}}
+
+-- progress {{{
+
+local function progress_message()
+  local msg = vim.lsp.util.get_progress_messages()[1]
+  return string.format('[%s] %s: %s', msg.name, msg.title, msg.message or '')
+end
+
+local function register_progress_message(ag)
+  vim.api.nvim_create_autocmd("User", {
+    group = ag,
+    pattern = 'LspProgressUpdate',
+    callback = function()
+      -- avoid hit-enter
+      vim.api.nvim_echo({ { progress_message():sub(1, vim.o.columns) } }, false, {})
+    end
+  })
+end
+-- }}}
 
 require('mason').setup()
 require('mason-lspconfig').setup() -- registers some hooks for lspconfig setup
-lsp_status.register_progress()
 require('lspfuzzy').setup{}
 
 vim.diagnostic.config {
@@ -15,6 +121,7 @@ vim.diagnostic.config {
 
 local ag = vim.api.nvim_create_augroup("nvim-lsp-custom", { clear = true })
 
+register_progress_message(ag)
 vim.api.nvim_create_autocmd("DiagnosticChanged", {
   group = ag,
   pattern = '*',
@@ -44,7 +151,7 @@ local base_opt = {
     vim.fn['SetupLSPPost']()
     -- Disable semantic highlight for now.
     client.server_capabilities.semanticTokensProvider = nil
-    lsp_status.on_attach(client, bufnr)
+    register_breadcrumb(ag, client, bufnr)
   end,
   capabilities = capabilities,
 }
