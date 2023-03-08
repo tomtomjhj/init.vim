@@ -38,15 +38,22 @@ require'nvim-treesitter.configs'.setup {
 --   }
 -- )
 
+-- comment injection is slow https://gist.github.com/tomtomjhj/95c2feec72f35e6a6942fd792587bb4e
 local highlighter = require "vim.treesitter.highlighter"
 require("paint").setup {
   highlights = {
     {
-      filter = function(b)
-        return highlighter.active[b] and vim.api.nvim_buf_get_option(b, 'filetype') == 'markdown'
-      end,
+      filter = function(b) return highlighter.active[b] end,
       pattern = "TODO",
       hl = "Todo",
+    },
+    {
+      -- lua ---@ comment
+      filter = function(b)
+        return highlighter.active[b] and vim.api.nvim_buf_get_option(b, 'filetype') == 'lua'
+      end,
+      pattern = "%s*%-%-%-%s*(@%w+)",
+      hl = "Constant",
     },
   },
 }

@@ -10,9 +10,8 @@ if !has('nvim')
 endif
 let g:loaded_spellfile_plugin = 1
 
-" TODO: packadd-based, lazy-loaded (event, normal, ex), vim/nvim compatible plugin manager?
-" TODO: post-update hook doesn't work on nvim-0.6 Vim(call):E117: Unknown function: mkdp#util#install ... This happens only when installing (not updating). So nvim might be checking existence of the directory when rtp is modified.
-" https://github.com/neovim/neovim/issues/18822
+" NOTE: post-update hook doesn't work on nvim-0.6. https://github.com/neovim/neovim/issues/18822
+" Workaround: f1d32549e4a4657674fd0645185bb8ef730c018d
 " Plug {{{
 if has('vim_starting')
 call plug#begin('~/.vim/plugged')
@@ -1557,9 +1556,12 @@ endfunction
 
 " etc util {{{
 " helpers {{{
-" Expands cmdline-special. Note: not correct because '\' can be escaped.
-function! s:expand_cmdline_special(txt) abort
-    return substitute(a:txt, '\v\\@<!(\%|#%(\<?\d+|#)?)', '\=expand(submatch(1))', 'g')
+" Expands cmdline-special in text that that doesn't contain \r.
+function! s:expand_cmdline_special(line) abort
+    return substitute(substitute(substitute(
+                \ a:line, '\\\\', '\r', 'g' ),
+                \ '\v\\@<!(\%|#%(\<?\d+|#)?)', '\=expand(submatch(1))', 'g' ),
+                \ '\r', '\\\\', 'g' )
 endfunction
 function! s:cabbrev(lhs, rhs) abort
     return (getcmdtype() == ':' && getcmdline() ==# a:lhs) ? a:rhs : a:lhs

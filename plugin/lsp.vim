@@ -104,7 +104,9 @@ function! SetupLSP()
 
   nnoremap <buffer>        [d    <cmd>lua vim.diagnostic.goto_prev{float=false, severity={min=vim.diagnostic.severity.WARN}}<CR>
   nnoremap <buffer>        ]d    <cmd>lua vim.diagnostic.goto_next{float=false, severity={min=vim.diagnostic.severity.WARN}}<CR>
-  nnoremap <buffer>        <M-,> <cmd>lua vim.diagnostic.open_float(0, {scope="line"})<CR>
+  nnoremap <buffer>        [D    <cmd>lua vim.diagnostic.goto_prev{float=false}<CR>
+  nnoremap <buffer>        ]D    <cmd>lua vim.diagnostic.goto_next{float=false}<CR>
+  nnoremap <buffer>        <M-,> <cmd>lua vim.diagnostic.open_float(0, {scope="cursor"})<CR>
   nnoremap <buffer><leader>dl    <cmd>LspDiagnosticsAll<CR>
   nnoremap <buffer><leader>ol    <cmd>lua vim.lsp.buf.document_symbol()<CR>
   nnoremap <buffer><leader>sb    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>

@@ -93,7 +93,12 @@ end
 
 local function progress_message()
   local msg = vim.lsp.util.get_progress_messages()[1]
-  return string.format('[%s] %s: %s', msg.name, msg.title, msg.message or '')
+  if not msg then return '' end
+  local title = string.format('[%s] %s', msg.name, msg.title)
+  local details = {}
+  if msg.message then details[#details+1] = msg.message end
+  if msg.done then details[#details+1] = 'Done' end
+  if #details == 0 then return title else return title .. ': ' .. table.concat(details, '. ') end
 end
 
 local function register_progress_message(ag)
@@ -101,8 +106,7 @@ local function register_progress_message(ag)
     group = ag,
     pattern = 'LspProgressUpdate',
     callback = function()
-      -- avoid hit-enter
-      vim.api.nvim_echo({ { progress_message():sub(1, vim.o.columns) } }, false, {})
+      vim.api.nvim_echo({ { vim.fn['ingo#avoidprompt#Truncate'](progress_message()) } }, false, {})
     end
   })
 end
