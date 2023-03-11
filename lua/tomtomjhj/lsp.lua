@@ -25,6 +25,28 @@ local function in_range(pos, range)
   end
   return true
 end
+
+-- Max length of msg that can be echoed without hit-enter. Taken from ingo#avoidprompt#MaxLength.
+local function echo_max_len()
+  local len = vim.o.columns
+  if vim.o.showcmd then
+    len = len - 12
+  else
+    len = len - 2
+  end
+  if vim.o.ruler and (vim.o.laststatus == 0 or (vim.o.laststatus == 1 and #vim.api.nvim_tabpage_list_wins(0) == 1))  then
+    len = len - 17
+  end
+  return len
+end
+
+-- I'm not using ingo#avoidprompt#Truncate because it causes cursor flickering.
+local function truncate_echo(s)
+  local len = echo_max_len()
+  if len <= 0 then return '' end
+  if #s <= len then return s end
+  return s:sub(1, echo_max_len() - 2) .. '..'
+end
 --- }}}
 
 -- breadcrumb {{{
@@ -145,7 +167,7 @@ local function register_progress_message(ag)
     group = ag,
     pattern = 'LspProgressUpdate',
     callback = function()
-      vim.api.nvim_echo({ { vim.fn['ingo#avoidprompt#Truncate'](progress_message()) } }, false, {})
+      vim.api.nvim_echo({ { truncate_echo(progress_message()) } }, false, {})
     end
   })
 end
