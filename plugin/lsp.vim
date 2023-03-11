@@ -32,20 +32,17 @@ function! SetupLSP()
   nmap     <silent><buffer>        ]d    <Plug>(coc-diagnostic-next)
 endfunction
 
-function! CurrentFunction()
-  return get(b:,'coc_current_function', '')
+function! BreadCrumb()
+  return ''
 endfunction
-function! CheckerStatus()
-  return get(g:, 'coc_status', '')
-endfunction
-function! CheckerErrors()
+function! DiagnosticErrors()
   if has_key(b:, 'coc_diagnostic_info')
     let errors = b:coc_diagnostic_info['error']
     return errors ? 'E' . errors : ''
   endif
   return ''
 endfunction
-function! CheckerWarnings()
+function! DiagnosticWarnings()
   if has_key(b:, 'coc_diagnostic_info')
     let warnings = b:coc_diagnostic_info['warning']
     return warnings ? 'W' . warnings : ''
@@ -86,6 +83,7 @@ function! SetupLSP()
   augroup END
   " vim.lsp.formatexpr() doesn't format comments like built-in gq.
   " So use my custom wrapper for vim.lsp.buf.format().
+  " Or just use gw for built-in formatter.
   setlocal formatexpr=
 
   nnoremap <buffer>        <M-]> <cmd>lua vim.lsp.buf.definition()<CR>
@@ -114,17 +112,14 @@ function! SetupLSP()
   " TODO: codelens?
 endfunction
 
-function! CurrentFunction()
+function! BreadCrumb()
   return get(w:, 'breadcrumb', '')
 endfunction
-function! CheckerStatus()
-  return ''
-endfunction
-function! CheckerErrors()
+function! DiagnosticErrors()
   let errors = luaeval('#vim.diagnostic.get(0, {severity=vim.diagnostic.severity.ERROR})')
   return errors ? 'E' . errors : ''
 endfunction
-function! CheckerWarnings()
+function! DiagnosticWarnings()
   let warnings = luaeval('#vim.diagnostic.get(0, {severity=vim.diagnostic.severity.WARN})')
   return warnings ? 'W' . warnings : ''
 endfunction
@@ -147,16 +142,13 @@ function! SetupLSP()
   nmap <buffer><leader>rn :ALERename<CR>
   nmap <buffer><leader>rf <Plug>(ale_find_references)
 endfunction
-function! CurrentFunction()
+function! BreadCrumb()
   return ''
 endfunction
-function! CheckerStatus()
+function! DiagnosticErrors()
   return ''
 endfunction
-function! CheckerErrors()
-  return ''
-endfunction
-function! CheckerWarnings()
+function! DiagnosticWarnings()
   return ''
 endfunction
 endif " }}}

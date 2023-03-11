@@ -168,7 +168,7 @@ register_progress_message(ag)
 vim.api.nvim_create_autocmd("DiagnosticChanged", {
   group = ag,
   pattern = '*',
-  command = 'redrawstatus',
+  command = 'redrawstatus!',
 })
 -- override lspconfig's LspLog
 vim.api.nvim_create_autocmd("VimEnter", {
