@@ -115,7 +115,7 @@ function! SetupLSP()
 endfunction
 
 function! CurrentFunction()
-  return get(b:,'breadcrumb', '')
+  return get(w:, 'breadcrumb', '')
 endfunction
 function! CheckerStatus()
   return ''

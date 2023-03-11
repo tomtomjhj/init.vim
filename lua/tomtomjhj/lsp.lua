@@ -38,12 +38,12 @@ for _, kind in ipairs { "Class", "Function", "Method", "Struct", "Enum", "Interf
   breadcrumb_kind[vim.lsp.protocol.SymbolKind[kind]] = true
 end
 
-local function build_breadcrumb(symbols, cursor)
+local function build_breadcrumb(symbols, position)
   local stack = {}
   local function search(cur)
     if cur == nil then return end
     for _, symbol in ipairs(cur) do
-      if in_range(cursor, symbol.range) then
+      if in_range(position, symbol.range) then
         if breadcrumb_kind[symbol.kind] then
           stack[#stack+1] = symbol.name
         end
@@ -56,8 +56,14 @@ local function build_breadcrumb(symbols, cursor)
 end
 
 local function update_breadcrumb()
-  local params = { textDocument = vim.lsp.util.make_text_document_params() }
-  vim.lsp.buf_request_all(0, 'textDocument/documentSymbol', params, function(results)
+  local win = vim.api.nvim_get_current_win()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local params = { textDocument = vim.lsp.util.make_text_document_params(bufnr) }
+  vim.lsp.buf_request_all(bufnr, 'textDocument/documentSymbol', params, function(results)
+    if not vim.api.nvim_win_is_valid(win) then return end
+    pcall(vim.api.nvim_win_del_var, win, 'breadcrumb')
+    -- alternative: update breadcrumb in all windows with vim.fn.win_findbuf()
+    if bufnr ~= vim.api.nvim_win_get_buf(win) then return end
     local offset_encoding, symbols
     for _client_id, _result in pairs(results) do
       if _result.error == nil then
@@ -66,12 +72,15 @@ local function update_breadcrumb()
         break
       end
     end
-    vim.b.breadcrumb = ''
     if symbols == nil then return end
-    local cursor = position_api_to_lsp(0, position_mark_to_api(vim.api.nvim_win_get_cursor(0)), offset_encoding)
-    vim.b.breadcrumb = build_breadcrumb(symbols, cursor)
+    local position = position_api_to_lsp(bufnr, position_mark_to_api(vim.api.nvim_win_get_cursor(win)), offset_encoding)
+    vim.api.nvim_win_set_var(win, 'breadcrumb', build_breadcrumb(symbols, position))
+    vim.cmd.redrawstatus { bang = true }
   end)
 end
+
+---@type table<window, true>
+local need_cleanup_breadcrumb = {}
 
 local function register_breadcrumb(ag, client, bufnr)
   if client.server_capabilities.documentSymbolProvider then
@@ -80,6 +89,36 @@ local function register_breadcrumb(ag, client, bufnr)
       buffer = bufnr,
       desc = "update breadcrumb",
       callback = update_breadcrumb,
+    })
+    -- Clean breadcrumb when another buffer is shown to the window: (b1, w) → (b2, w).
+    -- This should be "window-local" autocmd, but vim doesn't have such thing.
+    -- So this is implemented in 3 steps: BufLeave → WinLeave → BufEnter.
+    vim.api.nvim_create_autocmd("BufLeave", {
+      group = ag,
+      buffer = bufnr,
+      desc = "initiate breadcrumb cleanup",
+      callback = function()
+        need_cleanup_breadcrumb[vim.api.nvim_get_current_win()] = true
+      end,
+    })
+    vim.api.nvim_create_autocmd("WinLeave", {
+      group = ag,
+      buffer = bufnr,
+      desc = "cancel breadcrumb cleanup",
+      callback = function()
+        need_cleanup_breadcrumb[vim.api.nvim_get_current_win()] = nil
+      end,
+    })
+    vim.api.nvim_create_autocmd("BufEnter", {
+      group = ag,
+      desc = "execute breadcrumb cleanup",
+      callback = function()
+        local win = vim.api.nvim_get_current_win()
+        if need_cleanup_breadcrumb[win] then
+          pcall(vim.api.nvim_win_del_var, win, 'breadcrumb')
+          need_cleanup_breadcrumb[win] = nil
+        end
+      end,
     })
   end
 end
