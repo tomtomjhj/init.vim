@@ -268,6 +268,7 @@ function! s:SetupGUI() abort
         elseif has('unix')
             set guifont=Source\ Code\ Pro\ 12
         endif
+    " NOTE: These variables are not set at startup. Should run at UIEnter.
     elseif exists('g:GuiLoaded') " nvim-qt
         GuiTabline 0
         GuiPopupmenu 0
@@ -278,12 +279,11 @@ function! s:SetupGUI() abort
     endif
 endfunction
 
-if has('gui_running')
+if has('nvim')
+    au UIEnter * ++once if has('nvim-0.9') ? has('gui_running') : v:event.chan | call s:SetupGUI() | endif
+elseif has('gui_running')
     call s:SetupGUI()
-elseif has('nvim') && !has('nvim-0.9')
-    au UIEnter * ++once if v:event.chan | call s:SetupGUI() | endif
 endif
-" TODO: neovide: can't input hangul with nimf??
 " }}}
 
 " statusline & tabline {{{
