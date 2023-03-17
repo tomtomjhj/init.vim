@@ -1,4 +1,5 @@
 local disable = {
+  "latex", -- use vimtex for latex file; but use treesitter for markdown inline latex
   "vim",  -- less complete
 }
 

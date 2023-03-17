@@ -273,11 +273,10 @@ lspconfig.pylsp.setup(
   })
 )
 
-lspconfig.clangd.setup(
-  vim.tbl_extend('error', base_opt, {
-    filetypes = { "c", "cpp", "cuda" },
-  })
-)
+require("clangd_extensions").setup {
+  server = base_opt,
+  extensions = {},
+}
 
 require("neodev").setup()
 lspconfig.lua_ls.setup(base_opt)

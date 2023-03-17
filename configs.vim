@@ -88,7 +88,7 @@ elseif g:ide_client == 'nvim'
     Plug 'ojroques/nvim-lspfuzzy'
     Plug 'folke/neodev.nvim'
     Plug 'simrat39/rust-tools.nvim'
-    " https://github.com/p00f/clangd_extensions.nvim
+    Plug 'p00f/clangd_extensions.nvim'
     Plug 'vigoux/ltex-ls.nvim'
     Plug 'tomtomjhj/coq-lsp.nvim'
 endif
@@ -265,7 +265,7 @@ function! s:SetupGUI() abort
         set guicursor+=a:blinkon0
         if has('win32')
             set guifont=Source_Code_Pro:h12:cANSI:qDRAFT
-        elseif has('unix')
+        else
             set guifont=Source\ Code\ Pro\ 12
         endif
     " NOTE: These variables are not set at startup. Should run at UIEnter.
@@ -649,6 +649,7 @@ let g:matchup_override_vimtex = 1
 let g:vimtex_view_method = 'zathura'
 let g:vimtex_quickfix_mode = 0
 let g:vimtex_indent_on_ampersands = 0
+let g:vimtex_toc_config = { 'show_help': 0 }
 let g:vimtex_toc_config_matchers = {
             \ 'todo_notes': {
                 \ 're' : g:vimtex#re#not_comment . '\\\w*%(todo|jaehwang)\w*%(\[[^]]*\])?\{\zs.*',
@@ -883,6 +884,7 @@ endfunc
 nnoremap / :let g:search_mode='/'<CR>/
 nnoremap ? :let g:search_mode='/'<CR>?
 
+let g:fzf_action = { 'ctrl-t': 'tab split', 'ctrl-s': 'split', 'ctrl-x': 'split', 'ctrl-v': 'vsplit' }
 let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.5, 'yoffset': 1, 'border': 'top' } }
 " let g:fzf_preview_window = 'right:50%:+{2}-/2'
 
@@ -907,7 +909,7 @@ command! -nargs=* Tags call fzf#vim#tags(<q-args>, fzf#vim#with_preview({ "place
 
 augroup fzf-custom | au!
     if has('nvim')
-        au FileType fzf if (g:gui_running || &termguicolors) | setlocal winblend=17 | endif
+        au FileType fzf if (g:gui_running || &termguicolors) && has_key(nvim_get_hl_by_name('Normal', v:true), 'background') | setlocal winblend=17 | endif
     endif
 augroup END
 
@@ -943,7 +945,6 @@ func! RgInput(raw)
     endif
 endfunc
 function! s:rg_cmd_base() abort
-    " NOTE: -U (multiline): \s includes \n.
     let colors = &background ==# 'dark' ? '--colors path:fg:218 --colors match:fg:116 ' : '--colors path:fg:125 --colors match:fg:67 '
     return "rg --hidden --glob '!**/.git/**' --column --line-number --no-heading --smart-case --color=always " . colors
 endfunction
@@ -1318,7 +1319,7 @@ function! GXBrowse(url)
         let viewer = 'xdg-open'
     elseif has('macunix') && executable('open')
         let viewer = 'open'
-    elseif has('win64') || has('win32')
+    elseif has('win32')
         let viewer = 'start'
         let redir = '>null'
     else

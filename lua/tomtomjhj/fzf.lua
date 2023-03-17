@@ -1,7 +1,7 @@
 local fzf = require('fzf-lua')
-local actions = require('fzf-lua.actions')
 
-fzf.setup(vim.tbl_deep_extend('force', require('fzf-lua.profiles.fzf-native'), {
+fzf.setup {
+  "fzf-native",
   fzf_opts = {
     ['--border']      = 'top',
   },
@@ -13,26 +13,6 @@ fzf.setup(vim.tbl_deep_extend('force', require('fzf-lua.profiles.fzf-native'), {
     row = 1,
     col = 0,
   },
-  actions = {
-    files = {
-      -- files, git_files, git_status, grep, lsp oldfiles, quickfix, loclist, tags, btags args
-      ["default"]     = actions.file_edit_or_qf,
-      ["ctrl-s"]      = actions.file_split,
-      ["ctrl-x"]      = actions.file_split,
-      ["ctrl-v"]      = actions.file_vsplit,
-      ["ctrl-t"]      = actions.file_tabedit,
-      ["alt-q"]       = actions.file_sel_to_qf,
-      ["alt-l"]       = actions.file_sel_to_ll,
-    },
-    buffers = {
-      -- buffers, tabs, lines, blines
-      ["default"]     = actions.buf_edit,
-      ["ctrl-s"]      = actions.buf_split,
-      ["ctrl-x"]      = actions.buf_split,
-      ["ctrl-v"]      = actions.buf_vsplit,
-      ["ctrl-t"]      = actions.buf_tabedit,
-    }
-  },
-}))
+}
 
 fzf.register_ui_select()

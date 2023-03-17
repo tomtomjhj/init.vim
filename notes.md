@@ -414,6 +414,8 @@ Maybe related to something async in fern.
   }
 ```
 
+LspStop: autostart=false. Manually LspStart. Then LspStop. Then automatically started.
+
 ## (n)vim pitfalls
 * Cursor movement on concealed string: `set concealcursor=n` doesn't work as expected. <https://vi.stackexchange.com/questions/4530/moving-over-conceal>
 * Wrap `autocmd`s with `exec 'au ...'`: may not work as expected because of the interaction w/ `|`.
@@ -517,6 +519,7 @@ Maybe related to something async in fern.
 * `filename-modifiers` should be provided in the order defined in the documentation. `fnamemodify(name, ':h:~')` is wrong.
 * ([#10900](https://github.com/vim/vim/issues/10900)) In vim, handling the output of `:!`, `:write_c`, etc is UI-specific. It's not possible to uniformly capture the output using `execute()`. Must use `system()` for shell commands.
 * `-complete=file` et al. triggers expansion of `cmdline-special` in args.
+  What about backtick-expansion?
   ```
   command! -nargs=* Asdf echo [<f-args>]
   command! -nargs=* -complete=file Asdf echo [<f-args>]
@@ -563,7 +566,7 @@ Maybe related to something async in fern.
     * impossible to wipe marks, registers, jumplist...
     * `:wshada!` https://vi.stackexchange.com/a/26540
     * Edit shada, `:rshada!`, exit.
-* The line on which a three-piece comment's start/end piece lies is treated specially by `gq`. Not documented in fo-table 'q'. Related? <https://github.com/vim/vim/issues/1696>.
+* When `gq`-ing three-piece comment, the line on which a start/end piece lies is treated specially. Not documented in fo-table 'q'. Related? <https://github.com/vim/vim/issues/1696>.
     * These lines are not joined properly by `gq`.
       ```coq
       (* Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
@@ -596,6 +599,7 @@ Maybe related to something async in fern.
         * If title is underlined, it should overlap.
 
       `hl_mode` (`:h nvim_buf_set_extmark`) supports `"replace"`, `"combine"`, `"blend"`, but only for virt text.
+      There's also `"hl_eol"`
 
     * c: `preproc_arg → @function.macro` highlights macro definition body.
     * `@function` → `@function.definition`?
@@ -698,6 +702,7 @@ Maybe related to something async in fern.
     * https://github.com/RRethy/nvim-treesitter-textsubjects
     * https://github.com/vigoux/architext.nvim
     * https://github.com/abecodes/tabout.nvim
+    * https://github.com/Wansmer/treesj
 * git
     * https://github.com/rhysd/conflict-marker.vim
       https://github.com/akinsho/git-conflict.nvim
