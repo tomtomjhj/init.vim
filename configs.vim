@@ -246,7 +246,18 @@ endif
 let g:gui_running = get(g:, 'gui_running', 0)
 function! s:SetupGUI() abort
     let g:gui_running = 1
-    set guifont=Source\ Code\ Pro:h12
+
+    command! -nargs=? Font call s:SetFont(<q-args>)
+    function! s:SetFont(font) abort
+        if !has('nvim') && has('gui_gtk2')
+            let &guifont = substitute(a:font, ':h', ' ', '')
+        elseif exists('g:GuiLoaded') " nvim-qt: suppress warnings like "reports bad fixed pitch metrics"
+            call GuiFont(a:font, 1)
+        else
+            let &guifont = a:font
+        endif
+    endfunction
+
     nnoremap <C--> <Cmd>FontSize -v:count1<CR>
     if !has('nvim')
         nnoremap <C-_> <Cmd>FontSize -v:count1<CR>
@@ -257,17 +268,18 @@ function! s:SetupGUI() abort
     function! s:FontSize(delta)
         let new_size = matchstr(&guifont, '\d\+') + a:delta
         let new_size = (new_size < 1) ? 1 : ((new_size > 100) ? 100 : new_size)
-        let &guifont = substitute(&guifont, '\d\+', '\=new_size', '')
+        call s:SetFont(substitute(&guifont, '\d\+', '\=new_size', ''))
+        let &guifontwide = substitute(&guifontwide, '\d\+', '\=new_size', '')
     endfunction
+
+    Font Iosevka Custom:h10
+    if has('win32')
+        let &guifontwide = 'Malgun Gothic:h10'
+    endif
 
     if !has('nvim')
         set guioptions=i
         set guicursor+=a:blinkon0
-        if has('win32')
-            set guifont=Source_Code_Pro:h12:cANSI:qDRAFT
-        else
-            set guifont=Source\ Code\ Pro\ 12
-        endif
     " NOTE: These variables are not set at startup. Should run at UIEnter.
     elseif exists('g:GuiLoaded') " nvim-qt
         GuiTabline 0
