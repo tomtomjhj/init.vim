@@ -192,7 +192,7 @@ set shortmess+=Ic shortmess-=S
 set belloff=all
 
 set history=1000
-set viminfo=!,'150,<50,s30,h,r/tmp,r/run,rterm://,rfugitive://,rfern://,rman://
+set viminfo=!,'150,<50,s30,h,r/tmp,r/run,rterm://,rfugitive://,rfern://,rman://,rtemp://
 set updatetime=1234
 set noswapfile " set directory=~/.vim/swap//
 set backup backupdir=~/.vim/backup//
@@ -399,6 +399,8 @@ function! STLTitle(...) abort
         return pathshorten(fnamemodify(bname, ":~:.")) . ' :Git ' . join(FugitiveResult(bname)['args'], ' ')
     elseif ft is# 'gl'
         return ':GL' . join([''] + getbufvar(b, 'gl_args'), ' ')
+    elseif bname =~# '^temp://'
+        return matchstr(bname, '^temp://\zs.*')
     elseif empty(bname)
         return empty(bt) ? '[No Name]' : bt is# 'nofile' ? '[Scratch]' : '?'
     else
@@ -1596,21 +1598,21 @@ function! Text2VeryMagic(str) abort
     return escape(a:str, '!#$%&()*+,-./:;<=>?@[\]^{|}~')
 endfunction
 
-function! TempBuf(mods, ...) abort
-    exe a:mods 'new'
+function! TempBuf(mods, title, ...) abort
+    exe a:mods 'new' (empty(a:title) ? '' : printf('temp://%s', a:title))
     setlocal nobuflisted buftype=nofile bufhidden=wipe noswapfile nomodeline
     if a:0
         call setline(1, a:1)
     endif
 endfunction
 function! Execute(cmd, mods) abort
-    call TempBuf(a:mods, split(execute(a:cmd), "\n"))
+    call TempBuf(a:mods, ':' . a:cmd, split(execute(a:cmd), "\n"))
 endfunction
 function! WriteC(cmd, mods) range abort
-    call TempBuf(a:mods, systemlist(s:expand_cmdline_special(a:cmd), getline(a:firstline, a:lastline)))
+    call TempBuf(a:mods, ':w !' . a:cmd, systemlist(s:expand_cmdline_special(a:cmd), getline(a:firstline, a:lastline)))
 endfunction
 function! Bang(cmd, mods) abort
-    call TempBuf(a:mods, systemlist(s:expand_cmdline_special(a:cmd)))
+    call TempBuf(a:mods, ':!' . a:cmd, systemlist(s:expand_cmdline_special(a:cmd)))
 endfunction
 command! -nargs=* -complete=command Execute call Execute(<q-args>, '<mods>')
 command! -nargs=* -range=% -complete=shellcmd WC <line1>,<line2>call WriteC(<q-args>, '<mods>')
