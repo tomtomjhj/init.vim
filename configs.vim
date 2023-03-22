@@ -1636,6 +1636,12 @@ command! -range=% TrimWhitespace
             \|call winrestview(_view)
             \|unlet _view
 
+command! -range=% CollapseBlank
+            \ let _view = winsaveview()
+            \|exe 'keeppatterns keepjumps <line1>,<line2>global/^\_$\_s\+\_^$/d _'
+            \|call winrestview(_view)
+            \|unlet _view
+
 command! -range=% Unpdf
             \ let _view = winsaveview()
             \|keeppatterns keepjumps <line1>,<line2>substitute/[“”łž]/"/ge

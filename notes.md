@@ -359,7 +359,9 @@ git
 * `:global`
     * `:g/foo/z=3`
     * `:g/^pat/y A` yank matching lines (run `qaq` first)
-    * `:keepp g/^$/keepp,/./-j` reduces multiple blank lines to a single line. (`:h range`)
+    * collapsing multiple blank lines
+        * `:keepp g/^$/keepp,/./-j` (`:h collapse`, `:h range`). Need non-blank line at the end.
+        * `:keepp g/^\_$\_s\+\_^$/d _`
 * `zi`
 * `i_CTRL-D`, `i_CTRL-T`, `i_CTRL-F`
 * `:@`, `@:`
