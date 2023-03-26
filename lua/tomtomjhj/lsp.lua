@@ -65,7 +65,9 @@ local function build_breadcrumb(symbols, position)
   local function search(cur)
     if cur == nil then return end
     for _, symbol in ipairs(cur) do
-      if in_range(position, symbol.range) then
+      -- pylsp still uses deprecated SymbolInformation https://github.com/python-lsp/python-lsp-server/issues/110
+      -- https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_documentSymbol
+      if in_range(position, symbol.range or symbol.location.range) then
         if breadcrumb_kind[symbol.kind] then
           stack[#stack+1] = symbol.name
         end
@@ -167,6 +169,7 @@ local function register_progress_message(ag)
     group = ag,
     pattern = 'LspProgressUpdate',
     callback = function()
+      -- TODO: this DOSes echo area
       vim.api.nvim_echo({ { truncate_echo(progress_message()) } }, false, {})
     end
   })

@@ -41,7 +41,7 @@ Plug 'whonore/vim-sentencer'
 " * :G log unicode broken
 " * '--git-completion-helper'-based completion (#1265) doesn't complete many things for git log e.g. --grep
 Plug 'tpope/vim-fugitive'
-Plug 'rhysd/conflict-marker.vim'
+Plug 'tomtomjhj/conflict-marker.vim'
 Plug 'tpope/vim-rhubarb'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
@@ -481,10 +481,6 @@ augroup END
 " }}}
 
 " ColorScheme {{{
-silent! set termguicolors
-if !exists('g:colors_name')
-    colorscheme quite
-endif
 command! Bg if &background ==# 'dark' | set background=light | else | set background=dark | endif
 
 " set env vars controlling terminal app themes based on vim colorscheme
@@ -502,10 +498,17 @@ function! s:env_colors() abort
     endif
 endfunction
 
-augroup colors | au!
+augroup colors-custom | au!
     au ColorScheme * call s:env_colors()
-    au VimEnter * call s:env_colors()
 augroup END
+
+silent! set termguicolors
+if $BACKGROUND =~# 'dark\|light'
+    let &background = $BACKGROUND
+endif
+if !exists('g:colors_name')
+    colorscheme quite
+endif
 " }}}
 
 " Completion {{{

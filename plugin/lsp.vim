@@ -92,7 +92,7 @@ function! SetupLSP()
   nnoremap <buffer>        <M-.> <cmd>lua vim.lsp.buf.hover()<CR>
   nnoremap <buffer><leader>gi    <cmd>lua vim.lsp.buf.implementation()<CR>
   nnoremap <buffer><leader>gy    <cmd>lua vim.lsp.buf.type_definition()<CR>
-  nnoremap <buffer><leader>rf    <cmd>lua vim.lsp.buf.references()<CR>
+  nnoremap <buffer><leader>rf    <cmd>lua vim.lsp.buf.references{includeDeclaration = false}<CR>
   nnoremap <buffer><leader>gd    <cmd>lua vim.lsp.buf.declaration()<CR>
   nnoremap <buffer><leader>fm    <cmd>lua vim.lsp.buf.format{async=true}<CR>
   xnoremap <buffer><expr><leader>fm  NvimLSPRangeFormat('')

@@ -13,6 +13,9 @@ fzf.setup {
     row = 1,
     col = 0,
   },
+  lsp = {
+    includeDeclaration = false,
+  }
 }
 
 fzf.register_ui_select()
