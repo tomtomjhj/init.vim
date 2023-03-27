@@ -107,7 +107,8 @@ function! SetupLSP()
   nnoremap <buffer>        ]D    <cmd>lua vim.diagnostic.goto_next{float=false}<CR>
   nnoremap <buffer>        <M-,> <cmd>lua vim.diagnostic.open_float(0, {scope="cursor"})<CR>
   nnoremap <buffer><leader>dl    <cmd>LspDiagnosticsAll<CR>
-  nnoremap <buffer><leader>ol    <cmd>lua vim.lsp.buf.document_symbol()<CR>
+  " NOTE: aerial overrides documentSymbol handler
+  " nnoremap <buffer><leader>ol    <cmd>lua vim.lsp.buf.document_symbol()<CR>
   nnoremap <buffer><leader>sb    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
   inoremap <buffer>        <M-i> <cmd>lua vim.lsp.buf.signature_help()<CR>
   " TODO: codelens?

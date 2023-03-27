@@ -148,10 +148,6 @@ local function register_breadcrumb(ag, client, bufnr)
 end
 -- }}}
 
--- TODO: hierarchical document_symbol {{{
-
--- }}}
-
 -- progress {{{
 
 local function progress_message()
@@ -179,6 +175,14 @@ end
 require('mason').setup()
 require('mason-lspconfig').setup() -- registers some hooks for lspconfig setup
 require('lspfuzzy').setup{}
+
+require('aerial').setup {
+  on_attach = function(bufnr)
+    vim.keymap.set('n', '[[', '<Cmd>AerialPrev<CR>', {buffer = bufnr})
+    vim.keymap.set('n', ']]', '<Cmd>AerialNext<CR>', {buffer = bufnr})
+    vim.keymap.set('n', '<leader>ol', '<Cmd>AerialToggle!<CR>')
+  end
+}
 
 vim.diagnostic.config {
   underline = { severity = { min = vim.diagnostic.severity.WARN } },
