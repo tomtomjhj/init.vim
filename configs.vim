@@ -123,17 +123,12 @@ if s:nvim_latest_stable
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'folke/paint.nvim'
     " NOTE: should do `rm ~/.cache/nvim/luacache*` after upgrading nvim
-    Plug 'lewis6991/impatient.nvim'
     Plug 'jbyuki/venn.nvim'
 endif
 
 " NOTE: This runs `filetype plugin indent on`, which registers au FileType.
 " Custom au FileType should be registered after this.
 call plug#end()
-endif
-
-if s:nvim_latest_stable
-    lua require('impatient')
 endif
 " }}}
 
@@ -501,6 +496,11 @@ endfunction
 
 augroup colors-custom | au!
     au ColorScheme * call s:env_colors()
+    " vim.lsp.util.open_floating_preview() with syntax=markdown uses lsp_markdown, which :syn-clears markdownError.
+    " However, it's not actually cleared (maybe bug in interaction with :syn-include).
+    " To workaround the fact that it's impossible to set default highlight to NONE,
+    " set its highlight to something visually unnoticeable
+    au ColorScheme * hi markdownError cterm=bold ctermbg=NONE ctermfg=NONE gui=NONE guibg=NONE guifg=NONE
 augroup END
 
 silent! set termguicolors
@@ -667,7 +667,7 @@ let g:matchup_override_vimtex = 1
 let g:vimtex_view_method = 'zathura'
 let g:vimtex_quickfix_mode = 0
 let g:vimtex_indent_on_ampersands = 0
-let g:vimtex_toc_config = { 'show_help': 0 }
+let g:vimtex_toc_config = { 'show_help': 0, 'split_pos': 'vert' }
 let g:vimtex_toc_config_matchers = {
             \ 'todo_notes': {
                 \ 're' : g:vimtex#re#not_comment . '\\\w*%(todo|jaehwang)\w*%(\[[^]]*\])?\{\zs.*',
@@ -840,6 +840,7 @@ function! s:coq_common() abort
     setlocal indentkeys+=!^F
     setlocal path+=theories,_opam/lib/coq/theories,_opam/lib/coq/user-contrib/*
     call tomtomjhj#coq#mappings()
+    " make only TGTS="%:r.vo"
 endfunction
 function! s:coq() abort
     setlocal foldmethod=manual
@@ -1615,7 +1616,10 @@ function! Text2VeryMagic(str) abort
 endfunction
 
 function! TempBuf(mods, title, ...) abort
-    exe a:mods 'new' (empty(a:title) ? '' : printf('temp://%s', a:title))
+    exe a:mods 'new'
+    if !empty(a:title)
+        exe 'file' printf('temp://%d/%s', bufnr(), a:title)
+    endif
     setlocal nobuflisted buftype=nofile bufhidden=wipe noswapfile nomodeline
     if a:0
         call setline(1, a:1)

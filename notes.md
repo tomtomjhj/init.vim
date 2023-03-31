@@ -169,6 +169,11 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
     * ✓ In `after/syntax/`, put `hi! def link`. Make a function that does per-colorscheme `hi! link`. Immediately call this function and register it to `au ColorScheme`.
 
 
+Another annoying issue: It's not possible to set default highlight to NONE.
+* Things like `hi! def link .. NONE`, `hi! def link .. DummyGroup`, and `hi ... key=NONE` don't work.
+  They just clear the highlight, making it overridable with `hi def link`.
+* Linking to Normal is not great, because it will keep using Normal even in floating windows.
+
 ## buffer-updates
 ```
 lua vim.api.nvim_buf_attach(0, false, {on_lines = function(_, bufnr, tick, first, old_last, new_last, _, _, _) vim.pretty_print(tick, first+1, old_last+1, new_last+1) end})
@@ -672,6 +677,7 @@ LspStop: autostart=false. Manually LspStart. Then LspStop. Then automatically st
 * http://nikhilm.github.io/uvbook/ https://github.com/luvit/luv/tree/master/examples/uvbook
 * https://github.com/tweekmonster/helpful.vim https://www.arp242.net/vimlog/ https://axelf.nu/vim-helptag-versions/
 * https://zignar.net/2022/11/06/structuring-neovim-lua-plugins/
+* zed's multi-buffer looks nice
 
 ## plugins
 * https://github.com/mg979/vim-visual-multi

@@ -75,10 +75,6 @@ elseif get(g:, 'ide_client', '') == 'nvim' " {{{
 
 lua require('tomtomjhj/lsp')
 
-" syntax/lsp_markdown.vim :syn-clears it, but not cleared??/
-" this sometimes gets overriden???
-hi! link markdownError NONE
-
 function! SetupLSP()
   augroup LocalNvimLSPStuff | au! * <buffer>
   augroup END
