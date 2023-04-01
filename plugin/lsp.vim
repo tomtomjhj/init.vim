@@ -83,30 +83,36 @@ function! SetupLSP()
   " Or just use gw for built-in formatter.
   setlocal formatexpr=
 
-  nnoremap <buffer>        <M-]> <cmd>lua vim.lsp.buf.definition()<CR>
   " TODO: hover floating window width is not sufficient
   nnoremap <buffer>        <M-.> <cmd>lua vim.lsp.buf.hover()<CR>
-  nnoremap <buffer><leader>gi    <cmd>lua vim.lsp.buf.implementation()<CR>
-  nnoremap <buffer><leader>gy    <cmd>lua vim.lsp.buf.type_definition()<CR>
-  nnoremap <buffer><leader>rf    <cmd>lua vim.lsp.buf.references{includeDeclaration = false}<CR>
-  nnoremap <buffer><leader>gd    <cmd>lua vim.lsp.buf.declaration()<CR>
+
+  " location_handler
+  nnoremap <buffer><leader>rf    <cmd>lua require('fzf-lua').lsp_references{ignore_current_line=true, jump_to_single_result=true}<CR>
+  nnoremap <buffer>        <M-]> <cmd>lua require('fzf-lua').lsp_definitions{ignore_current_line=true, jump_to_single_result=true}<CR>
+  nnoremap <buffer><leader>gd    <cmd>lua require('fzf-lua').lsp_declarations{ignore_current_line=true, jump_to_single_result=true}<CR>
+  nnoremap <buffer><leader>gy    <cmd>lua require('fzf-lua').lsp_typedefs{ignore_current_line=true, jump_to_single_result=true}<CR>
+  nnoremap <buffer><leader>gi    <cmd>lua require('fzf-lua').lsp_implementations{ignore_current_line=true, jump_to_single_result=true}<CR>
+  " symbol_handler
+  nnoremap <buffer><leader>ds    <cmd>lua require('fzf-lua').lsp_document_symbols()<CR>
+  nnoremap <buffer><leader>sb    <cmd>lua require('fzf-lua').lsp_workspace_symbols()<CR>
+  " call_hierarchy_handler
+  " ...
+  nnoremap <buffer><leader>ac    <cmd>lua require('fzf-lua').lsp_code_actions()<CR>
   nnoremap <buffer><leader>fm    <cmd>lua vim.lsp.buf.format{async=true}<CR>
   xnoremap <buffer><expr><leader>fm  NvimLSPRangeFormat('')
   nnoremap <buffer><leader>rn    <cmd>lua vim.lsp.buf.rename()<CR>
-  nnoremap <buffer><leader>ac    <cmd>lua vim.lsp.buf.code_action()<CR>
   nnoremap <buffer><localleader>*    <cmd>lua vim.lsp.buf.document_highlight()<CR>
   nnoremap <buffer><localleader><CR> <cmd>lua vim.lsp.buf.clear_references()<CR>
-
+  inoremap <buffer>        <M-i> <cmd>lua vim.lsp.buf.signature_help()<CR>
   nnoremap <buffer>        [d    <cmd>lua vim.diagnostic.goto_prev{float=false, severity={min=vim.diagnostic.severity.WARN}}<CR>
   nnoremap <buffer>        ]d    <cmd>lua vim.diagnostic.goto_next{float=false, severity={min=vim.diagnostic.severity.WARN}}<CR>
   nnoremap <buffer>        [D    <cmd>lua vim.diagnostic.goto_prev{float=false}<CR>
   nnoremap <buffer>        ]D    <cmd>lua vim.diagnostic.goto_next{float=false}<CR>
   nnoremap <buffer>        <M-,> <cmd>lua vim.diagnostic.open_float(0, {scope="cursor"})<CR>
-  nnoremap <buffer><leader>dl    <cmd>LspDiagnosticsAll<CR>
-  " NOTE: aerial overrides documentSymbol handler
-  " nnoremap <buffer><leader>ol    <cmd>lua vim.lsp.buf.document_symbol()<CR>
-  nnoremap <buffer><leader>sb    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
-  inoremap <buffer>        <M-i> <cmd>lua vim.lsp.buf.signature_help()<CR>
+  " TODO: when this is used for the first time, severity is not highlighted
+  nnoremap <buffer><leader>dl    <cmd>lua require('fzf-lua').diagnostics_workspace{severity_limit=3}<CR>
+  nnoremap <buffer><leader>DL    <cmd>lua require('fzf-lua').diagnostics_workspace()<CR>
+
   " TODO: codelens?
 endfunction
 

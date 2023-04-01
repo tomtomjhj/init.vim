@@ -174,12 +174,19 @@ end
 
 require('mason').setup()
 require('mason-lspconfig').setup() -- registers some hooks for lspconfig setup
-require('lspfuzzy').setup{}
 
-require('aerial').setup {
+local aerial = require('aerial')
+-- NOTE: aerial overrides documentSymbol handler
+aerial.setup {
   on_attach = function(bufnr)
-    vim.keymap.set('n', '[[', '<Cmd>AerialPrev<CR>', {buffer = bufnr})
-    vim.keymap.set('n', ']]', '<Cmd>AerialNext<CR>', {buffer = bufnr})
+    vim.keymap.set('n', '[[', function()
+      vim.cmd [[normal! m']]
+      aerial.prev(vim.v.count1)
+    end, { buffer = bufnr })
+    vim.keymap.set('n', ']]', function()
+      vim.cmd [[normal! m']]
+      aerial.next(vim.v.count1)
+    end, { buffer = bufnr })
     vim.keymap.set('n', '<leader>ol', '<Cmd>AerialToggle!<CR>')
   end
 }
