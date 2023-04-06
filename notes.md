@@ -761,6 +761,8 @@ LspStop: autostart=false. Manually LspStart. Then LspStop. Then automatically st
 * https://github.com/stevearc/gkeep.nvim
 * https://github.com/m00qek/baleia.nvim
     * TODO: Use this for better syntax highlighting for diff filetype?
+* https://github.com/kevinhwang91/nvim-bqf
+* https://github.com/nvim-pack/nvim-spectre
 
 ## new (n)vim stuff
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.

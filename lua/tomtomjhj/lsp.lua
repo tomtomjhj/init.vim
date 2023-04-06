@@ -178,18 +178,25 @@ require('mason-lspconfig').setup() -- registers some hooks for lspconfig setup
 local aerial = require('aerial')
 -- NOTE: aerial overrides documentSymbol handler
 aerial.setup {
+  backends = {
+    tex = {'lsp'},
+  },
   on_attach = function(bufnr)
-    vim.keymap.set('n', '[[', function()
-      vim.cmd [[normal! m']]
-      aerial.prev(vim.v.count1)
-    end, { buffer = bufnr })
-    vim.keymap.set('n', ']]', function()
-      vim.cmd [[normal! m']]
-      aerial.next(vim.v.count1)
-    end, { buffer = bufnr })
+    local ft = vim.api.nvim_buf_get_option(bufnr, 'filetype')
+    if ft ~= 'tex' and ft ~= 'markdown' then
+      vim.keymap.set('n', '[[', function()
+        vim.cmd [[normal! m']]
+        aerial.prev(vim.v.count1)
+      end, { buffer = bufnr })
+      vim.keymap.set('n', ']]', function()
+        vim.cmd [[normal! m']]
+        aerial.next(vim.v.count1)
+      end, { buffer = bufnr })
+    end
     vim.keymap.set('n', '<leader>ol', '<Cmd>AerialToggle!<CR>')
   end
 }
+-- TODO: markdown: support setext heading
 
 vim.diagnostic.config {
   underline = { severity = { min = vim.diagnostic.severity.WARN } },
@@ -203,13 +210,11 @@ local ag = vim.api.nvim_create_augroup("nvim-lsp-custom", { clear = true })
 register_progress_message(ag)
 vim.api.nvim_create_autocmd("DiagnosticChanged", {
   group = ag,
-  pattern = '*',
   command = 'redrawstatus!',
 })
 -- override lspconfig's LspLog
 vim.api.nvim_create_autocmd("VimEnter", {
   group = ag,
-  pattern = '*',
   callback = function()
     vim.api.nvim_create_user_command('LspLog',
       function(opts)

@@ -51,7 +51,6 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': has('unix') ? './install --all' : 
 " See also https://github.com/junegunn/fzf.vim/pull/1239
 Plug 'junegunn/fzf.vim'
 if has('nvim')
-    " TODO: Replace lspfuzzy with fzf-lua? Override vim.lsp.handlers?
     Plug 'ibhagwan/fzf-lua'
 endif
 Plug 'roosta/fzf-folds.vim'
@@ -222,10 +221,6 @@ augroup BasicSetup | au!
     au BufWritePost ~/.vim/configs.vim nested source ~/.vim/configs.vim
     au BufRead,BufNewFile *.k setlocal filetype=k
     au BufRead,BufNewFile *.mir setlocal syntax=rust
-    au FileType lisp let b:pear_tree_pairs = deepcopy(g:pear_tree_pairs) | call remove(b:pear_tree_pairs, "'")
-    au FileType help nnoremap <silent><buffer> <M-.> K
-    let &pumheight = min([&window/4, 20])
-    au VimResized * let &pumheight = min([&window/4, 20])
     if has('nvim-0.5')
         au TextYankPost * silent! lua vim.highlight.on_yank()
     endif
@@ -395,7 +390,7 @@ function! STLTitle(...) abort
     elseif ft is# 'fzf'
         return 'fzf'
     elseif bt is# 'terminal'
-        return has('nvim') ? '!' . matchstr(bname, 'term://\f\{-}//\d\+:\zs.*') : bname
+        return has('nvim') ? '!' . fnamemodify(matchstr(bname, 'term://.\{-}//\d\+:\zs.*'), ':t') : bname
     elseif ft is# 'fern'
         return pathshorten(fnamemodify(getbufvar(b, 'fern').root._path, ":~")) . '/'
     elseif bname =~# '^fugitive://'
@@ -577,7 +572,7 @@ nmap [d <Plug>(ale_previous_wrap)
 " }}}
 
 " Languages {{{
-if has('nvim-0.8')
+if s:nvim_latest_stable
     lua require('tomtomjhj/treesitter')
 endif
 
@@ -590,6 +585,7 @@ augroup Languages | au!
     au FileType coq-goals,coq-infos call s:coq_aux()
     au FileType go call s:go()
     au FileType haskell call s:haskell()
+    au FileType lisp let b:pear_tree_pairs = deepcopy(g:pear_tree_pairs) | call remove(b:pear_tree_pairs, "'")
     au FileType lua call s:lua()
     au FileType markdown call s:markdown()
     au FileType ocaml call s:ocaml()
@@ -1165,8 +1161,6 @@ nnoremap <C-k> <C-W>k
 nnoremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
 
-command! -count Wfh setlocal winfixheight | if <count> | exe "normal! z".<count>."\<CR>" | endif
-
 nnoremap <leader>w :<C-u>up<CR>
 nnoremap ZAQ :<C-u>qa!<CR>
 cnoreabbrev <expr> W <SID>cabbrev('W', 'w')
@@ -1280,6 +1274,29 @@ command! -bang -bar -nargs=* -complete=customlist,fugitive#PushComplete Gpush  e
 command! -bang -bar -nargs=* -complete=customlist,fugitive#FetchComplete Gfetch execute 'AsyncRun<bang> -cwd=' . fnameescape(FugitiveGitDir()) 'git fetch' <q-args>
 " }}}
 
+" window layout {{{
+command! -count Wfh setlocal winfixheight | if <count> | exe 'resize' <count> | endif
+nnoremap <C-w>g= <Cmd>call <SID>adjust_winfix_wins()<CR>
+
+function! s:adjust_winfix_wins() abort
+    for w in range(1, winnr('$'))
+        if getwinvar(w, '&winfixheight')
+            exe w 'resize' &previewheight
+        endif
+    endfor
+endfunction
+
+function! s:heights() abort
+    let &pumheight = min([&window/4, 20])
+    let &previewheight = max([&window/4, 12])
+endfunction
+call s:heights()
+
+augroup layout-custom | au!
+    au VimResized * call s:heights()
+augroup END
+" }}}
+
 " quickfix, loclist, ... {{{
 " TODO: manually adding lines to qf?
 " TODO: Too many functionalities use quickfix. Use location list for some of them.
@@ -1330,7 +1347,6 @@ augroup END
 " Explorers {{{
 let g:loaded_netrwPlugin = 1
 function! GXBrowse(url)
-    let redir = '>&/dev/null'
     if exists('g:netrw_browsex_viewer')
         let viewer = g:netrw_browsex_viewer
     elseif has('unix') && executable('xdg-open')
@@ -1339,11 +1355,10 @@ function! GXBrowse(url)
         let viewer = 'open'
     elseif has('win32')
         let viewer = 'start'
-        let redir = '>null'
     else
         return
     endif
-    execute 'silent! !' . viewer . ' ' . shellescape(a:url, 1) . redir
+    execute 'silent! !' . viewer . ' ' . shellescape(a:url, 1)
     redraw!
 endfunction
 " based on https://gist.github.com/gruber/249502

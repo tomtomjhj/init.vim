@@ -15,6 +15,7 @@ require'nvim-treesitter.configs'.setup {
   },
   incremental_selection = {
     enable = true,
+    disable = disable,
     keymaps = {
       init_selection = "<leader><tab>",
       node_incremental = "<leader><tab>",
