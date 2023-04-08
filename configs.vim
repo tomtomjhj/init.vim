@@ -1,6 +1,6 @@
 " vim: set foldmethod=marker foldlevel=0:
 
-let s:nvim_latest_stable = has('nvim-0.8')
+let s:nvim_latest_stable = has('nvim-0.9')
 let g:ide_client = get(g:, 'ide_client', s:nvim_latest_stable ? 'nvim' : 'coc')
 
 if !has('nvim')
@@ -1276,7 +1276,7 @@ command! -bang -bar -nargs=* -complete=customlist,fugitive#FetchComplete Gfetch 
 
 " window layout {{{
 command! -count Wfh setlocal winfixheight | if <count> | exe 'resize' <count> | endif
-nnoremap <C-w>g= <Cmd>call <SID>adjust_winfix_wins()<CR>
+nnoremap <silent> <C-w>g= :<C-u>call <SID>adjust_winfix_wins()<CR>
 
 function! s:adjust_winfix_wins() abort
     for w in range(1, winnr('$'))
@@ -1632,7 +1632,7 @@ endfunction
 function! TempBuf(mods, title, ...) abort
     exe a:mods 'new'
     if !empty(a:title)
-        exe 'file' printf('temp://%d/%s', bufnr(), a:title)
+        exe 'file' printf('temp://%d/%s', bufnr(''), a:title)
     endif
     setlocal nobuflisted buftype=nofile bufhidden=wipe noswapfile nomodeline
     if a:0

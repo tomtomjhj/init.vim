@@ -653,7 +653,9 @@ LspStop: autostart=false. Manually LspStart. Then LspStop. Then automatically st
   <https://github.com/marcuscf/vim-lua>.
   <https://github.com/vim/vim/issues/11277>
 * if a statusline compotent contains newline ("^@"), highlight is shifted
-* nvim: after recent ui update, sometimes matchup hightlights (based on extmark) are not shown
+* nvim: after recent ui update, sometimes matchup hightlights (based on extmark) are not shown.
+  Seems to be affected by diff highlight and spell highlight.
+  Very reproducible with vimtex, but not with others.
 
 ## ...
 * `ge` ... design of inclusive/exclusive stuff
