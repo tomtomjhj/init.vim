@@ -903,8 +903,8 @@ let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.5, 'yoffset': 1, 'borde
 " let g:fzf_preview_window = 'right:50%:+{2}-/2'
 
 nnoremap <C-g>      :<C-u>Grep<space>
-nnoremap <leader>g/ :<C-u>Grep <C-r>=RgInput(@/)<CR>
-nnoremap <leader>gw :<C-u>Grep \b<C-R>=expand('<cword>')<CR>\b
+nnoremap <leader>g/ :<C-u>Grep! <C-r>=shellescape(RgInput(@/))<CR>
+nnoremap <leader>gw :<C-u>Grep! <C-R>=shellescape('\b'.expand('<cword>').'\b')<CR>
 nnoremap <leader>gf :<C-u>Grepf<space>
 nnoremap <leader>b  :<C-u>Buffers<CR>
 nnoremap <C-f>      :<C-u>Files<CR>
@@ -913,8 +913,8 @@ nnoremap <leader>hh :<C-u>History<CR>
 nnoremap <leader><C-t> :Tags ^<C-r><C-w>\  <CR>
 nnoremap <leader>fl :Folds<CR>
 
-" TODO: ++option for fd/rg. --no-ignore, ...
-command! -nargs=? Grep  call Ripgrep(<q-args>)
+" NOTE: not using -complete=file, because cmdline-spcial escaping is quite annoying
+command! -nargs=? -bang Grep call Ripgrep(<q-args>, <bang>0)
 command! -nargs=? Grepf call RipgrepFly(<q-args>)
 command! -nargs=? -complete=dir Files call Files(<q-args>)
 " allow search on the full tag info, excluding the appended tagfile name
@@ -960,10 +960,10 @@ func! RgInput(raw)
 endfunc
 function! s:rg_cmd_base() abort
     let colors = &background ==# 'dark' ? '--colors path:fg:218 --colors match:fg:116 ' : '--colors path:fg:125 --colors match:fg:67 '
-    return "rg --hidden --glob '!**/.git/**' --column --line-number --no-heading --smart-case --color=always " . colors
+    return "rg --hidden --glob '!**/.git/**' --column --line-number --no-heading --with-filename --smart-case --color=always " . colors
 endfunction
-func! Ripgrep(query)
-    let cmd = s:rg_cmd_base() . shellescape(a:query)
+func! Ripgrep(query, advanced)
+    let cmd = s:rg_cmd_base() . (a:advanced ? a:query : shellescape(a:query))
     let spec = FzfOpts(v:count, {'options': ['--info=inline', '--layout=reverse-list']})
     call fzf#vim#grep(cmd, 1, spec)
 endfunc
