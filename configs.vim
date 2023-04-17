@@ -141,6 +141,7 @@ set mouse=nvi
 set number signcolumn=number
 set ruler showcmd
 set foldcolumn=1 foldnestmax=5
+" TODO: I want nostartofline when using sidescroll
 set scrolloff=2 sidescrolloff=2 sidescroll=1 startofline
 set showtabline=1
 set laststatus=2
@@ -197,6 +198,7 @@ if has('nvim-0.5') | set undodir=~/.vim/undoo// | else | set undodir=~/.vim/undo
 set autoread
 set splitright splitbelow " TODO: not natural for Gdiffsplit with object
 if (has('patch-8.1.2315') || has('nvim-0.5')) | set switchbuf+=uselast | endif
+if has('nvim-0.8') | set jumpoptions+=view | endif
 set hidden
 set lazyredraw
 
@@ -275,7 +277,7 @@ function! s:SetupGUI() abort
         GuiTabline 0
         GuiPopupmenu 0
     elseif exists('g:started_by_firenvim')
-        set guifont=Source\ Code\ Pro:h20
+        FontSize 10
     elseif exists('g:neovide')
         let g:neovide_cursor_animation_length = 0
     endif
@@ -905,7 +907,6 @@ let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.5, 'yoffset': 1, 'borde
 nnoremap <C-g>      :<C-u>Grep<space>
 nnoremap <leader>g/ :<C-u>Grep! <C-r>=shellescape(RgInput(@/))<CR>
 nnoremap <leader>gw :<C-u>Grep! <C-R>=shellescape('\b'.expand('<cword>').'\b')<CR>
-nnoremap <leader>gf :<C-u>Grepf<space>
 nnoremap <leader>b  :<C-u>Buffers<CR>
 nnoremap <C-f>      :<C-u>Files<CR>
 " TODO: filter out stuff that matches wildignore e.g. .git/index, .git/COMMIT_EDITMSG
@@ -915,7 +916,6 @@ nnoremap <leader>fl :Folds<CR>
 
 " NOTE: not using -complete=file, because cmdline-spcial escaping is quite annoying
 command! -nargs=? -bang Grep call Ripgrep(<q-args>, <bang>0)
-command! -nargs=? Grepf call RipgrepFly(<q-args>)
 command! -nargs=? -complete=dir Files call Files(<q-args>)
 " allow search on the full tag info, excluding the appended tagfile name
 " TODO: shift up/down not mapped to preview scroll
@@ -951,28 +951,20 @@ func! RgInput(raw)
         return substitute(a:raw, '\v\\[<>]','','g')
     elseif g:search_mode ==# 'v'
         return escape(a:raw, '+|?-(){}') " not escaped by VisualStar
-    else " can convert most of strict very magic to riggrep regex, otherwise, DIY
-        if a:raw[0:1] !=# '\v'
-            return substitute(a:raw, '\v(\\V|\\[<>])','','g')
-        endif
+    elseif a:raw[0:1] !=# '\v' " can convert most of strict very magic to riggrep regex, otherwise, DIY
+        return substitute(a:raw, '\v(\\V|\\[<>])','','g')
+    else
         return substitute(a:raw[2:], '\v\\([~/])', '\1', 'g')
     endif
 endfunc
 function! s:rg_cmd_base() abort
     let colors = &background ==# 'dark' ? '--colors path:fg:218 --colors match:fg:116 ' : '--colors path:fg:125 --colors match:fg:67 '
-    return "rg --hidden --glob '!**/.git/**' --column --line-number --no-heading --with-filename --smart-case --color=always " . colors
+    return "rg -. -g '!**/.git/**' --no-heading -H -n --column -S --color=always " . colors
 endfunction
 func! Ripgrep(query, advanced)
     let cmd = s:rg_cmd_base() . (a:advanced ? a:query : shellescape(a:query))
     let spec = FzfOpts(v:count, {'options': ['--info=inline', '--layout=reverse-list']})
     call fzf#vim#grep(cmd, 1, spec)
-endfunc
-func! RipgrepFly(query)
-    let command_fmt = s:rg_cmd_base() . '-- %s || true'
-    let initial_command = printf(command_fmt, shellescape(a:query))
-    let reload_command = printf(command_fmt, '{q}')
-    let spec = FzfOpts(v:count, {'options': ['--disabled', '--query', a:query, '--bind', 'change:reload:'.reload_command, '--info=inline', '--layout=reverse-list']})
-    call fzf#vim#grep(initial_command, 1, spec)
 endfunc
 func! Files(query)
     let spec = FzfOpts(v:count, {})
@@ -1439,6 +1431,9 @@ augroup git-custom | au!
         \|Map <buffer> <localleader>* <Plug>fugitive:*
     " TODO: diff mapping for gitcommit
 augroup END
+
+cnoreabbrev <expr> gd <SID>cabbrev('gd', 'Gvdiffsplit')
+cnoreabbrev <expr> gb <SID>cabbrev('gb', 'G blame')
 
 " See also:
 " - https://github.com/sgeb/vim-diff-fold/blob/master/ftplugin/diff.vim

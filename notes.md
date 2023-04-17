@@ -421,6 +421,34 @@ Maybe related to something async in fern.
   }
 ```
 
+`:echo` very big dictionary with small window height (MORE prompt)
+```
+#0  __strncmp_avx2 () at ../sysdeps/x86_64/multiarch/strcmp-avx2.S:115
+115	../sysdeps/x86_64/multiarch/strcmp-avx2.S: No such file or directory.
+(gdb)  bt
+#0  __strncmp_avx2 () at ../sysdeps/x86_64/multiarch/strcmp-avx2.S:115
+#1  0x00005587b9ebbc31 in grid_fill ()
+#2  0x00005587b9f155c9 in ?? ()
+#3  0x00005587b9f0cb8e in ?? ()
+#4  0x00005587b9f0cf89 in msg_puts_attr_len ()
+#5  0x00005587b9f0d504 in msg_outtrans_len_attr ()
+#6  0x00005587b9f0d526 in msg_outtrans_attr ()
+#7  0x00005587b9f0d5c5 in msg_multiline_attr ()
+#8  0x00005587b9e46462 in ex_echo ()
+#9  0x00005587b9e859bb in ?? ()
+#10 0x00005587b9e870e3 in ?? ()
+#11 0x00005587b9e87cad in do_cmdline ()
+#12 0x00005587b9f25d2e in ?? ()
+#13 0x00005587b9f24d02 in ?? ()
+#14 0x00005587b9fc3277 in state_enter ()
+#15 0x00005587b9f21cb8 in normal_enter ()
+#16 0x00005587b9db10a2 in main ()
+```
+
+
+vim.secure.trust() should take account of modeline?
+How does modeline and OptionSet, FileType, ... interact?
+
 LspStop: autostart=false. Manually LspStart. Then LspStop. Then automatically started.
 
 ## (n)vim pitfalls
@@ -566,7 +594,7 @@ LspStop: autostart=false. Manually LspStart. Then LspStop. Then automatically st
     * running tmux inside the termianl:
         * reflow works but scrolling is broken
         * `set shell=tmux` <https://www.reddit.com/r/neovim/comments/umy4gb/tmux_in_neovim/>
-    * vim: big `termwinsize` width? ⇒ After the job finishes, hightlight position is wrong.
+    * vim: big `termwinsize` width? ⇒ After the job finishes, highlight position is wrong.
     * <https://github.com/neovim/neovim/pull/21124>
 * nvim's `CursorMoved` is differrent from vim's. This makes `vimtex_matchparen` wrongly highlight fzf floatwin.
 * shada merging bad https://github.com/neovim/neovim/issues/4295
@@ -653,9 +681,16 @@ LspStop: autostart=false. Manually LspStart. Then LspStop. Then automatically st
   <https://github.com/marcuscf/vim-lua>.
   <https://github.com/vim/vim/issues/11277>
 * if a statusline compotent contains newline ("^@"), highlight is shifted
-* nvim: after recent ui update, sometimes matchup hightlights (based on extmark) are not shown.
-  Seems to be affected by diff highlight and spell highlight.
-  Very reproducible with vimtex, but not with others.
+* nvim: user hightlight is affected by diff mode and spell.
+    * issue: https://github.com/neovim/neovim/issues/23153
+    * symptom
+        * matchup hightlights (uses `nvim_buf_add_highlight`) are overriden by `:syn` hightlight.
+          More precisely, the result is bold (from `MatchParenCur`) + fg color from `:syn` hightlight.
+        * `on_yank()` hightlight has similar symptom.
+          The hightlight of the yanked region is affected by `:syn` hightlight.
+    * reproducing
+        * Very reproducible with vimtex. Not reproducible when treesitter hightlight is used.
+
 
 ## ...
 * `ge` ... design of inclusive/exclusive stuff

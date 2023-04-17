@@ -193,7 +193,7 @@ aerial.setup {
         aerial.next(vim.v.count1)
       end, { buffer = bufnr })
     end
-    vim.keymap.set('n', '<leader>ol', '<Cmd>AerialToggle!<CR>')
+    vim.keymap.set('n', '<leader>ol', '<Cmd>AerialToggle! right<CR>')
   end
 }
 -- TODO: markdown: support setext heading
