@@ -90,11 +90,11 @@ function! SetupLSP()
   nnoremap <buffer>        <M-.> <cmd>lua vim.lsp.buf.hover()<CR>
 
   " location_handler
-  nnoremap <buffer><leader>rf    <cmd>lua require('fzf-lua').lsp_references{ignore_current_line=true, jump_to_single_result=true}<CR>
-  nnoremap <buffer>        <M-]> <cmd>lua require('fzf-lua').lsp_definitions{ignore_current_line=true, jump_to_single_result=true}<CR>
-  nnoremap <buffer><leader>gd    <cmd>lua require('fzf-lua').lsp_declarations{ignore_current_line=true, jump_to_single_result=true}<CR>
-  nnoremap <buffer><leader>gy    <cmd>lua require('fzf-lua').lsp_typedefs{ignore_current_line=true, jump_to_single_result=true}<CR>
-  nnoremap <buffer><leader>gi    <cmd>lua require('fzf-lua').lsp_implementations{ignore_current_line=true, jump_to_single_result=true}<CR>
+  nnoremap <buffer><leader>rf    <cmd>lua require('fzf-lua').lsp_references{jump_to_single_result=true}<CR>
+  nnoremap <buffer>        <M-]> <cmd>lua require('fzf-lua').lsp_definitions{jump_to_single_result=true}<CR>
+  nnoremap <buffer><leader>gd    <cmd>lua require('fzf-lua').lsp_declarations{jump_to_single_result=true}<CR>
+  nnoremap <buffer><leader>gy    <cmd>lua require('fzf-lua').lsp_typedefs{jump_to_single_result=true}<CR>
+  nnoremap <buffer><leader>gi    <cmd>lua require('fzf-lua').lsp_implementations{jump_to_single_result=true}<CR>
   " symbol_handler
   nnoremap <buffer><leader>ds    <cmd>lua require('fzf-lua').lsp_document_symbols()<CR>
   nnoremap <buffer><leader>sb    <cmd>lua require('fzf-lua').lsp_workspace_symbols()<CR>

@@ -343,7 +343,7 @@ function! STLFunc() abort
         return join([ hl1, ' ' . s:stl_mode_map[m] . ' ',
                     \ hl2, '%( %w%q%h%)%( %{STLTitle()}%) ',
                     \ hl3, '%( %{STLProgress()} %)',
-                    \ hl3, '%( %{STLBufState()}%{exists("b:stl")?get(b:stl, "git", ""):""}%)', '%<', '%( %{STLBreadCrumb()}%)',
+                    \ hl3, '%( %{STLBufState()}%{get(b:,"stl_git","")}%)', '%<', '%( %{STLBreadCrumb()}%)',
                     \ '%=',
                     \ hl3, '%(%{SearchCount()} %)',
                     \ '%#STLError#%( %{STLDiagnosticErrors()} %)',
@@ -354,7 +354,7 @@ function! STLFunc() abort
     else
         let [hl1, hl2, hl3, hl4] = s:stl_inactive_hl
         return join([ hl2, '%( %w%q%h%)%( %{STLTitle()}%) ',
-                    \ hl3, '%( @%{winnr()}%)%( %{STLBufState()}', '%<', '%{exists("b:stl")?get(b:stl, "git", ""):""}%)', '%( %{STLBreadCrumb()}%)',
+                    \ hl3, '%( @%{winnr()}%)%( %{STLBufState()}', '%<', '%{get(b:,"stl_git","")}%)', '%( %{STLBreadCrumb()}%)',
                     \ '%=',
                     \ hl3, '%( %{STLDiagnosticErrors()} %)',
                     \ hl3, '%( %{STLDiagnosticWarnings()} %)',
@@ -445,7 +445,7 @@ function! SearchCount()
     endtry
 endfunction
 
-" sets b:stl.git for real files that may be tracked by some git repo
+" sets b:stl_git for real files that may be tracked by some git repo
 function! UpdateGitStatus(buf) abort
     let bname = fnamemodify(bufname(a:buf), ':p')
     if !empty(getbufvar(a:buf, '&buftype')) || !filereadable(bname) || empty(FugitiveGitDir(a:buf)) | return | endif
@@ -454,15 +454,7 @@ function! UpdateGitStatus(buf) abort
     if result.exit_status == 0
         let status = '[' . FugitiveHead(10, a:buf) . (empty(result.stdout[0]) ? '' : ':' . result.stdout[0][:1]) . ']'
     endif
-    let stl = s:ensure_stl(a:buf)
-    let stl.git = status
-endfunction
-
-function! s:ensure_stl(buf) abort
-    if !has_key(getbufvar(a:buf, ''), 'stl')
-        call setbufvar(a:buf, 'stl', {})
-    endif
-    return getbufvar(a:buf, 'stl')
+    call setbufvar(a:buf, 'stl_git', status)
 endfunction
 
 augroup Statusline | au!

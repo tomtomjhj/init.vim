@@ -179,7 +179,7 @@ local aerial = require('aerial')
 -- NOTE: aerial overrides documentSymbol handler
 aerial.setup {
   backends = {
-    tex = {'lsp'},
+    tex = {},
   },
   on_attach = function(bufnr)
     local ft = vim.api.nvim_buf_get_option(bufnr, 'filetype')
