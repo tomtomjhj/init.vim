@@ -342,21 +342,22 @@ function! STLFunc() abort
         let [hl1, hl2, hl3, hl4] = s:stl_active_hl[m]
         return join([ hl1, ' ' . s:stl_mode_map[m] . ' ',
                     \ hl2, '%( %w%q%h%)%( %{STLTitle()}%) ',
-                    \ hl3, '%( %{STLBufState()}%{exists("b:stl")?get(b:stl, "git", ""):""}%)', '%<', '%( %{BreadCrumb()}%)',
+                    \ hl3, '%( %{STLProgress()} %)',
+                    \ hl3, '%( %{STLBufState()}%{exists("b:stl")?get(b:stl, "git", ""):""}%)', '%<', '%( %{STLBreadCrumb()}%)',
                     \ '%=',
                     \ hl3, '%(%{SearchCount()} %)',
-                    \ '%#STLError#%( %{DiagnosticErrors()} %)',
-                    \ '%#STLWarning#%( %{DiagnosticWarnings()} %)',
+                    \ '%#STLError#%( %{STLDiagnosticErrors()} %)',
+                    \ '%#STLWarning#%( %{STLDiagnosticWarnings()} %)',
                     \ hl2, ' %3p%% ',
                     \ hl4, ' %3l:%-2c '
                     \], '')
     else
         let [hl1, hl2, hl3, hl4] = s:stl_inactive_hl
         return join([ hl2, '%( %w%q%h%)%( %{STLTitle()}%) ',
-                    \ hl3, '%( @%{winnr()}%)%( %{STLBufState()}', '%<', '%{exists("b:stl")?get(b:stl, "git", ""):""}%)', '%( %{BreadCrumb()}%)',
+                    \ hl3, '%( @%{winnr()}%)%( %{STLBufState()}', '%<', '%{exists("b:stl")?get(b:stl, "git", ""):""}%)', '%( %{STLBreadCrumb()}%)',
                     \ '%=',
-                    \ hl3, '%( %{DiagnosticErrors()} %)',
-                    \ hl3, '%( %{DiagnosticWarnings()} %)',
+                    \ hl3, '%( %{STLDiagnosticErrors()} %)',
+                    \ hl3, '%( %{STLDiagnosticWarnings()} %)',
                     \ hl2, ' %3p%% ',
                     \ hl4, ' %3l:%-2c '
                     \], '')

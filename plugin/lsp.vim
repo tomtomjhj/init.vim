@@ -32,17 +32,20 @@ function! SetupLSP()
   nmap     <silent><buffer>        ]d    <Plug>(coc-diagnostic-next)
 endfunction
 
-function! BreadCrumb()
+function! STLBreadCrumb()
   return ''
 endfunction
-function! DiagnosticErrors()
+function! STLProgress()
+  return get(g:, 'coc_status', '')
+endfunction
+function! STLDiagnosticErrors()
   if has_key(b:, 'coc_diagnostic_info')
     let errors = b:coc_diagnostic_info['error']
     return errors ? 'E' . errors : ''
   endif
   return ''
 endfunction
-function! DiagnosticWarnings()
+function! STLDiagnosticWarnings()
   if has_key(b:, 'coc_diagnostic_info')
     let warnings = b:coc_diagnostic_info['warning']
     return warnings ? 'W' . warnings : ''
@@ -116,14 +119,17 @@ function! SetupLSP()
   " TODO: codelens?
 endfunction
 
-function! BreadCrumb()
+function! STLBreadCrumb()
   return get(w:, 'breadcrumb', '')
 endfunction
-function! DiagnosticErrors()
+function! STLProgress()
+  return get(g:, 'lsp_progress', '')
+endfunction
+function! STLDiagnosticErrors()
   let errors = luaeval('#vim.diagnostic.get(0, {severity=vim.diagnostic.severity.ERROR})')
   return errors ? 'E' . errors : ''
 endfunction
-function! DiagnosticWarnings()
+function! STLDiagnosticWarnings()
   let warnings = luaeval('#vim.diagnostic.get(0, {severity=vim.diagnostic.severity.WARN})')
   return warnings ? 'W' . warnings : ''
 endfunction
@@ -146,13 +152,13 @@ function! SetupLSP()
   nmap <buffer><leader>rn :ALERename<CR>
   nmap <buffer><leader>rf <Plug>(ale_find_references)
 endfunction
-function! BreadCrumb()
+function! STLBreadCrumb()
   return ''
 endfunction
-function! DiagnosticErrors()
+function! STLDiagnosticErrors()
   return ''
 endfunction
-function! DiagnosticWarnings()
+function! STLDiagnosticWarnings()
   return ''
 endfunction
 endif " }}}

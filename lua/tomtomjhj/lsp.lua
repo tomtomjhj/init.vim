@@ -25,28 +25,6 @@ local function in_range(pos, range)
   end
   return true
 end
-
--- Max length of msg that can be echoed without hit-enter. Taken from ingo#avoidprompt#MaxLength.
-local function echo_max_len()
-  local len = vim.o.columns
-  if vim.o.showcmd then
-    len = len - 12
-  else
-    len = len - 2
-  end
-  if vim.o.ruler and (vim.o.laststatus == 0 or (vim.o.laststatus == 1 and #vim.api.nvim_tabpage_list_wins(0) == 1))  then
-    len = len - 17
-  end
-  return len
-end
-
--- I'm not using ingo#avoidprompt#Truncate because it causes cursor flickering.
-local function truncate_echo(s)
-  local len = echo_max_len()
-  if len <= 0 then return '' end
-  if #s <= len then return s end
-  return s:sub(1, echo_max_len() - 2) .. '..'
-end
 --- }}}
 
 -- breadcrumb {{{
@@ -150,24 +128,46 @@ end
 
 -- progress {{{
 
-local function progress_message()
+local progress_message_clear_timer = assert(vim.loop.new_timer())
+
+local function update_progress_message()
   local msg = vim.lsp.util.get_progress_messages()[1]
   if not msg then return '' end
   local title = string.format('[%s] %s', msg.name, msg.title)
   local details = {}
-  if msg.message then details[#details+1] = msg.message end
-  if msg.done then details[#details+1] = 'Done' end
-  if #details == 0 then return title else return title .. ': ' .. table.concat(details, '. ') end
+  if msg.message then
+    details[#details+1] = msg.message
+  end
+  if msg.done then
+    details[#details+1] = 'Done'
+    -- NOTE: this doesn't cancel already scheduled callback, but this isn't critical
+    progress_message_clear_timer:stop()
+    progress_message_clear_timer:start(
+      2345,
+      0,
+      vim.schedule_wrap(function()
+        vim.g.lsp_progress = nil
+        vim.cmd.redrawstatus { bang = true }
+      end)
+    )
+  end
+  if #details == 0 then
+    vim.g.lsp_progress = title
+  else
+    vim.g.lsp_progress = title .. ': ' .. table.concat(details, '. ')
+  end
+  vim.cmd.redrawstatus { bang = true }
 end
 
 local function register_progress_message(ag)
   vim.api.nvim_create_autocmd("User", {
     group = ag,
     pattern = 'LspProgressUpdate',
-    callback = function()
-      -- TODO: this DOSes echo area
-      vim.api.nvim_echo({ { truncate_echo(progress_message()) } }, false, {})
-    end
+    callback = update_progress_message
+  })
+  vim.api.nvim_create_autocmd("VimLeavePre", {
+    group = ag,
+    callback = function() progress_message_clear_timer:close() end,
   })
 end
 -- }}}
