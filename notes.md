@@ -1,79 +1,6 @@
-# TODO:
-* Better interaction of `hlsearch` and conceal?
-    * disable conceal when hlsearch set?
-* git diff arbitrary commits inside nvim, diff mode usage, git-gutter,...
-* sudoedit settings: undodir, ...
-* `g]`-like commands can't be used in functions etc?
-* fzf: make a feature request for ivy-like actions
-* close all folds under the cursor (sub-tree) `zC` doesn't do this
-* better 'paragraph' and 'sentence' (not customizable at all)
-    * markdown list
-* fzf preview: <S-down> slow -> key code 분해됨
-* make repetitive jump commands' jumplist modification behave like `sneak-clever-s`
-    * "n", "N" (→ `/_CTRL-G`, `/_CTRL-T`), "(", ")", "[[", "]]", "{", "}", "L", "H"
-* Make prefix of built-in and user map time out <https://stackoverflow.com/questions/12089482>. 
-  ```vim
-  " breaks built in
-  noremap <C-w> <C-w>
-  noremap <C-w><C-q> <C-w><C-q>
-  noremap g g
-  noremap z z
-  noremap [ [
-  noremap ] ]
-  " maybe it requires a whole new *mode*
-  function s:CtrlW()
-      let extra = ''
-      while 1
-          " timeout? set of built-in and mappings
-          let c = getchar()
-          if c == 0
-              break
-          endif
-          let extra .= nr2char(c)
-      endwhile
-      return "\<C-w>" . extra
-  endfunction
-  nnoremap <expr> <C-w> <SID>CtrlW()
-  ```
-* make 𝓥 a word char? <https://github.com/vim/vim/commit/d489c9801b3aaf284d42643507bbfb9ce3bc0f2f>
-    * if spellcheck is the problem, do something similar to `set spelllang=cjk`
-* multiple clients for single nvim instance? good for multi-monitor setup. <https://github.com/neovim/neovim/issues/2161>
-* bullet list block textobj, somewhat similar to haskell layout rule
-* `/` without moving cursor
-* custom command modifier? (`<mods>`) for smart splitting based on current window layout
-* ignore folded region while searching
-* unified framework for pair matching: surround/sandwich + matchit/matchup + auto-pairs/pear-tree + nvim-ts-rainbow ...
-* automatically apply patches for plugins that I don't want to fork
-    * pre-PlugUpdate command
-    * command to checkout,PlugUpdate,patch
-* abbrev tex commands with unicode
-* https://github.com/lervag/vimtex/issues/1937
-* `debug-mode`?
-* how to make `Gdiffsplit`, `G blame` do `--follow`?
-    * <https://github.com/tpope/vim-fugitive/issues/2070>
-* Textobj plugins can be lazy-loaded with manual `s:lod_map`
-* search without confirming search, window-local search, jump with `/_CTRL-G`, ...
-* refreshing clipboard `call setenv('DISPLAY', '...')`: The new value can be obtained by launching another shell.. how to automate? Note: `call serverlist()` seems to work
-    * https://stackoverflow.com/questions/13634697/openssh-client-hangs-on-logout-when-forwarding-x-connections
-* Shouldn't `buftype=nofile` buffers be ignored from viminfo (so that they don't clutter oldfiles)?
-    * It seems that the buffer is not added to viminfo if it doesn't have marks. Clear the marks when deleting nofile buffer?
-
-## Done
-* Loading ultisnip at `InsertEnter` fires `FileType` again. Why?????
-  This breaks non-idempotent operations at `FileType` like `AutoPairsDefine({}, ["'"])`
-    * Just disable lazy load as it turns out that loading ultisnip isn't slow.
-    * The root cause: vim-plug does `doautocmd BufRead` when lazy-loaded plugin is loaded.
-* Restore default `iskeyword` inside pandoc code block: it's impossible.
-* width of unicode characters: 가(2) vs ◯(1)
-    * ambiguous width characters
-        * gnome-terminal -> compatibility -> ambiguous-width characters = wide, and `set ambiwidth=double`
-        * how to do this in emacs?
-        * too intrusive
-
 # Notes
 * `strcharpart(strpart(line, col - 1), 0, 1)`
 * `<C-\><C-o><ESC>` to reset insert starting point after ins-special-special
-* absolute n/N <https://superuser.com/a/1454131/1089985>
 * <https://blog.antoyo.xyz/vim-tips>
 * editing shada <https://vi.stackexchange.com/questions/17227/>
 * sub-replace-expression
@@ -106,6 +33,18 @@
 * Inserting text from script and return to insert mode without (1) moving the cursor and (2) delaying the actual input (like `feedkeys()`, `<expr>`)
   `<C-\><C-o>:exe 'normal!' . (col('.') > strlen(getline('.')) ? 'a' : 'i') . "TEXT\<C-\>\<C-o>"<CR>`
 * https://www.reddit.com/r/vim/comments/r9s36f/what_are_some_of_your_insert_mode_mappings/hnekp5r/?utm_source=reddit&utm_medium=web2x&context=3
+* width of unicode characters: 가(2) vs ◯(1)
+    * ambiguous width characters
+        * gnome-terminal -> compatibility -> ambiguous-width characters = wide, and `set ambiwidth=double`
+        * how to do this in emacs?
+        * too intrusive
+* vimtex text objects in markdown <https://github.com/lervag/vimtex/issues/1937>
+* `call serverlist()` to refresh `$DISPLAY` (when not in sync due to e.g. ssh hang caused by xclip or whatever)
+* how to make `Gdiffsplit`, `G blame` do `--follow`?
+  e.g. git diff-ing a file that moved, without specifying the old name
+    * <https://github.com/tpope/vim-fugitive/issues/2070>
+
+
 
 ## dictionary (`i_CTRL-X_CTRL-K`)
 ```vim
@@ -337,20 +276,25 @@ git
 * <https://github.com/molleweide/LuaSnip-snippets.nvim>
 
 ## window-local mode
-* Vim doesn't have window-local mapping, etc.
-    * <https://github.com/neovim/neovim/issues/16263>
-    * <https://github.com/vim/vim/issues/9339>
-* <https://github.com/anuvyklack/hydra.nvim>
-* autocmds + `<buffer>` + `b:`, `w:`
-  ```
-  au BufLeave * unsilent echom 'BufLeave' bufnr() win_getid()
-  au WinLeave * unsilent echom 'WinLeave' bufnr() win_getid()
-  au WinEnter * unsilent echom 'WinEnter' bufnr() win_getid()
-  au BufEnter * unsilent echom 'BufEnter' bufnr() win_getid()
-  ```
-    * BufEnter not triggerd when switching to window with the same buffer
-    * BufLeave → WinLeave → WinEnter → BufEnter
+Vim doesn't have window/tab-local mapping, autocmd, etc.
+* <https://github.com/neovim/neovim/issues/16263>
+* <https://github.com/vim/vim/issues/9339>
 
+Implementing in userspace:
+autocmds + `<buffer>` + `b:`, `w:`
+```
+au BufLeave * unsilent echom 'BufLeave' bufnr() win_getid()
+au WinLeave * unsilent echom 'WinLeave' bufnr() win_getid()
+au WinEnter * unsilent echom 'WinEnter' bufnr() win_getid()
+au BufEnter * unsilent echom 'BufEnter' bufnr() win_getid()
+```
+* BufEnter not triggerd when switching to window with the same buffer
+* BufLeave → WinLeave → WinEnter → BufEnter
+* Maintain a global registry of window-local job, then handle them using those autocmds.
+* See my implementation of window-local lsp breadcrumb (`register_breadcrumb`)
+
+See also
+* <https://github.com/anuvyklack/hydra.nvim>
 
 ## automatic parenthesis closing
 * no automatic balancing?
@@ -397,61 +341,8 @@ git
 * appending to register to collect list of something + recording
 
 
-# issues
 
-## Not triaged
-* While editing tex, something is doing async redraw. Incsearch highlight disappears.
-
-```
-./src/nvim/normal.c:2471: nv_screengo: Assertion `curwin->w_curswant <= INT_MAX - w' failed.
-```
-
-nvim: quickly split a fern; :Buffers.
-```
-Error detected while processing function fzf#vim#buffers[6]..<SNR>114_fzf[21]..fzf#run[81]..function fzf#vim#buffers[6]..<SNR>114_fzf[21]..fzf#run[64]..<SNR>71_execute_term[3]..<SNR>71_split[14]..<SNR>71_popup[21]..<SNR>71_create_popup:
-line    3:
-E5555: API call: Window was closed immediately
-```
-Maybe related to something async in fern.
-<https://github.com/neovim/neovim/pull/11476>
-```
-  if (!win_valid(wp)) {
-    api_set_error(err, kErrorTypeException, "Window was closed immediately");
-    return 0;
-  }
-```
-
-`:echo` very big dictionary with small window height (MORE prompt)
-```
-#0  __strncmp_avx2 () at ../sysdeps/x86_64/multiarch/strcmp-avx2.S:115
-115	../sysdeps/x86_64/multiarch/strcmp-avx2.S: No such file or directory.
-(gdb)  bt
-#0  __strncmp_avx2 () at ../sysdeps/x86_64/multiarch/strcmp-avx2.S:115
-#1  0x00005587b9ebbc31 in grid_fill ()
-#2  0x00005587b9f155c9 in ?? ()
-#3  0x00005587b9f0cb8e in ?? ()
-#4  0x00005587b9f0cf89 in msg_puts_attr_len ()
-#5  0x00005587b9f0d504 in msg_outtrans_len_attr ()
-#6  0x00005587b9f0d526 in msg_outtrans_attr ()
-#7  0x00005587b9f0d5c5 in msg_multiline_attr ()
-#8  0x00005587b9e46462 in ex_echo ()
-#9  0x00005587b9e859bb in ?? ()
-#10 0x00005587b9e870e3 in ?? ()
-#11 0x00005587b9e87cad in do_cmdline ()
-#12 0x00005587b9f25d2e in ?? ()
-#13 0x00005587b9f24d02 in ?? ()
-#14 0x00005587b9fc3277 in state_enter ()
-#15 0x00005587b9f21cb8 in normal_enter ()
-#16 0x00005587b9db10a2 in main ()
-```
-
-
-vim.secure.trust() should take account of modeline?
-How does modeline and OptionSet, FileType, ... interact?
-
-LspStop: autostart=false. Manually LspStart. Then LspStop. Then automatically started.
-
-## (n)vim pitfalls
+# pitfalls
 * Cursor movement on concealed string: `set concealcursor=n` doesn't work as expected. <https://vi.stackexchange.com/questions/4530/moving-over-conceal>
 * Wrap `autocmd`s with `exec 'au ...'`: may not work as expected because of the interaction w/ `|`.
   Fixed in 8.2.3626.
@@ -500,6 +391,8 @@ LspStop: autostart=false. Manually LspStart. Then LspStop. Then automatically st
         * Order of `setup()` and `plugin/*.lua` sourcing?
     * impatient.nvim makes lua plugin startup fast enough.
     * <https://github.com/junegunn/vim-plug/pull/1157>
+* vim-plug does `doautocmd BufRead` when lazy-loaded plugin is loaded, which re-triggers `FileType`, etc.
+  My patch 0f8833a682d1c07564927905efc49e5859c8b2e3.
 * Once a map prefix is entered, single-char mapping doesn't take the effect.
   Example: With `map! <Nul> <C-Space>` and `noremap! <C-Space><C-Space> XXX`, `<Nul><Nul>` becomes `<C-Space><Nul>`.
 * `vimgrep`, `*`, `gd`, etc ignore `smartcase`
@@ -586,126 +479,349 @@ LspStop: autostart=false. Manually LspStart. Then LspStop. Then automatically st
         * **diff**
             * when using diff mode, it's impossible to create a new clean window/tab
         * ...
+* How does modeline and OptionSet, FileType, ... interact?
+  vim.secure.trust() should take account of modeline?
 
 
-## (n)vim bugs
-* terminal reflow https://github.com/neovim/neovim/issues/2514
-    * best: make it work like normal buffer with `nowrap`
-    * running tmux inside the termianl:
-        * reflow works but scrolling is broken
-        * `set shell=tmux` <https://www.reddit.com/r/neovim/comments/umy4gb/tmux_in_neovim/>
-    * vim: big `termwinsize` width? ⇒ After the job finishes, highlight position is wrong.
-    * <https://github.com/neovim/neovim/pull/21124>
-* nvim's `CursorMoved` is differrent from vim's. This makes `vimtex_matchparen` wrongly highlight fzf floatwin.
-* shada merging bad https://github.com/neovim/neovim/issues/4295
-    * impossible to wipe marks, registers, jumplist...
-    * `:wshada!` https://vi.stackexchange.com/a/26540
-    * Edit shada, `:rshada!`, exit.
-* When `gq`-ing three-piece comment, the line on which a start/end piece lies is treated specially. Not documented in fo-table 'q'. Related? <https://github.com/vim/vim/issues/1696>.
-    * These lines are not joined properly by `gq`.
-      ```coq
-      (* Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-      invidunt
-      *)
-      (* Lorem
-      ipsum
-      *)
-      (* Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-      invidunt *)
-      ```
-    * `formatlistpat` is not properly applied if the visual block contains the first line
-      ```coq
-      (* Lorem
-      - ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-      *)
-      ```
-* treesitter
-    * sometimes both vim syntax and treesitter hightlighting are on
-    * breaks `<cword>`?
-    * frequently broken by diff mode → should be fixed by my fix
-    * If multiple captures apply, their hightlights overlap.
-      Only the most precise one should be applied.
-      Maybe it should be configurable, because overlapping is sometimes useful.
-      Examples
-        * In `Box::new()`, "Box" is `@variable`, `@type`, `@namespace`, `@type`, and all of those highlights are applied.
-          Only `@type` should be applied.
-        * Markdown fenced code block: `@text.literal` + highlights of the injected language.
-          If `@text.literal` is bg-only, then should overlap.
-        * If title is underlined, it should overlap.
+# bugs
 
-      `hl_mode` (`:h nvim_buf_set_extmark`) supports `"replace"`, `"combine"`, `"blend"`, but only for virt text.
-      There's also `"hl_eol"`
+## terminal reflow
+<https://github.com/neovim/neovim/issues/2514>
+* best: make it work like normal buffer with `nowrap`
+* running tmux inside the termianl:
+    * reflow works but scrolling is broken
+    * `set shell=tmux` <https://www.reddit.com/r/neovim/comments/umy4gb/tmux_in_neovim/>
+* vim: big `termwinsize` width? ⇒ After the job finishes, highlight position is wrong.
+* <https://github.com/neovim/neovim/pull/21124>
 
-    * c: `preproc_arg → @function.macro` highlights macro definition body.
-    * `@function` → `@function.definition`?
-    * slow with big region: <https://gist.github.com/tomtomjhj/95c2feec72f35e6a6942fd792587bb4e>
+## nvim `CursorMoved`
+nvim's `CursorMoved` is differrent from vim's.
+This makes `vimtex_matchparen` wrongly highlight fzf floatwin.
 
-* https://github.com/neovim/neovim/issues/14298
-  Similar issue in vim without tmux when mapping `<M-]>`.
-  `vim --clean -c 'map <ESC>] <M-]>'` to reproduce.
-* `pedit` on horizontal split ignores `previewheight` if `winhight(0) < previewheight + 1`
+
+## impossible to remove data from shada due to merging
+<https://github.com/neovim/neovim/issues/4295>
+
+* impossible to wipe marks, registers, jumplist...
+* `:wshada!` https://vi.stackexchange.com/a/26540
+* Edit shada, `:rshada!`, exit.
+
+## `gq`-ing three-piece comment
+
+When `gq`-ing three-piece comment, the line on which a start/end piece lies is treated specially.
+Not documented in fo-table 'q'.
+Related? <https://github.com/vim/vim/issues/1696>.
+
+These lines are not joined properly by `gq`.
+```coq
+(* Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
+invidunt
+*)
+(* Lorem
+ipsum
+*)
+(* Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
+invidunt *)
+```
+
+`formatlistpat` is not properly applied if the visual block contains the first line
+```coq
+(* Lorem
+- ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+*)
+```
+
+## treesitter integration low-level bugs
+* sometimes both vim syntax and treesitter hightlighting are on
+* breaks `<cword>`?
+* frequently broken by diff mode → should be fixed by my fix
+* slow with big region: <https://gist.github.com/tomtomjhj/95c2feec72f35e6a6942fd792587bb4e>
+
+## treesitter grammar/query issues
+* c: `preproc_arg → @function.macro` highlights macro definition body.
+* `@function` → `@function.definition`?
+
+## cannot control composition of extmark-based highlights
+If multiple captures apply, their hightlights overlap.
+Only the most precise one should be applied.
+Maybe it should be configurable, because overlapping is sometimes useful.
+Examples
+* In `Box::new()`, "Box" is `@variable`, `@type`, `@namespace`, `@type`, and all of those highlights are applied.
+  Only `@type` should be applied.
+* Markdown fenced code block: `@text.literal` + highlights of the injected language.
+  If `@text.literal` is bg-only, then should overlap.
+* If title is underlined, it should overlap.
+
+`hl_mode` (`:h nvim_buf_set_extmark`) supports `"replace"`, `"combine"`, `"blend"`, but only for virt text.
+There's also `"hl_eol"`
+
+
+## vim: mapping that starts with `<Esc>`
+Without tmux, in gnome-terminal,
+`vim --clean -c 'map <ESC>] <M-]>'`.
+
+See also: https://github.com/neovim/neovim/issues/14298
+
+## `previewheight` ignored in small window
+`pedit` on horizontal split ignores `previewheight` if `winheight(0) < previewheight + 1`
+```
+vim --clean # previewheight=12
+wincmd s | exe "norm! z13\<CR>" | pedit file
+wincmd s | exe "norm! z14\<CR>" | pedit file
+```
+
+## gvim clears clipboard when exiting??
+related? <https://github.com/neovim/neovim/issues/5799>
+
+## `hi def link` + `hi clear`
+Somewhat broken. See [note on colorscheme customization](#colorscheme-customization).
+
+## ✓ nvim: mapping `<C-c>` disables interrupt
+If there's a mapping that starts with `<C-c>` in current mode (but not exactly `<C-c>`), `<C-c>` does not interrupt vimscript (loop, `:sleep`, ...). <https://github.com/neovim/neovim/issues/15258>
+
+## typing imap prefix
+When typing a prefix of imap, the typed char is displayed during the timeout. Is this intended?
+
+## nvim lazyredraw affects visual mode highlight
+In nvim, tex, `lazyredraw`, cursor on `\` of `\someTexCommand`, type `ve` instantaneously. Highlighted region is not drawn and the cursor is not redrawn at proper position. The statusline is redrawn (FixCursorHold.nvim triggers redraw after a while.)
+* bisected: https://github.com/neovim/neovim/pull/17913 a9665bb12cd8cbacbc6ef6df66c1989b0c6f9fcc
+* Reproduction: `:highlight` when evaluating statusline (lightline), in buffer with a lot of text and complex syntax like latex or markdown
+  ```vim
+  let s:count = 0
+  function! Hi()
+      exe 'hi StatusLine' ('cterm=NONE') ('ctermfg=' . s:count) ('ctermbg=' . s:count)
+      let s:count = (s:count + 1) % 256
+      return ''
+  endfunction
+  set statusline=%{Hi()}
+  set lazyredraw
   ```
-  vim --clean # previewheight=12
-  wincmd s | exe "norm! z13\<CR>" | pedit file
-  wincmd s | exe "norm! z14\<CR>" | pedit file
-  ```
-* gvim clears clipboard when exiting??
-    * related? <https://github.com/neovim/neovim/issues/5799>
-* `hi def link` + `hi clear` is somewhat broken
-* nvim: If there's a mapping that starts with `<C-c>` in current mode (but not exactly `<C-c>`), `<C-c>` does not interrupt vimscript (loop, `:sleep`, ...). <https://github.com/neovim/neovim/issues/15258>
-* When typing a prefix of imap, the typed char is displayed during the timeout. Is this intended?
-* In nvim, tex, `lazyredraw`, cursor on `\` of `\someTexCommand`, type `ve` instantaneously. Highlighted region is not drawn and the cursor is not redrawn at proper position. The statusline is redrawn (FixCursorHold.nvim triggers redraw after a while.)
-    * bisected: https://github.com/neovim/neovim/pull/17913 a9665bb12cd8cbacbc6ef6df66c1989b0c6f9fcc
-    * Reproduction: `:highlight` when evaluating statusline (lightline), in buffer with a lot of text and complex syntax like latex or markdown
-      ```vim
-      let s:count = 0
-      function! Hi()
-          exe 'hi StatusLine' ('cterm=NONE') ('ctermfg=' . s:count) ('ctermbg=' . s:count)
-          let s:count = (s:count + 1) % 256
-          return ''
-      endfunction
-      set statusline=%{Hi()}
-      set lazyredraw
-      ```
-    * analysis
-        * `update_screen()` redraws the statusline
-        * After typing `e`, the buggy version doesn't call `grid_cursor_goto` and `inbuf_poll`.
-    * related? <https://github.com/neovim/neovim/pull/20582>
-* If `'lazyredraw'`, when spamming j/k, cursor is not redrawn at the proper position.
-  Un-conceal works properly.
-  Sometimes reproducible with vimtex with large `'lines'`.
-* matchit, matchup: In markdown, if line is like this: `< cursor ( )`, `%` doesn't work. `<` should be matched with `>`???
-    *  Not related to 2022-07-25 html ftplugin update.
+* analysis
+    * `update_screen()` redraws the statusline
+    * After typing `e`, the buggy version doesn't call `grid_cursor_goto` and `inbuf_poll`.
+* related? <https://github.com/neovim/neovim/pull/20582>
+
+## lazyredraw breaks cursor redrawing
+If `'lazyredraw'`, when spamming j/k, cursor is not redrawn at the proper position.
+Un-conceal works properly.
+
+Sometimes reproducible with vimtex with large `'lines'`.
+
+## matchit/matchup in markdown
+In markdown, if line is like this: `< cursor ( )`, `%` doesn't work. `<` should be matched with `>`???
+
+Not related to 2022-07-25 html ftplugin update.
+
+## `:syn-include` bug
+
 * `:syn-include` lua (e.g. lua heredoc, markdown) broken after recent lua syntax update:
   <https://github.com/neovim/neovim/pull/20240/files#diff-2419d762b0d117afe1c1f9c392b9ea3e2ba4270341e576ea6b0533d1ff583351>
   <https://github.com/marcuscf/vim-lua>.
   <https://github.com/vim/vim/issues/11277>
-* if a statusline compotent contains newline ("^@"), highlight is shifted
-* nvim: user hightlight is affected by diff mode and spell.
-    * issue: https://github.com/neovim/neovim/issues/23153
-    * symptom
-        * matchup hightlights (uses `nvim_buf_add_highlight`) are overriden by `:syn` hightlight.
-          More precisely, the result is bold (from `MatchParenCur`) + fg color from `:syn` hightlight.
-        * `on_yank()` hightlight has similar symptom.
-          The hightlight of the yanked region is affected by `:syn` hightlight.
-    * reproducing
-        * Very reproducible with vimtex. Not reproducible when treesitter hightlight is used.
+
+## `^@` in statusline
+If a statusline compotent contains newline ("^@"), highlight is shifted.
+
+## nvim: user hightlight is affected by diff mode and spell.
+* issue: https://github.com/neovim/neovim/issues/23153
+* symptom
+    * matchup hightlights (uses `nvim_buf_add_highlight`) are overriden by `:syn` hightlight.
+      More precisely, the result is bold (from `MatchParenCur`) + fg color from `:syn` hightlight.
+    * `on_yank()` hightlight has similar symptom.
+      The hightlight of the yanked region is affected by `:syn` hightlight.
+* reproducing
+    * Very reproducible with vimtex. Not reproducible when treesitter hightlight is used.
+
+## nvim: Window was closed immediately
+quickly split a fern; :Buffers.
+```
+Error detected while processing function fzf#vim#buffers[6]..<SNR>114_fzf[21]..fzf#run[81]..function fzf#vim#buffers[6]..<SNR>114_fzf[21]..fzf#run[64]..<SNR>71_execute_term[3]..<SNR>71_split[14]..<SNR>71_popup[21]..<SNR>71_create_popup:
+line    3:
+E5555: API call: Window was closed immediately
+```
+Maybe related to something async in fern.
+<https://github.com/neovim/neovim/pull/11476>
+```
+  if (!win_valid(wp)) {
+    api_set_error(err, kErrorTypeException, "Window was closed immediately");
+    return 0;
+  }
+```
+
+## MORE prompt crash
+`:echo` very big dictionary with small window height (MORE prompt)
+```
+#0  __strncmp_avx2 () at ../sysdeps/x86_64/multiarch/strcmp-avx2.S:115
+115	../sysdeps/x86_64/multiarch/strcmp-avx2.S: No such file or directory.
+(gdb)  bt
+#0  __strncmp_avx2 () at ../sysdeps/x86_64/multiarch/strcmp-avx2.S:115
+#1  0x00005587b9ebbc31 in grid_fill ()
+#2  0x00005587b9f155c9 in ?? ()
+#3  0x00005587b9f0cb8e in ?? ()
+#4  0x00005587b9f0cf89 in msg_puts_attr_len ()
+#5  0x00005587b9f0d504 in msg_outtrans_len_attr ()
+#6  0x00005587b9f0d526 in msg_outtrans_attr ()
+#7  0x00005587b9f0d5c5 in msg_multiline_attr ()
+#8  0x00005587b9e46462 in ex_echo ()
+#9  0x00005587b9e859bb in ?? ()
+#10 0x00005587b9e870e3 in ?? ()
+#11 0x00005587b9e87cad in do_cmdline ()
+#12 0x00005587b9f25d2e in ?? ()
+#13 0x00005587b9f24d02 in ?? ()
+#14 0x00005587b9fc3277 in state_enter ()
+#15 0x00005587b9f21cb8 in normal_enter ()
+#16 0x00005587b9db10a2 in main ()
+```
+
+## `:LspStop` autostart
+LspStop: autostart=false. Manually LspStart. Then LspStop. Then automatically started.
+
+## cmp pum location
+Sometimes pum window position is fixed to top left.
+Can be fixed by recreating a new window.
+Happened when editing latex file.
+
+## cmp-buffer dies
+Sometimes cmp-buffer dead.
+Can be fixed by `:edit`.
+Happened when editing latex file.
+
+## duplication of inserted text
+Sometimes, nvim falls into a weird state in which exiting insert mode duplicates the inserted text.
+`:bdelete` and reloading fixed the issue.
+Happened when editing latex file.
+Not related to count.
+This happens after using `\begin{} ... \end{}` snippet.
 
 
-## ...
+# annoyances ingrained in vi(m)
 * `ge` ... design of inclusive/exclusive stuff
 * `^` vs `0`
 * `Y`
 * `n`, `;` is relative
+  ```vim
+  nnoremap <expr> n 'Nn'[v:searchforward]
+  nnoremap <expr> N 'nN'[v:searchforward]
+  nnoremap <expr> ; getcharsearch().forward ? ';' : ','
+  nnoremap <expr> , getcharsearch().forward ? ',' : ';'
+  ```
 * `whichwrap` option. Why not absolute commands?
 * `backspace=nostop` is not default
-* no command for deleting whitespace block
+* `ignorecase` affects tag, ins-completion, ...
 
-## wishlist
-* timeout for built-in multi-char commands so that it doesn't interfere with user mappings
-* character classes (like emacs); word ≠ identifier
-* smarter folding
 
+# improvement/plugin idea
+
+## command for deleting whitespace block
+There are user-level alternatives, but it's difficult to make it not break undo.
+See my `FineGrainedICtrlW()`.
+
+## hlsearch + conceal
+Better interaction of `hlsearch` and conceal?
+* disable conceal when hlsearch set?
+
+I don't recall what I meant by this.
+
+## better 'paragraph' and 'sentence'
+* sentence is not customizable at all
+* syntax-aware, e.g., markdown list, statement
+
+## Timeout for built-in multi-char commands
+Timeout for built-in multi-char commands so that it doesn't interfere with user mappings.
+
+Emulation <https://stackoverflow.com/questions/12089482>.
+```vim
+" breaks built in
+noremap <C-w> <C-w>
+noremap <C-w><C-q> <C-w><C-q>
+noremap g g
+noremap z z
+noremap [ [
+noremap ] ]
+" maybe it requires a whole new *mode*
+function s:CtrlW()
+    let extra = ''
+    while 1
+        " timeout? set of built-in and mappings
+        let c = getchar()
+        if c == 0
+            break
+        endif
+        let extra .= nr2char(c)
+    endwhile
+    return "\<C-w>" . extra
+endfunction
+nnoremap <expr> <C-w> <SID>CtrlW()
+```
+
+## custom command modifier
+(`<mods>`).
+For smart splitting based on current window layout.
+
+## unified framework for pair matching
+surround/sandwich + matchit/matchup + auto-pairs/pear-tree + nvim-ts-rainbow ...
+
+## multiple clients for single nvim instance
+good for multi-monitor setup.
+<https://github.com/neovim/neovim/issues/2161>.
+
+## nofile no viminfo
+`buftype=nofile` buffers be ignored from viminfo so that they don't clutter `oldfiles`.
+
+Alternative:
+It seems that the buffer is not added to viminfo if it doesn't have marks.
+Clear the marks when deleting nofile buffer?
+
+## flexible search
+`/` without moving cursor:
+If stuff to be found is not below the cursor, `/` will wrap, which is annoying.
+Sometimes I just want to locate/highlight stuff that may be above the cursor without jumping, and jump when necessary.
+I can use `?`, but that's even more annoying because that changes flips direction of `n`/`N`.
+
+Jump without confirming search:
+Sometimes I want to jump to something but maintain current search highlight.
+
+Or, maybe the problem is that I'm using `/` for those purposes.
+* `:match` is not incremental and window-local only.
+* vim-mark: add nvim `:command-preview` and more ergonomic mappings
+
+Related? <https://github.com/hrsh7th/vim-searchx>
+
+## don't set jump for repetitive jump
+Make repetitive jump commands' jumplist modification behave like `sneak-clever-s`.
+Add jump only once so that jumplist is not cluttered with irrelevant locations.
+
+For `n`/`N`, there are `/_CTRL-G`/`/_CTRL-T`.
+
+## emacs-like character classes
+word ≠ identifier
+
+Other details
+* make 𝓥 a word char? <https://github.com/vim/vim/commit/d489c9801b3aaf284d42643507bbfb9ce3bc0f2f>
+    * if spellcheck is the problem, do something similar to `set spelllang=cjk`
+
+## fold
+Make it smarter in general.
+I don't recall what I specifically wanted (if any).
+
+Some minor stuff:
+* close all folds under the cursor (sub-tree) `zC` doesn't do this
+* ignore folded region while searching
+
+## `:syn`-based highlight in extmark region
+Use case:
+When using treesitter-based syntax highlighting for markdown,
+I want to use regex-based syntax highlighting for code block
+if there's no treesitter parser for that language.
+
+See `nvim_set_decoration_provider()`
+
+In general, extmark-local anything.
+* settings: `iskeyword`
+* mappings (see also [window-local mode](#window-local-mode))
+
+## window-local
+See note on [window-local mode](#window-local-mode).
 
 # stuff
 * https://arxiv.org/abs/2006.03103
