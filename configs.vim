@@ -99,7 +99,7 @@ Plug 'tomtomjhj/vim-pandoc-syntax'
 Plug 'tomtomjhj/vim-rust-syntax-ext'| Plug 'rust-lang/rust.vim'
 Plug 'ocaml/vim-ocaml'
 Plug 'neovimhaskell/haskell-vim'
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+Plug 'tomtomjhj/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'lervag/vimtex'
 Plug 'tomtomjhj/Coqtail'
 " Plug 'puremourning/vimspector' | let g:vimspector_enable_mappings = 'HUMAN'
@@ -704,6 +704,8 @@ let g:markdown_folding = 1
 " let g:mkdp_echo_preview_url = 1
 let g:mkdp_auto_close = 0
 let g:mkdp_page_title = '${name}'
+let g:mkdp_theme = &background
+au colors-custom ColorScheme * let g:mkdp_theme = &background
 " TODO: manually scroll to position in browser that matches the cursor position?
 let g:mkdp_preview_options = {
             \ 'mkit': { 'typographer': v:false },
@@ -1462,9 +1464,7 @@ function! s:conflict_marker_hi() abort
     endif
 endfunction
 call s:conflict_marker_hi()
-augroup conflict-marker-custom | au!
-    au ColorScheme * call s:conflict_marker_hi()
-augroup END
+au colors-custom ColorScheme * call s:conflict_marker_hi()
 " }}}
 
 " firenvim {{{
