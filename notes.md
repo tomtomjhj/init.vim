@@ -541,6 +541,88 @@ invidunt *)
 * c: `preproc_arg → @function.macro` highlights macro definition body.
 * `@function` → `@function.definition`?
 
+## treesitter markdown scan segfault
+```
+SegvAnalysis: Failure: Unknown offset literal: [rax+rdx*4-0x4]
+SourcePackage: neovim
+Stacktrace:
+ #0  0x00007f2db2f84b46 in scan () from /home/jjh/.vim/plugged/nvim-treesitter/parser/markdown.so
+ No symbol table info available.
+ #1  0x0000560dc83d0e9b in ?? ()
+ No symbol table info available.
+ #2  0x0000560dc83d4aa6 in ts_parser_parse ()
+ No symbol table info available.
+ #3  0x0000560dc8275d06 in ?? ()
+ No symbol table info available.
+ #4  0x00007f2db34bbfb7 in ?? () from /lib/x86_64-linux-gnu/libluajit-5.1.so.2
+ No symbol table info available.
+ #5  0x00007f2db34ccf13 in lua_pcall () from /lib/x86_64-linux-gnu/libluajit-5.1.so.2
+ No symbol table info available.
+ #6  0x0000560dc8264f4b in ?? ()
+ No symbol table info available.
+ #7  0x0000560dc826a2df in nlua_call_ref ()
+ No symbol table info available.
+ #8  0x0000560dc81ac6ee in ?? ()
+ No symbol table info available.
+ #9  0x0000560dc81ad129 in decor_providers_invoke_buf ()
+ No symbol table info available.
+ #10 0x0000560dc81bafb6 in update_screen ()
+ No symbol table info available.
+ #11 0x0000560dc82b00e8 in ?? ()
+ No symbol table info available.
+ #12 0x0000560dc82b1ec1 in ?? ()
+ No symbol table info available.
+ #13 0x0000560dc8351091 in state_enter ()
+ No symbol table info available.
+ #14 0x0000560dc82af8f9 in normal_enter ()
+ No symbol table info available.
+ #15 0x0000560dc813c0f2 in main ()
+ No symbol table info available.
+StacktraceAddressSignature: /usr/bin/nvim:11:/home/jjh/.vim/plugged/nvim-treesitter/parser/markdown.so+17b46:/usr/bin/nvim+29ce9b:/usr/bin/nvim+2a0aa6:/usr/bin/nvim+141d06:/usr/lib/x86_64-linux-gnu/libluajit-5.1.so.2.1.0+1fb7:/usr/lib/x86_64-linux-gnu/libluajit-5.1.so.2.1.0+12f13:/usr/bin/nvim+130f4b:/usr/bin/nvim+1362df:/usr/bin/nvim+786ee:/usr/bin/nvim+79129:/usr/bin/nvim+86fb6:/usr/bin/nvim+17c0e8:/usr/bin/nvim+17dec1:/usr/bin/nvim+21d091:/usr/bin/nvim+17b8f9
+StacktraceTop:
+ scan () from /home/jjh/.vim/plugged/nvim-treesitter/parser/markdown.so
+ ?? ()
+ ts_parser_parse ()
+ ?? ()
+ ?? () from /lib/x86_64-linux-gnu/libluajit-5.1.so.2
+Tags: third-party-packages jammy
+ThreadStacktrace:
+ .
+ Thread 1 (Thread 0x7f2db33a6580 (LWP 531165)):
+ #0  0x00007f2db2f84b46 in scan () from /home/jjh/.vim/plugged/nvim-treesitter/parser/markdown.so
+ No symbol table info available.
+ #1  0x0000560dc83d0e9b in ?? ()
+ No symbol table info available.
+ #2  0x0000560dc83d4aa6 in ts_parser_parse ()
+ No symbol table info available.
+ #3  0x0000560dc8275d06 in ?? ()
+ No symbol table info available.
+ #4  0x00007f2db34bbfb7 in ?? () from /lib/x86_64-linux-gnu/libluajit-5.1.so.2
+ No symbol table info available.
+ #5  0x00007f2db34ccf13 in lua_pcall () from /lib/x86_64-linux-gnu/libluajit-5.1.so.2
+ No symbol table info available.
+ #6  0x0000560dc8264f4b in ?? ()
+ No symbol table info available.
+ #7  0x0000560dc826a2df in nlua_call_ref ()
+ No symbol table info available.
+ #8  0x0000560dc81ac6ee in ?? ()
+ No symbol table info available.
+ #9  0x0000560dc81ad129 in decor_providers_invoke_buf ()
+ No symbol table info available.
+ #10 0x0000560dc81bafb6 in update_screen ()
+ No symbol table info available.
+ #11 0x0000560dc82b00e8 in ?? ()
+ No symbol table info available.
+ #12 0x0000560dc82b1ec1 in ?? ()
+ No symbol table info available.
+ #13 0x0000560dc8351091 in state_enter ()
+ No symbol table info available.
+ #14 0x0000560dc82af8f9 in normal_enter ()
+ No symbol table info available.
+ #15 0x0000560dc813c0f2 in main ()
+ No symbol table info available.
+```
+
 ## cannot control composition of extmark-based highlights
 If multiple captures apply, their hightlights overlap.
 Only the most precise one should be applied.
@@ -634,44 +716,48 @@ If a statusline compotent contains newline ("^@"), highlight is shifted.
 
 ## nvim: Window was closed immediately
 quickly split a fern; :Buffers.
+
+Error in `nvim_open_win()`
 ```
 Error detected while processing function fzf#vim#buffers[6]..<SNR>114_fzf[21]..fzf#run[81]..function fzf#vim#buffers[6]..<SNR>114_fzf[21]..fzf#run[64]..<SNR>71_execute_term[3]..<SNR>71_split[14]..<SNR>71_popup[21]..<SNR>71_create_popup:
 line    3:
 E5555: API call: Window was closed immediately
 ```
-Maybe related to something async in fern.
-<https://github.com/neovim/neovim/pull/11476>
+
+Also reproducible with fzf-lua.
 ```
+E5108: Error executing lua ...h/.vim/plugged/fzf-lua/lua/fzf-lua/providers/buffers.lua:237: /home/jjh/.vim/plugged/fzf-lua/lua/fzf-lua/win.lua:676: Window was closed immediately
+stack traceback:
+	[C]: in function 'fzf_exec'
+	...h/.vim/plugged/fzf-lua/lua/fzf-lua/providers/buffers.lua:237: in function <...h/.vim/plugged/fzf-lua/lua/fzf-lua/providers/buffers.lua:197>
+	/home/jjh/.vim/plugged/fzf-lua/lua/fzf-lua/cmd.lua:78: in function 'run_command'
+	/home/jjh/.vim/plugged/fzf-lua/lua/fzf-lua/cmd.lua:100: in function 'load_command'
+	[string ":lua"]:1: in main chunk
+```
+
+Maybe related to something async in fern.
+
+<https://github.com/neovim/neovim/pull/11476>
+```c
+  win_T *wp = win_new_float(NULL, false, fconfig, err);
+  if (!wp) {
+    return 0;
+  }
+  if (enter) {
+    win_enter(wp, false);
+  }
+  // autocmds in win_enter or win_set_buf below may close the window
+  if (win_valid(wp) && buffer > 0) {
+    win_set_buf(wp->handle, buffer, fconfig.noautocmd, err);
+  }
   if (!win_valid(wp)) {
     api_set_error(err, kErrorTypeException, "Window was closed immediately");
     return 0;
   }
 ```
 
-## MORE prompt crash
-`:echo` very big dictionary with small window height (MORE prompt)
-```
-#0  __strncmp_avx2 () at ../sysdeps/x86_64/multiarch/strcmp-avx2.S:115
-115	../sysdeps/x86_64/multiarch/strcmp-avx2.S: No such file or directory.
-(gdb)  bt
-#0  __strncmp_avx2 () at ../sysdeps/x86_64/multiarch/strcmp-avx2.S:115
-#1  0x00005587b9ebbc31 in grid_fill ()
-#2  0x00005587b9f155c9 in ?? ()
-#3  0x00005587b9f0cb8e in ?? ()
-#4  0x00005587b9f0cf89 in msg_puts_attr_len ()
-#5  0x00005587b9f0d504 in msg_outtrans_len_attr ()
-#6  0x00005587b9f0d526 in msg_outtrans_attr ()
-#7  0x00005587b9f0d5c5 in msg_multiline_attr ()
-#8  0x00005587b9e46462 in ex_echo ()
-#9  0x00005587b9e859bb in ?? ()
-#10 0x00005587b9e870e3 in ?? ()
-#11 0x00005587b9e87cad in do_cmdline ()
-#12 0x00005587b9f25d2e in ?? ()
-#13 0x00005587b9f24d02 in ?? ()
-#14 0x00005587b9fc3277 in state_enter ()
-#15 0x00005587b9f21cb8 in normal_enter ()
-#16 0x00005587b9db10a2 in main ()
-```
+Maybe `win_enter` triggers autocmd that invalidates `wp`?
+But this can't be autocmd of the new window itself.
 
 ## `:LspStop` autostart
 LspStop: autostart=false. Manually LspStart. Then LspStop. Then automatically started.

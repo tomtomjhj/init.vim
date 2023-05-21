@@ -155,6 +155,7 @@ set nojoinspaces
 set list listchars=tab:\|\ ,trail:-,nbsp:+,extends:>
 
 set wrap linebreak breakindent showbreak=↪\ 
+if has('patch-9.0.1247') || has('nvim-0.10') | set smoothscroll | endif
 let &backspace = (has('patch-8.2.0590') || has('nvim-0.5')) ? 3 : 2
 set whichwrap+=<,>,[,],h,l
 set cpoptions-=_
@@ -1357,6 +1358,7 @@ nnoremap <silent> gx :call GXBrowse(CursorURL())<cr>
 
 " NOTE: :Fern that isn't drawer does not reuse "authority". Leaves too many garbage buffers.
 let g:fern#default_exclude = '\v(\.glob|\.vo[sk]?|\.o)$'
+let g:fern#disable_drawer_hover_popup = 1
 nnoremap <leader>nn <Cmd>Fern . -drawer -toggle<CR>
 nnoremap <leader>nf <Cmd>Fern . -drawer -reveal=%<CR>
 nnoremap <leader>-  <Cmd>call fern#internal#command#fern#command('', [BufDir(), '-reveal='.expand('%:t')])<CR>
@@ -1381,15 +1383,20 @@ function! s:init_fern() abort
     silent! nunmap <buffer> <BS>
     silent! nunmap <buffer> s
     silent! nunmap <buffer> N
+    silent! vunmap <buffer> -
+    silent! vunmap <buffer> !
     nnoremap <buffer> ~ <Cmd>Fern ~<CR>
     nmap <buffer> - <Plug>(fern-action-leave)
     Map <buffer> x <Plug>(fern-action-mark)
     nmap <buffer> gx <Plug>(fern-action-open:system)
     nmap <buffer> <C-n> <Plug>(fern-action-new-file)
-    " or use the 'ex' action
     cmap <buffer> <C-r><C-p> <Plug>BufDir
     " toggle both hidden and exclude
-    nmap <buffer> <expr> ! '<Plug>(fern-action-exclude=)<C-u>' . (!b:fern.hidden ? '' : g:fern#default_exclude) . '<CR>' . '<Plug>(fern-action-hidden:toggle)'
+    nmap <buffer> <expr> gh '<Plug>(fern-action-exclude=)<C-u>' . (!b:fern.hidden ? '' : g:fern#default_exclude) . '<CR>' . '<Plug>(fern-action-hidden:toggle)'
+    nmap <buffer> . <Plug>(fern-action-ex)
+    nmap <buffer> g. <Plug>(fern-action-repeat)
+    nmap <buffer> g? <Plug>(fern-action-help)
+    nmap <buffer> D <Plug>(fern-action-remove)
 endfunction
 
 augroup fern-custom | au!

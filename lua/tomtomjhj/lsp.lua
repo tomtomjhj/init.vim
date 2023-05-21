@@ -218,10 +218,12 @@ vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     vim.api.nvim_create_user_command('LspLog',
       function(opts)
-        vim.cmd.pedit {
-          args = { '+setlocal nobuflisted|$', vim.lsp.get_log_path() },
-          mods = opts.smods,
-        }
+        -- NOTE: nvim_cmd doesn't work well with complex +cmd
+        -- vim.cmd.pedit {
+        --   args = { [[+setlocal\ nobuflisted|$ ]] .. vim.lsp.get_log_path() },
+        --   mods = opts.smods,
+        -- }
+        vim.cmd([[pedit +setlocal\ nobuflisted|$ ]] .. vim.lsp.get_log_path() )
       end,
       { force = true, }
     )
@@ -304,17 +306,19 @@ lspconfig.vimls.setup(base_opt)
 
 lspconfig.texlab.setup(base_opt)
 
--- run with LspStart ltex
--- TODO: https://github.com/barreiroleo/ltex_extra.nvim
+-- NOTE: Codeaction-ed rules are recorded in .ltex_ls_cache.json.
+-- See also https://github.com/barreiroleo/ltex_extra.nvim.
 require'ltex-ls'.setup(
   vim.tbl_extend('error', base_opt, {
     autostart = false,
+    -- Not quite useful, because it's not updated on zg.
+    -- In the meantime, use the built-in spellchecker.
+    -- use_spellfile = true, -- ltex-ls.nvim setting
     settings = { ltex = {
       checkFrequency = "save",
       -- dictionary = {
       --   ["en-US"] = { ":~/.vim/spell/en.utf-8.add" }
       -- },
-      -- TODO: Make dictionary work as intended. In the meantime, use the built-in spellchecker.
       disabledRules = {
         ["en-US"] = { "MORFOLOGIK_RULE_EN_US" }
       },
@@ -322,7 +326,16 @@ require'ltex-ls'.setup(
         commands = {
           ["\\todo{}"] = "ignore",
           ["\\jaehwang{}"] = "ignore",
-        }
+        },
+        environments = {
+          ["mathpar"] = "ignore",
+        },
+      },
+      additionalRules = {
+        languageModel = '~/ngram/',
+      },
+      ['ltex-ls'] = {
+        logLevel = "severe", -- NOTE: "INFO: ltex-ls 16.0.0 - initializing..." still logged
       },
     }}
   })
