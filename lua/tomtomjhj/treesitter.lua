@@ -52,7 +52,7 @@ require("paint").setup {
     {
       -- lua ---@ comment
       filter = function(b)
-        return highlighter.active[b] and vim.api.nvim_buf_get_option(b, 'filetype') == 'lua'
+        return highlighter.active[b] and vim.bo[b].filetype == 'lua'
       end,
       pattern = "%s*%-%-%-%s*(@%w+)",
       hl = "Constant",

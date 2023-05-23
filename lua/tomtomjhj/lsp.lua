@@ -181,8 +181,9 @@ aerial.setup {
   backends = {
     tex = {},
   },
+  link_tree_to_folds = false,
   on_attach = function(bufnr)
-    local ft = vim.api.nvim_buf_get_option(bufnr, 'filetype')
+    local ft = vim.bo[bufnr].filetype
     if ft ~= 'tex' and ft ~= 'markdown' then
       vim.keymap.set('n', '[[', function()
         vim.cmd [[normal! m']]

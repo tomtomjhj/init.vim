@@ -1359,6 +1359,7 @@ nnoremap <silent> gx :call GXBrowse(CursorURL())<cr>
 " NOTE: :Fern that isn't drawer does not reuse "authority". Leaves too many garbage buffers.
 let g:fern#default_exclude = '\v(\.glob|\.vo[sk]?|\.o)$'
 let g:fern#disable_drawer_hover_popup = 1
+let g:fern#disable_drawer_auto_resize = 1 " It remembers wrong width from <C-w>H. Disable it and use :bd to reset.
 nnoremap <leader>nn <Cmd>Fern . -drawer -toggle<CR>
 nnoremap <leader>nf <Cmd>Fern . -drawer -reveal=%<CR>
 nnoremap <leader>-  <Cmd>call fern#internal#command#fern#command('', [BufDir(), '-reveal='.expand('%:t')])<CR>
@@ -1387,7 +1388,8 @@ function! s:init_fern() abort
     silent! vunmap <buffer> !
     nnoremap <buffer> ~ <Cmd>Fern ~<CR>
     nmap <buffer> - <Plug>(fern-action-leave)
-    Map <buffer> x <Plug>(fern-action-mark)
+    Map <buffer> x <Plug>(fern-action-mark:toggle)
+    nmap <buffer> X <Plug>(fern-action-mark:clear)
     nmap <buffer> gx <Plug>(fern-action-open:system)
     nmap <buffer> <C-n> <Plug>(fern-action-new-file)
     cmap <buffer> <C-r><C-p> <Plug>BufDir
