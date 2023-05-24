@@ -231,7 +231,16 @@ vim.api.nvim_create_autocmd("VimEnter", {
   end
 })
 
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
+-- Disable workspace/didChangeWatchedFiles. Uses too much cpu.
+-- https://github.com/neovim/neovim/issues/23291
+local capabilities = vim.tbl_deep_extend('force', require('cmp_nvim_lsp').default_capabilities(), {
+  workspace = {
+    didChangeWatchedFiles = {
+      dynamicRegistration = false,
+    },
+  },
+})
+
 local base_opt = {
   on_attach = function(client, bufnr)
     vim.fn['SetupLSP']()
