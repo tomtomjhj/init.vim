@@ -33,7 +33,7 @@ if !has('gui_running')
   " set to xterm in tmux, which doesn't support window resizing with mouse
   set ttymouse=sgr
 
-  " NOTE: <M- keys can be affected by 'encoding'.
+  " NOTE: <M- keys can be affected by 'encoding'. See also: https://github.com/tpope/vim-rsi/commit/45540637ead22f011e8215f1c90142e49d946a54
   " NOTE: Characters that come after <Esc> in terminal codes: [ ] P \ M O
   " (see term.c and `set termcap`)
   " These terminal options (gnome-terminal) conflict with my <M- mappings.

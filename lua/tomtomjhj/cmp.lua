@@ -47,6 +47,7 @@ cmp.setup {
       option = {
         keyword_pattern = [[\<\K\k\{-,38}\>]], -- TODO: per-ft keyword pattern? e.g. no \k for help file
         get_bufnrs = get_visible_bufnrs,
+        max_indexed_line_length = 1024,
       }
     },
     { name = 'luasnip' },

@@ -714,51 +714,6 @@ If a statusline compotent contains newline ("^@"), highlight is shifted.
 * reproducing
     * Very reproducible with vimtex. Not reproducible when treesitter hightlight is used.
 
-## nvim: Window was closed immediately
-quickly split a fern; :Buffers.
-
-Error in `nvim_open_win()`
-```
-Error detected while processing function fzf#vim#buffers[6]..<SNR>114_fzf[21]..fzf#run[81]..function fzf#vim#buffers[6]..<SNR>114_fzf[21]..fzf#run[64]..<SNR>71_execute_term[3]..<SNR>71_split[14]..<SNR>71_popup[21]..<SNR>71_create_popup:
-line    3:
-E5555: API call: Window was closed immediately
-```
-
-Also reproducible with fzf-lua.
-```
-E5108: Error executing lua ...h/.vim/plugged/fzf-lua/lua/fzf-lua/providers/buffers.lua:237: /home/jjh/.vim/plugged/fzf-lua/lua/fzf-lua/win.lua:676: Window was closed immediately
-stack traceback:
-	[C]: in function 'fzf_exec'
-	...h/.vim/plugged/fzf-lua/lua/fzf-lua/providers/buffers.lua:237: in function <...h/.vim/plugged/fzf-lua/lua/fzf-lua/providers/buffers.lua:197>
-	/home/jjh/.vim/plugged/fzf-lua/lua/fzf-lua/cmd.lua:78: in function 'run_command'
-	/home/jjh/.vim/plugged/fzf-lua/lua/fzf-lua/cmd.lua:100: in function 'load_command'
-	[string ":lua"]:1: in main chunk
-```
-
-Maybe related to something async in fern.
-
-<https://github.com/neovim/neovim/pull/11476>
-```c
-  win_T *wp = win_new_float(NULL, false, fconfig, err);
-  if (!wp) {
-    return 0;
-  }
-  if (enter) {
-    win_enter(wp, false);
-  }
-  // autocmds in win_enter or win_set_buf below may close the window
-  if (win_valid(wp) && buffer > 0) {
-    win_set_buf(wp->handle, buffer, fconfig.noautocmd, err);
-  }
-  if (!win_valid(wp)) {
-    api_set_error(err, kErrorTypeException, "Window was closed immediately");
-    return 0;
-  }
-```
-
-Maybe `win_enter` triggers autocmd that invalidates `wp`?
-But this can't be autocmd of the new window itself.
-
 ## `:LspStop` autostart
 LspStop: autostart=false. Manually LspStart. Then LspStop. Then automatically started.
 

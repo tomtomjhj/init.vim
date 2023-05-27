@@ -1360,6 +1360,7 @@ nnoremap <silent> gx :call GXBrowse(CursorURL())<cr>
 let g:fern#default_exclude = '\v(\.glob|\.vo[sk]?|\.o)$'
 let g:fern#disable_drawer_hover_popup = 1
 let g:fern#disable_drawer_auto_resize = 1 " It remembers wrong width from <C-w>H. Disable it and use :bd to reset.
+let g:fern#disable_viewer_auto_duplication = 1
 nnoremap <leader>nn <Cmd>Fern . -drawer -toggle<CR>
 nnoremap <leader>nf <Cmd>Fern . -drawer -reveal=%<CR>
 nnoremap <leader>-  <Cmd>call fern#internal#command#fern#command('', [BufDir(), '-reveal='.expand('%:t')])<CR>
@@ -1388,6 +1389,8 @@ function! s:init_fern() abort
     silent! vunmap <buffer> !
     nnoremap <buffer> ~ <Cmd>Fern ~<CR>
     nmap <buffer> - <Plug>(fern-action-leave)
+    nmap <buffer><localleader><C-l> <Plug>(fern-action-reload)
+    nmap <buffer> l <Plug>(fern-action-expand)
     Map <buffer> x <Plug>(fern-action-mark:toggle)
     nmap <buffer> X <Plug>(fern-action-mark:clear)
     nmap <buffer> gx <Plug>(fern-action-open:system)
@@ -1708,4 +1711,6 @@ endif
 
 command! Profile profile start profile.log | profile func * | profile file *
 " NOTE: lua profile https://github.com/nvim-lua/plenary.nvim#plenaryprofile
+" lua require'plenary.profile'.start("profile.log") -- , {flame = true}
+" lua require'plenary.profile'.stop()
 " }}}

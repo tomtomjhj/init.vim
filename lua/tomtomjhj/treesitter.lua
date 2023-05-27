@@ -11,7 +11,7 @@ require'nvim-treesitter.configs'.setup {
   },
   indent = {
     enable = true;
-    disable = disable;
+    disable = vim.list_extend({'markdown'}, disable);
   },
   incremental_selection = {
     enable = true,
