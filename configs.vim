@@ -983,7 +983,7 @@ endif
 
 " }}}
 
-" Motion, insert mode, ... {{{
+" Motion {{{
 " just set nowrap instead of explicit linewise ops
 nnoremap <expr> j                     v:count ? 'j' : 'gj'
 nnoremap <expr> k                     v:count ? 'k' : 'gk'
@@ -1021,61 +1021,135 @@ let g:sneak#alias = {
             \ '[': '[[⌜⎡⊑⊓]', ']': '[\]⌝⎤⊒⊔]',
             \}
 
-" TODO: (special char -> non-blank, non-keyword), user-defined (paren -> pair?)
-" s-word: (a keyword | repetition of non-paren special char | a paren | whitespace)
-let g:sword = '\v(\k+|([^[:alnum:]_[:blank:](){}[\]<>''"`$])\2*|[(){}[\]<>''"`$]|\s+)'
-"                     %(\k|[()[\]{}<>[:blank:]$])@!(.)\1*
-" NOTE: \v(<|>) works well for word chars, but not for non-word chars 𝓥s
-" '\v(<|>|[^[:alnum:]_[:blank:]])', '\k\+\|[[:punct:]]\|\s\+'
+" }}}
 
-" Jump past a sword. Assumes `set whichwrap+=]` for i_<Right>
-inoremap <silent><C-j> <C-r>=SwordJumpRight()<CR><Right>
-inoremap <silent><C-k> <C-r>=SwordJumpLeft()<CR>
-func! SwordJumpRight()
-    if col('.') !=  col('$')
-        call search(g:sword, 'ceW')
-    endif
-    return ''
-endfunc
-func! SwordJumpLeft()
-    call search(col('.') != 1 ? g:sword : '\v$', 'bW')
-    return ''
-endfunc
-" <C-b> <C-e>
-cnoremap <C-j> <S-Right>
-cnoremap <C-k> <S-Left>
+" insert/command mode {{{
+" readline-style cmap
+cnoremap <C-x><C-e> <C-f>
+" moving
+cnoremap <C-a> <Home>
+" <C-e>
+cnoremap <C-f> <Space><BS><Right>
+cnoremap <C-b> <Space><BS><Left>
+" changing text
+cnoremap <expr> <C-d> getcmdpos() <= strlen(getcmdline()) ? "\<Del>" : ""
+" completing
+cnoremap <M-?> <C-d>
+cnoremap <M-*> <C-a>
 
 inoremap <expr> <C-u> match(getline('.'), '\S') >= 0 ? '<C-g>u<C-u>' : '<C-u>'
-" Delete a single character of other non-blank chars
-inoremap <silent><expr><C-w>  FineGrainedICtrlW(0)
-" Like above, but first consume whitespace
-inoremap <silent><expr><M-BS> FineGrainedICtrlW(1)
-func! FineGrainedICtrlW(finer)
-    let l:col = col('.')
-    if l:col == 1 | return "\<BS>" | endif
-    let l:before = strpart(getline('.'), 0, l:col - 1)
-    let l:chars = split(l:before, '.\zs')
-    if l:chars[-1] =~ '\s'
-        let l:len = len(l:chars)
-        let l:idx = 1
-        while l:idx < l:len && l:chars[-(l:idx + 1)] =~ '\s'
-            let l:idx += 1
-        endwhile
-        if l:idx == l:len || (!a:finer && l:chars[-(l:idx + 1)] =~ '\k')
-            return "\<C-w>"
-        endif
-        let l:sts = &softtabstop
-        let l:vsts = &varsofttabstop
-        setlocal softtabstop=0 varsofttabstop=
-        return repeat("\<BS>", l:idx)
-                    \ . "\<C-R>=execute('".printf('setl sts=%d vsts=%s', l:sts, l:vsts)."')\<CR>"
-                    \ . (a:finer ? "" : "\<C-R>=pear_tree#insert_mode#Backspace()\<CR>")
-    elseif l:chars[-1] !~ '\k'
-        return pear_tree#insert_mode#Backspace()
-    else
+
+inoremap         <expr> <C-j>  ScanJump(0, 'NextTokenBoundary')
+cnoremap         <expr> <C-j>  ScanJump(1, 'NextTokenBoundary')
+inoremap         <expr> <C-k>  ScanJump(0, PrevTokenBoundary)
+cnoremap         <expr> <C-k>  ScanJump(1, PrevTokenBoundary)
+inoremap <silent><expr> <C-w>  ScanRubout(0, 'PrevTokenLeftBoundary')
+cnoremap         <expr> <C-w>  ScanRubout(1, 'PrevTokenLeftBoundary')
+inoremap <silent><expr> <M-BS> ScanRubout(0, PrevSubwordBoundary)
+cnoremap         <expr> <M-BS> ScanRubout(1, PrevSubwordBoundary)
+
+function! ScanJump(cmap, scanner) abort
+    let line = a:cmap ? getcmdline() : getline('.')
+    let from = s:charidx(line . ' ', (a:cmap ? getcmdpos() : col('.')) - 1)
+    let line = split(line, '\zs')
+    let to = call(a:scanner, [line, from])
+    let delta = to - from
+    return (a:cmap ? "\<Space>\<BS>" : "")
+        \. repeat(delta > 0 ? "\<Right>" : "\<Left>", abs(delta))
+endfunction
+
+" TODO: put the killed text to some sort of yank buffer? @-, @y, ...
+function! ScanRubout(cmap, scanner) abort
+    let line = a:cmap ? getcmdline() : getline('.')
+    let from = s:charidx(line . ' ', (a:cmap ? getcmdpos() : col('.')) - 1)
+    if from == 0 | return "\<C-w>" | endif
+    let line = split(line, '\zs')
+    let to = call(a:scanner, [line, from])
+    if to == 0 && line[to] =~# '\s' " <BS> on indentation deletes shiftwidth
         return "\<C-w>"
+    elseif a:cmap
+        return repeat("\<BS>", from - to)
+    elseif line[to] =~# '[^(){}[\]<>''"`$]'
+        return BSWithoutSTS(from - to)
+    else
+        return BSWithoutSTS(from - (to + 1)) . "\<C-R>=pear_tree#insert_mode#Backspace()\<CR>"
     endif
-endfunc
+endfunction
+
+function! PrevBoundary(pat, line, from) abort
+    if a:from == 0 | return 0 | endif
+    let to = a:from - 1
+    let c = a:line[to]
+    if c =~# '\s' " to the right end of the previous token
+        let to = SkipPatBackward(a:line, to, '\s')
+    elseif c =~# a:pat " to the left end of the current token/subword
+        let to = SkipPatBackward(a:line, to, a:pat)
+    elseif c =~# '[^(){}[\]<>''"`$]'
+        let to = SkipCharBackward(a:line, to, c)
+    endif
+    return to
+endfunction
+let PrevTokenBoundary = function('PrevBoundary', ['\k'])
+let PrevSubwordBoundary = function('PrevBoundary', ['[[:punct:]]\@!\k'])
+
+function! NextTokenBoundary(line, from) abort
+    let n = len(a:line)
+    if a:from == n | return n | endif
+    let c = a:line[a:from]
+    let to = a:from + 1
+    if c =~# '\s' " to the left end of the next token
+        let to = SkipPatForward(a:line, to, '\s')
+    elseif c =~# '\k' " to the right end of the current token
+        let to = SkipPatForward(a:line, to, '\k')
+    elseif c =~# '[^(){}[\]<>''"`$]'
+        let to = SkipCharForward(a:line, to, c)
+    endif
+    return to
+endfunction
+
+function! PrevTokenLeftBoundary(line, from) abort
+    if a:from == 0 | return 0 | endif
+    let to = SkipPatBackward(a:line, a:from, '\s')
+    if to == 0 | return 0 | endif
+    let to -= 1
+    let c = a:line[to]
+    if c =~# '\k' " to the left end of the word
+        let to = SkipPatBackward(a:line, to, '\k')
+    elseif c =~# '[^(){}[\]<>''"`$]'
+        let to = SkipCharBackward(a:line, to, c)
+    endif
+    return to
+endfunction
+
+function! SkipPatForward(line, from, pat) abort
+    let n = len(a:line)
+    let to = a:from
+    while to < n && a:line[to] =~# a:pat | let to += 1 | endwhile
+    return to
+endfunction
+function! SkipCharForward(line, from, char) abort
+    let n = len(a:line)
+    let to = a:from
+    while to < n && a:line[to] is# a:char | let to += 1 | endwhile
+    return to
+endfunction
+function! SkipPatBackward(line, from, pat) abort
+    let to = a:from
+    while to > 0 && a:line[to - 1] =~# a:pat | let to -= 1 | endwhile
+    return to
+endfunction
+function! SkipCharBackward(line, from, char) abort
+    let to = a:from
+    while to > 0 && a:line[to - 1] is# a:char | let to -= 1 | endwhile
+    return to
+endfunction
+
+function! BSWithoutSTS(n) abort
+    let l:sts = &softtabstop
+    let l:vsts = &varsofttabstop
+    setlocal softtabstop=0 varsofttabstop=
+    return repeat("\<BS>", a:n). "\<C-R>=execute('".printf('setl sts=%d vsts=%s', l:sts, l:vsts)."')\<CR>"
+endfunction
 " }}}
 
 " etc mappings {{{
@@ -1588,6 +1662,28 @@ endfunction
 " }}}
 
 " etc util {{{
+" compat {{{
+if exists('*charidx') " 8.2.2233
+    function! s:charidx(string, idx)
+        return charidx(a:string, a:idx)
+    endfunction
+else
+    " If idx is not at the start of the char, the result differs from built-in charidx.
+    function! s:charidx(string, idx)
+        if a:idx >= strlen(a:string) | return -1 | endif
+        return s:strcharlen(strpart(a:string, 0, a:idx))
+    endfunction
+endif
+if exists('*strcharlen') " 8.2.2606
+    function! s:strcharlen(string) abort
+        return strcharlen(a:string)
+    endfunction
+else
+    function! s:strcharlen(string) abort
+        return strchars(a:string, 1)
+    endfunction
+endif
+" }}}
 " helpers {{{
 " Expands cmdline-special in text that that doesn't contain \r.
 function! s:expand_cmdline_special(line) abort
