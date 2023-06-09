@@ -443,6 +443,7 @@ See also
             * cmp-buffer: maintain set of line numbers to be indexed
     * see also?
         * <https://github.com/vim/vim/issues/679>
+        * Vim's listener callback (`:h listener_add`) is called on redraw, or when the recorded changes are about to be invalidated.
 * Nvim silences errors in autocmd. This is not related to [`shortmess`](https://github.com/neovim/neovim/wiki/FAQ#calling-inputlist-echomsg--in-filetype-plugins-and-autocmd-does-not-work). This makes debugging ftplugin difficult.
 * `filename-modifiers` should be provided in the order defined in the documentation. `fnamemodify(name, ':h:~')` is wrong.
 * ([#10900](https://github.com/vim/vim/issues/10900)) In vim, handling the output of `:!`, `:write_c`, etc is UI-specific. It's not possible to uniformly capture the output using `execute()`. Must use `system()` for shell commands.
@@ -481,9 +482,13 @@ See also
         * ...
 * How does modeline and OptionSet, FileType, ... interact?
   vim.secure.trust() should take account of modeline?
+* https://vi.stackexchange.com/questions/37660/how-can-i-echo-a-message-with-newlines-so-it-is-displayed-with-line-breaks-and-i
 
 
 # bugs
+
+## very long wrapped line visual highlight gone
+both on nvim and vim
 
 ## terminal reflow
 <https://github.com/neovim/neovim/issues/2514>
@@ -637,6 +642,9 @@ Examples
 `hl_mode` (`:h nvim_buf_set_extmark`) supports `"replace"`, `"combine"`, `"blend"`, but only for virt text.
 There's also `"hl_eol"`
 
+Priority is configurable:
+<https://github.com/nvim-treesitter/nvim-treesitter/blob/1b5a7334bb9862abafcf6676d2a2a6973d15ae3a/CONTRIBUTING.md#priority>.
+
 
 ## vim: mapping that starts with `<Esc>`
 Without tmux, in gnome-terminal,
@@ -704,23 +712,13 @@ Not related to 2022-07-25 html ftplugin update.
 ## `^@` in statusline
 If a statusline compotent contains newline ("^@"), highlight is shifted.
 
-## nvim: user hightlight is affected by diff mode and spell.
-* issue: https://github.com/neovim/neovim/issues/23153
-* symptom
-    * matchup hightlights (uses `nvim_buf_add_highlight`) are overriden by `:syn` hightlight.
-      More precisely, the result is bold (from `MatchParenCur`) + fg color from `:syn` hightlight.
-    * `on_yank()` hightlight has similar symptom.
-      The hightlight of the yanked region is affected by `:syn` hightlight.
-* reproducing
-    * Very reproducible with vimtex. Not reproducible when treesitter hightlight is used.
-
 ## `:LspStop` autostart
 LspStop: autostart=false. Manually LspStart. Then LspStop. Then automatically started.
 
 ## cmp pum location
 Sometimes pum window position is fixed to top left.
-Can be fixed by recreating a new window.
-Happened when editing latex file.
+This was `screenpos()` problem.
+<https://github.com/hrsh7th/nvim-cmp/issues/1605>
 
 ## cmp-buffer dies
 Sometimes cmp-buffer dead.
@@ -905,6 +903,7 @@ See note on [window-local mode](#window-local-mode).
     * https://github.com/vigoux/architext.nvim
     * https://github.com/abecodes/tabout.nvim
     * https://github.com/Wansmer/treesj
+    * https://github.com/drybalka/tree-climber.nvim
 * git
     * https://github.com/rhysd/conflict-marker.vim
       https://github.com/akinsho/git-conflict.nvim

@@ -132,7 +132,7 @@ local progress_message_clear_timer = assert(vim.loop.new_timer())
 
 local function update_progress_message()
   local msg = vim.lsp.util.get_progress_messages()[1]
-  if not msg then return '' end
+  if not msg then return end
   local title = string.format('[%s] %s', msg.name, msg.title)
   local details = {}
   if msg.message then
@@ -306,7 +306,11 @@ lspconfig.pylsp.setup(
 
 require("clangd_extensions").setup {
   server = base_opt,
-  extensions = {},
+  extensions = {
+    inlay_hints = {
+      inline = false,
+    }
+  },
 }
 
 require("neodev").setup()

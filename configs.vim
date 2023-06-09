@@ -140,7 +140,7 @@ set encoding=utf-8
 set mouse=nvi
 set number signcolumn=number
 set ruler showcmd
-set foldcolumn=1 foldnestmax=5
+set foldcolumn=1 foldnestmax=5 foldlevel=99
 " TODO: I want nostartofline when using sidescroll
 set scrolloff=2 sidescrolloff=2 sidescroll=1 startofline
 set showtabline=1
@@ -175,7 +175,7 @@ Noremap <C-Space> <C-u>
 Noremap <Space><Space> <C-d>
 
 set wildmenu wildmode=longest:full,full
-let s:wildignore_files = ['*~', '%*', '*.o', '*.so', '*.pyc', '*.pdf', '*.v.d', '*.vo*', '*.glob', '*.cm*', '*.aux']
+let s:wildignore_files = ['*~', '%*', '*.o', '*.so', '*.pyc', '*.pdf', '*.v.d', '*.vo', '*.vo[sk]', '*.glob', '*.aux']
 let s:wildignore_dirs = ['.git', '__pycache__', 'target']
 set complete-=i complete-=u
 set path=.,,
@@ -494,6 +494,8 @@ augroup colors-custom | au!
 augroup END
 
 silent! set termguicolors
+" NOTE: vim/nvim have terminal background detection, but tmux breaks it
+" https://github.com/neovim/neovim/issues/17070
 if $BACKGROUND =~# 'dark\|light'
     let &background = $BACKGROUND
 endif
@@ -670,7 +672,7 @@ let g:vimtex_text_obj_variant = 'vimtex' " I don't use those targets.vim feature
 function! s:tex() abort
     setlocal shiftwidth=2
     setlocal conceallevel=2
-    setlocal foldlevel=99 " {[{[
+    " {[{[
     setlocal indentkeys-=] indentkeys-=} indentkeys-=\& indentkeys+=0],0}
     " https://github.com/tmsvg/pear-tree/pull/27
     let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), {
@@ -712,8 +714,6 @@ let g:mkdp_preview_options = {
             \ 'mkit': { 'typographer': v:false },
             \ 'disable_sync_scroll': 1 }
 function! s:markdown() abort
-    setlocal foldlevel=6
-
     silent! call textobj#user#plugin('markdown', {
                 \ 'code': {
                 \    'select-a-function': 'tomtomjhj#markdown#FencedCodeBlocka',
@@ -1294,16 +1294,16 @@ let g:sandwich#recipes += [
 let g:sandwich#recipes += [
       \   {'buns': ['(* ', ' *)'], 'nesting': 1, 'motionwise': ['char', 'block'], 'kind': ['add'], 'action': ['add'], 'input': ['m']},
       \   {'buns': ['(*', '*)'], 'nesting': 1, 'motionwise': ['line'], 'autoindent': 0, 'kind': ['add'], 'action': ['add'], 'input': ['m']},
-      \   {'buns': ['\v\(\*\_s', '\v(^|\s)\*\)'], 'nesting': 1, 'regex': 1, 'kind': ['delete', 'textobj'], 'action': ['delete'], 'input': ['m']},
+      \   {'buns': ['\v\(\*\_s', '\v\_s\*\)'], 'nesting': 1, 'regex': 1, 'kind': ['delete', 'textobj'], 'action': ['delete'], 'input': ['m']},
       \ ]
 omap ib <Plug>(textobj-sandwich-auto-i)
 xmap ib <Plug>(textobj-sandwich-auto-i)
 omap ab <Plug>(textobj-sandwich-auto-a)
 xmap ab <Plug>(textobj-sandwich-auto-a)
-" omap is <Plug>(textobj-sandwich-query-i)
-" xmap is <Plug>(textobj-sandwich-query-i)
-" omap as <Plug>(textobj-sandwich-query-a)
-" xmap as <Plug>(textobj-sandwich-query-a)
+omap iB <Plug>(textobj-sandwich-query-i)
+xmap iB <Plug>(textobj-sandwich-query-i)
+omap aB <Plug>(textobj-sandwich-query-a)
+xmap aB <Plug>(textobj-sandwich-query-a)
 " }}}
 
 " shell, terminal {{{
@@ -1433,7 +1433,6 @@ nnoremap <silent> gx :call GXBrowse(CursorURL())<cr>
 " NOTE: :Fern that isn't drawer does not reuse "authority". Leaves too many garbage buffers.
 let g:fern#default_exclude = '\v(\.glob|\.vo[sk]?|\.o)$'
 let g:fern#disable_drawer_hover_popup = 1
-let g:fern#disable_drawer_auto_resize = 1 " It remembers wrong width from <C-w>H. Disable it and use :bd to reset.
 let g:fern#disable_viewer_auto_duplication = 1
 nnoremap <leader>nn <Cmd>Fern . -drawer -toggle<CR>
 nnoremap <leader>nf <Cmd>Fern . -drawer -reveal=%<CR>
@@ -1685,13 +1684,6 @@ else
 endif
 " }}}
 " helpers {{{
-" Expands cmdline-special in text that that doesn't contain \r.
-function! s:expand_cmdline_special(line) abort
-    return substitute(substitute(substitute(
-                \ a:line, '\\\\', '\r', 'g' ),
-                \ '\v\\@<!(\%|#%(\<?\d+|#)?)', '\=expand(submatch(1))', 'g' ),
-                \ '\r', '\\\\', 'g' )
-endfunction
 function! s:cabbrev(lhs, rhs) abort
     return (getcmdtype() == ':' && getcmdline() ==# a:lhs) ? a:rhs : a:lhs
 endfunction
@@ -1728,7 +1720,7 @@ endfunction
 function! TempBuf(mods, title, ...) abort
     exe a:mods 'new'
     if !empty(a:title)
-        exe 'file' printf('temp://%d/%s', bufnr(''), a:title)
+        exe 'file' printf('temp://%d/%s', bufnr(''), fnameescape(a:title))
     endif
     setlocal nobuflisted buftype=nofile bufhidden=wipe noswapfile nomodeline
     if a:0
@@ -1739,14 +1731,14 @@ function! Execute(cmd, mods) abort
     call TempBuf(a:mods, ':' . a:cmd, split(execute(a:cmd), "\n"))
 endfunction
 function! WriteC(cmd, mods) range abort
-    call TempBuf(a:mods, ':w !' . a:cmd, systemlist(s:expand_cmdline_special(a:cmd), getline(a:firstline, a:lastline)))
+    call TempBuf(a:mods, ':w !' . a:cmd, systemlist(a:cmd, getline(a:firstline, a:lastline)))
 endfunction
 function! Bang(cmd, mods) abort
-    call TempBuf(a:mods, ':!' . a:cmd, systemlist(s:expand_cmdline_special(a:cmd)))
+    call TempBuf(a:mods, ':!' . a:cmd, systemlist(a:cmd))
 endfunction
 command! -nargs=* -complete=command Execute call Execute(<q-args>, '<mods>')
-command! -nargs=* -range=% -complete=shellcmd WC <line1>,<line2>call WriteC(<q-args>, '<mods>')
-command! -nargs=* -complete=shellcmd Bang call Bang(<q-args>, '<mods>')
+command! -nargs=* -range=% -complete=shellcmd WC <line1>,<line2>call WriteC(expandcmd(<q-args>), '<mods>')
+command! -nargs=* -complete=shellcmd Bang call Bang(expandcmd(<q-args>), '<mods>')
 
 command! -range=% TrimWhitespace
             \ let _view = winsaveview()
