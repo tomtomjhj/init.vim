@@ -570,10 +570,6 @@ nmap [d <Plug>(ale_previous_wrap)
 " }}}
 
 " Languages {{{
-if s:nvim_latest_stable
-    lua require('tomtomjhj/treesitter')
-endif
-
 " see also {,after/}{indent,ftplugin}/, SetupLSP(), SetupLSPPost()
 augroup Languages | au!
     au FileType bib call s:bib()
@@ -594,6 +590,11 @@ augroup Languages | au!
     au FileType vim setlocal formatoptions-=c
     au FileType xml setlocal formatoptions-=r formatoptions-=o " very broken: <!--<CR> → <!--\n--> █
 augroup END
+
+" NOTE: treesitter FileType autocmd should override the above stuff
+if s:nvim_latest_stable
+    lua require('tomtomjhj/treesitter')
+endif
 
 " Haskell {{{
 let g:haskell_classic_highlighting = 1

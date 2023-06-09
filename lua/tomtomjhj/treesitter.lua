@@ -1,14 +1,40 @@
+local parsers = require("nvim-treesitter.parsers")
+
 local disable = {
   "latex", -- use vimtex for latex file; but use treesitter for markdown inline latex
   "vim",  -- less complete
 }
 
+local custom_queries = {
+  markdown = {
+    folds = '[ (section) ] @fold',
+  }
+}
+
+local ag = vim.api.nvim_create_augroup("treesitter-custom", { clear = true })
+
+vim.api.nvim_create_autocmd(
+  { "FileType" },
+  { group = ag, pattern = "*",
+    desc = 'enable treesitter stuff and custom treesitter stuff',
+    callback = function(ev)
+      local lang = vim.treesitter.language.get_lang(ev.match)
+      if not lang or vim.list_contains(disable, lang) or not parsers.has_parser(lang) then return end
+      if custom_queries[lang] then
+        for name, query in pairs(custom_queries[lang]) do
+          vim.treesitter.query.set(lang, name, query)
+        end
+        custom_queries[lang] = nil
+      end
+      vim.treesitter.start(ev.buf, lang)
+      vim.opt_local.foldmethod = 'expr'
+      vim.opt_local.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+    end
+  }
+)
+
 require'nvim-treesitter.configs'.setup {
   ensure_installed = {},
-  highlight = {
-    enable = true;
-    disable = disable;
-  },
   indent = {
     enable = true;
     disable = vim.list_extend({'markdown'}, disable);
@@ -25,23 +51,8 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
--- TODO: fine-tune folding query
--- local ag = vim.api.nvim_create_augroup("treesitter-custom", { clear = true })
--- vim.api.nvim_create_autocmd(
---   { "FileType" },
---   { group = ag, pattern = "markdown",
---     desc = 'treesitter fold',
---     callback = function()
---       vim.wo.foldmethod = 'expr'
---       vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
---       vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()' -- 0.9
---       vim.wo.foldtext = 'foldtext()'
---     end
---   }
--- )
-
+local highlighter = vim.treesitter.highlighter
 -- comment injection is slow https://gist.github.com/tomtomjhj/95c2feec72f35e6a6942fd792587bb4e
-local highlighter = require "vim.treesitter.highlighter"
 require("paint").setup {
   highlights = {
     {
