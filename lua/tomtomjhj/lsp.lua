@@ -130,41 +130,61 @@ end
 
 local progress_message_clear_timer = assert(vim.loop.new_timer())
 
-local function update_progress_message()
-  local msg = vim.lsp.util.get_progress_messages()[1]
-  if not msg then return end
-  local title = string.format('[%s] %s', msg.name, msg.title)
-  local details = {}
-  if msg.message then
-    details[#details+1] = msg.message
+local get_status_message ---@type fun(): string|nil
+if vim.fn.exists('##LspProgress') == 1 then
+  get_status_message = function()
+    local msg = vim.lsp.status()
+    if #msg == 0 then return end
+    return '[' .. msg .. ']'
   end
-  if msg.done then
-    details[#details+1] = 'Done'
-    -- NOTE: this doesn't cancel already scheduled callback, but this isn't critical
-    progress_message_clear_timer:stop()
-    progress_message_clear_timer:start(
-      2345,
-      0,
-      vim.schedule_wrap(function()
-        vim.g.lsp_progress = nil
-        vim.cmd.redrawstatus { bang = true }
-      end)
-    )
+else
+  get_status_message = function()
+    local report = vim.lsp.util.get_progress_messages()[1]
+    if not report then return end
+    local msg = string.format('[%s] %s', report.name, report.title)
+    local details = {}
+    if report.message then
+      details[#details+1] = report.message
+    end
+    if report.done then
+      details[#details+1] = 'Done'
+    end
+    if #details > 0 then
+      msg = msg .. ': ' .. table.concat(details, '. ')
+    end
+    return msg
   end
-  if #details == 0 then
-    vim.g.lsp_progress = title
-  else
-    vim.g.lsp_progress = title .. ': ' .. table.concat(details, '. ')
-  end
+end
+
+local function update_status_message()
+  local msg = get_status_message()
+  -- NOTE: this doesn't cancel already scheduled callback, but this isn't critical
+  progress_message_clear_timer:stop()
+  progress_message_clear_timer:start(
+    2345,
+    0,
+    vim.schedule_wrap(function()
+      vim.g.lsp_status = nil
+      vim.cmd.redrawstatus { bang = true }
+    end)
+  )
+  vim.g.lsp_status = msg
   vim.cmd.redrawstatus { bang = true }
 end
 
 local function register_progress_message(ag)
-  vim.api.nvim_create_autocmd("User", {
-    group = ag,
-    pattern = 'LspProgressUpdate',
-    callback = update_progress_message
-  })
+  if vim.fn.exists('##LspProgress') == 1 then
+    vim.api.nvim_create_autocmd("LspProgress", {
+      group = ag,
+      callback = update_status_message
+    })
+  else
+    vim.api.nvim_create_autocmd("User", {
+      group = ag,
+      pattern = 'LspProgressUpdate',
+      callback = update_status_message
+    })
+  end
   vim.api.nvim_create_autocmd("VimLeavePre", {
     group = ag,
     callback = function() progress_message_clear_timer:close() end,
@@ -242,12 +262,14 @@ local capabilities = vim.tbl_deep_extend('force', require('cmp_nvim_lsp').defaul
 })
 
 local base_opt = {
+  on_init = function(client, initialize_result)
+    -- Disable semantic highlight for now.
+    client.server_capabilities.semanticTokensProvider = nil
+  end,
   on_attach = function(client, bufnr)
     vim.fn['SetupLSP']()
     vim.fn['SetupLSPPost']()
     register_breadcrumb(ag, client, bufnr)
-    -- Disable semantic highlight for now.
-    client.server_capabilities.semanticTokensProvider = nil
   end,
   capabilities = capabilities,
 }

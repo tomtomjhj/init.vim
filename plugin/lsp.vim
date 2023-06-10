@@ -123,7 +123,7 @@ function! STLBreadCrumb()
   return get(w:, 'breadcrumb', '')
 endfunction
 function! STLProgress()
-  return get(g:, 'lsp_progress', '')
+  return get(g:, 'lsp_status', '')
 endfunction
 function! STLDiagnosticErrors()
   let errors = luaeval('#vim.diagnostic.get(0, {severity=vim.diagnostic.severity.ERROR})')

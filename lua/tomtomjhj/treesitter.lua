@@ -19,7 +19,7 @@ vim.api.nvim_create_autocmd(
     desc = 'enable treesitter stuff and custom treesitter stuff',
     callback = function(ev)
       local lang = vim.treesitter.language.get_lang(ev.match)
-      if not lang or vim.list_contains(disable, lang) or not parsers.has_parser(lang) then return end
+      if not lang or vim.tbl_contains(disable, lang) or not parsers.has_parser(lang) then return end
       if custom_queries[lang] then
         for name, query in pairs(custom_queries[lang]) do
           vim.treesitter.query.set(lang, name, query)
