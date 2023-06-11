@@ -470,6 +470,7 @@ augroup END
 command! Bg if &background ==# 'dark' | set background=light | else | set background=dark | endif
 
 " set env vars controlling terminal app themes based on vim colorscheme
+" NOTE: setting these in bashrc is not enough, because apps can be directly run from vim/nvim
 function! s:env_colors() abort
     if match($FZF_DEFAULT_OPTS, '--color') >= 0
         let $FZF_DEFAULT_OPTS = substitute($FZF_DEFAULT_OPTS, '--color\%(=\|\s\+\)\zs\w\+', &background, 0)
@@ -485,6 +486,7 @@ function! s:env_colors() abort
 endfunction
 
 augroup colors-custom | au!
+    au OptionSet background let $BACKGROUND = &background
     au ColorScheme * call s:env_colors()
     " vim.lsp.util.open_floating_preview() with syntax=markdown uses lsp_markdown, which :syn-clears markdownError.
     " However, it's not actually cleared (maybe bug in interaction with :syn-include).
@@ -493,13 +495,13 @@ augroup colors-custom | au!
     au ColorScheme * hi markdownError cterm=bold ctermbg=NONE ctermfg=NONE gui=NONE guibg=NONE guifg=NONE
 augroup END
 
-silent! set termguicolors
-" NOTE: vim/nvim have terminal background detection, but tmux breaks it
-" https://github.com/neovim/neovim/issues/17070
-if $BACKGROUND =~# 'dark\|light'
-    let &background = $BACKGROUND
-endif
-if !exists('g:colors_name')
+if has('vim_starting')
+    if $BACKGROUND ==# 'dark' || $BACKGROUND ==# 'light'
+        let &background = $BACKGROUND
+    else
+        let $BACKGROUND = &background
+    endif
+    set termguicolors
     colorscheme quite
 endif
 " }}}
