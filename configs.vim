@@ -54,9 +54,6 @@ if has('nvim')
     Plug 'ibhagwan/fzf-lua'
 endif
 Plug 'roosta/fzf-folds.vim'
-" TODO: expr fold (e.g. markdown) → Gdiffsplit → close diff → nofoldenable with residual diff fold when enabled.
-" :diffoff disables fold if fdm was manual (FastFold sets fdm=manual).
-" https://github.com/vim/vim/blob/3ea8a1b1296af5b0c6a163ab995aa16d49ac5f10/src/diff.c#L1591-L1595
 Plug 'Konfekt/FastFold'
 Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
@@ -155,7 +152,8 @@ set nojoinspaces
 set list listchars=tab:\|\ ,trail:-,nbsp:+,extends:>
 
 set wrap linebreak breakindent showbreak=↪\ 
-if has('patch-9.0.1247') || has('nvim-0.10') | set smoothscroll | endif
+" very buggy
+" if has('patch-9.0.1247') || has('nvim-0.10') | set smoothscroll | endif
 let &backspace = (has('patch-8.2.0590') || has('nvim-0.5')) ? 3 : 2
 set whichwrap+=<,>,[,],h,l
 set cpoptions-=_

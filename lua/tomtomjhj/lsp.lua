@@ -130,6 +130,7 @@ end
 
 local progress_message_clear_timer = assert(vim.loop.new_timer())
 
+-- TODO: cleanup after 0.10 release
 local get_status_message ---@type fun(): string|nil
 if vim.fn.exists('##LspProgress') == 1 then
   get_status_message = function()
@@ -192,8 +193,7 @@ local function register_progress_message(ag)
 end
 -- }}}
 
-require('mason').setup()
-require('mason-lspconfig').setup() -- registers some hooks for lspconfig setup
+-- aerial. maybe this should be somewhere else {{{
 
 local aerial = require('aerial')
 -- NOTE: aerial overrides documentSymbol handler
@@ -218,6 +218,7 @@ aerial.setup {
   end
 }
 -- TODO: markdown: support setext heading
+-- }}}
 
 vim.diagnostic.config {
   underline = { severity = { min = vim.diagnostic.severity.WARN } },
@@ -225,6 +226,9 @@ vim.diagnostic.config {
   signs = { severity = { min = vim.diagnostic.severity.WARN } },
   serverity_sort = true,
 }
+
+require('mason').setup()
+require('mason-lspconfig').setup() -- registers some hooks for lspconfig setup
 
 local ag = vim.api.nvim_create_augroup("nvim-lsp-custom", { clear = true })
 
@@ -261,7 +265,7 @@ local capabilities = vim.tbl_deep_extend('force', require('cmp_nvim_lsp').defaul
   },
 })
 
-local base_opt = {
+local base_config = {
   on_init = function(client, initialize_result)
     -- Disable semantic highlight for now.
     client.server_capabilities.semanticTokensProvider = nil
@@ -284,6 +288,11 @@ local base_opt = {
   capabilities = capabilities,
 }
 
+local function config(more)
+  if more == nil then return base_config end
+  return vim.tbl_deep_extend('force', base_config, more)
+end
+
 -- server configs {{{
 
 -- local path = require "mason-core.path"
@@ -304,87 +313,89 @@ rust_tools.setup {
     inlay_hints = { auto = false },
   },
   -- lspconfig.rust_analyzer.setup
-  server = base_opt,
+  server = config(),
 }
 
-lspconfig.pylsp.setup(
-  vim.tbl_extend('error', base_opt, {
-    settings = { pylsp = {
-      plugins = {
-        pylint = {
-          enabled = true,
-          args = {"-dR", "-dC", "-dW0511", "-dW0614", "-dW0621", "-dW0231", "-dF0401", "--generated-members=cv2.*,onnx.*,tf.*,np.*"}
-        },
-        ["flake8"] = { enabled = false },
-        mccabe = { enabled = false },
-        pycodestyle = { enabled = false },
-        pyflakes = { enabled = false },
-        rope_completion = { enabled = false },
-        yapf = { enabled = false },
-      }
-    }}
-  })
-)
+lspconfig.pylsp.setup(config {
+  settings = { pylsp = {
+    plugins = {
+      pylint = {
+        enabled = true,
+        args = {"-dR", "-dC", "-dW0511", "-dW0614", "-dW0621", "-dW0231", "-dF0401", "--generated-members=cv2.*,onnx.*,tf.*,np.*"}
+      },
+      ["flake8"] = { enabled = false },
+      mccabe = { enabled = false },
+      pycodestyle = { enabled = false },
+      pyflakes = { enabled = false },
+      rope_completion = { enabled = false },
+      yapf = { enabled = false },
+    }
+  }}
+})
 
 require("clangd_extensions").setup {
-  server = base_opt,
+  server = config(),
   extensions = {
     autoSetHints = false,
   },
 }
 
 require("neodev").setup()
-lspconfig.lua_ls.setup(base_opt)
+lspconfig.lua_ls.setup(config {
+  settings = { Lua = {
+    workspace = {
+      -- disable "Do you need to configure your work environment as" prompts
+      checkThirdParty = false,
+    },
+  }},
+})
 
-lspconfig.vimls.setup(base_opt)
+lspconfig.vimls.setup(config())
 
-lspconfig.texlab.setup(base_opt)
+lspconfig.texlab.setup(config())
 
 -- NOTE: Codeaction-ed rules are recorded in .ltex_ls_cache.json.
 -- See also https://github.com/barreiroleo/ltex_extra.nvim.
-require'ltex-ls'.setup(
-  vim.tbl_extend('error', base_opt, {
-    autostart = false,
-    -- Not quite useful, because it's not updated on zg.
-    -- In the meantime, use the built-in spellchecker.
-    -- use_spellfile = true, -- ltex-ls.nvim setting
-    settings = { ltex = {
-      checkFrequency = "save",
-      -- dictionary = {
-      --   ["en-US"] = { ":~/.vim/spell/en.utf-8.add" }
-      -- },
-      disabledRules = {
-        ["en-US"] = { "MORFOLOGIK_RULE_EN_US" }
+require'ltex-ls'.setup(config {
+  autostart = false,
+  -- Not quite useful, because it's not updated on zg.
+  -- In the meantime, use the built-in spellchecker.
+  -- use_spellfile = true, -- ltex-ls.nvim setting
+  settings = { ltex = {
+    checkFrequency = "save",
+    -- dictionary = {
+    --   ["en-US"] = { ":~/.vim/spell/en.utf-8.add" }
+    -- },
+    disabledRules = {
+      ["en-US"] = { "MORFOLOGIK_RULE_EN_US" }
+    },
+    latex = {
+      commands = {
+        ["\\todo{}"] = "ignore",
+        ["\\jaehwang{}"] = "ignore",
       },
-      latex = {
-        commands = {
-          ["\\todo{}"] = "ignore",
-          ["\\jaehwang{}"] = "ignore",
-        },
-        environments = {
-          ["mathpar"] = "ignore",
-        },
+      environments = {
+        ["mathpar"] = "ignore",
       },
-      additionalRules = {
-        languageModel = '~/ngram/',
-      },
-      ['ltex-ls'] = {
-        logLevel = "severe", -- NOTE: "INFO: ltex-ls 16.0.0 - initializing..." still logged
-      },
-    }}
-  })
+    },
+    additionalRules = {
+      languageModel = '~/ngram/',
+    },
+    ['ltex-ls'] = {
+      logLevel = "severe", -- NOTE: "INFO: ltex-ls 16.0.0 - initializing..." still logged
+    },
+  }}
+}
 )
 
-lspconfig.bashls.setup(base_opt)
+lspconfig.bashls.setup(config())
 
-lspconfig.marksman.setup(
-  vim.tbl_extend('error', base_opt, {
-    autostart = false,
-  })
-)
+lspconfig.marksman.setup(config {
+  autostart = false,
+})
 
 require'coq-lsp'.setup {
-  lsp = vim.tbl_extend('error', base_opt, {
+  lsp = config {
     autostart = false,
     init_options = {
       max_errors = 50,
@@ -392,7 +403,7 @@ require'coq-lsp'.setup {
       debug = true,
     },
     -- trace = 'verbose',
-  }),
+  },
 }
 -- }}}
 

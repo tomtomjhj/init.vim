@@ -487,9 +487,6 @@ See also
 
 # bugs
 
-## very long wrapped line visual highlight gone
-both on nvim and vim
-
 ## terminal reflow
 <https://github.com/neovim/neovim/issues/2514>
 * best: make it work like normal buffer with `nowrap`
@@ -498,11 +495,6 @@ both on nvim and vim
     * `set shell=tmux` <https://www.reddit.com/r/neovim/comments/umy4gb/tmux_in_neovim/>
 * vim: big `termwinsize` width? ⇒ After the job finishes, highlight position is wrong.
 * <https://github.com/neovim/neovim/pull/21124>
-
-## nvim `CursorMoved`
-nvim's `CursorMoved` is differrent from vim's.
-This makes `vimtex_matchparen` wrongly highlight fzf floatwin.
-
 
 ## impossible to remove data from shada due to merging
 <https://github.com/neovim/neovim/issues/4295>
@@ -715,11 +707,6 @@ If a statusline compotent contains newline ("^@"), highlight is shifted.
 ## `:LspStop` autostart
 LspStop: autostart=false. Manually LspStart. Then LspStop. Then automatically started.
 
-## cmp pum location
-Sometimes pum window position is fixed to top left.
-This was `screenpos()` problem.
-<https://github.com/hrsh7th/nvim-cmp/issues/1605>
-
 ## cmp-buffer dies
 Sometimes cmp-buffer dead.
 Can be fixed by `:edit`.
@@ -842,6 +829,21 @@ Other details
 ## fold
 Make it smarter in general.
 I don't recall what I specifically wanted (if any).
+
+nvim's optimization: don't update fold in insert mode.
+* <https://github.com/neovim/neovim/pull/5299>
+  <https://github.com/vim/vim/pull/1045>
+* limitation: InsertLeave is still slow; vimtex fold is slow even in normal mode
+
+FastFold problems
+* expr fold (e.g. markdown) → Gdiffsplit → close diff → nofoldenable with residual diff fold when enabled.
+  :diffoff disables fold if fdm was manual (FastFold sets fdm=manual).
+  <https://github.com/vim/vim/blob/3ea8a1b1296af5b0c6a163ab995aa16d49ac5f10/src/diff.c#L1591-L1595>
+* <https://github.com/Konfekt/FastFold/pull/74>
+* probably not necessary with treesitter fold
+
+treesitter foldexpr requires treesitter hightlighting.
+<https://github.com/neovim/neovim/issues/24150>
 
 Some minor stuff:
 * close all folds under the cursor (sub-tree) `zC` doesn't do this
