@@ -270,6 +270,16 @@ local base_opt = {
     vim.fn['SetupLSP']()
     vim.fn['SetupLSPPost']()
     register_breadcrumb(ag, client, bufnr)
+    if client.server_capabilities.codeLensProvider then
+      vim.api.nvim_create_autocmd('BufEnter', {
+        group = ag, buffer = bufnr, once = true,
+        callback = vim.lsp.codelens.refresh,
+      })
+      vim.api.nvim_create_autocmd({'BufWritePost', 'CursorHold'}, {
+        group = ag, buffer = bufnr,
+        callback = vim.lsp.codelens.refresh,
+      })
+    end
   end,
   capabilities = capabilities,
 }
@@ -291,20 +301,10 @@ rust_tools.setup {
   tools = {
     runnables = { use_telescope = false },
     debuggables = { use_telescope = false },
-    inlay_hints = {
-      parameter_hints_prefix = "← ",
-      other_hints_prefix = "⇒ ",
-      highlight = "LspCodeLens",
-    },
+    inlay_hints = { auto = false },
   },
   -- lspconfig.rust_analyzer.setup
-  server = vim.tbl_extend('force', base_opt, {
-    on_attach = function(client, bufnr)
-      base_opt.on_attach(client, bufnr)
-      vim.keymap.set("n", "<M-.>", rust_tools.hover_actions.hover_actions, { buffer = bufnr })
-      vim.keymap.set("n", "<leader>ac", rust_tools.code_action_group.code_action_group, { buffer = bufnr })
-    end,
-  }),
+  server = base_opt,
 }
 
 lspconfig.pylsp.setup(
@@ -329,9 +329,7 @@ lspconfig.pylsp.setup(
 require("clangd_extensions").setup {
   server = base_opt,
   extensions = {
-    inlay_hints = {
-      inline = false,
-    }
+    autoSetHints = false,
   },
 }
 

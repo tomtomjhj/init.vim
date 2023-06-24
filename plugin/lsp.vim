@@ -99,6 +99,7 @@ function! SetupLSP()
   nnoremap <buffer><leader>ds    <cmd>lua require('fzf-lua').lsp_document_symbols()<CR>
   nnoremap <buffer><leader>sb    <cmd>lua require('fzf-lua').lsp_workspace_symbols()<CR>
   " call_hierarchy_handler
+
   " ...
   nnoremap <buffer><leader>ac    <cmd>lua require('fzf-lua').lsp_code_actions()<CR>
   nnoremap <buffer><leader>fm    <cmd>lua vim.lsp.buf.format{async=true}<CR>
@@ -107,6 +108,10 @@ function! SetupLSP()
   nnoremap <buffer><localleader>*    <cmd>lua vim.lsp.buf.document_highlight()<CR>
   nnoremap <buffer><localleader><CR> <cmd>lua vim.lsp.buf.clear_references()<CR>
   inoremap <buffer>        <M-i> <cmd>lua vim.lsp.buf.signature_help()<CR>
+  nnoremap <buffer>        <M-i> <cmd>lua vim.lsp.buf.inlay_hint(0)<CR>
+  " NOTE: some commands require client side extension (vim.lsp.commands, etc), e.g. running test with rust-analyzer
+  nnoremap <buffer><leader>cr    <cmd>lua vim.lsp.codelens.run()<CR>
+
   nnoremap <buffer>        [d    <cmd>lua vim.diagnostic.goto_prev{float=false, severity={min=vim.diagnostic.severity.WARN}}<CR>
   nnoremap <buffer>        ]d    <cmd>lua vim.diagnostic.goto_next{float=false, severity={min=vim.diagnostic.severity.WARN}}<CR>
   nnoremap <buffer>        [D    <cmd>lua vim.diagnostic.goto_prev{float=false}<CR>
@@ -115,8 +120,6 @@ function! SetupLSP()
   " NOTE: severity is not highlighted at the first call, it uses diagnostic sign definition under the hood, which are defined lazily when the diagnostics are first displayed (define_default_signs)
   nnoremap <buffer><leader>dl    <cmd>lua require('fzf-lua').diagnostics_workspace{severity_limit=3}<CR>
   nnoremap <buffer><leader>DL    <cmd>lua require('fzf-lua').diagnostics_workspace()<CR>
-
-  " TODO: codelens?
 endfunction
 
 function! STLBreadCrumb()
