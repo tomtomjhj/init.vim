@@ -54,7 +54,6 @@ if has('nvim')
     Plug 'ibhagwan/fzf-lua'
 endif
 Plug 'roosta/fzf-folds.vim'
-Plug 'Konfekt/FastFold'
 Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
@@ -656,7 +655,6 @@ endfunction
 " LaTeX {{{
 let g:tex_flavor = 'latex'
 let g:tex_noindent_env = '\v\w+.?'
-let g:vimtex_fold_enabled = 1
 let g:matchup_override_vimtex = 1
 let g:vimtex_view_method = 'zathura'
 let g:vimtex_quickfix_mode = 0

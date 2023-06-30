@@ -1,9 +1,10 @@
 local parsers = require("nvim-treesitter.parsers")
 
 local disable = {
-  "latex", -- use vimtex for latex file; but use treesitter for markdown inline latex
   "vim",  -- less complete
 }
+local disable_highlight = vim.list_extend({'latex'}, disable)
+local disable_indent = vim.list_extend({'latex', 'markdown'}, disable)
 
 local custom_queries = {
   markdown = {
@@ -26,7 +27,9 @@ vim.api.nvim_create_autocmd(
         end
         custom_queries[lang] = nil
       end
-      vim.treesitter.start(ev.buf, lang)
+      if not vim.tbl_contains(disable_highlight, lang) then
+        vim.treesitter.start(ev.buf, lang)
+      end
       vim.opt_local.foldmethod = 'expr'
       vim.opt_local.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
     end
@@ -37,7 +40,7 @@ require'nvim-treesitter.configs'.setup {
   ensure_installed = {},
   indent = {
     enable = true;
-    disable = vim.list_extend({'markdown'}, disable);
+    disable = disable_indent,
   },
   incremental_selection = {
     enable = true,

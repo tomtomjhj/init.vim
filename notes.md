@@ -842,9 +842,6 @@ FastFold problems
 * <https://github.com/Konfekt/FastFold/pull/74>
 * probably not necessary with treesitter fold
 
-treesitter foldexpr requires treesitter hightlighting.
-<https://github.com/neovim/neovim/issues/24150>
-
 Some minor stuff:
 * close all folds under the cursor (sub-tree) `zC` doesn't do this
 * ignore folded region while searching
