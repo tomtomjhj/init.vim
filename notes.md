@@ -115,7 +115,8 @@ Another annoying issue: It's not possible to set default highlight to NONE.
 
 ## buffer-updates
 ```
-lua vim.api.nvim_buf_attach(0, false, {on_lines = function(_, bufnr, tick, first, old_last, new_last, _, _, _) vim.pretty_print(tick, first+1, old_last+1, new_last+1) end})
+lua vim.api.nvim_buf_attach(0, false, {on_lines = function(_, bufnr, tick, first, old_last, new_last, _, _, _) print('lines', tick, first+1, old_last+1, new_last+1) end})
+lua vim.api.nvim_buf_attach(0, false, {on_bytes = function(_, bufnr, tick, srow, scol, sbyte, erow, ecol, ebyte, nrow, ncol, nbyte) print('bytes', tick, vim.inspect({ {srow, scol, sbyte}, {erow, ecol, ebyte}, {nrow, ncol, nbyte} })) end})
 ```
 ```
 asdf
@@ -414,7 +415,7 @@ See also
 * NeoVim terminal slows down the UI if too much stuff is printed.
 * `api-buffer-updates` is too fine-grained (triggered for each `b:changedtick` update). It's meant to be fine-grained, but it's too fine-grained for most use cases.
   ```
-  lua vim.api.nvim_buf_attach(0, false, {on_lines = function(_, bufnr, tick, first, old_last, new_last, _, _, _) vim.pretty_print(tick, vim.api.nvim_buf_get_lines(bufnr, first, new_last, true)) end})
+  lua vim.api.nvim_buf_attach(0, false, {on_lines = function(_, bufnr, tick, first, old_last, new_last, _, _, _) vim.print(tick, vim.api.nvim_buf_get_lines(bufnr, first, new_last, true)) end})
   au TextChanged *  unsilent echom 'TextChanged'  b:changedtick
   au TextChangedI * unsilent echom 'TextChangedI' b:changedtick
   au TextChangedP * unsilent echom 'TextChangedP' b:changedtick
@@ -819,6 +820,8 @@ Add jump only once so that jumplist is not cluttered with irrelevant locations.
 
 For `n`/`N`, there are `/_CTRL-G`/`/_CTRL-T`.
 
+Debounce?
+
 ## emacs-like character classes
 word ≠ identifier
 
@@ -860,6 +863,12 @@ In general, extmark-local anything.
 
 ## window-local
 See note on [window-local mode](#window-local-mode).
+
+## recovering the view after `v_:`
+something like this?
+```
+noremap : <Cmd>let _view = winsaveview()<CR>:
+```
 
 # stuff
 * https://arxiv.org/abs/2006.03103
@@ -934,8 +943,11 @@ See note on [window-local mode](#window-local-mode).
   https://github.com/jbyuki/venn.nvim
 * https://github.com/mfussenegger/nvim-dap
 * https://github.com/lukas-reineke/indent-blankline.nvim NOTE: conflict with tab listchar
-* https://github.com/phaazon/hop.nvim/
-  https://github.com/ggandor/leap.nvim
+* motion
+    * https://github.com/phaazon/hop.nvim/
+    * https://github.com/ggandor/leap.nvim
+    * https://github.com/folke/flash.nvim/
+    * https://github.com/chrisgrieser/nvim-spider
 * https://github.com/rktjmp/lush.nvim interesting lua hack for DSL
 * https://github.com/hkupty/iron.nvim
 * https://github.com/Julian/lean.nvim

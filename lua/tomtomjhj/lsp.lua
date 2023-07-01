@@ -193,33 +193,6 @@ local function register_progress_message(ag)
 end
 -- }}}
 
--- aerial. maybe this should be somewhere else {{{
-
-local aerial = require('aerial')
--- NOTE: aerial overrides documentSymbol handler
-aerial.setup {
-  backends = {
-    tex = {},
-  },
-  link_tree_to_folds = false,
-  on_attach = function(bufnr)
-    local ft = vim.bo[bufnr].filetype
-    if ft ~= 'tex' and ft ~= 'markdown' then
-      vim.keymap.set('n', '[[', function()
-        vim.cmd [[normal! m']]
-        aerial.prev(vim.v.count1)
-      end, { buffer = bufnr })
-      vim.keymap.set('n', ']]', function()
-        vim.cmd [[normal! m']]
-        aerial.next(vim.v.count1)
-      end, { buffer = bufnr })
-    end
-    vim.keymap.set('n', '<leader>ol', '<Cmd>AerialToggle! right<CR>')
-  end
-}
--- TODO: markdown: support setext heading
--- }}}
-
 vim.diagnostic.config {
   underline = { severity = { min = vim.diagnostic.severity.WARN } },
   virtual_text = true,
@@ -275,11 +248,8 @@ local base_config = {
     vim.fn['SetupLSPPost']()
     register_breadcrumb(ag, client, bufnr)
     if client.server_capabilities.codeLensProvider then
-      vim.api.nvim_create_autocmd('BufEnter', {
-        group = ag, buffer = bufnr, once = true,
-        callback = vim.lsp.codelens.refresh,
-      })
-      vim.api.nvim_create_autocmd({'BufWritePost', 'CursorHold'}, {
+      vim.lsp.codelens.refresh()
+      vim.api.nvim_create_autocmd({'BufReadPost', 'BufWritePost', 'CursorHold'}, {
         group = ag, buffer = bufnr,
         callback = vim.lsp.codelens.refresh,
       })
@@ -313,7 +283,11 @@ rust_tools.setup {
     inlay_hints = { auto = false },
   },
   -- lspconfig.rust_analyzer.setup
-  server = config(),
+  server = config {
+    settings = { ['rust-analyzer'] = {
+      rustc = { source = 'discover' }
+    }}
+  },
 }
 
 lspconfig.pylsp.setup(config {

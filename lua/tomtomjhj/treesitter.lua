@@ -2,12 +2,14 @@ local parsers = require("nvim-treesitter.parsers")
 
 local disable = {
   "vim",  -- less complete
+  "bash", -- broken https://github.com/tree-sitter/tree-sitter-bash/issues/66
 }
 local disable_highlight = vim.list_extend({'latex'}, disable)
 local disable_indent = vim.list_extend({'latex', 'markdown'}, disable)
 
 local custom_queries = {
   markdown = {
+    -- NOTE: section doesn't work for setext heading https://github.com/MDeiml/tree-sitter-markdown/issues/59
     folds = '[ (section) ] @fold',
   }
 }

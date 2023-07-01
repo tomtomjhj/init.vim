@@ -2,6 +2,12 @@ local fzf = require('fzf-lua')
 
 fzf.setup {
   "fzf-native",
+  keymap = {
+    fzf = {
+      ["shift-down"] = "preview-half-page-down",
+      ["shift-up"]   = "preview-half-page-up",
+    },
+  },
   fzf_opts = {
     ['--border']      = 'top',
   },
@@ -15,6 +21,11 @@ fzf.setup {
   },
   lsp = {
     includeDeclaration = false,
+    code_actions = {
+      winopts = {
+        row = 1,
+      },
+    },
   }
 }
 

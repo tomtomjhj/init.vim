@@ -1,7 +1,7 @@
 " vim: set foldmethod=marker foldlevel=0:
 
-let s:nvim_latest_stable = has('nvim-0.9')
-let g:ide_client = get(g:, 'ide_client', s:nvim_latest_stable ? 'nvim' : 'coc')
+let g:nvim_latest_stable = has('nvim-0.9')
+let g:ide_client = get(g:, 'ide_client', g:nvim_latest_stable ? 'nvim' : 'coc')
 
 if !has('nvim')
     let g:loaded_getscriptPlugin = 1
@@ -46,9 +46,6 @@ Plug 'tpope/vim-rhubarb'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': has('unix') ? './install --all' : { -> fzf#install() } }
-" TODO: :Buffers multiple select makes sense for :tabe, :sp, ...
-" Make sth similar to that for small.vim
-" See also https://github.com/junegunn/fzf.vim/pull/1239
 Plug 'junegunn/fzf.vim'
 if has('nvim')
     Plug 'ibhagwan/fzf-lua'
@@ -80,7 +77,6 @@ elseif g:ide_client == 'nvim'
     Plug 'neovim/nvim-lspconfig'
     Plug 'williamboman/mason.nvim'
     Plug 'williamboman/mason-lspconfig.nvim'
-    Plug 'stevearc/aerial.nvim'
     Plug 'folke/neodev.nvim'
     Plug 'simrat39/rust-tools.nvim'
     Plug 'p00f/clangd_extensions.nvim'
@@ -110,11 +106,12 @@ endif
 if has('nvim') && !has('nvim-0.8')
     Plug 'antoinemadec/FixCursorHold.nvim'
 endif
-if s:nvim_latest_stable
+if g:nvim_latest_stable
     " NOTE: when using local install of nvim, should reinstall
     Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
     " Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+    Plug 'stevearc/aerial.nvim'
     Plug 'folke/paint.nvim'
     " NOTE: should do `rm ~/.cache/nvim/luacache*` after upgrading nvim
     Plug 'jbyuki/venn.nvim'
@@ -591,8 +588,9 @@ augroup Languages | au!
 augroup END
 
 " NOTE: treesitter FileType autocmd should override the above stuff
-if s:nvim_latest_stable
+if g:nvim_latest_stable
     lua require('tomtomjhj/treesitter')
+    lua require('tomtomjhj/aerial')
 endif
 
 " Haskell {{{
@@ -1461,7 +1459,7 @@ function! s:init_fern() abort
     silent! vunmap <buffer> !
     nnoremap <buffer> ~ <Cmd>Fern ~<CR>
     nmap <buffer> - <Plug>(fern-action-leave)
-    nmap <buffer><localleader><C-l> <Plug>(fern-action-reload)
+    nmap <buffer><leader><C-l> <Plug>(fern-action-reload)
     nmap <buffer> l <Plug>(fern-action-expand)
     Map <buffer> x <Plug>(fern-action-mark:toggle)
     nmap <buffer> X <Plug>(fern-action-mark:clear)
