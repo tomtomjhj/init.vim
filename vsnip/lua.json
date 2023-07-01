@@ -1,0 +1,23 @@
+{
+    "if": {
+        "prefix": "if",
+        "body": ["if ${0:true} then", "end"]
+    },
+    "elseif": {
+        "prefix": "elseif",
+        "body": ["elseif ${0:true} then"]
+    },
+    "for": {
+        "prefix": "for",
+        "body": ["for $0 do", "end"],
+        "description": "for loop range"
+    },
+    "function": {
+        "prefix": "fu",
+        "body": ["function$0()", "end"]
+    },
+    "while": {
+        "prefix": "while",
+        "body": ["while ${0:true} do", "end"]
+    }
+}

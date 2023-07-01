@@ -1,5 +1,5 @@
 diff --git a/package.json b/package.json
-index 710bb2d..17a7b7b 100644
+index 2920ef1..517c125 100644
 --- a/package.json
 +++ b/package.json
 @@ -5,21 +5,6 @@
@@ -24,7 +24,18 @@ index 710bb2d..17a7b7b 100644
              {
                  "language": "c",
                  "path": "./snippets/c.json"
-@@ -152,10 +137,6 @@
+@@ -72,10 +57,6 @@
+                 "language": "liquid",
+                 "path": "./snippets/liquid.json"
+             },
+-            {
+-                "language": "lua",
+-                "path": "./snippets/lua/lua.json"
+-            },
+             {
+                 "language": "luadoc",
+                 "path": "./snippets/lua/luadoc.json"
+@@ -168,10 +149,6 @@
                  "language": ["shellscript", "shell", "sh", "zsh"],
                  "path": "./snippets/shell.json"
              },
@@ -35,7 +46,7 @@ index 710bb2d..17a7b7b 100644
              {
                  "language": ["plaintex", "tex"],
                  "path": "./snippets/latex.json"
-@@ -344,14 +325,6 @@
+@@ -368,14 +345,6 @@
                  "language": "kotlin",
                  "path": "./snippets/kotlin.json"
              },

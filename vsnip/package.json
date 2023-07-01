@@ -3,6 +3,18 @@
   "contributes": {
     "snippets": [
       {
+        "language": "all",
+        "path": "./global.json"
+      },
+      {
+        "language": "coq",
+        "path": "./coq.json"
+      },
+      {
+        "language": "lua",
+        "path": "./lua.json"
+      },
+      {
         "language": [
           "markdown",
           "pandoc"
@@ -10,21 +22,7 @@
         "path": "./markdown.json"
       },
       {
-        "language": [
-          "all"
-        ],
-        "path": "./global.json"
-      },
-      {
-        "language": [
-          "coq"
-        ],
-        "path": "./coq.json"
-      },
-      {
-        "language": [
-          "rust"
-        ],
+        "language": "rust",
         "path": "./rust.json"
       },
       {
