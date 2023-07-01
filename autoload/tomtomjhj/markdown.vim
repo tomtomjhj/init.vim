@@ -1,5 +1,8 @@
 " text object {{{1
 func! tomtomjhj#markdown#FencedCodeBlocka()
+    if get(g:, 'nvim_latest_stable', 0)
+        return luaeval('require("tomtomjhj.treesitter").markdown_fenced_codeblock(true)')
+    endif
     if !InSynStack('\v(markdownCode|markdownHighlight|pandocDelimitedCodeBlock)')
         return 0
     endif
@@ -12,6 +15,9 @@ func! tomtomjhj#markdown#FencedCodeBlocka()
     return ['V', head_pos, tail_pos]
 endfunc
 func! tomtomjhj#markdown#FencedCodeBlocki()
+    if get(g:, 'nvim_latest_stable', 0)
+        return luaeval('require("tomtomjhj.treesitter").markdown_fenced_codeblock(false)')
+    endif
     if !InSynStack('\v(markdownCode|markdownHighlight|pandocDelimitedCodeBlock)')
         return 0
     endif
@@ -71,6 +77,13 @@ func! tomtomjhj#markdown#PandocDollarMathMathi()
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
 endfunc
+
+function tomtomjhj#markdown#FencedCodeBlockLines() abort
+    let view = winsaveview()
+    let [_, head, tail] = tomtomjhj#markdown#FencedCodeBlocki()
+    call winrestview(view)
+    return getline(head[1], tail[1])
+endfunction
 
 " etc {{{1
 " * --defaults file in dots repo https://pandoc.org/MANUAL.html#default-files
