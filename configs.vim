@@ -134,6 +134,7 @@ set mouse=nvi
 set number signcolumn=number
 set ruler showcmd
 set foldcolumn=1 foldnestmax=5 foldlevel=99
+let &foldtext = 'printf("%s %s+%d", getline(v:foldstart), v:folddashes, v:foldend - v:foldstart)'
 " TODO: I want nostartofline when using sidescroll
 set scrolloff=2 sidescrolloff=2 sidescroll=1 startofline
 set showtabline=1
@@ -523,7 +524,7 @@ elseif g:ide_client == 'nvim'
 
         lua require("luasnip.loaders.from_vscode").lazy_load { paths = { "~/.vim/vsnip", "~/.vim/plugged/friendly-snippets" } }
         lua require("luasnip.loaders.from_lua").lazy_load { paths = "~/.vim/lsnip/" }
-        lua require("luasnip").config.setup { store_selection_keys = "<C-L>" }
+        lua require("luasnip").config.setup { store_selection_keys = "<C-L>", region_check_events = 'InsertEnter', delete_check_events = 'InsertLeave' }
 
         " See cmp.lua for imap <C-l>
         inoremap <silent> <C-h> <Cmd>lua require('luasnip').jump(-1)<CR>
@@ -698,7 +699,7 @@ let g:pandoc#hypertext#use_default_mappings = 0
 let g:pandoc#syntax#use_definition_lists = 0
 let g:pandoc#syntax#protect#codeblocks = 0
 let g:markdown_fenced_languages = []
-let g:markdown_folding = 1
+if !g:nvim_latest_stable | let g:markdown_folding = 1 | endif
 " let g:mkdp_port = '8080'
 " let g:mkdp_open_to_the_world = 1
 " let g:mkdp_echo_preview_url = 1
@@ -892,6 +893,7 @@ func! VisualStar(g)
 endfunc
 nnoremap / :let g:search_mode='/'<CR>/
 nnoremap ? :let g:search_mode='/'<CR>?
+cnoremap <expr> / (mode() =~# "[vV\<C-v>]" && getcmdtype() =~ '[/?]' && getcmdline() == '') ? "\<C-c>\<Esc>/\\%V" : '/'
 
 let g:fzf_action = { 'ctrl-t': 'tab split', 'ctrl-s': 'split', 'ctrl-x': 'split', 'ctrl-v': 'vsplit' }
 let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.5, 'yoffset': 1, 'border': 'top' } }
@@ -1503,6 +1505,7 @@ augroup git-custom | au!
         \ nnoremap <silent><buffer>zM :setlocal foldmethod=expr foldexpr=GitDiffFoldExpr(v:lnum)\|unmap <lt>buffer>zM<CR>zM
         \|silent! unmap <buffer> *
         \|Map <buffer> <localleader>* <Plug>fugitive:*
+    au FileType fugitiveblame setlocal cursorline
     au User FugitiveObject,FugitiveIndex
         \ silent! unmap <buffer> *
         \|Map <buffer> <localleader>* <Plug>fugitive:*
@@ -1529,6 +1532,7 @@ endfunction
 " TODO:
 " - matchit integration doesn't work with matchup
 " - no command/mapping for selecting diff3 style merge base
+" - TODO: disabled by treesitter highlight...
 let g:conflict_marker_highlight_group = ''
 function! s:conflict_marker_hi() abort
     if &background is# 'light'
@@ -1601,9 +1605,15 @@ imap <M-/> <C-G>u<Plug>CommentaryInsert
 " }}}
 
 " etc plugins {{{
-" disable nvim :h editorconfig
-let g:editorconfig = v:false
 let g:EditorConfig_exclude_patterns = ['.*[.]git/.*', 'fugitive://.*', 'scp://.*']
+if has('nvim-0.9')
+    " Disable nvim's builtin editorconfig.
+    let g:editorconfig = v:false
+    " editorconfig-vim and nvim's editorconfig use the same augroup name.
+    augroup override-editorconfig | au!
+        au SourcePost */runtime/plugin/editorconfig.lua EditorConfigEnable
+    augroup END
+endif
 
 " undotree
 let g:undotree_WindowLayout = 4

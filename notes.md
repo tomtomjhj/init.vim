@@ -354,6 +354,7 @@ See also
 * `<C-w>]` doesn't open in new tab if `switchbuf=useopen` which is useful for quickfix stuff.
 * `<ESC>` is somewhat different from `CTRL-C`: c (`/`, `?`), i, v, ..
     * `i_CTRL-C` doesn't trigger `InsertLeave`!
+    * `c_<Esc>` executes command when run from a map
 * `<Up>` is slightly different from `<C-p>`
 * after/indent doesn't work as expected?
 * function without `return` returns 0. insert explicit `return ''` for side-effect only function for `<C-R>=` trick.
@@ -720,6 +721,21 @@ Happened when editing latex file.
 Not related to count.
 This happens after using `\begin{} ... \end{}` snippet.
 
+
+Problem: `unlink_current_if_deleted()` can't detect partially deleted snippet
+```
+ibeg<C-l>name<Esc>ddPi<Esc>
+```
+```
+\begin{name}
+
+\end{\begin{name}
+}
+```
+solution?:
+* `active_update_dependents()` should fail if a dependent had been destroyed
+* unlink_current on ++once InsertLeave?
+* manually unlink? `:LuaSnipUnlinkCurrent`
 
 # annoyances ingrained in vi(m)
 * `ge` ... design of inclusive/exclusive stuff
