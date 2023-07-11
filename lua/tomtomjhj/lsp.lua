@@ -111,18 +111,21 @@ local function register_breadcrumb(ag, client, bufnr)
         need_cleanup_breadcrumb[vim.api.nvim_get_current_win()] = nil
       end,
     })
-    vim.api.nvim_create_autocmd("BufEnter", {
-      group = ag,
-      desc = "execute breadcrumb cleanup",
-      callback = function()
-        local win = vim.api.nvim_get_current_win()
-        if need_cleanup_breadcrumb[win] then
-          pcall(vim.api.nvim_win_del_var, win, 'breadcrumb')
-          need_cleanup_breadcrumb[win] = nil
-        end
-      end,
-    })
   end
+end
+
+local function register_breadcrumb_global(ag)
+  vim.api.nvim_create_autocmd("BufEnter", {
+    group = ag,
+    desc = "execute breadcrumb cleanup",
+    callback = function()
+      local win = vim.api.nvim_get_current_win()
+      if need_cleanup_breadcrumb[win] then
+        pcall(vim.api.nvim_win_del_var, win, 'breadcrumb')
+        need_cleanup_breadcrumb[win] = nil
+      end
+    end,
+  })
 end
 -- }}}
 
@@ -205,6 +208,7 @@ require('mason-lspconfig').setup() -- registers some hooks for lspconfig setup
 
 local ag = vim.api.nvim_create_augroup("nvim-lsp-custom", { clear = true })
 
+register_breadcrumb_global(ag)
 register_progress_message(ag)
 vim.api.nvim_create_autocmd("DiagnosticChanged", {
   group = ag,
