@@ -34,8 +34,10 @@ vim.api.nvim_create_autocmd(
       if not vim.tbl_contains(disable_highlight, lang) then
         vim.treesitter.start(ev.buf, lang)
       end
-      vim.opt_local.foldmethod = 'expr'
-      vim.opt_local.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+      if vim.treesitter.query.get(lang, 'folds') then
+        vim.opt_local.foldmethod = 'expr'
+        vim.opt_local.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+      end
     end
   }
 )

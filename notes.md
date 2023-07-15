@@ -474,8 +474,7 @@ See also
   So loading plugins is not idempotent.
   E.g. cmp source registration.
 * window-local options are unintuitive
-    * window split and new tab copies window-local options (`:h local-options`).
-      Is this actually better than not copying?
+    * Window split may copy `:setlocal`-ed window-local options (`:h local-options`).
     * <https://github.com/neovim/neovim/issues/11525>
     * options
         * fold
@@ -885,6 +884,9 @@ something like this?
 ```
 noremap : <Cmd>let _view = winsaveview()<CR>:
 ```
+
+## `.` is not extensible
+* "repeatable change" should be extensible at the core
 
 # stuff
 * https://arxiv.org/abs/2006.03103

@@ -151,7 +151,7 @@ set list listchars=tab:\|\ ,trail:-,nbsp:+,extends:>
 set wrap linebreak breakindent showbreak=↪\ 
 " very buggy
 " if has('patch-9.0.1247') || has('nvim-0.10') | set smoothscroll | endif
-let &backspace = (has('patch-8.2.0590') || has('nvim-0.5')) ? 3 : 2
+let &backspace = (has('patch-8.2.0590') || has('nvim-0.5')) ? 'indent,eol,nostop' : 'indent,eol,start'
 set whichwrap+=<,>,[,],h,l
 set cpoptions-=_
 
@@ -891,9 +891,8 @@ func! VisualStar(g)
     call histadd('/', @/)
     let @" = l:reg_save
 endfunc
-nnoremap / :let g:search_mode='/'<CR>/
-nnoremap ? :let g:search_mode='/'<CR>?
-cnoremap <expr> / (mode() =~# "[vV\<C-v>]" && getcmdtype() =~ '[/?]' && getcmdline() == '') ? "\<C-c>\<Esc>/\\%V" : '/'
+cnoremap <expr> <CR> ((getcmdtype() =~ '[/?]' && !empty(getcmdline()) && execute('let g:search_mode="/"'))?'':'') . '<C-]><CR>'
+cnoremap <expr> / (mode() =~# "[vV\<C-v>]" && getcmdtype() =~ '[/?]' && empty(getcmdline())) ? "\<C-c>\<Esc>/\\%V" : '/'
 
 let g:fzf_action = { 'ctrl-t': 'tab split', 'ctrl-s': 'split', 'ctrl-x': 'split', 'ctrl-v': 'vsplit' }
 let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.5, 'yoffset': 1, 'border': 'top' } }
@@ -1502,7 +1501,8 @@ augroup git-custom | au!
     au FileType diff
         \ nnoremap <silent><buffer>zM :setlocal foldmethod=expr foldexpr=GitDiffFoldExpr(v:lnum)\|unmap <lt>buffer>zM<CR>zM
     au FileType git,fugitive,gitcommit
-        \ nnoremap <silent><buffer>zM :setlocal foldmethod=expr foldexpr=GitDiffFoldExpr(v:lnum)\|unmap <lt>buffer>zM<CR>zM
+        \ setlocal foldtext=fugitive#Foldtext()
+        \|nnoremap <silent><buffer>zM :setlocal foldmethod=expr foldexpr=GitDiffFoldExpr(v:lnum)\|unmap <lt>buffer>zM<CR>zM
         \|silent! unmap <buffer> *
         \|Map <buffer> <localleader>* <Plug>fugitive:*
     au FileType fugitiveblame setlocal cursorline
@@ -1808,4 +1808,5 @@ command! Profile profile start profile.log | profile func * | profile file *
 " NOTE: lua profile https://github.com/nvim-lua/plenary.nvim#plenaryprofile
 " lua require'plenary.profile'.start("profile.log") -- , {flame = true}
 " lua require'plenary.profile'.stop()
+" See also: https://github.com/stevearc/profile.nvim
 " }}}

@@ -29,7 +29,15 @@ end
 --   * Don't add the word currently being editted in the middle e.g. `pre|suffix`.
 -- * keyword_pattern does 2 things: the pattern for item, and condition to list
 --   the source's item (pattern of the word before cursor)
--- * sometimes pum position wrong in diff mode
+-- * sometimes pum position wrong in diff mode → screenpos() bug
+-- * `.` doesn't repeat changes that involve cmp.mapping.confirm.
+--   * Two problems:
+--     * LuaSnip expand_repeat is broken https://github.com/L3MON4D3/LuaSnip/issues/225
+--     * Even with the "simple" expand function,
+--       dot doesn't repeat the insert of "()" (e.g. with rust-analyzer),
+--       because it's inserted as a snippet.
+--       https://github.com/hrsh7th/nvim-cmp/issues/649
+--   * workaround: use <C-n>/<C-p> and manually type "()"
 
 -- NOTE: make sure that luasnip is in rtp at require'luasnip'
 
