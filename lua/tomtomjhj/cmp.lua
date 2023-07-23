@@ -20,6 +20,13 @@ local function after_iskeyword()
   return col > 0 and vim.regex([[\k]]):match_str(vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col)) ~= nil
 end
 
+local menu = {
+  buffer = "[B]",
+  nvim_lsp = "[LS]",
+  luasnip = "[SN]",
+  tags = "[T]",
+}
+
 -- TODO
 -- cmp issues
 -- * matching/filter
@@ -120,12 +127,7 @@ cmp.setup {
         vim_item.kind = ""
       end
       -- TODO: dup = 0 for buffer source? didn't work
-      vim_item.menu = ({
-          buffer = "[B]",
-          nvim_lsp = "[LS]",
-          luasnip = "[SN]",
-          tags = "[T]",
-        })[entry.source.name]
+      vim_item.menu = menu[entry.source.name]
       return vim_item
     end,
   },

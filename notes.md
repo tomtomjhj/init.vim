@@ -736,6 +736,19 @@ solution?:
 * unlink_current on ++once InsertLeave?
 * manually unlink? `:LuaSnipUnlinkCurrent`
 
+## interaction of inline virtual text and visual-block insert
+```
+fn func1() -> usize { 0 }
+fn func2() -> usize { 1 }
+fn main() {
+    let var1 = func1();
+    let var2 = func1();
+}
+```
+Enable LSP inlay_hint.
+Change `func1` to `func2` with `v_b_c`.
+
+
 # annoyances ingrained in vi(m)
 * `ge` ... design of inclusive/exclusive stuff
 * `^` vs `0`
@@ -888,6 +901,10 @@ noremap : <Cmd>let _view = winsaveview()<CR>:
 ## `.` is not extensible
 * "repeatable change" should be extensible at the core
 
+## label-based treesitter node selection
+omap that shows labels on node.
+repeats on the same node type.
+
 # stuff
 * https://arxiv.org/abs/2006.03103
 * https://teukka.tech/vimloop.html
@@ -914,12 +931,9 @@ noremap : <Cmd>let _view = winsaveview()<CR>:
     * https://github.com/jose-elias-alvarez/null-ls.nvim
     * https://github.com/RishabhRD/nvim-lsputils
     * https://github.com/ray-x/lsp_signature.nvim
-    * https://github.com/stevearc/aerial.nvim
-    * https://github.com/gfanto/fzf-lsp.nvim
     * https://github.com/j-hui/fidget.nvim
     * https://git.sr.ht/%7Ewhynothugo/lsp_lines.nvim
     * https://github.com/ii14/lsp-command/
-    * https://github.com/lvimuser/lsp-inlayhints.nvim
     * https://github.com/hrsh7th/nvim-gtd
     * https://github.com/SmiteshP/nvim-navic
     * https://github.com/utilyre/barbecue.nvim
@@ -931,7 +945,6 @@ noremap : <Cmd>let _view = winsaveview()<CR>:
     * https://github.com/Wansmer/treesj
     * https://github.com/drybalka/tree-climber.nvim
 * git
-    * https://github.com/rhysd/conflict-marker.vim
       https://github.com/akinsho/git-conflict.nvim
     * https://github.com/pwntester/octo.nvim
     * https://github.com/TimUntersberger/neogit
@@ -958,7 +971,6 @@ noremap : <Cmd>let _view = winsaveview()<CR>:
     * https://github.com/mfussenegger/nvim-qwahl
 * https://github.com/jbyuki/instant.nvim
   https://github.com/jbyuki/nabla.nvim
-  https://github.com/jbyuki/venn.nvim
 * https://github.com/mfussenegger/nvim-dap
 * https://github.com/lukas-reineke/indent-blankline.nvim NOTE: conflict with tab listchar
 * motion

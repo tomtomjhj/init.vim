@@ -54,7 +54,7 @@ Plug 'roosta/fzf-folds.vim'
 Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
-Plug 'lambdalisue/fern.vim'
+Plug 'lambdalisue/fern.vim' " NOTE: fern does some polling
 Plug 'lambdalisue/fern-hijack.vim'
 Plug 'inkarkat/vim-mark', { 'on': ['<Plug>MarkS', 'Mark'] }
 Plug 'inkarkat/vim-ingo-library'
@@ -113,7 +113,6 @@ if g:nvim_latest_stable
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'stevearc/aerial.nvim'
     Plug 'folke/paint.nvim'
-    " NOTE: should do `rm ~/.cache/nvim/luacache*` after upgrading nvim
     Plug 'jbyuki/venn.nvim'
 endif
 
@@ -133,7 +132,7 @@ set encoding=utf-8
 set mouse=nvi
 set number signcolumn=number
 set ruler showcmd
-set foldcolumn=1 foldnestmax=5 foldlevel=99
+set foldcolumn=1 foldnestmax=10 foldlevel=99
 let &foldtext = 'printf("%s %s+%d", getline(v:foldstart), v:folddashes, v:foldend - v:foldstart)'
 " TODO: I want nostartofline when using sidescroll
 set scrolloff=2 sidescrolloff=2 sidescroll=1 startofline
@@ -667,6 +666,7 @@ let g:vimtex_toc_config_matchers = {
 let g:vimtex_syntax_nospell_comments = 1
 let g:vimtex_text_obj_variant = 'vimtex' " I don't use those targets.vim features and its ic is buggy(?)
 " NOTE: If inverse search doesn't work, check if source files are correctly recognized by vimtex.
+" TODO: compiling with vimtex lags fzf. sometimes input is completely blocked
 function! s:tex() abort
     setlocal shiftwidth=2
     setlocal conceallevel=2
@@ -845,7 +845,6 @@ endfunction
 " }}}
 
 " Lua {{{
-let g:lua_syntax_noextendedstdlib = 1
 function! s:lua() abort
     setlocal shiftwidth=2
     setlocal comments=:---,:--

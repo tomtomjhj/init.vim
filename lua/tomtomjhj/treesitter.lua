@@ -12,12 +12,17 @@ local disable_indent = vim.list_extend({'latex', 'markdown'}, disable)
 local custom_queries = {
   markdown = {
     -- NOTE: section doesn't work for setext heading https://github.com/MDeiml/tree-sitter-markdown/issues/59
-    folds = '[ (section) ] @fold',
+    -- NOTE: the paragraphs at the start of the document also make up a section. https://github.com/MDeiml/tree-sitter-markdown/blob/936cc84289f6de83c263ae8e659fb342867ceb16/tree-sitter-markdown/grammar.js#L24C18-L24C18
+    folds = '(section) @fold',
   }
+  -- TODO(latex): include trailing comment fold
 }
 
 local ag = vim.api.nvim_create_augroup("treesitter-custom", { clear = true })
 
+-- NOTE: This autocmd is run AFTER syntaxset autocmd, which loads syntax/*.vim
+-- files, because this file must be sourced after plug#end, because it depends
+-- on nvim-treesitter.
 vim.api.nvim_create_autocmd(
   { "FileType" },
   { group = ag, pattern = "*",
@@ -61,7 +66,9 @@ require'nvim-treesitter.configs'.setup {
 }
 
 local highlighter = vim.treesitter.highlighter
--- comment injection is slow https://gist.github.com/tomtomjhj/95c2feec72f35e6a6942fd792587bb4e
+-- NOTE: comment injection is slow https://gist.github.com/tomtomjhj/95c2feec72f35e6a6942fd792587bb4e
+-- TODO: paint is quite buggy. Sometimes highlights are not updated.
+-- Maybe just use decoration provider on_win to set ephemeral virtual texts in visible region.
 require("paint").setup {
   highlights = {
     {
