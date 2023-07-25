@@ -61,9 +61,6 @@ function! tomtomjhj#coq#mappings()
         nmap <buffer> <localleader>L <Plug>CoqOmitToLine
     endif
 
-    nmap <buffer> <C-w>s <Cmd>call tomtomjhj#coq#split('split')<CR>
-    nmap <buffer> <C-w>v <Cmd>call tomtomjhj#coq#split('vsplit')<CR>
-
     if &ft ==# 'coq'
         nmap <buffer> <M-]> <Plug>CoqGotoDef
     endif
@@ -122,32 +119,21 @@ endfunction
 " TODO case when the target's source file already has a session
 function! tomtomjhj#coq#goto_def(split, target, bang) abort
     call coqtail#panels#switch(g:coqtail#panels#main)
-    call tomtomjhj#coq#split(a:split)
+    exe a:split
     call coqtail#gotodef(a:target, a:bang)
 endfunction
 
-" NOTE: split inherits winvar → weird residual highlight
-" TODO: clearhl should be called when a coq buf without coqtail session is
-" attached to window. BufWinEnter might not work! Maybe WinEnter?
-" On FileType, register and manually trigger once?
-function! tomtomjhj#coq#split(split)
-    " Don't trigger WinNew (runs `s:call('refresh', '', 0, {})`) so that
-    " coqtail doesn't highlight the new window.
-    set eventignore+=WinNew
-    exe a:split
-    set eventignore-=WinNew
-    call tomtomjhj#coq#clearhl()
-endfunction
-
 function! tomtomjhj#coq#clearhl()
-    let win = win_getid()
-    for l:var in ['coqtail_checked', 'coqtail_sent', 'coqtail_error']
-        let l:val = getwinvar(win, l:var, -1)
-        if l:val != -1
-            call matchdelete(l:val, win)
-            call setwinvar(win, l:var, -1)
-        endif
+    if !exists('w:coqtail_highlights')
+        return
+    endif
+    for l:var in ['checked', 'sent', 'error', 'omitted']
+        let l:matches = get(w:coqtail_highlights, l:var, [])
+        for l:match in l:matches
+            call matchdelete(l:match)
+        endfor
     endfor
+    unlet! w:coqtail_highlights
 endfunction
 
 function! tomtomjhj#coq#folds()
