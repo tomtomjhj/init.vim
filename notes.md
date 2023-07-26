@@ -43,7 +43,8 @@
 * how to make `Gdiffsplit`, `G blame` do `--follow`?
   e.g. git diff-ing a file that moved, without specifying the old name
     * <https://github.com/tpope/vim-fugitive/issues/2070>
-
+* `CCR` <https://gist.github.com/romainl/047aca21e338df7ccf771f96858edb86>.
+  Related: `CmdlineLeave`
 
 
 ## dictionary (`i_CTRL-X_CTRL-K`)
@@ -484,6 +485,9 @@ See also
 * How does modeline and OptionSet, FileType, ... interact?
   vim.secure.trust() should take account of modeline?
 * https://vi.stackexchange.com/questions/37660/how-can-i-echo-a-message-with-newlines-so-it-is-displayed-with-line-breaks-and-i
+* `cnoremap <CR> do-something-and-then-<CR>` should send `<CR>` with `feedkeys("\<C-]>\<CR>", 'nt')`.
+    * Ensures history update (this requires `some_key_typed`).
+    * noremap prevents abbreviation expansion.
 
 
 # bugs

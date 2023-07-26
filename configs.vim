@@ -654,6 +654,7 @@ endfunction
 let g:tex_flavor = 'latex'
 let g:tex_noindent_env = '\v\w+.?'
 let g:matchup_override_vimtex = 1
+let g:vimtex_compiler_latexmk = { 'options' : [ '-verbose', '-file-line-error', '-synctex=1', '-interaction=nonstopmode', '-shell-escape', ], }
 let g:vimtex_view_method = 'zathura'
 let g:vimtex_quickfix_mode = 0
 let g:vimtex_indent_on_ampersands = 0
@@ -890,7 +891,7 @@ func! VisualStar(g)
     call histadd('/', @/)
     let @" = l:reg_save
 endfunc
-cnoremap <expr> <CR> ((getcmdtype() =~ '[/?]' && !empty(getcmdline()) && execute('let g:search_mode="/"'))?'':'') . '<C-]><CR>'
+cnoremap <expr> <CR> (( (getcmdtype() =~ '[/?]' && !empty(getcmdline()) && execute('let g:search_mode="/"') && 0) \|\| feedkeys("\<C-]>\<CR>", 'nt') )?'':'')
 cnoremap <expr> / (mode() =~# "[vV\<C-v>]" && getcmdtype() =~ '[/?]' && empty(getcmdline())) ? "\<C-c>\<Esc>/\\%V" : '/'
 
 let g:fzf_action = { 'ctrl-t': 'tab split', 'ctrl-s': 'split', 'ctrl-x': 'split', 'ctrl-v': 'vsplit' }
