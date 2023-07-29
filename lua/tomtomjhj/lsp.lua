@@ -1,5 +1,7 @@
 local lspconfig = require('lspconfig')
 
+local M = {}
+
 -- utils {{{
 
 local function position_mark_to_api(position)
@@ -24,6 +26,16 @@ local function in_range(pos, range)
     return false
   end
   return true
+end
+
+function M.toggle_diagnostics()
+  if vim.diagnostic.is_disabled() then
+    vim.diagnostic.enable()
+    print('Enabled diagnostics')
+  else
+    vim.diagnostic.disable()
+    print('Disabled diagnostics')
+  end
 end
 --- }}}
 
@@ -384,5 +396,7 @@ require'coq-lsp'.setup {
   },
 }
 -- }}}
+
+return M
 
 -- vim:set et sw=2 ts=8 foldmethod=marker foldlevel=0:

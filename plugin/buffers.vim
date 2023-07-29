@@ -1,6 +1,6 @@
 " buffer list operations {{{
 " bw, bd, setlocal bufhidden=delete don't work on the buf being hidden
-" https://stackoverflow.com/questions/6552295.`+` signs??
+" https://stackoverflow.com/questions/6552295.
 func! s:WipeGarbageBufs()
     " NOTE: getbufinfo bufmodified != getbufvar(.., '&mod') for new No Name buffer
     let garbages = map(filter(getbufinfo({'buflisted': 1}), 'empty(v:val.name) && v:val.hidden && !v:val.changed'), 'v:val.bufnr')

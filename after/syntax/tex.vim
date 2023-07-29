@@ -8,6 +8,10 @@ hi! def link texZone Special
 
 syntax match texCmdTodo '\\jaehwang'
 
+syntax clear texCommentTodo
+syntax keyword texCommentTodo TODO
+    \ containedin=texComment contained
+
 " Don't conceal \[..\] and $$..$$, since they usually delimit longer complex math stuff.
 syntax clear texMathZoneLD texMathZoneTD
 execute 'syntax region texMathZoneLD matchgroup=texMathDelimZoneLD'

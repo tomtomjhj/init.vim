@@ -112,6 +112,7 @@ function! SetupLSP()
   " NOTE: some commands require client side extension (vim.lsp.commands, etc), e.g. running test with rust-analyzer
   nnoremap <buffer><leader>cr    <cmd>lua vim.lsp.codelens.run()<CR>
 
+  nnoremap <buffer><leader>ud    <cmd>lua require'tomtomjhj/lsp'.toggle_diagnostics()<CR>
   nnoremap <buffer>        [d    <cmd>lua vim.diagnostic.goto_prev{float=false, severity={min=vim.diagnostic.severity.WARN}}<CR>
   nnoremap <buffer>        ]d    <cmd>lua vim.diagnostic.goto_next{float=false, severity={min=vim.diagnostic.severity.WARN}}<CR>
   nnoremap <buffer>        [D    <cmd>lua vim.diagnostic.goto_prev{float=false}<CR>

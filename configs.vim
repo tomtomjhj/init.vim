@@ -132,7 +132,7 @@ set encoding=utf-8
 set mouse=nvi
 set number signcolumn=number
 set ruler showcmd
-set foldcolumn=1 foldnestmax=10 foldlevel=99
+set foldcolumn=1 foldnestmax=9 foldlevel=99
 let &foldtext = 'printf("%s %s+%d", getline(v:foldstart), v:folddashes, v:foldend - v:foldstart)'
 " TODO: I want nostartofline when using sidescroll
 set scrolloff=2 sidescrolloff=2 sidescroll=1 startofline
@@ -212,8 +212,7 @@ endif
 augroup BasicSetup | au!
     " Return to last edit position when entering normal buffer
     " TODO: this addes jump? manually running is ok. maybe autocmd problem?
-    " TODO: Commit file shouldn't store marks in the first place
-    au BufRead * if empty(&buftype) && &filetype !~# '\v%(commit)' && line("'\"") > 1 && line("'\"") <= line("$") | exec "norm! g`\"" | endif
+    au BufRead * if empty(&buftype) && &filetype !=# 'git' && line("'\"") > 1 && line("'\"") <= line("$") | exec "norm! g`\"" | endif
     au VimEnter * exec 'tabdo windo clearjumps' | tabnext
     au BufWritePost ~/.vim/configs.vim nested source ~/.vim/configs.vim
     au BufRead,BufNewFile *.k setlocal filetype=k
@@ -666,7 +665,7 @@ let g:vimtex_toc_config_matchers = {
             \}
 let g:vimtex_syntax_nospell_comments = 1
 let g:vimtex_text_obj_variant = 'vimtex' " I don't use those targets.vim features and its ic is buggy(?)
-" NOTE: If inverse search doesn't work, check if source files are correctly recognized by vimtex.
+" NOTE: If inverse search doesn't work, check if zathura is run with -x option (vimtex sets this when launching it), and source files are correctly recognized by vimtex.
 " TODO: compiling with vimtex lags fzf. sometimes input is completely blocked
 function! s:tex() abort
     setlocal shiftwidth=2
@@ -944,6 +943,7 @@ func! RgInput(raw)
     if g:search_mode ==# 'n'
         return substitute(a:raw, '\v\\[<>]','','g')
     elseif g:search_mode ==# 'v'
+        " TODO: Now that I have :Grep!, just do `grep -f` or `rg -F` from @c
         return escape(a:raw, '+|?-(){}') " not escaped by VisualStar
     elseif a:raw[0:1] !=# '\v' " can convert most of strict very magic to riggrep regex, otherwise, DIY
         return substitute(a:raw, '\v(\\V|\\[<>])','','g')
@@ -1037,21 +1037,22 @@ cnoremap <M-*> <C-a>
 
 inoremap <expr> <C-u> match(getline('.'), '\S') >= 0 ? '<C-g>u<C-u>' : '<C-u>'
 
-inoremap         <expr> <C-j>  ScanJump(0, 'NextTokenBoundary')
-cnoremap         <expr> <C-j>  ScanJump(1, 'NextTokenBoundary')
-inoremap         <expr> <C-k>  ScanJump(0, PrevTokenBoundary)
-cnoremap         <expr> <C-k>  ScanJump(1, PrevTokenBoundary)
+inoremap         <expr> <C-j>  ScanJump(0, 'NextTokenBoundary', "\<Right>")
+cnoremap         <expr> <C-j>  ScanJump(1, 'NextTokenBoundary', "")
+inoremap         <expr> <C-k>  ScanJump(0, PrevTokenBoundary, "\<Left>")
+cnoremap         <expr> <C-k>  ScanJump(1, PrevTokenBoundary, "")
 inoremap <silent><expr> <C-w>  ScanRubout(0, 'PrevTokenLeftBoundary')
 cnoremap         <expr> <C-w>  ScanRubout(1, 'PrevTokenLeftBoundary')
 inoremap <silent><expr> <M-BS> ScanRubout(0, PrevSubwordBoundary)
 cnoremap         <expr> <M-BS> ScanRubout(1, PrevSubwordBoundary)
 
-function! ScanJump(cmap, scanner) abort
+function! ScanJump(cmap, scanner, default) abort
     let line = a:cmap ? getcmdline() : getline('.')
     let from = s:charidx(line . ' ', (a:cmap ? getcmdpos() : col('.')) - 1)
     let line = split(line, '\zs')
     let to = call(a:scanner, [line, from])
     let delta = to - from
+    if delta == 0 | return a:default | endif
     return (a:cmap ? "\<Space>\<BS>" : "")
         \. repeat(delta > 0 ? "\<Right>" : "\<Left>", abs(delta))
 endfunction
@@ -1618,6 +1619,9 @@ endif
 " undotree
 let g:undotree_WindowLayout = 4
 nnoremap U :UndotreeToggle<CR>
+augroup undotree-custom | au!
+    au FileType undotree let &l:statusline = ' @%{winnr()} %{t:undotree.GetStatusLine()}'
+augroup END
 
 " sentencer
 let g:sentencer_filetypes = []
