@@ -1001,6 +1001,37 @@ Noremap <leader>J J
 Mnoremap <expr> H v:count ? 'H' : 'h'
 Mnoremap <expr> L v:count ? 'L' : 'l'
 
+for s:mode in ['n', 'o', 'x']
+    for s:motion in ['w', 'e', 'b', 'ge']
+        exe printf('%snoremap %s <Plug>(PSWordMotion-%s)', s:mode, s:motion, s:motion)
+        " exe printf('%snoremap %s %s', s:mode, join(map(split(s:motion, '\zs'), '''<M-''.v:val.''>'''), ''), s:motion)
+    endfor
+endfor
+unlet s:mode s:motion
+
+nnoremap <silent> <Plug>(PSWordMotion-w)   :<C-u>call PSWordMotion('w' , v:count1, ''  , ''  )<CR>
+nnoremap <silent> <Plug>(PSWordMotion-e)   :<C-u>call PSWordMotion('e' , v:count1, ''  , ''  )<CR>
+nnoremap <silent> <Plug>(PSWordMotion-b)   :<C-u>call PSWordMotion('b' , v:count1, ''  , ''  )<CR>
+nnoremap <silent> <Plug>(PSWordMotion-ge)  :<C-u>call PSWordMotion('ge', v:count1, ''  , ''  )<CR>
+onoremap <silent> <Plug>(PSWordMotion-w)   :<C-u>call PSWordMotion('w' , v:count1, ''  , ''  )<CR>
+onoremap <silent> <Plug>(PSWordMotion-e)  v:<C-u>call PSWordMotion('e' , v:count1, ''  , ''  )<CR>
+onoremap <silent> <Plug>(PSWordMotion-b)   :<C-u>call PSWordMotion('b' , v:count1, ''  , ''  )<CR>
+onoremap <silent> <Plug>(PSWordMotion-ge)  :<C-u>call PSWordMotion('ge', v:count1, ''  , '1 ')<CR>
+xnoremap <silent> <Plug>(PSWordMotion-w)   :<C-u>call PSWordMotion('w' , v:count1, 'gv', ''  )<CR>
+xnoremap <silent> <Plug>(PSWordMotion-e)   :<C-u>call PSWordMotion('e' , v:count1, 'gv', ''  )<CR>
+xnoremap <silent> <Plug>(PSWordMotion-b)   :<C-u>call PSWordMotion('b' , v:count1, 'gv', ''  )<CR>
+xnoremap <silent> <Plug>(PSWordMotion-ge)  :<C-u>call PSWordMotion('ge', v:count1, 'gv', ''  )<CR>
+
+function! PSWordMotion(motion, cnt, pre, post) abort
+    if !empty(a:pre) | exe 'normal!' a:pre | endif
+    let pat = a:motion =~ 'e' ? '\v.>@=|\S\ze\_s' : '\v<|(\s\zs|^)\S'
+    let flag = a:motion =~ '^[we]' ? 'W' : 'Wb'
+    for _ in range(a:cnt)
+        call search(pat, flag)
+    endfor
+    if !empty(a:post) | exe 'normal!' a:post | endif
+endfunction
+
 Mnoremap <M-0> ^w
 
 let g:sneak#s_next = 0
