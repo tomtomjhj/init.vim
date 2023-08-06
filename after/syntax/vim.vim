@@ -7,7 +7,7 @@ syn keyword	vimMap		Mnoremap Mmap Noremap Map skipwhite nextgroup=vimMapMod,vimM
 
 " don't prefer the bundled syntax/lua.vim
 let s:luapath = split(globpath(&rtp,"syntax/lua.vim"),"\n")[0]
-if g:vimsyn_embed =~# 'l' && filereadable(s:luapath)
+if (has('nvim') || has('lua')) && g:vimsyn_embed =~# 'l' && filereadable(s:luapath)
     syn cluster vimFuncBodyList remove=vimLuaRegion
     syn clear @vimLuaScript
     syn clear vimLuaRegion

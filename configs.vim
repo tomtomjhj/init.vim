@@ -135,7 +135,7 @@ set mouse=nvi
 set number signcolumn=number
 set ruler showcmd
 set foldcolumn=1 foldnestmax=9 foldlevel=99
-let &foldtext = 'printf("%s %s+%d", getline(v:foldstart), v:folddashes, v:foldend - v:foldstart)'
+let &foldtext = 'printf("%s %s+%d", substitute(getline(v:foldstart), ''\v^\s*\ze\s'', ''\=repeat("-", len(submatch(0)))'', 0), v:folddashes, v:foldend - v:foldstart)'
 " TODO: I want nostartofline when using sidescroll
 set scrolloff=2 sidescrolloff=2 sidescroll=1 startofline
 set showtabline=1
@@ -1242,9 +1242,6 @@ nnoremap <leader>cx :tabclose<CR>
 nnoremap <leader>td :tab split<CR>
 nnoremap <leader>tt :tabedit<CR>
 nnoremap <leader>fe :e!<CR>
-
-cnoremap <C-r><C-v> <C-r>=join(tomtomjhj#util#visual_selection_lines(), ' ')<CR>
-inoremap <C-r><C-v> <C-r>=join(tomtomjhj#util#visual_selection_lines(), ' ')<CR>
 " }}}
 
 " pairs {{{
@@ -1299,6 +1296,7 @@ let g:sandwich#recipes += [
       \   {'buns': ['(*', '*)'], 'nesting': 1, 'motionwise': ['line'], 'autoindent': 0, 'kind': ['add'], 'action': ['add'], 'input': ['m']},
       \   {'buns': ['\v\(\*\_s', '\v\_s\*\)'], 'nesting': 1, 'regex': 1, 'kind': ['delete', 'textobj'], 'action': ['delete'], 'input': ['m']},
       \ ]
+" NOTE: ib/ab is quite slow in tex
 omap ib <Plug>(textobj-sandwich-auto-i)
 xmap ib <Plug>(textobj-sandwich-auto-i)
 omap ab <Plug>(textobj-sandwich-auto-a)
@@ -1335,8 +1333,6 @@ Noremap <leader>R :AsyncRun<space>
 nnoremap <leader>ST :AsyncStop<CR>
 command! -bang -nargs=* -complete=file Make AsyncRun -auto=make -program=make @ <args>
 nnoremap <leader>M :Make<space>
-command! -bang -bar -nargs=* -complete=customlist,fugitive#PushComplete Gpush  execute 'AsyncRun<bang> -cwd=' . fnameescape(FugitiveGitDir()) 'git push' <q-args>
-command! -bang -bar -nargs=* -complete=customlist,fugitive#FetchComplete Gfetch execute 'AsyncRun<bang> -cwd=' . fnameescape(FugitiveGitDir()) 'git fetch' <q-args>
 " }}}
 
 " window layout {{{

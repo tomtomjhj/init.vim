@@ -30,6 +30,7 @@ end
 
 function M.toggle_diagnostics()
   if vim.diagnostic.is_disabled() then
+    -- TODO: with ltex, diagnostic.lua:1010: Invalid 'line': out of range
     vim.diagnostic.enable()
     print('Enabled diagnostics')
   else
@@ -366,6 +367,7 @@ require'ltex-ls'.setup(config {
       },
       environments = {
         ["mathpar"] = "ignore",
+        ["algorithmic"] = "ignore",
       },
     },
     additionalRules = {
