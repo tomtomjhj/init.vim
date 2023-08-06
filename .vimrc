@@ -69,16 +69,25 @@ source ~/.vim/configs.vim
 if has('clipboard') && !has('gui_running')
   let s:clipboard = &clipboard
   set clipboard=exclude:.*
-  function s:InitClipboard()
+  let s:map_i_C_v = maparg('<C-v>', 'i', 0, 1)
+  let s:map_n_M_c = maparg('<M-c>', 'n', 0, 1)
+  let s:map_x_M_c = maparg('<M-c>', 'x', 0, 1)
+  let s:map_n_yY = maparg('yY', 'n', 0, 1)
+  function s:InitClipboard(keys)
     let &clipboard = s:clipboard
+    unlet! s:clipboard
     call serverlist()
-    inoremap <C-v> <C-g>u<C-r><C-p>+
-    noremap <M-c> "+y
-    return ''
+    call mapset('i', 0, s:map_i_C_v)
+    call mapset('n', 0, s:map_n_M_c)
+    call mapset('x', 0, s:map_x_M_c)
+    call mapset('n', 0, s:map_n_yY)
+    unlet! s:map_i_C_v s:map_n_M_c s:map_x_M_c s:map_n_yY
+    call feedkeys(a:keys, 'mt')
   endfunction
-  inoremap <silent> <C-v> <C-R>=<SID>InitClipboard()<CR><C-v>
-  nnoremap <silent> <M-c> <ESC>:call <SID>InitClipboard()<CR>"+y
-  xnoremap <silent> <M-c> <ESC>:call <SID>InitClipboard()<CR>gv"+y
+  inoremap <silent><expr> <C-v> <SID>InitClipboard("\<C-v>") ?'':''
+  nnoremap <silent><expr> <M-c> <SID>InitClipboard("\<M-c>") ?'':''
+  xnoremap <silent><expr> <M-c> <SID>InitClipboard("\<M-c>") ?'':''
+  nnoremap <silent><expr> yY    <SID>InitClipboard("yY"    ) ?'':''
 endif
 " }}}
 

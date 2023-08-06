@@ -1159,7 +1159,6 @@ nnoremap <silent><leader><C-L> :diffupdate<CR><C-L>
 nnoremap <silent><leader>sfs :syntax sync fromstart<CR><C-L>
 nnoremap <leader>ss :setlocal spell! spell?<CR>
 nnoremap <leader>sc :if empty(&spc) \| setl spc< spc? \| else \| setl spc= spc? \| endif<CR>
-nnoremap <leader>sp :set paste! paste?<CR>
 nnoremap <leader>sw :setlocal wrap! wrap?<CR>
 nnoremap <leader>ic :set ignorecase! smartcase! ignorecase?<CR>
 
@@ -1167,9 +1166,12 @@ Noremap <leader>dp :diffput<CR>
 Noremap <leader>do :diffget<CR>
 
 " clipboard.
-inoremap <C-v> <C-g>u<C-r><C-o>+
+" Don't behave like P even if "+ is linewise. .... just use UI's paste
+inoremap <expr> <C-v> '<C-g>u' . (getregtype('+') ==# 'V' && getline('.')[:col('.')-1][:-2] =~# '\S' ? '<CR><C-u>' : '') . '<C-r><C-o>+' . (getregtype('+') ==# 'V' && getline('.')[col('.')-1:] =~# '\S' ? '' : '<BS>')
+" "= is charwise if the result doesn't end with \n.
+" inoremap <silent><C-v> <C-g>u<C-r><C-p>=substitute(substitute(@+, '^\_s\+', '', ''), '\_s\+$', '', '')<CR>
 Noremap <M-c> "+y
-nnoremap <silent> yY :let _view = winsaveview() \| exe 'keepjumps keepmarks norm ggVG"+y' \| call winrestview(_view) \| unlet _view<cr>
+nnoremap <silent> yY :<C-u>let _view = winsaveview() \| exe 'keepjumps keepmarks norm ggVG"+y' \| call winrestview(_view) \| unlet _view<CR>
 
 " buf/filename
 nnoremap <leader>fn 2<C-g>
