@@ -51,7 +51,6 @@ if has('nvim')
     Plug 'ibhagwan/fzf-lua'
 endif
 Plug 'roosta/fzf-folds.vim'
-Plug 'romainl/vim-qf'
 Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'lambdalisue/fern.vim' " NOTE: fern does some polling
@@ -1390,33 +1389,51 @@ augroup END
 " }}}
 
 " quickfix, loclist, ... {{{
-" TODO: manually adding lines to qf?
-" TODO: Too many functionalities use quickfix. Use location list for some of them.
-let g:qf_window_bottom = 0
-let g:qf_loclist_window_bottom = 0
-let g:qf_auto_open_quickfix = 0
-let g:qf_auto_open_loclist = 0
-let g:qf_auto_resize = 0
-let g:qf_max_height = 12
-let g:qf_auto_quit = 0
-
 packadd cfilter
 
-nmap <silent><leader>cw :CW<CR>
-nmap <silent><leader>lw :LW<CR>
-nmap <silent><leader>x  :pc\|ccl\|lcl<CR>
-nmap <silent>]q <Plug>(qf_qf_next)
-nmap <silent>[q <Plug>(qf_qf_previous)
-nmap <silent>]l <Plug>(qf_loc_next)
-nmap <silent>[l <Plug>(qf_loc_previous)
+nnoremap <silent><leader>co :botright copen<CR>
+nnoremap <silent><leader>x  :pc\|ccl\|lcl<CR>
+nnoremap <silent>[q :<C-u>call <SID>Cnext(1, 'c')<CR>
+nnoremap <silent>]q :<C-u>call <SID>Cnext(0, 'c')<CR>
+nnoremap <silent>[l :<C-u>call <SID>Cnext(1, 'l')<CR>
+nnoremap <silent>]l :<C-u>call <SID>Cnext(0, 'l')<CR>
+" note: use :cex [] to start a new quickfix
+command! -bang Qfadd call s:Qfadd(<bang>0)
+nnoremap <leader>qf :<C-u>Qfadd<CR>
+command! Cfork call setloclist(0, [], ' ', getqflist({'all': 1})) | cclose | lwindow
+function s:qf() abort
+    setlocal nowrap
+    setlocal norelativenumber number
+    setlocal nobuflisted
+
+    nnoremap <buffer> <Left>  :<C-u>call <SID>Colder('older')<CR>
+    nnoremap <buffer> <Right> :<C-u>call <SID>Colder('newer')<CR>
+    if s:Qf().is_loc
+        nnoremap <buffer><silent> p <CR><C-w>p
+    else
+        " Like CTRL-W_<CR>, but with preview window and without messing up buffer list
+        nnoremap <buffer><silent> p    :<C-u>call <SID>PreviewQf(line('.'))<CR>
+        nnoremap <buffer><silent> <CR> :<C-u>pclose<CR><CR>
+    endif
+    nmap     <buffer>         J jp
+    nmap     <buffer>         K kp
+    command! -buffer -range Qfrm :<line1>,<line2>call s:Qfrm()
+    nnoremap <buffer><silent> dd :Qfrm<CR>
+    xnoremap <buffer><silent> d :Qfrm<CR>
+endfunction
+
+augroup qf-custom | au!
+    au FileType qf call s:qf()
+    au QuitPre * nested if &filetype !=# 'qf' | silent! lclose | endif
+augroup END
 
 " like cwindow, but don't jump to the window
-command! -bar -nargs=? CW call s:cwindow(0, <q-mods>, <q-args>)
-command! -bar -nargs=? LW call s:cwindow(1, <q-mods>, <q-args>)
-function! s:cwindow(loclist, mods, args) abort
+command! -bar -nargs=? CW call s:cwindow('c', <q-mods>, <q-args>)
+command! -bar -nargs=? LW call s:cwindow('l', <q-mods>, <q-args>)
+function! s:cwindow(prefix, mods, args) abort
     let curwin = win_getid()
     let view = winsaveview()
-    exe a:mods . (a:loclist ? ' lwindow' : ' cwindow') a:args
+    exe a:mods . ' ' . a:prefix . 'window' a:args
     " jumped to qf/loc window. return.
     if curwin != win_getid() && &buftype ==# 'quickfix'
         wincmd p
@@ -1424,16 +1441,82 @@ function! s:cwindow(loclist, mods, args) abort
     endif
 endfunction
 
-function s:qf() abort
-    nmap <buffer> <Left>  <Plug>(qf_older)
-    nmap <buffer> <Right> <Plug>(qf_newer)
-    nmap <buffer> { <Plug>(qf_previous_file)
-    nmap <buffer> } <Plug>(qf_next_file)
+function! s:Qf() abort
+    let is_loc = getwininfo(win_getid())[0]['loclist']
+    return {'is_loc': is_loc,
+          \ 'prefix': is_loc ? 'l' : 'c',
+          \ 'get': is_loc ? function('getloclist', [0]) : function('getqflist'),
+          \ 'set': is_loc ? function('setloclist', [0]) : function('setqflist')}
 endfunction
-
-augroup qf-custom | au!
-    au FileType qf call s:qf()
-augroup END
+function! s:Cnext(prev, prefix) abort
+    try
+        exe a:prefix . (a:prev ? 'previous' : 'next')
+    catch /^Vim\%((\a\+)\)\=:E553/
+        exe a:prefix . (a:prev ? 'last' : 'first')
+    catch /^Vim\%((\a\+)\)\=:E\%(325\|776\|42\):/
+    endtry
+    if &foldopen =~ 'quickfix' && foldclosed(line('.')) != -1
+        normal! zv
+    endif
+endfunction
+function! s:Colder(newer)
+    try
+        exe (s:Qf().prefix) . a:newer
+    catch /^Vim\%((\a\+)\)\=:E\%(380\|381\):/
+    endtry
+endfunction
+function! s:GetQfEntry(linenr) abort
+    if &filetype !=# 'qf' | return {} | endif
+    let l:qflist = s:Qf().get()
+    if !l:qflist[a:linenr-1].valid | return {} | endif
+    if !filereadable(bufname(l:qflist[a:linenr-1].bufnr)) | return {} | endif
+    return l:qflist[a:linenr-1]
+endfunction
+function! s:PreviewQf(linenr) abort
+    let l:entry = s:GetQfEntry(a:linenr)
+    if empty(l:entry) | return | endif
+    let l:listed = buflisted(l:entry.bufnr)
+    let width = winwidth(0) > 170 ? winwidth(0) * 4 / 9 : 0
+    if s:PreviewBufnr() != l:entry.bufnr
+        execute (width ? 'vertical' : '')  'leftabove keepjumps pedit' bufname(l:entry.bufnr)
+        if width | execute 'vertical resize' width | endif
+    endif
+    noautocmd wincmd P
+    if l:entry.lnum > 0
+        execute l:entry.lnum
+    else
+        call search(l:entry.pattern, 'w')
+    endif
+    normal! zz
+    " TODO: temporary blinking?
+    setlocal cursorline nofoldenable
+    if !l:listed
+        setlocal nobuflisted bufhidden=delete noswapfile
+    endif
+    noautocmd wincmd p
+endfunction
+function! s:PreviewBufnr()
+    for nr in range(1, winnr('$'))
+        if getwinvar(nr, '&previewwindow') == 1
+            return winbufnr(nr)
+        endif
+    endfor
+    return 0
+endfunction
+function! s:Qfadd(loc) abort
+    let qf = s:Qf()
+    let item = {'bufnr': bufnr('%'), 'lnum': line('.'), 'text': getline('.')}
+    call qf.set([item], 'a')
+    call s:cwindow(qf.prefix, '', '')
+endfunction
+function! s:Qfrm() range abort
+    let qf = s:Qf()
+    let list = qf.get({'all':1})
+    call remove(list['items'], a:firstline - 1, a:lastline - 1)
+    let view = winsaveview()
+    call qf.set([], 'r', list)
+    call winrestview(view)
+endfunction
 " }}}
 
 " Explorers {{{
