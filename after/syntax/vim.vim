@@ -2,7 +2,7 @@
 syn region	vimPlug	oneline excludenl matchgroup=vimUserCmd start="\<Plug\>" skip="\(\\\\\)*\\|" end="$\||" contains=vimFuncVar,vimIsCommand,vimOper,vimNotation,vimOperParen,vimString,vimVar,vimComment
 
 " my command for :map without :smap
-syn keyword	vimMap		Map Noremap skipwhite nextgroup=vimMapMod,vimMapLhs
+syn keyword	vimMap		Mnoremap Mmap Noremap Map skipwhite nextgroup=vimMapMod,vimMapLhs
 
 
 " don't prefer the bundled syntax/lua.vim

@@ -123,8 +123,10 @@ endif
 " }}}
 
 " Basic {{{
-command! -nargs=1 Noremap exe 'nnoremap' <q-args> | exe 'xnoremap' <q-args> | exe 'onoremap' <q-args> 
-command! -nargs=1 Map exe 'nmap' <q-args> | exe 'xmap' <q-args> | exe 'omap' <q-args>
+command! -nargs=1 Mnoremap exe 'nnoremap' <q-args> | exe 'xnoremap' <q-args> | exe 'onoremap' <q-args>
+command! -nargs=1 Mmap     exe 'nmap' <q-args>     | exe 'xmap' <q-args>     | exe 'omap' <q-args>
+command! -nargs=1 Noremap  exe 'nnoremap' <q-args> | exe 'xnoremap' <q-args>
+command! -nargs=1 Map      exe 'nmap' <q-args>     | exe 'xmap' <q-args>
 
 if has('vim_starting')
 set encoding=utf-8
@@ -160,10 +162,10 @@ set spellfile=~/.vim/spell/en.utf-8.add
 set spelllang=en,cjk
 
 let mapleader = "\<Space>"
-Noremap <Space> <Nop>
+Mnoremap <Space> <Nop>
 let maplocalleader = ","
-Noremap , <Nop>
-Noremap <M-;> ,
+Mnoremap , <Nop>
+Mnoremap <M-;> ,
 " scrolling with only left hand
 Noremap <C-Space> <C-u>
 Noremap <Space><Space> <C-d>
@@ -626,8 +628,8 @@ function! s:rust() abort
     endif
     nnoremap <buffer><leader>C :AsyncRun -program=make -post=CW test --no-run<CR>
     xnoremap <buffer><leader>fm :RustFmtRange<CR>
-    Noremap <silent><buffer> [[ <Cmd>call tomtomjhj#rust#section(1)<CR>
-    Noremap <silent><buffer> ]] <Cmd>call tomtomjhj#rust#section(0)<CR>
+    Mnoremap <silent><buffer> [[ <Cmd>call tomtomjhj#rust#section(1)<CR>
+    Mnoremap <silent><buffer> ]] <Cmd>call tomtomjhj#rust#section(0)<CR>
 endfunction
 " }}}
 
@@ -996,19 +998,19 @@ xnoremap <expr> K mode() !=# 'v' \|\| v:count ? 'k' : 'gk'
 onoremap <expr> J mode() !=# 'v' \|\| v:count ? 'j' : 'gj'
 onoremap <expr> K mode() !=# 'v' \|\| v:count ? 'k' : 'gk'
 Noremap <leader>J J
-Noremap <expr> H v:count ? 'H' : 'h'
-Noremap <expr> L v:count ? 'L' : 'l'
+Mnoremap <expr> H v:count ? 'H' : 'h'
+Mnoremap <expr> L v:count ? 'L' : 'l'
 
-Noremap <M-0> ^w
+Mnoremap <M-0> ^w
 
 let g:sneak#s_next = 0
 let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
-Map f <Plug>Sneak_f
-Map F <Plug>Sneak_F
-Map t <Plug>Sneak_t
-Map T <Plug>Sneak_T
-Map <M-;> <Plug>Sneak_,
+Mmap f <Plug>Sneak_f
+Mmap F <Plug>Sneak_F
+Mmap t <Plug>Sneak_t
+Mmap T <Plug>Sneak_T
+Mmap <M-;> <Plug>Sneak_,
 " NOTE: my fork
 let g:sneak#alias = {
             \ 'a': '[aα∀]', 'b': '[bβ]', 'c': '[cξ]', 'd': '[dδ]', 'e': '[eε∃]', 'f': '[fφ]', 'g': '[gγ]', 'h': '[hθ]', 'i': '[iι]', 'j': '[jϊ]', 'k': '[kκ]', 'l': '[lλ]', 'm': '[mμ]', 'n': '[nν]', 'o': '[oο]', 'p': '[pπ]', 'q': '[qψ]', 'r': '[rρ]', 's': '[sσ]', 't': '[tτ]', 'u': '[uυ]', 'v': '[vϋ𝓥]', 'w': '[wω]', 'x': '[xχ]', 'y': '[yη]', 'z': '[zζ]',
@@ -1187,11 +1189,11 @@ cnoremap <M-n> <Down>
 
 " disable annoying q and Q (use c_CTRL-F and gQ) and streamline record/execute
 " TODO: q quits hit-enter and *starts recording* unlike q of more-prompt → open a vim issue
-Noremap q: :
-Noremap q <nop>
-Noremap <M-q> q
-Noremap <expr> qq empty(reg_recording()) ? 'qq' : 'q'
-Noremap Q @q
+Mnoremap q: :
+Mnoremap q <nop>
+Mnoremap <M-q> q
+Mnoremap <expr> qq empty(reg_recording()) ? 'qq' : 'q'
+Mnoremap Q @q
 
 " v_u mistake is  hard to notice. Use gu instead (works for visual mode too).
 xnoremap u <nop>
@@ -1212,9 +1214,9 @@ nnoremap <silent> & :&&<cr>
 xnoremap <silent> & :&&<cr>
 
 " set nrformats+=alpha
-Noremap  <M-+> <C-a>
+nnoremap <M-+> <C-a>
 xnoremap <M-+> g<C-a>
-Noremap  <M--> <C-x>
+nnoremap <M--> <C-x>
 xnoremap <M--> g<C-x>
 
 nnoremap <C-j> <C-W>j
@@ -1463,7 +1465,7 @@ function! s:init_fern() abort
     nmap <buffer> - <Plug>(fern-action-leave)
     nmap <buffer><leader><C-l> <Plug>(fern-action-reload)
     nmap <buffer> l <Plug>(fern-action-expand)
-    Map <buffer> x <Plug>(fern-action-mark:toggle)
+    Map  <buffer> x <Plug>(fern-action-mark:toggle)
     nmap <buffer> X <Plug>(fern-action-mark:clear)
     nmap <buffer> gx <Plug>(fern-action-open:system)
     nmap <buffer> <C-n> <Plug>(fern-action-new-file)
@@ -1505,11 +1507,11 @@ augroup git-custom | au!
         \ setlocal foldtext=fugitive#Foldtext()
         \|nnoremap <silent><buffer>zM :setlocal foldmethod=expr foldexpr=GitDiffFoldExpr(v:lnum)\|unmap <lt>buffer>zM<CR>zM
         \|silent! unmap <buffer> *
-        \|Map <buffer> <localleader>* <Plug>fugitive:*
+        \|Mmap <buffer> <localleader>* <Plug>fugitive:*
     au FileType fugitiveblame setlocal cursorline
     au User FugitiveObject,FugitiveIndex
         \ silent! unmap <buffer> *
-        \|Map <buffer> <localleader>* <Plug>fugitive:*
+        \|Mmap <buffer> <localleader>* <Plug>fugitive:*
     " TODO: diff mapping for gitcommit
 augroup END
 
