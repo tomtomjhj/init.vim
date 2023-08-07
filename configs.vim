@@ -278,7 +278,7 @@ function! s:SetupGUI() abort
     endif
 endfunction
 
-if has('nvim')
+if has('nvim') && has('vim_starting')
     au UIEnter * ++once if has('nvim-0.9') ? has('gui_running') : v:event.chan | call s:SetupGUI() | endif
 elseif has('gui_running')
     call s:SetupGUI()
@@ -1196,8 +1196,8 @@ Noremap <leader>dp :diffput<CR>
 Noremap <leader>do :diffget<CR>
 
 " clipboard.
-" Don't behave like P even if "+ is linewise. .... just use UI's paste
-inoremap <expr> <C-v> '<C-g>u' . (getregtype('+') ==# 'V' && getline('.')[:col('.')-1][:-2] =~# '\S' ? '<CR><C-u>' : '') . '<C-r><C-o>+' . (getregtype('+') ==# 'V' && getline('.')[col('.')-1:] =~# '\S' ? '' : '<BS>')
+" Don't behave like P even if "+ is linewise. .... just use UI's paste                                           vvvvvv to avoid whitespace-only line
+inoremap <expr> <C-v> '<C-g>u' . (getregtype('+') ==# 'V' && !empty(getline('.')[:max([0,col('.')-1-1])]) ? '<CR>0<C-d>' : '') . '<C-r><C-o>+' . (getregtype('+') ==# 'V' && empty(getline('.')[col('.')-1:]) ? '<BS>' : '<Left>')
 " "= is charwise if the result doesn't end with \n.
 " inoremap <silent><C-v> <C-g>u<C-r><C-p>=substitute(substitute(@+, '^\_s\+', '', ''), '\_s\+$', '', '')<CR>
 Noremap <M-c> "+y
@@ -1418,8 +1418,7 @@ function s:qf() abort
     nmap     <buffer>         J jp
     nmap     <buffer>         K kp
     command! -buffer -range Qfrm :<line1>,<line2>call s:Qfrm()
-    nnoremap <buffer><silent> dd :Qfrm<CR>
-    xnoremap <buffer><silent> d :Qfrm<CR>
+    Noremap <buffer><silent> dd :Qfrm<CR>
 endfunction
 
 augroup qf-custom | au!

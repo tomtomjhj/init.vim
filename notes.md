@@ -45,6 +45,7 @@
     * <https://github.com/tpope/vim-fugitive/issues/2070>
 * `CCR` <https://gist.github.com/romainl/047aca21e338df7ccf771f96858edb86>.
   Related: `CmdlineLeave`
+* <https://www.reddit.com/r/neovim/comments/15c7rk3/quickfix_editing_tips_worth_resharing/>
 
 
 ## dictionary (`i_CTRL-X_CTRL-K`)
