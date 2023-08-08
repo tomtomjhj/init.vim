@@ -292,6 +292,7 @@ end
 --   )
 -- }
 
+-- NOTE: rust-analyzer behaves weirdly for multi-crate project. especially workspace_symbols.
 local rust_tools = require('rust-tools')
 rust_tools.setup {
   tools = {
@@ -324,12 +325,7 @@ lspconfig.pylsp.setup(config {
   }}
 })
 
-require("clangd_extensions").setup {
-  server = config(),
-  extensions = {
-    autoSetHints = false,
-  },
-}
+lspconfig.clangd.setup(config())
 
 require("neodev").setup()
 lspconfig.lua_ls.setup(config {

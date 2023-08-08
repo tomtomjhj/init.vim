@@ -97,6 +97,8 @@ function! SetupLSP()
   nnoremap <buffer><leader>gi    <cmd>lua require('fzf-lua').lsp_implementations{jump_to_single_result=true}<CR>
   " symbol_handler
   nnoremap <buffer><leader>ds    <cmd>lua require('fzf-lua').lsp_document_symbols()<CR>
+  " NOTE: rust-analyzer doesn't seem to send all result with empty query (capped at 128 entries?). Must switch to live query mode.
+  " Why not query at start, like the built-in vim.lsp.workspace_symbols?
   nnoremap <buffer><leader>sb    <cmd>lua require('fzf-lua').lsp_workspace_symbols()<CR>
   " call_hierarchy_handler
 

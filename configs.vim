@@ -1197,7 +1197,7 @@ Noremap <leader>do :diffget<CR>
 
 " clipboard.
 " Don't behave like P even if "+ is linewise. .... just use UI's paste                                           vvvvvv to avoid whitespace-only line
-inoremap <expr> <C-v> '<C-g>u' . (getregtype('+') ==# 'V' && !empty(getline('.')[:max([0,col('.')-1-1])]) ? '<CR>0<C-d>' : '') . '<C-r><C-o>+' . (getregtype('+') ==# 'V' && empty(getline('.')[col('.')-1:]) ? '<BS>' : '<Left>')
+inoremap <expr> <C-v> '<C-g>u' . (getregtype('+') ==# 'V' && !empty(getline('.')[:max([0,col('.')-1-1])]) ? '<CR>0<C-d>' : '') . '<C-r><C-o>+' . (getregtype('+') ==# 'V' ? (empty(getline('.')[col('.')-1:]) ? '<BS>' : '<Left>') : '')
 " "= is charwise if the result doesn't end with \n.
 " inoremap <silent><C-v> <C-g>u<C-r><C-p>=substitute(substitute(@+, '^\_s\+', '', ''), '\_s\+$', '', '')<CR>
 Noremap <M-c> "+y
