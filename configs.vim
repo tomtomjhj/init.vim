@@ -1398,9 +1398,8 @@ nnoremap <silent>]q :<C-u>call <SID>Cnext(0, 'c')<CR>
 nnoremap <silent>[l :<C-u>call <SID>Cnext(1, 'l')<CR>
 nnoremap <silent>]l :<C-u>call <SID>Cnext(0, 'l')<CR>
 " note: use :cex [] to start a new quickfix
-command! -bang Qfadd call s:Qfadd(<bang>0)
-nnoremap <leader>qf :<C-u>Qfadd<CR>
-command! Cfork call setloclist(0, [], ' ', getqflist({'all': 1})) | cclose | lwindow
+nnoremap <silent> <leader>qf :<C-u>call <SID>Qfadd(v:count ? win_getid() : 0)<CR>
+command! Cfork call setloclist(0, [], ' ', getqflist({'context':1, 'items':1, 'quickfixtextfunc':1, 'title':1})) | cclose | lwindow
 function s:qf() abort
     setlocal nowrap
     setlocal norelativenumber number
@@ -1408,8 +1407,9 @@ function s:qf() abort
 
     nnoremap <buffer> <Left>  :<C-u>call <SID>Colder('older')<CR>
     nnoremap <buffer> <Right> :<C-u>call <SID>Colder('newer')<CR>
+    nnoremap <buffer><silent> <CR> <CR>:call FlashLine()<CR>
     if s:Qf().is_loc
-        nnoremap <buffer><silent> p <CR><C-w>p
+        nmap <buffer> p <CR><C-w>p
     else
         " Like CTRL-W_<CR>, but with preview window and without messing up buffer list
         nnoremap <buffer><silent> p    :<C-u>call <SID>PreviewQf(line('.'))<CR>
@@ -1440,12 +1440,13 @@ function! s:cwindow(prefix, mods, args) abort
     endif
 endfunction
 
-function! s:Qf() abort
-    let is_loc = getwininfo(win_getid())[0]['loclist']
+function! s:Qf(...) abort
+    let win = a:0 ? a:1 : 0
+    let is_loc = win || getwininfo(win_getid())[0]['loclist']
     return {'is_loc': is_loc,
           \ 'prefix': is_loc ? 'l' : 'c',
-          \ 'get': is_loc ? function('getloclist', [0]) : function('getqflist'),
-          \ 'set': is_loc ? function('setloclist', [0]) : function('setqflist')}
+          \ 'get': is_loc ? function('getloclist', [win]) : function('getqflist'),
+          \ 'set': is_loc ? function('setloclist', [win]) : function('setqflist')}
 endfunction
 function! s:Cnext(prev, prefix) abort
     try
@@ -1486,9 +1487,8 @@ function! s:PreviewQf(linenr) abort
     else
         call search(l:entry.pattern, 'w')
     endif
-    normal! zz
-    " TODO: temporary blinking?
-    setlocal cursorline nofoldenable
+    normal! zzzv
+    call FlashLine()
     if !l:listed
         setlocal nobuflisted bufhidden=delete noswapfile
     endif
@@ -1502,8 +1502,8 @@ function! s:PreviewBufnr()
     endfor
     return 0
 endfunction
-function! s:Qfadd(loc) abort
-    let qf = s:Qf()
+function! s:Qfadd(win) abort
+    let qf = s:Qf(a:win)
     let item = {'bufnr': bufnr('%'), 'lnum': line('.'), 'text': getline('.')}
     call qf.set([item], 'a')
     call s:cwindow(qf.prefix, '', '')
@@ -1825,6 +1825,13 @@ function! Text2Magic(text)
 endfunction
 function! Text2VeryMagic(str) abort
     return escape(a:str, '!#$%&()*+,-./:;<=>?@[\]^{|}~')
+endfunction
+
+function! FlashLine() abort
+    normal! zv
+    let win = win_getid()
+    let match = matchaddpos('QuickFixLine', [line('.')])
+    call timer_start(321, { _ -> win_execute(win, printf('call matchdelete(%d)', match)) })
 endfunction
 
 function! TempBuf(mods, title, ...) abort
