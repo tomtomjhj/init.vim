@@ -37,9 +37,6 @@ Plug 'AndrewRadev/splitjoin.vim'
 Plug 'whonore/vim-sentencer'
 
 " etc
-" TODO:
-" * :G log unicode broken
-" * '--git-completion-helper'-based completion (#1265) doesn't complete many things for git log e.g. --grep
 Plug 'tpope/vim-fugitive'
 Plug 'tomtomjhj/conflict-marker.vim'
 Plug 'tpope/vim-rhubarb'
@@ -188,7 +185,6 @@ set updatetime=1234
 set noswapfile " set directory=~/.vim/swap//
 set backup backupdir=~/.vim/backup//
 set undofile
-" TODO: backupskip for undofile?
 if has('nvim-0.5') | set undodir=~/.vim/undoo// | else | set undodir=~/.vim/undo// | endif
 
 set autoread
@@ -721,9 +717,6 @@ function! s:markdown() abort
                 \    'select-i': '<buffer> id',
                 \   },
                 \ })
-    " TODO:
-    " * list item text object
-    " * make paragraph, sentence text object list-aware
 
     " <> pair is too intrusive
     setlocal matchpairs-=<:>
@@ -1089,7 +1082,6 @@ function! ScanJump(cmap, scanner, default) abort
         \. repeat(delta > 0 ? "\<Right>" : "\<Left>", abs(delta))
 endfunction
 
-" TODO: put the killed text to some sort of yank buffer? @-, @y, ...
 function! ScanRubout(cmap, scanner) abort
     let line = a:cmap ? getcmdline() : getline('.')
     let from = s:charidx(line . ' ', (a:cmap ? getcmdpos() : col('.')) - 1)
@@ -1341,7 +1333,7 @@ xmap aB <Plug>(textobj-sandwich-query-a)
 if has('nvim')
     tnoremap <M-[> <C-\><C-n>
     tnoremap <expr> <M-r> '<C-\><C-N>"'.nr2char(getchar()).'pi'
-    " TODO: When [Process exited $EXIT_CODE] in terminal mode, pressing any key wipes the terminal buffer. Require specific command to do that.
+    " NOTE: When [Process exited $EXIT_CODE] in terminal mode, pressing any key wipes the terminal buffer.
     command! -nargs=? -complete=shellcmd T <mods> split | exe "terminal" <q-args> | if empty(<q-args>) | startinsert | endif
 else
     " NOTE: If 'hidden' is set and arg is provided, job finished + window closed doesn't wipe the buffer, in contrary to the doc:
@@ -1736,7 +1728,6 @@ xmap m* <Plug>MarkSet
 nmap m/ <Plug>MarkSearchAnyNext
 nmap m? <Plug>MarkSearchAnyPrev
 nmap m<BS> <Plug>MarkToggle
-" TODO: stuff using api-highlights, like codepainter
 
 " venn
 command! Venn call s:toggle_venn()
@@ -1877,6 +1868,13 @@ command! -range=% Unpdf
             \|call winrestview(_view)
             \|unlet _view
 
+" Doesn't work with hard wrapped list.
+" Alternative: %!pandoc --from=commonmark_x --to=commonmark_x --wrap=none
+command! -range=% ZulipMarkdown
+            \ keeppatterns keepjumps <line1>,<line2>substitute/^    \ze[-+*]\s/  /e
+            \|keeppatterns keepjumps <line1>,<line2>substitute/^        \ze[-+*]\s/    /e
+            \|keeppatterns keepjumps <line1>,<line2>substitute/^            \ze[-+*]\s/      /e
+
 " :substitute using a dict, where key == submatch (like VisualStar)
 function! SubstituteDict(dict) range
     exe a:firstline . ',' . a:lastline . 'substitute'
@@ -1901,13 +1899,6 @@ if !exists('g:wildignore_files')
     call AddWildignore(s:wildignore_files, 0)
     call AddWildignore(s:wildignore_dirs, 1)
 endif
-
-" Doesn't work with hard wrapped list.
-" Alternative: %!pandoc --from=commonmark_x --to=commonmark_x --wrap=none
-command! -range=% ZulipMarkdown
-            \ keeppatterns keepjumps <line1>,<line2>substitute/^    \ze[-+*]\s/  /e
-            \|keeppatterns keepjumps <line1>,<line2>substitute/^        \ze[-+*]\s/    /e
-            \|keeppatterns keepjumps <line1>,<line2>substitute/^            \ze[-+*]\s/      /e
 
 if !has('nvim')
     command! -nargs=+ -complete=shellcmd Man delcommand Man | runtime ftplugin/man.vim | if winwidth(0) > 170 | exe 'vert Man' <q-args> | else | exe 'Man' <q-args> | endif

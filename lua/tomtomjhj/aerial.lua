@@ -6,17 +6,20 @@ aerial.setup {
     tex = {},
   },
   link_tree_to_folds = false,
+  post_jump_cmd = 'normal! zv',
   on_attach = function(bufnr)
     local ft = vim.bo[bufnr].filetype
     if ft ~= 'tex' then
       vim.keymap.set('n', '[[', function()
         -- https://github.com/stevearc/aerial.nvim/issues/266
+        local count = vim.v.count1
         vim.cmd [[normal! m']]
-        aerial.prev(vim.v.count1)
+        aerial.prev(count)
       end, { buffer = bufnr })
       vim.keymap.set('n', ']]', function()
+        local count = vim.v.count1
         vim.cmd [[normal! m']]
-        aerial.next(vim.v.count1)
+        aerial.next(count)
       end, { buffer = bufnr })
     end
     vim.keymap.set('n', '<leader>fl', '<Cmd>call aerial#fzf()<CR>', { buffer = bufnr })

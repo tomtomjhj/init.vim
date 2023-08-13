@@ -196,6 +196,8 @@ Commentary
     * `FugitiveExecute(args : list string)`
         * It doesn't use `s:SplitExpandChain()` (splits `<q-args>`, expands `%` and `fugitive-object`)
 
+note
+* '--git-completion-helper'-based completion (fugitive #1265) doesn't complete many things for git log e.g. --grep
 
 ## plain text diagrams
 https://blog.regehr.org/archives/1653
@@ -909,6 +911,17 @@ noremap : <Cmd>let _view = winsaveview()<CR>:
 ## label-based treesitter node selection
 omap that shows labels on node.
 repeats on the same node type.
+
+## composing operator-pending motions
+Problem
+* operator-pending motions and text objects should be predefined
+* sometimes, what I want to do is not expressible in predefined stuff
+* in that case, visual mode works, but that's not repeatable
+
+Workaround: q-recording
+
+Solution: composing omap on-the-fly?
+
 
 # stuff
 * https://arxiv.org/abs/2006.03103
