@@ -1405,7 +1405,7 @@ function s:qf() abort
     else
         " Like CTRL-W_<CR>, but with preview window and without messing up buffer list
         nnoremap <buffer><silent> p    :<C-u>call <SID>PreviewQf(line('.'))<CR>
-        nnoremap <buffer><silent> <CR> :<C-u>pclose<CR><CR>
+        nnoremap <buffer><silent> <CR> :<C-u>pclose<CR><CR>:call FlashLine()<CR>
     endif
     nmap     <buffer>         J jp
     nmap     <buffer>         K kp
@@ -1450,6 +1450,7 @@ function! s:Cnext(prev, prefix) abort
     if &foldopen =~ 'quickfix' && foldclosed(line('.')) != -1
         normal! zv
     endif
+    call FlashLine()
 endfunction
 function! s:Colder(newer)
     try

@@ -756,6 +756,10 @@ Enable LSP inlay_hint.
 Change `func1` to `func2` with `v_b_c`.
 
 
+## incremental section bug
+node_or_range nil.
+After lazy injection thing?
+
 # annoyances ingrained in vi(m)
 * `ge` ... design of inclusive/exclusive stuff
 * `^` vs `0`
