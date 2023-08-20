@@ -27,9 +27,7 @@ Plug 'tpope/vim-repeat'
 Plug 'tomtomjhj/pear-tree'
 Plug 'andymass/vim-matchup' " i%, a%, ]%, z%, g% TODO: % that seeks backward https://github.com/andymass/vim-matchup/issues/49#issuecomment-470933348
 Plug 'wellle/targets.vim' " multi (e.g. ib, iq), separator, argument
-Plug 'urxvtcd/vim-indent-object'
 Plug 'kana/vim-textobj-user'
-Plug 'pianohacker/vim-textobj-indented-paragraph', { 'do': 'rm -rf plugin' }
 Plug 'Julian/vim-textobj-variable-segment' " iv, av
 Plug 'tomtomjhj/vim-commentary'
 Plug 'godlygeek/tabular', { 'on': 'Tabularize' }
@@ -1670,27 +1668,42 @@ endif
 " }}}
 
 " textobj {{{
-xmap ii <Plug>(indent-object_linewise-none)
-omap ii <Plug>(indent-object_linewise-none)
-xmap ai <Plug>(indent-object_linewise-start)
-omap ai <Plug>(indent-object_linewise-start)
-xmap iI <Plug>(indent-object_linewise-end)
-omap iI <Plug>(indent-object_linewise-end)
-xmap aI <Plug>(indent-object_linewise-both)
-omap aI <Plug>(indent-object_linewise-both)
+" indented block
+xnoremap <silent> ii :<C-U>exe 'normal! gv'\|call IndentObj(1,0,0)<CR>
+onoremap <silent> ii :<C-u>call IndentObj(1,0,0)<CR>
+xnoremap <silent> ai :<C-U>exe 'normal! gv'\|call IndentObj(1,1,0)<CR>
+onoremap <silent> ai :<C-u>call IndentObj(1,1,0)<CR>
+xnoremap <silent> aI :<C-U>exe 'normal! gv'\|call IndentObj(1,1,1)<CR>
+onoremap <silent> aI :<C-u>call IndentObj(1,1,1)<CR>
+" indented paragraph
+xnoremap <silent> iP :<C-U>exe 'normal! gv'\|call IndentObj(0,0,0)<CR>
+onoremap <silent> iP :<C-u>call IndentObj(0,0,0)<CR>
+
+function! IndentObj(skipblank, header, footer) abort
+    let line = nextnonblank('.')
+    let level = indent(line)
+    let start = line | let end = line
+    while start > 1 && !(getline(start - 1) =~ '\S' ? indent(start - 1) < level : !a:skipblank)
+        let start -= 1
+    endwhile
+    if a:header | let start = prevnonblank(start - 1) | endif
+    while end < line('$') && !(getline(end + 1) =~ '\S' ? indent(end + 1) < level : !a:skipblank)
+        let end += 1
+    endwhile
+    if a:footer | let end = nextnonblank(end + 1) | endif
+    " union of the current visual region and the skipblank containing the cursor
+    if mode() =~# "[vV\<C-v>]"
+        let start = min([start, line("'<")])
+        let end = max([end, line("'>")])
+        exe "normal! \<Esc>"
+    endif
+    if end - start > winheight(0) | exe "normal! m'" | endif
+    exe start | exe 'normal! V' | exe end
+endfunction
 
 call textobj#user#plugin('tomtomjhj', {
 \   'url_or_filename': { 'pattern': '\('.s:url_regex.'\|\f\+\)', 'select': ['au', 'iu'] },
-\   'indented_paragraph': {
-\     'select-a-function': 'indented_paragraph#SelectA',
-\     'select-a': 'aP',
-\     'select-i-function': 'indented_paragraph#SelectI',
-\     'select-i': 'iP',
-\     'move-n-function': 'indented_paragraph#MoveN',
-\     'move-n': 'g)',
-\     'move-p-function': 'indented_paragraph#MoveP',
-\     'move-p': 'g(',
-\    }})
+\})
 " }}}
 
 " comments {{{
