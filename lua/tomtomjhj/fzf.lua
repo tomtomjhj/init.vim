@@ -4,8 +4,10 @@ fzf.setup {
   "fzf-native",
   keymap = {
     fzf = {
-      ["shift-down"] = "preview-half-page-down",
-      ["shift-up"]   = "preview-half-page-up",
+      ["ctrl-alt-j"] = "preview-half-page-down",
+      ["ctrl-alt-k"] = "preview-half-page-up",
+      ["shift-down"] = "preview-down",
+      ["shift-up"]   = "preview-up",
     },
   },
   fzf_opts = {

@@ -756,7 +756,7 @@ Enable LSP inlay_hint.
 Change `func1` to `func2` with `v_b_c`.
 
 
-## incremental section bug
+## treesitter incremental selection bug
 node_or_range nil.
 After lazy injection thing?
 
@@ -876,17 +876,25 @@ nvim's optimization: don't update fold in insert mode.
 * <https://github.com/neovim/neovim/pull/5299>
   <https://github.com/vim/vim/pull/1045>
 * limitation: InsertLeave is still slow; vimtex fold is slow even in normal mode
+    * `vim._foldupdate` does whole buffer update
+* Is this optimization still necessary for treesitter fold?
+    * perf: treesitter fold computation is fast enough
+    * folds can be wrong if it is recomputed while typing in insert mode
+    * see also <https://github.com/neovim/neovim/issues/24324> and FastFold README
 
 FastFold problems
 * expr fold (e.g. markdown) → Gdiffsplit → close diff → nofoldenable with residual diff fold when enabled.
   :diffoff disables fold if fdm was manual (FastFold sets fdm=manual).
   <https://github.com/vim/vim/blob/3ea8a1b1296af5b0c6a163ab995aa16d49ac5f10/src/diff.c#L1591-L1595>
 * <https://github.com/Konfekt/FastFold/pull/74>
-* probably not necessary with treesitter fold
+
+other possible optimizations that avoid the above problems
+* in insert mode, collect ranges for which fold should be recomputed (or take over-approx), and recompute on InsertLeave
 
 Some minor stuff:
-* close all folds under the cursor (sub-tree) `zC` doesn't do this
-* ignore folded region while searching
+* close all folds under the cursor (sub-tree) `zC` doesn't do this.
+  solution: visual mode.
+* ignore folded region while `/`-searching
 
 ## `:syn`-based highlight in extmark region
 Use case:
@@ -911,6 +919,8 @@ noremap : <Cmd>let _view = winsaveview()<CR>:
 
 ## `.` is not extensible
 * "repeatable change" should be extensible at the core
+* the command must be added to redo buffer
+* `.` doesn't respect the map's `<silent>`
 
 ## label-based treesitter node selection
 omap that shows labels on node.

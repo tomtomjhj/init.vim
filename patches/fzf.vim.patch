@@ -1,8 +1,17 @@
 diff --git a/autoload/fzf/vim.vim b/autoload/fzf/vim.vim
-index 2f3405c..6bf4da5 100644
+index 171aac9..0f95772 100755
 --- a/autoload/fzf/vim.vim
 +++ b/autoload/fzf/vim.vim
-@@ -335,7 +335,7 @@ endfunction
+@@ -204,7 +204,7 @@ function! fzf#vim#with_preview(...)
+   end
+ 
+   if len(args)
+-    call extend(preview, ['--bind', join(map(args, 'v:val.":toggle-preview"'), ',')])
++    call extend(preview, ['--bind', join(map(args, 'v:val.":toggle-preview"') + ['ctrl-alt-j:preview-half-page-down', 'ctrl-alt-k:preview-half-page-up'] , ',')])
+   endif
+   call s:merge_opts(spec, preview)
+   return spec
+@@ -376,7 +376,7 @@ endfunction
  
  function! s:fill_quickfix(list, ...)
    if len(a:list) > 1
