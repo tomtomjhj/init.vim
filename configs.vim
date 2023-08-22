@@ -606,7 +606,7 @@ endfunction
 " https://doc.ecoscentric.com/gnutools/doc/gdb/Rust.html
 let g:termdebugger = 'rust-gdb'
 " TODO: add completion in cargo command
-let g:cargo_shell_command_runner = 'AsyncRun -post=CW'
+let g:cargo_shell_command_runner = 'AsyncRun -post=CW|try|cnewer|catch|endtry @'
 " https://github.com/rust-lang/rust-clippy/issues/4612
 command! -nargs=* Cclippy call cargo#cmd("+nightly clippy -Zunstable-options " . <q-args>)
 command! -range=% PrettifyRustSymbol <line1>,<line2>SubstituteDict { '$SP$': '@', '$BP$': '*', '$RF$': '&', '$LT$': '<', '$GT$': '>', '$LP$': '(', '$RP$': ')', '$C$' : ',',  '$u20$': ' ', '$u5b$': '[', '$u5d$': ']', '$u7b$': '{', '$u7d$': '}', }
@@ -618,7 +618,7 @@ function! s:rust() abort
     if g:ide_client == 'coc'
         command! -buffer ExpandMacro CocCommand rust-analyzer.expandMacro
     endif
-    nnoremap <buffer><leader>C :AsyncRun -program=make -post=CW test --no-run<CR>
+    nnoremap <buffer><leader>C <Cmd>Make test --no-run<CR>
     xnoremap <buffer><leader>fm :RustFmtRange<CR>
     Mnoremap <silent><buffer> [[ <Cmd>call tomtomjhj#rust#section(1)<CR>
     Mnoremap <silent><buffer> ]] <Cmd>call tomtomjhj#rust#section(0)<CR>
@@ -1230,7 +1230,7 @@ Noremap <M-p> "pp
 Noremap <M-P> "pP
 
 nnoremap Y y$
-onoremap <silent> ge :execute "normal! " . v:count1 . "ge<space>"<cr>
+" onoremap <silent> ge :execute "normal! " . v:count1 . "ge<space>"<cr>
 nnoremap <silent> & :&&<cr>
 xnoremap <silent> & :&&<cr>
 
@@ -1347,10 +1347,11 @@ augroup terminal-custom | au!
     endif
 augroup END
 
-let g:asyncrun_exit = exists('*nvim_notify') ? 'lua vim.notify(vim.g.asyncrun_status .. ": AsyncRun " .. vim.g.asyncrun_info)' : 'echom g:asyncrun_status . ": AsyncRun " . g:asyncrun_info'
+let g:asyncrun_exit = exists('*nvim_notify') ? 'lua vim.notify(vim.g.asyncrun_status .. ": AsyncRun " .. vim.g.asyncrun_cmd)' : 'echom g:asyncrun_status . ": AsyncRun " . g:asyncrun_cmd'
 Noremap <leader>R :AsyncRun<space>
 nnoremap <leader>ST :AsyncStop<CR>
-command! -bang -nargs=* -complete=file Make AsyncRun -auto=make -program=make @ <args>
+" https://github.com/skywind3000/asyncrun.vim/issues/232
+command! -bang -nargs=* -complete=file Make exe 'AsyncRun -auto=make -program=make' (<bang>0 ? '' : '-post=CW|try|cnewer|catch|endtry') '@' <q-args>
 nnoremap <leader>M :Make<space>
 " }}}
 
@@ -1685,12 +1686,12 @@ function! IndentObj(skipblank, header, footer) abort
     while start > 1 && !(getline(start - 1) =~ '\S' ? indent(start - 1) < level : !a:skipblank)
         let start -= 1
     endwhile
-    if a:header | let start = prevnonblank(start - 1) | endif
+    let start = a:header ? prevnonblank(start - 1) : nextnonblank(start)
     while end < line('$') && !(getline(end + 1) =~ '\S' ? indent(end + 1) < level : !a:skipblank)
         let end += 1
     endwhile
-    if a:footer | let end = nextnonblank(end + 1) | endif
-    " union of the current visual region and the skipblank containing the cursor
+    let end = a:footer ? nextnonblank(end + 1) : prevnonblank(end)
+    " union of the current visual region and the block/paragraph containing the cursor
     if mode() =~# "[vV\<C-v>]"
         let start = min([start, line("'<")])
         let end = max([end, line("'>")])
