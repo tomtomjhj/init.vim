@@ -105,7 +105,6 @@ if g:nvim_latest_stable
     " Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'stevearc/aerial.nvim'
-    Plug 'folke/paint.nvim'
     Plug 'jbyuki/venn.nvim'
 endif
 
@@ -588,6 +587,7 @@ augroup END
 if g:nvim_latest_stable
     lua require('tomtomjhj/treesitter')
     lua require('tomtomjhj/aerial')
+    lua require('tomtomjhj/highlight')
 endif
 
 " Haskell {{{

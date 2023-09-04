@@ -80,29 +80,6 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
-local highlighter = vim.treesitter.highlighter
--- NOTE: comment injection is slow https://gist.github.com/tomtomjhj/95c2feec72f35e6a6942fd792587bb4e
--- TODO: paint is quite buggy. Sometimes highlights are not updated.
--- Maybe just use decoration provider on_win to set ephemeral virtual texts in visible region.
-require("paint").setup {
-  highlights = {
-    {
-      filter = function(b) return highlighter.active[b] end,
-      pattern = "TODO",
-      hl = "Todo",
-    },
-    {
-      -- lua ---@ comment
-      filter = function(b)
-        return highlighter.active[b] and vim.bo[b].filetype == 'lua'
-      end,
-      pattern = "%s*%-%-%-%s*(@%w+)",
-      hl = "Constant",
-    },
-  },
-}
-
-
 --- function for textobj-user
 function M.markdown_fenced_codeblock(outer)
   local ok, node = pcall(vim.treesitter.get_node)
