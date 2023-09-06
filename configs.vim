@@ -38,8 +38,9 @@ Plug 'whonore/vim-sentencer'
 Plug 'tpope/vim-fugitive'
 Plug 'tomtomjhj/conflict-marker.vim'
 Plug 'tpope/vim-rhubarb'
+Plug 'shumphrey/fugitive-gitlab.vim'
 Plug 'skywind3000/asyncrun.vim'
-Plug 'editorconfig/editorconfig-vim'
+Plug 'editorconfig/editorconfig-vim' " added to vim in v9.0.1799~
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': has('unix') ? './install --all' : { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 if has('nvim')
@@ -615,9 +616,6 @@ function! s:rust() abort
     " TODO fix 'spellcapcheck' for `//!` comments, also fix <leader>sc mapping
     " TODO: matchit handle < -> non-pair
     let b:pear_tree_pairs['|'] = {'closer': '|'}
-    if g:ide_client == 'coc'
-        command! -buffer ExpandMacro CocCommand rust-analyzer.expandMacro
-    endif
     nnoremap <buffer><leader>C <Cmd>Make test --no-run<CR>
     xnoremap <buffer><leader>fm :RustFmtRange<CR>
     Mnoremap <silent><buffer> [[ <Cmd>call tomtomjhj#rust#section(1)<CR>
@@ -886,7 +884,8 @@ cnoremap <expr> / (mode() =~# "[vV\<C-v>]" && getcmdtype() =~ '[/?]' && empty(ge
 
 let g:fzf_action = { 'ctrl-t': 'tab split', 'ctrl-s': 'split', 'ctrl-x': 'split', 'ctrl-v': 'vsplit' }
 let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.5, 'yoffset': 1, 'border': 'top' } }
-" let g:fzf_preview_window = 'right:50%:+{2}-/2'
+let g:fzf_vim = {}
+let g:fzf_vim.listproc = function('tomtomjhj#qf#fzf_listproc_qf')
 
 nnoremap <C-g>      :<C-u>Grep<space>
 nnoremap <leader>g/ :<C-u>Grep! <C-r>=shellescape(RgInput(@/))<CR>
@@ -1351,7 +1350,7 @@ let g:asyncrun_exit = exists('*nvim_notify') ? 'lua vim.notify(vim.g.asyncrun_st
 Noremap <leader>R :AsyncRun<space>
 nnoremap <leader>ST :AsyncStop<CR>
 " https://github.com/skywind3000/asyncrun.vim/issues/232
-command! -bang -nargs=* -complete=file Make exe 'AsyncRun -auto=make -program=make' (<bang>0 ? '' : '-post=CW|try|cnewer|catch|endtry') '@' <q-args>
+command! -bang -nargs=* -complete=file Make exe 'AsyncRun -auto=make -program=make' ('-post=try|cnewer|catch|endtry' . (<bang>0 ? '' : '|CW')) '@' <q-args>
 nnoremap <leader>M :Make<space>
 " }}}
 
@@ -1537,6 +1536,7 @@ nnoremap <silent> gx :call GXBrowse(CursorURL())<cr>
 let g:fern#default_exclude = '\v(\.glob|\.vo[sk]?|\.o)$'
 let g:fern#disable_drawer_hover_popup = 1
 let g:fern#disable_viewer_auto_duplication = 1
+let g:fern#disable_viewer_spinner = 1 " runs timer even when idle
 nnoremap <leader>nn <Cmd>Fern . -drawer -toggle<CR>
 nnoremap <leader>nf <Cmd>Fern . -drawer -reveal=%<CR>
 nnoremap <leader>-  <Cmd>call fern#internal#command#fern#command('', [BufDir(), '-reveal='.expand('%:t')])<CR>
@@ -1620,10 +1620,7 @@ augroup END
 cnoreabbrev <expr> gd <SID>cabbrev('gd', 'Gvdiffsplit')
 cnoreabbrev <expr> gb <SID>cabbrev('gb', 'G blame')
 
-" TODO:
-" - matchit integration doesn't work with matchup
-" - no command/mapping for selecting diff3 style merge base
-" - TODO: disabled by treesitter highlight...
+" TODO: matchit integration doesn't work with matchup
 let g:conflict_marker_highlight_group = ''
 function! s:conflict_marker_hi() abort
     if &background is# 'light'
@@ -1642,6 +1639,8 @@ function! s:conflict_marker_hi() abort
 endfunction
 call s:conflict_marker_hi()
 au colors-custom ColorScheme * call s:conflict_marker_hi()
+
+let g:fugitive_gitlab_domains = {'ssh://git.fearless.systems:9001': 'https://git.fearless.systems'} " no "git@"
 " }}}
 
 " firenvim {{{
@@ -1763,8 +1762,8 @@ function! s:toggle_venn() abort
     else
         au! venn-mode
         let &l:virtualedit = b:venn.virtualedit
-        for [m, k] in [['n', 'H'], ['n', 'J'], ['n', 'K'], ['n', 'L'], ['n', 'V']]
-            if empty(b:venn[k])
+        for [m, k] in [['n', 'H'], ['n', 'J'], ['n', 'K'], ['n', 'L'], ['x', 'V']]
+            if empty(b:venn[k]) || !b:venn[k].buffer
                 silent! exe m . 'unmap <buffer>' k
             else
                 call mapset(m, 0, b:venn[k])

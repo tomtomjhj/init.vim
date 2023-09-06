@@ -1,8 +1,8 @@
 diff --git a/autoload/fzf/vim.vim b/autoload/fzf/vim.vim
-index 171aac9..0f95772 100755
+index 078c6e8..e34f948 100755
 --- a/autoload/fzf/vim.vim
 +++ b/autoload/fzf/vim.vim
-@@ -204,7 +204,7 @@ function! fzf#vim#with_preview(...)
+@@ -209,7 +209,7 @@ function! fzf#vim#with_preview(...)
    end
  
    if len(args)
@@ -11,12 +11,3 @@ index 171aac9..0f95772 100755
    endif
    call s:merge_opts(spec, preview)
    return spec
-@@ -376,7 +376,7 @@ endfunction
- 
- function! s:fill_quickfix(list, ...)
-   if len(a:list) > 1
--    call setqflist(a:list)
-+    call setqflist([], ' ', {'items': sort(a:list, 'tomtomjhj#qf#compare_quickfix_item'), 'title': 'fzf'})
-     copen
-     wincmd p
-     if a:0

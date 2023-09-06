@@ -11,6 +11,10 @@
         "path": "./coq.json"
       },
       {
+        "language": "gitcommit",
+        "path": "./gitcommit.json"
+      },
+      {
         "language": "lua",
         "path": "./lua.json"
       },

@@ -8,3 +8,11 @@ function tomtomjhj#qf#compare_quickfix_item(a, b)
     return 1
   endif
 endfunction
+
+function! tomtomjhj#qf#fzf_listproc_qf(list)
+  call setqflist([], ' ', {'items': sort(a:list, 'tomtomjhj#qf#compare_quickfix_item'), 'title': 'fzf'})
+  copen
+  wincmd p
+  cfirst
+  normal! zvzz
+endfunction

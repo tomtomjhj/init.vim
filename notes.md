@@ -333,7 +333,9 @@ See also
     * record → (jump → execute)*
     * If there's a *function* to jump (e.g. `gn`), the repetition step can be
       merged (e.g. `gn@@`) or jump can be part of the macro.
-    * editing macros: use digraph to input control characters? <BS> is not ^H
+    * editing macros:
+        * ~~use digraph to input control characters? <BS> is not ^H~~
+        * `let @q = "<C-r><C-r>=escape(@q, '\')<CR>`, ...
 * `g&`
 * `g<`
 * `_` without count is equivalent to `^`
@@ -503,13 +505,6 @@ See also
     * `set shell=tmux` <https://www.reddit.com/r/neovim/comments/umy4gb/tmux_in_neovim/>
 * vim: big `termwinsize` width? ⇒ After the job finishes, highlight position is wrong.
 * <https://github.com/neovim/neovim/pull/21124>
-
-## impossible to remove data from shada due to merging
-<https://github.com/neovim/neovim/issues/4295>
-
-* impossible to wipe marks, registers, jumplist...
-* `:wshada!` https://vi.stackexchange.com/a/26540
-* Edit shada, `:rshada!`, exit.
 
 ## `gq`-ing three-piece comment
 
