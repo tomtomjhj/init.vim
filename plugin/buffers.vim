@@ -120,7 +120,9 @@ function! s:Bclose(cmd, bang, buffer)
       endif
     endif
   endfor
-  execute a:cmd.a:bang btarget
+  if buflisted(btarget) " bufhidden is delete or wipe
+    execute a:cmd.a:bang btarget
+  endif
   execute wcurrent.'wincmd w'
 endfunction
 " }}}

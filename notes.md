@@ -541,88 +541,6 @@ invidunt *)
 * c: `preproc_arg → @function.macro` highlights macro definition body.
 * `@function` → `@function.definition`?
 
-## treesitter markdown scan segfault
-```
-SegvAnalysis: Failure: Unknown offset literal: [rax+rdx*4-0x4]
-SourcePackage: neovim
-Stacktrace:
- #0  0x00007f2db2f84b46 in scan () from /home/jjh/.vim/plugged/nvim-treesitter/parser/markdown.so
- No symbol table info available.
- #1  0x0000560dc83d0e9b in ?? ()
- No symbol table info available.
- #2  0x0000560dc83d4aa6 in ts_parser_parse ()
- No symbol table info available.
- #3  0x0000560dc8275d06 in ?? ()
- No symbol table info available.
- #4  0x00007f2db34bbfb7 in ?? () from /lib/x86_64-linux-gnu/libluajit-5.1.so.2
- No symbol table info available.
- #5  0x00007f2db34ccf13 in lua_pcall () from /lib/x86_64-linux-gnu/libluajit-5.1.so.2
- No symbol table info available.
- #6  0x0000560dc8264f4b in ?? ()
- No symbol table info available.
- #7  0x0000560dc826a2df in nlua_call_ref ()
- No symbol table info available.
- #8  0x0000560dc81ac6ee in ?? ()
- No symbol table info available.
- #9  0x0000560dc81ad129 in decor_providers_invoke_buf ()
- No symbol table info available.
- #10 0x0000560dc81bafb6 in update_screen ()
- No symbol table info available.
- #11 0x0000560dc82b00e8 in ?? ()
- No symbol table info available.
- #12 0x0000560dc82b1ec1 in ?? ()
- No symbol table info available.
- #13 0x0000560dc8351091 in state_enter ()
- No symbol table info available.
- #14 0x0000560dc82af8f9 in normal_enter ()
- No symbol table info available.
- #15 0x0000560dc813c0f2 in main ()
- No symbol table info available.
-StacktraceAddressSignature: /usr/bin/nvim:11:/home/jjh/.vim/plugged/nvim-treesitter/parser/markdown.so+17b46:/usr/bin/nvim+29ce9b:/usr/bin/nvim+2a0aa6:/usr/bin/nvim+141d06:/usr/lib/x86_64-linux-gnu/libluajit-5.1.so.2.1.0+1fb7:/usr/lib/x86_64-linux-gnu/libluajit-5.1.so.2.1.0+12f13:/usr/bin/nvim+130f4b:/usr/bin/nvim+1362df:/usr/bin/nvim+786ee:/usr/bin/nvim+79129:/usr/bin/nvim+86fb6:/usr/bin/nvim+17c0e8:/usr/bin/nvim+17dec1:/usr/bin/nvim+21d091:/usr/bin/nvim+17b8f9
-StacktraceTop:
- scan () from /home/jjh/.vim/plugged/nvim-treesitter/parser/markdown.so
- ?? ()
- ts_parser_parse ()
- ?? ()
- ?? () from /lib/x86_64-linux-gnu/libluajit-5.1.so.2
-Tags: third-party-packages jammy
-ThreadStacktrace:
- .
- Thread 1 (Thread 0x7f2db33a6580 (LWP 531165)):
- #0  0x00007f2db2f84b46 in scan () from /home/jjh/.vim/plugged/nvim-treesitter/parser/markdown.so
- No symbol table info available.
- #1  0x0000560dc83d0e9b in ?? ()
- No symbol table info available.
- #2  0x0000560dc83d4aa6 in ts_parser_parse ()
- No symbol table info available.
- #3  0x0000560dc8275d06 in ?? ()
- No symbol table info available.
- #4  0x00007f2db34bbfb7 in ?? () from /lib/x86_64-linux-gnu/libluajit-5.1.so.2
- No symbol table info available.
- #5  0x00007f2db34ccf13 in lua_pcall () from /lib/x86_64-linux-gnu/libluajit-5.1.so.2
- No symbol table info available.
- #6  0x0000560dc8264f4b in ?? ()
- No symbol table info available.
- #7  0x0000560dc826a2df in nlua_call_ref ()
- No symbol table info available.
- #8  0x0000560dc81ac6ee in ?? ()
- No symbol table info available.
- #9  0x0000560dc81ad129 in decor_providers_invoke_buf ()
- No symbol table info available.
- #10 0x0000560dc81bafb6 in update_screen ()
- No symbol table info available.
- #11 0x0000560dc82b00e8 in ?? ()
- No symbol table info available.
- #12 0x0000560dc82b1ec1 in ?? ()
- No symbol table info available.
- #13 0x0000560dc8351091 in state_enter ()
- No symbol table info available.
- #14 0x0000560dc82af8f9 in normal_enter ()
- No symbol table info available.
- #15 0x0000560dc813c0f2 in main ()
- No symbol table info available.
-```
-
 ## cannot control composition of extmark-based highlights
 If multiple captures apply, their hightlights overlap.
 Only the most precise one should be applied.
@@ -750,10 +668,24 @@ fn main() {
 Enable LSP inlay_hint.
 Change `func1` to `func2` with `v_b_c`.
 
+## screenpos occasionally wrong
+all zeros.
 
-## treesitter incremental selection bug
-node_or_range nil.
-After lazy injection thing?
+after modifying window layout?
+
+## cmp
+sometimes cmp falls into the state where `<C-n>` doesn't insert the text.
+`<C-y>` works.
+
+In that case, check `require'cmp.view.custom_entries_view'._insert`.
+
+## :G blame scrollbind
+affected by the cursor of the other window displaying the same buffer
+
+## botright split window size
+* botright split changes height of existing window even if it's winfixheight
+    * winfixheight should be number option?
+* but it doesn't change the height of quickfix window. the new window's height is too small
 
 # annoyances ingrained in vi(m)
 * `ge` ... design of inclusive/exclusive stuff
@@ -917,10 +849,6 @@ noremap : <Cmd>let _view = winsaveview()<CR>:
 * the command must be added to redo buffer
 * `.` doesn't respect the map's `<silent>`
 
-## label-based treesitter node selection
-omap that shows labels on node.
-repeats on the same node type.
-
 ## composing operator-pending motions
 Problem
 * operator-pending motions and text objects should be predefined
@@ -931,6 +859,12 @@ Workaround: q-recording
 
 Solution: composing omap on-the-fly?
 
+## treesitter git conflict
+Problem: git conflict marker breaks parsers
+
+Solution:
+If conflict marker detected, make top-level language tree with "git conflict" parser.
+In does injection.combined to the original language.
 
 # stuff
 * https://arxiv.org/abs/2006.03103

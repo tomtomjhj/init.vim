@@ -58,10 +58,13 @@ require'nvim-treesitter.configs'.setup {
     disable = disable,
     keymaps = {
       init_selection = "<leader><tab>",
-      node_incremental = "<leader><tab>",
+      node_incremental = "<tab>", -- fine, because the builtin CTRL-I doesn't work in visual mode
       node_decremental = "<s-tab>",
-      scope_incremental = "<leader><s-tab>",
+      scope_incremental = "<leader><tab>",
     },
+  },
+  matchup = {
+    enable = true,
   },
 }
 

@@ -657,6 +657,9 @@ let g:vimtex_toc_config_matchers = {
             \}
 let g:vimtex_syntax_nospell_comments = 1
 let g:vimtex_text_obj_variant = 'vimtex' " I don't use those targets.vim features and its ic is buggy(?)
+" <Plug>(vimtex-cmd-change) (csc) only work in vimtex boundary.. can't change to sandwich's stuff
+let g:vimtex_doc_handlers = ['vimtex#doc#handlers#texdoc']
+let g:vimtex_ui_method = { 'confirm': 'legacy', 'input': 'legacy', 'select': 'legacy', }
 " NOTE: If inverse search doesn't work, check if zathura is run with -x option (vimtex sets this when launching it), and source files are correctly recognized by vimtex.
 " TODO: compiling with vimtex lags fzf. sometimes input is completely blocked
 function! s:tex() abort
@@ -1060,12 +1063,12 @@ inoremap <expr> <C-u> match(getline('.'), '\S') >= 0 ? '<C-g>u<C-u>' : '<C-u>'
 
 inoremap         <expr> <C-j>  ScanJump(0, 'NextTokenBoundary', "\<Right>")
 cnoremap         <expr> <C-j>  ScanJump(1, 'NextTokenBoundary', "")
-inoremap         <expr> <C-k>  ScanJump(0, PrevTokenBoundary, "\<Left>")
-cnoremap         <expr> <C-k>  ScanJump(1, PrevTokenBoundary, "")
+inoremap         <expr> <C-k>  ScanJump(0, g:PrevTokenBoundary, "\<Left>")
+cnoremap         <expr> <C-k>  ScanJump(1, g:PrevTokenBoundary, "")
 inoremap <silent><expr> <C-w>  ScanRubout(0, 'PrevTokenLeftBoundary')
 cnoremap         <expr> <C-w>  ScanRubout(1, 'PrevTokenLeftBoundary')
-inoremap <silent><expr> <M-BS> ScanRubout(0, PrevSubwordBoundary)
-cnoremap         <expr> <M-BS> ScanRubout(1, PrevSubwordBoundary)
+inoremap <silent><expr> <M-BS> ScanRubout(0, g:PrevSubwordBoundary)
+cnoremap         <expr> <M-BS> ScanRubout(1, g:PrevSubwordBoundary)
 
 function! ScanJump(cmap, scanner, default) abort
     let line = a:cmap ? getcmdline() : getline('.')
@@ -1108,8 +1111,8 @@ function! PrevBoundary(pat, line, from) abort
     endif
     return to
 endfunction
-let PrevTokenBoundary = function('PrevBoundary', ['\k'])
-let PrevSubwordBoundary = function('PrevBoundary', ['[[:punct:]]\@!\k'])
+let g:PrevTokenBoundary = function('PrevBoundary', ['\k'])
+let g:PrevSubwordBoundary = function('PrevBoundary', ['[[:punct:]]\@!\k'])
 
 function! NextTokenBoundary(line, from) abort
     let n = len(a:line)
@@ -1189,7 +1192,7 @@ inoremap <expr> <C-v> '<C-g>u' . (getregtype('+') ==# 'V' && !empty(getline('.')
 " "= is charwise if the result doesn't end with \n.
 " inoremap <silent><C-v> <C-g>u<C-r><C-p>=substitute(substitute(@+, '^\_s\+', '', ''), '\_s\+$', '', '')<CR>
 Noremap <M-c> "+y
-nnoremap <silent> yY :<C-u>let _view = winsaveview() \| exe 'keepjumps keepmarks norm ggVG"+y' \| call winrestview(_view) \| unlet _view<CR>
+nnoremap <silent> yY :<C-u>%yank+<CR>
 
 " buf/filename
 nnoremap <leader>fn 2<C-g>
