@@ -106,6 +106,7 @@ if g:nvim_latest_stable
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'stevearc/aerial.nvim'
     Plug 'jbyuki/venn.nvim'
+    Plug 'folke/flash.nvim'
 endif
 
 " NOTE: This runs `filetype plugin indent on`, which registers au FileType.
@@ -1056,6 +1057,9 @@ let g:sneak#alias = {
             \ '[': '[[⌜⎡⊑⊓]', ']': '[\]⌝⎤⊒⊔]',
             \}
 
+if g:nvim_latest_stable
+    lua require('tomtomjhj/flash')
+endif
 " }}}
 
 " insert/command mode {{{
