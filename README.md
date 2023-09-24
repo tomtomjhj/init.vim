@@ -54,16 +54,3 @@ sudo apt-get install ninja-build gettext libtool libtool-bin autoconf automake c
 make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local
 make install
 ```
-
-# TODO
-* win gvim
-    * `z=` slow (only in win gvim)
-    * fzf stuff is unusable, cmd.exe bad, `preview.sh: line 2: $'\r': command not found`
-        * `set shell=STUFF` completely breaks fzf (maybe related to `fzf#exec()`)
-    * using wsl for `:terminal`?
-        * https://vi.stackexchange.com/q/16386
-        * https://github.com/vim/vim/issues/2525
-        * https://github.com/junegunn/fzf/issues/1191
-    * powershell?
-        * 8.2.3079
-        * neovim #14349, https://github.com/neovim/neovim/pull/16271

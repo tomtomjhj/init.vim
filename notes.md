@@ -304,7 +304,7 @@ See also
 ## automatic parenthesis closing
 * no automatic balancing?
     * map opener to opener + closer
-    * map `<C-g>` opener to opener
+    * map `<C-g>` + opener (or double opener) to opener
     * don't map closer
 
 
@@ -678,6 +678,9 @@ sometimes cmp falls into the state where `<C-n>` doesn't insert the text.
 `<C-y>` works.
 
 In that case, check `require'cmp.view.custom_entries_view'._insert`.
+Indeed the `pending` was `true`. Setting it back to `false` fixes the problem.
+Sometimes indentkeys are messed up too.
+So `feedkeys.call` is somehow failing during execution???
 
 ## :G blame scrollbind
 affected by the cursor of the other window displaying the same buffer
@@ -686,6 +689,15 @@ affected by the cursor of the other window displaying the same buffer
 * botright split changes height of existing window even if it's winfixheight
     * winfixheight should be number option?
 * but it doesn't change the height of quickfix window. the new window's height is too small
+
+## cursor blinking
+cursor blink after typing in insert mode, with one window each for tex and bib.
+sometimes screen completely borken.
+
+bisected to <https://github.com/neovim/neovim/pull/25395>.
+
+## lsp format
+Sometimes lsp format falls into a state where `vim.lsp.buf.format` messes up the buffer text.
 
 # annoyances ingrained in vi(m)
 * `ge` ... design of inclusive/exclusive stuff
@@ -884,14 +896,10 @@ In does injection.combined to the original language.
 * https://github.com/lpinilla/vim-codepainter
 * https://github.com/kshenoy/vim-signature marks
 * https://github.com/Konfekt/vim-compilers
-* https://github.com/dkarter/bullets.vim
 * https://mg979.github.io/tasks.vim
 * https://github.com/tpope/vim-tbone
 * https://github.com/mikeslattery/nvim-defaults.vim https://github.com/tpope/dotfiles/blob/master/.vimrc
 * lsp stuff
-    * https://github.com/jose-elias-alvarez/null-ls.nvim
-    * https://github.com/RishabhRD/nvim-lsputils
-    * https://github.com/ray-x/lsp_signature.nvim
     * https://github.com/j-hui/fidget.nvim
     * https://git.sr.ht/%7Ewhynothugo/lsp_lines.nvim
     * https://github.com/ii14/lsp-command/
@@ -899,6 +907,15 @@ In does injection.combined to the original language.
     * https://github.com/SmiteshP/nvim-navic
     * https://github.com/utilyre/barbecue.nvim
     * https://github.com/kevinhwang91/nvim-ufo
+* ale-like stuff
+    * <https://github.com/jose-elias-alvarez/null-ls.nvim> (dead).
+      Revived: <https://github.com/nvimtools/none-ls.nvim>
+    * <https://github.com/stevearc/conform.nvim>
+      Produces text edits, so preserves extmarks, etc.
+      ale doesn't seem to do this (`ale#util#SetBufferContents`).
+    * <https://github.com/mfussenegger/nvim-lint>
+      Not necessary. ale now uses `vim.diagnostics`.
+    * <https://github.com/neovim/neovim/pull/24338> ?
 * treesitter
     * https://github.com/RRethy/nvim-treesitter-textsubjects
     * https://github.com/vigoux/architext.nvim

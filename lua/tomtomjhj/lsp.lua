@@ -238,7 +238,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
         --   args = { [[+setlocal\ nobuflisted|$ ]] .. vim.lsp.get_log_path() },
         --   mods = opts.smods,
         -- }
-        vim.cmd([[pedit +setlocal\ nobuflisted|$ ]] .. vim.lsp.get_log_path() )
+        vim.cmd([[pedit +setlocal\ nobuflisted\ nowrap|$ ]] .. vim.lsp.get_log_path() )
       end,
       { force = true, }
     )

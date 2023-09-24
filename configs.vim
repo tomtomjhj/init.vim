@@ -49,7 +49,7 @@ endif
 Plug 'roosta/fzf-folds.vim'
 Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
-Plug 'lambdalisue/fern.vim' " NOTE: fern does some polling
+Plug 'lambdalisue/fern.vim'
 Plug 'lambdalisue/fern-hijack.vim'
 Plug 'inkarkat/vim-mark', { 'on': ['<Plug>MarkS', 'Mark'] }
 Plug 'inkarkat/vim-ingo-library'
@@ -165,8 +165,10 @@ Noremap <C-Space> <C-u>
 Noremap <Space><Space> <C-d>
 
 set wildmenu wildmode=longest:full,full
+" expand() expands wildcard with shell, and then filters with wildignore converted with glob2regpat().
 let s:wildignore_files = ['*~', '%*', '*.o', '*.so', '*.pyc', '*.pdf', '*.v.d', '*.vo', '*.vo[sk]', '*.glob', '*.aux']
-let s:wildignore_dirs = ['.git', '__pycache__', 'target']
+let s:wildignore_dirs = ['.git', '__pycache__', 'target'] " '*/dir/*' is too excessive.
+let &wildignore = join(s:wildignore_files + s:wildignore_dirs, ',')
 set complete-=i complete-=u
 set path=.,,
 
@@ -513,6 +515,7 @@ elseif g:ide_client == 'nvim'
 
     " lazy-load luasnip
     function! s:LoadLuaSnip() abort
+        au! LoadLuaSnip
         call plug#load('LuaSnip', 'cmp_luasnip')
 
         lua require("luasnip.loaders.from_vscode").lazy_load { paths = { "~/.vim/vsnip", "~/.vim/plugged/friendly-snippets" } }
@@ -526,7 +529,9 @@ elseif g:ide_client == 'nvim'
     endfunction
 
     if has('vim_starting')
-        au InsertEnter * ++once call s:LoadLuaSnip()
+        augroup LoadLuaSnip | au!
+            au InsertEnter * call s:LoadLuaSnip()
+        augroup END
         xnoremap <silent> <C-l> <Cmd>call <SID>LoadLuaSnip()\|call feedkeys("<C-l>")<CR>
     endif
 endif
@@ -660,6 +665,7 @@ let g:vimtex_text_obj_variant = 'vimtex' " I don't use those targets.vim feature
 " <Plug>(vimtex-cmd-change) (csc) only work in vimtex boundary.. can't change to sandwich's stuff
 let g:vimtex_doc_handlers = ['vimtex#doc#handlers#texdoc']
 let g:vimtex_ui_method = { 'confirm': 'legacy', 'input': 'legacy', 'select': 'legacy', }
+let g:vimtex_syntax_conceal = { 'spacing': 0 }
 " NOTE: If inverse search doesn't work, check if zathura is run with -x option (vimtex sets this when launching it), and source files are correctly recognized by vimtex.
 " TODO: compiling with vimtex lags fzf. sometimes input is completely blocked
 function! s:tex() abort
@@ -1899,31 +1905,12 @@ function! SubstituteDict(dict) range
 endfunction
 command! -range=% -nargs=1 SubstituteDict :<line1>,<line2>call SubstituteDict(<args>)
 
-command! -nargs=+ -bang AddWildignore call AddWildignore([<f-args>], <bang>0)
-function! AddWildignore(wigs, is_dir) abort
-    if a:is_dir
-        let g:wildignore_dirs += a:wigs
-        let globs = map(a:wigs, 'v:val.",".v:val."/,**/".v:val."/*"')
-    else
-        let g:wildignore_files += a:wigs
-        let globs = a:wigs
-    endif
-    exe 'set wildignore+='.join(globs, ',')
-endfunction
-if !exists('g:wildignore_files')
-    let [g:wildignore_files, g:wildignore_dirs] = [[], []]
-    call AddWildignore(s:wildignore_files, 0)
-    call AddWildignore(s:wildignore_dirs, 1)
-endif
-
 if !has('nvim')
     command! -nargs=+ -complete=shellcmd Man delcommand Man | runtime ftplugin/man.vim | if winwidth(0) > 170 | exe 'vert Man' <q-args> | else | exe 'Man' <q-args> | endif
     command! SW w !sudo tee % > /dev/null
 endif
 
 command! Profile profile start profile.log | profile func * | profile file *
-" NOTE: lua profile https://github.com/nvim-lua/plenary.nvim#plenaryprofile
-" lua require'plenary.profile'.start("profile.log") -- , {flame = true}
-" lua require'plenary.profile'.stop()
+command! -bang LProfile exe (<bang>1 ? 'lua require"plenary.profile".start("profile.log")' : 'lua require"plenary.profile".stop()')
 " See also: https://github.com/stevearc/profile.nvim
 " }}}
