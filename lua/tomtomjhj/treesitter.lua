@@ -4,7 +4,6 @@ M = {}
 
 local disable = {
   "vim",  -- less complete
-  "bash", -- broken https://github.com/tree-sitter/tree-sitter-bash/issues/66
 }
 local disable_highlight = vim.list_extend({'latex'}, disable)
 local disable_indent = vim.list_extend({'latex', 'markdown'}, disable)

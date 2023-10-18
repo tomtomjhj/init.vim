@@ -325,7 +325,10 @@ lspconfig.pylsp.setup(config {
   }}
 })
 
-lspconfig.clangd.setup(config())
+lspconfig.clangd.setup(config {
+  --- https://github.com/clangd/clangd/issues/1394#issuecomment-1328676884
+  cmd = { 'clangd', '--query-driver=/usr/bin/c++', }
+})
 
 require("neodev").setup()
 lspconfig.lua_ls.setup(config {

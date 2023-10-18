@@ -668,10 +668,12 @@ fn main() {
 Enable LSP inlay_hint.
 Change `func1` to `func2` with `v_b_c`.
 
-## screenpos occasionally wrong
-all zeros.
+## screen inconsistency
+* rarely, screenpos  all zeros.
+    * after modifying window layout?
+    * toggling `'wrap'` fixes it
+* rarely, displayed lines and the actual lines not consistent in diff mode
 
-after modifying window layout?
 
 ## cmp
 sometimes cmp falls into the state where `<C-n>` doesn't insert the text.
@@ -698,6 +700,9 @@ bisected to <https://github.com/neovim/neovim/pull/25395>.
 
 ## lsp format
 Sometimes lsp format falls into a state where `vim.lsp.buf.format` messes up the buffer text.
+
+## vim.secure
+in dir with .exrc, launch nvim -> .exrc not trusted -> view -> user-specified BufReadPost that depend on `plugin/` (my `UpdateGitStatus`)
 
 # annoyances ingrained in vi(m)
 * `ge` ... design of inclusive/exclusive stuff
