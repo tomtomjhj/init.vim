@@ -18,14 +18,7 @@ execute 'syntax region texMathZoneTD matchgroup=texMathDelimZoneTD'
         \ 'end="\$\$"'
         \ 'contains=@texClusterMath keepend'
 
-" Symbols
+" Symbols. TODO: upstream
 syntax match texMathSymbol "\\Box\>"                 contained conceal cchar=☐
-syntax match texMathSymbol "\\Lleftarrow\>"          contained conceal cchar=⇚
-syntax match texMathSymbol "\\Rrightarrow\>"         contained conceal cchar=⇛
 syntax match texMathSymbol "\\impliedby\>"           contained conceal cchar=⇐
 syntax match texMathSymbol "\\leftsquigarrow\>"      contained conceal cchar=⇜
-syntax match texMathSymbol "\\leftrightsquigarrow\>" contained conceal cchar=↭
-syntax match texMathSymbol "\\rightsquigarrow\>"     contained conceal cchar=⇝
-syntax match texMathSymbol "\\triangleq\>"           contained conceal cchar=≜
-syntax match texMathSymbol "\\trianglelefteq\>"      contained conceal cchar=⊴
-syntax match texMathSymbol "\\trianglerighteq\>"     contained conceal cchar=⊵

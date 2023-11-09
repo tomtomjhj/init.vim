@@ -3,6 +3,8 @@
 " - don't auto-rerun if query is complex?
 " - just manually pass -1 in
 " - Do something like fugitive's :Git! and CTRL-D to show the ouput so far?
+"   FugitiveExecute can be passed callback for async execution.
+" - when CTLR-C'ed, show the output so far?
 
 command! -nargs=? -complete=customlist,fugitive#LogComplete GL call GLStart(<q-mods>, empty(trim(<q-args>)) ? '--all' : <q-args>)
 

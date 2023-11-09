@@ -110,7 +110,7 @@ function! SetupLSP()
   nnoremap <buffer><localleader>*    <cmd>lua vim.lsp.buf.document_highlight()<CR>
   nnoremap <buffer><localleader><CR> <cmd>lua vim.lsp.buf.clear_references()<CR>
   inoremap <buffer>        <M-i> <cmd>lua vim.lsp.buf.signature_help()<CR>
-  nnoremap <buffer>        <M-i> <cmd>lua vim.lsp.inlay_hint(0)<CR>
+  nnoremap <buffer>        <M-i> <cmd>lua vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())<CR>
   " NOTE: some commands require client side extension (vim.lsp.commands, etc), e.g. running test with rust-analyzer
   nnoremap <buffer><leader>cr    <cmd>lua vim.lsp.codelens.run()<CR>
 

@@ -4,6 +4,7 @@ local aerial = require('aerial')
 aerial.setup {
   backends = {
     tex = {},
+    c = {'lsp', 'treesitter'}, -- trailing macro stuff in function def confuses treesitter
   },
   link_tree_to_folds = false,
   post_jump_cmd = 'normal! zv',

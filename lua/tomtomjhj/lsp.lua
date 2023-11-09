@@ -325,6 +325,7 @@ lspconfig.pylsp.setup(config {
   }}
 })
 
+-- clangd generates unnecessary ERROR messages in lsp.log
 lspconfig.clangd.setup(config {
   --- https://github.com/clangd/clangd/issues/1394#issuecomment-1328676884
   cmd = { 'clangd', '--query-driver=/usr/bin/c++', }
@@ -345,6 +346,7 @@ lspconfig.vimls.setup(config())
 lspconfig.texlab.setup(config())
 
 -- NOTE: Codeaction-ed rules are recorded in .ltex_ls_cache.json.
+-- NOTE: Codeaction custom commands broken
 -- See also https://github.com/barreiroleo/ltex_extra.nvim.
 require'ltex-ls'.setup(config {
   autostart = false,
@@ -357,7 +359,7 @@ require'ltex-ls'.setup(config {
     --   ["en-US"] = { ":~/.vim/spell/en.utf-8.add" }
     -- },
     disabledRules = {
-      ["en-US"] = { "MORFOLOGIK_RULE_EN_US" }
+      ["en-US"] = { "MORFOLOGIK_RULE_EN_US", "ARROWS", }
     },
     latex = {
       commands = {

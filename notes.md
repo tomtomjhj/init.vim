@@ -670,9 +670,12 @@ Change `func1` to `func2` with `v_b_c`.
 
 ## screen inconsistency
 * rarely, screenpos  all zeros.
-    * after modifying window layout?
-    * toggling `'wrap'` fixes it
+    * after modifying window layout? after diff? happens without diff.
+    * skipcol seemed to be wrong when entering diff mode in this state
 * rarely, displayed lines and the actual lines not consistent in diff mode
+* when `'wrap'`, the displayed cursor position is not consistent with the actual cursor position (e.g., insert mode input, j/k, ...)
+* unset/seting `'wrap'` seems to fix all the above issue
+* not completely fixed by 9.0.2105
 
 
 ## cmp

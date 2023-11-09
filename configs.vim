@@ -209,7 +209,7 @@ endif
 augroup BasicSetup | au!
     " Return to last edit position when entering normal buffer
     " TODO: this addes jump? manually running is ok. maybe autocmd problem?
-    au BufRead * if empty(&buftype) && &filetype !=# 'git' && line("'\"") > 1 && line("'\"") <= line("$") | exec "norm! g`\"" | endif
+    au BufRead * if empty(&buftype) && &filetype !~# '^git' && line("'\"") > 1 && line("'\"") <= line("$") | exec "norm! g`\"" | endif
     au VimEnter * exec 'tabdo windo clearjumps' | tabnext
     au BufWritePost ~/.vim/configs.vim nested source ~/.vim/configs.vim
     au BufRead,BufNewFile *.k setlocal filetype=k
@@ -1328,6 +1328,7 @@ let g:sandwich#recipes += [
       \   {'buns': ['\v\(\*\_s', '\v\_s\*\)'], 'nesting': 1, 'regex': 1, 'kind': ['delete', 'textobj'], 'action': ['delete'], 'input': ['m']},
       \ ]
 " NOTE: ib/ab is quite slow in tex
+" NOTE: 'e' (environment) doesn't do autoindent
 omap ib <Plug>(textobj-sandwich-auto-i)
 xmap ib <Plug>(textobj-sandwich-auto-i)
 omap ab <Plug>(textobj-sandwich-auto-a)

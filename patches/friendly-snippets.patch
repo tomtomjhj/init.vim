@@ -1,5 +1,5 @@
 diff --git a/package.json b/package.json
-index 00eda06..2583990 100644
+index f6d92f9..f5301ca 100644
 --- a/package.json
 +++ b/package.json
 @@ -5,21 +5,6 @@
@@ -24,7 +24,7 @@ index 00eda06..2583990 100644
              {
                  "language": "c",
                  "path": "./snippets/c/c.json"
-@@ -80,10 +65,6 @@
+@@ -84,10 +69,6 @@
                  "language": "liquid",
                  "path": "./snippets/liquid.json"
              },
@@ -35,7 +35,7 @@ index 00eda06..2583990 100644
              {
                  "language": "luadoc",
                  "path": "./snippets/lua/luadoc.json"
-@@ -180,14 +161,6 @@
+@@ -188,14 +169,6 @@
                  "language": "shelldoc",
                  "path": "./snippets/shell/shelldoc.json"
              },
@@ -50,9 +50,9 @@ index 00eda06..2583990 100644
              {
                  "language": "plantuml",
                  "path": "./snippets/plantuml.json"
-@@ -380,14 +353,6 @@
-                 "language": "kotlin",
-                 "path": "./snippets/kotlin.json"
+@@ -404,14 +377,6 @@
+                 "language": "kdoc",
+                 "path": "./snippets/kotlin/kdoc.json"
              },
 -            {
 -                "language": ["plaintex", "tex"],
