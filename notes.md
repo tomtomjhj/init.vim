@@ -44,7 +44,10 @@
   e.g. git diff-ing a file that moved, without specifying the old name
     * <https://github.com/tpope/vim-fugitive/issues/2070>
 * `CCR` <https://gist.github.com/romainl/047aca21e338df7ccf771f96858edb86>.
-  Related: `CmdlineLeave`
+    * Related: `CmdlineLeave`. Vim doesn't support `v:event.abort`.
+      ```
+      au CmdlineLeave * if expand('<afile>') =~ '[/?]' && !get(v:event, 'abort', 0) | let g:search_mode = '/' | endif
+      ```
 * <https://www.reddit.com/r/neovim/comments/15c7rk3/quickfix_editing_tips_worth_resharing/>
 
 
@@ -490,9 +493,17 @@ See also
 * How does modeline and OptionSet, FileType, ... interact?
   vim.secure.trust() should take account of modeline?
 * https://vi.stackexchange.com/questions/37660/how-can-i-echo-a-message-with-newlines-so-it-is-displayed-with-line-breaks-and-i
-* `cnoremap <CR> do-something-and-then-<CR>` should send `<CR>` with `feedkeys("\<C-]>\<CR>", 'nt')`.
-    * Ensures history update (this requires `some_key_typed`).
-    * noremap prevents abbreviation expansion.
+* `cnoremap <CR> do-something-and-then-<CR>` (e.g., CCR) can't work correctly.
+    * It should should send `<CR>` with `feedkeys("\<C-]>\<CR>", 'nt')`.
+        * `<C-]>`: noremap prevents abbreviation expansion, so explicitly expand.
+        * `feedkeys(.., 'nt')`:
+          Ensures history update, which requires `some_key_typed`.
+          A command may not have been typed, e.g., when `<Up>` is used...
+          But why doesn't `<Up>` count as a typed key? File an issue?
+    * Problem: `feedkeys()` may break non-noremap maps that use cmdline.
+      There are quite many of them.
+      There is no clean way to ensure that they use real `<CR>`.
+      So just don't do this thing...
 
 
 # bugs
