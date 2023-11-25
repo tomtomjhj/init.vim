@@ -47,7 +47,6 @@ if has('nvim')
     Plug 'ibhagwan/fzf-lua'
 endif
 Plug 'roosta/fzf-folds.vim'
-Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'lambdalisue/fern.vim'
 Plug 'lambdalisue/fern-hijack.vim'
@@ -77,6 +76,7 @@ elseif g:ide_client == 'nvim'
     Plug 'p00f/clangd_extensions.nvim'
     Plug 'vigoux/ltex-ls.nvim'
     Plug 'tomtomjhj/coq-lsp.nvim'
+    Plug 'tomtomjhj/vscoq.nvim'
 endif
 Plug 'rafamadriz/friendly-snippets'
 Plug 'tomtomjhj/tpope-vim-markdown'
@@ -91,8 +91,6 @@ Plug 'lervag/vimtex'
 Plug 'tomtomjhj/Coqtail'
 " Plug 'puremourning/vimspector' | let g:vimspector_enable_mappings = 'HUMAN'
 Plug 'rhysd/vim-llvm'
-Plug 'vim-python/python-syntax'
-" Plug 'rhysd/vim-grammarous', { 'for': ['markdown', 'tex'] } | let g:grammarous#use_location_list = 1
 
 " etc etc
 if has('nvim')
@@ -145,7 +143,7 @@ set nojoinspaces
 set list listchars=tab:\|\ ,trail:-,nbsp:+,extends:>
 
 set wrap linebreak breakindent showbreak=↪\ 
-if has('patch-9.0.1729') || has('nvim-0.10') | set smoothscroll | endif
+if has('patch-9.0.2105') || has('nvim-0.10') | set smoothscroll | endif
 let &backspace = (has('patch-8.2.0590') || has('nvim-0.5')) ? 'indent,eol,nostop' : 'indent,eol,start'
 set whichwrap+=<,>,[,],h,l
 set cpoptions-=_
@@ -219,8 +217,7 @@ augroup BasicSetup | au!
     endif
 augroup END
 
-if has('unix')
-    let g:python_host_prog  = '/usr/bin/python2'
+if has('linux')
     let g:python3_host_prog = '/usr/bin/python3'
 endif
 " }}}
@@ -971,11 +968,13 @@ func! Files(query)
     if empty(a:query) && has_key(spec, 'dir')
         let l:query = spec['dir']
         unlet spec['dir']
-        let spec['options'] = ['--prompt', fnamemodify(l:query, ':~:.') . '/']
+        let spec['options'] += ['--prompt', fnamemodify(l:query, ':~:.') . '/']
     else
         let l:query = a:query
     endif
-    call fzf#vim#files(l:query, fzf#vim#with_preview(spec, 'right'))
+    let preview_window = index(spec['options'], '--preview-window')
+    if preview_window >= 0 | let spec['options'][preview_window + 1] = 'right' | endif " preview always on right
+    call fzf#vim#files(l:query, spec)
 endfunc
 
 " TODO: fzf stuff
@@ -1571,15 +1570,10 @@ function! s:init_fern() abort
         setlocal signcolumn=number foldcolumn=0
     endif
     " must ignore the error
-    silent! nunmap <buffer> <C-h>
-    silent! nunmap <buffer> <C-j>
-    silent! nunmap <buffer> <C-k>
-    silent! nunmap <buffer> <C-l>
-    silent! nunmap <buffer> <BS>
-    silent! nunmap <buffer> s
-    silent! nunmap <buffer> N
+    for lhs in ['<C-h>', '<C-j>', '<C-k>', '<C-l>', '<BS>', 'E', 's', 't', 'N', '!',]
+        exe 'silent! nunmap <buffer>' lhs
+    endfor
     silent! vunmap <buffer> -
-    silent! vunmap <buffer> !
     nnoremap <buffer> ~ <Cmd>Fern ~<CR>
     nmap <buffer> - <Plug>(fern-action-leave)
     nmap <buffer><leader><C-l> <Plug>(fern-action-reload)
@@ -1595,6 +1589,9 @@ function! s:init_fern() abort
     nmap <buffer> g. <Plug>(fern-action-repeat)
     nmap <buffer> g? <Plug>(fern-action-help)
     nmap <buffer> D <Plug>(fern-action-remove)
+    nmap <buffer> o <Plug>(fern-action-open:split)
+    nmap <buffer> gO <Plug>(fern-action-open:vsplit)
+    nmap <buffer> O <Plug>(fern-action-open:tabedit)
 endfunction
 
 augroup fern-custom | au!

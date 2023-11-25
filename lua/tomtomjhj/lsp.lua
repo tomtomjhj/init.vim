@@ -293,6 +293,7 @@ end
 -- }
 
 -- NOTE: rust-analyzer behaves weirdly for multi-crate project. especially workspace_symbols.
+-- NOTE: https://github.com/mrcjkb/rustaceanvim ... how to restart/manual start server with non-lspconfig config?
 local rust_tools = require('rust-tools')
 rust_tools.setup {
   tools = {
@@ -341,7 +342,7 @@ lspconfig.lua_ls.setup(config {
   }},
 })
 
-lspconfig.vimls.setup(config())
+-- lspconfig.vimls.setup(config())
 
 lspconfig.texlab.setup(config())
 
@@ -387,14 +388,31 @@ lspconfig.marksman.setup(config {
   autostart = false,
 })
 
-require'coq-lsp'.setup {
+-- Old ocamllsp spams "failed to poll dune registry" warning in lsp.log.
+-- Lastest ocamllsp requires ocaml>=4.14.
+-- This dune thing should be MANUALLY run with `dune build -w`.
+lspconfig.ocamllsp.setup(config())
+
+-- require'coq-lsp'.setup {
+--   lsp = config {
+--     autostart = false,
+--     init_options = {
+--       max_errors = 50,
+--       show_notices_as_diagnostics = true,
+--       debug = true,
+--     },
+--     -- trace = 'verbose',
+--   },
+-- }
+
+require'vscoq'.setup {
+  vscoq = {
+    proof = {
+      mode = 1,
+    },
+  },
   lsp = config {
     autostart = false,
-    init_options = {
-      max_errors = 50,
-      show_notices_as_diagnostics = true,
-      debug = true,
-    },
     -- trace = 'verbose',
   },
 }

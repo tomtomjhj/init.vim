@@ -14,15 +14,6 @@
 * forced-motion
 * `sub-replace-special`
 * `equalalways`, `winfixheight`, ...
-* [profiling](https://stackoverflow.com/a/8347244)
-  ```
-  vim --cmd 'profile start profile.log' \
-      --cmd 'profile func *' \
-      --cmd 'profile file *' \
-      -c 'profdel func *' \
-      -c 'profdel file *' \
-      -c 'qa!'
-  ```
 * `arglist`
 * overriding autoload: `:runtime` the autoload file in a matching autoload file https://www.reddit.com/r/vim/comments/oq82hg/overriding_a_single_autoloaded_package_function/
 * `:match`
@@ -543,10 +534,9 @@ invidunt *)
 ```
 
 ## treesitter integration low-level bugs
-* sometimes both vim syntax and treesitter hightlighting are on
 * breaks `<cword>`?
-* frequently broken by diff mode → should be fixed by my fix
 * slow with big region: <https://gist.github.com/tomtomjhj/95c2feec72f35e6a6942fd792587bb4e>
+* `:range!` does not emit proper on_bytes <https://github.com/neovim/neovim/blob/d667e0e4142ba8eb8623971539b0f9eec78b7529/src/nvim/ex_cmds.c#L1200-L1202>
 
 ## treesitter grammar/query issues
 * c: `preproc_arg → @function.macro` highlights macro definition body.
@@ -827,9 +817,6 @@ Other details
     * if spellcheck is the problem, do something similar to `set spelllang=cjk`
 
 ## fold
-Make it smarter in general.
-I don't recall what I specifically wanted (if any).
-
 nvim's optimization: don't update fold in insert mode.
 * <https://github.com/neovim/neovim/pull/5299>
   <https://github.com/vim/vim/pull/1045>
@@ -957,12 +944,6 @@ In does injection.combined to the original language.
     * https://github.com/kristijanhusak/orgmode.nvim
     * https://github.com/epwalsh/obsidian.nvim
 * selector
-    * https://github.com/vijaymarupudi/nvim-fzf
-    * **<https://github.com/ibhagwan/fzf-lua>**
-        * live_grep ↔ grep!
-        * Preview buffer's ftdetect uses `:filetype detect`, which is somewhat broken? `*.v` file doesn't get recognized as coq.
-        * Does not reuse the buffer for preview <https://github.com/ibhagwan/fzf-lua/issues/208#issuecomment-962550013>...
-        * `require'fzf-lua'.setup` takes 5 ms. Fixed? https://github.com/ibhagwan/fzf-lua/issues/511
     * https://github.com/stevearc/dressing.nvim
     * https://github.com/lifepillar/vim-zeef
     * https://github.com/mfussenegger/nvim-qwahl

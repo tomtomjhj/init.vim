@@ -4,6 +4,7 @@ backup/*
 swap/*
 undo/*
 spell/*
+shada/*
 tags
 .DS_Store
 __pycache__
@@ -12,3 +13,4 @@ __pycache__
 plugged/*
 autoload/plug.vim.old
 .netrwhist
+*_local.vim

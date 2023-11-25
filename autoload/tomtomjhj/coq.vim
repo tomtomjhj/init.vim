@@ -64,49 +64,49 @@ function! tomtomjhj#coq#mappings()
     if &ft ==# 'coq'
         nmap <buffer> <M-]> <Plug>CoqGotoDef
     endif
-    nmap <buffer><expr> <M-\> "\<Cmd>CoqGotoDefSplit " . coqtail#util#getcurword() . "\<CR>"
+    nnoremap <buffer><expr> <M-\> "\<Cmd>CoqGotoDefSplit " . coqtail#util#getcurword() . "\<CR>"
 
-    nmap <buffer> <localleader>cs :<C-u>Coq Search<space>
-    xmap <buffer> <localleader>cs <Plug>CoqSearch
+    nnoremap <buffer> <localleader>cs :<C-u>Coq Search<space>
+    xmap     <buffer> <localleader>cs <Plug>CoqSearch
 
-    nmap <buffer> <localleader>ch :<C-u>Coq Check<space>
-    xmap <buffer> <localleader>ch <Plug>CoqCheck
+    nnoremap <buffer> <localleader>ch :<C-u>Coq Check<space>
+    xmap     <buffer> <localleader>ch <Plug>CoqCheck
 
-    nmap <buffer> <M-.>          <Plug>CoqAbout
-    xmap <buffer> <M-.>          <Plug>CoqAbout
-    nmap <buffer> <localleader>? :<C-u>Coq About<space>
+    nmap     <buffer> <M-.>          <Plug>CoqAbout
+    xmap     <buffer> <M-.>          <Plug>CoqAbout
+    nnoremap <buffer> <localleader>? :<C-u>Coq About<space>
 
-    nmap <buffer> <M-,>          <Plug>CoqPrint
-    xmap <buffer> <M-,>          <Plug>CoqPrint
-    nmap <buffer> <localleader>p :<C-u>Coq Print<space>
+    nmap     <buffer> <M-,>          <Plug>CoqPrint
+    xmap     <buffer> <M-,>          <Plug>CoqPrint
+    nnoremap <buffer> <localleader>p :<C-u>Coq Print<space>
 
-    nmap <buffer> <localleader>lc :<C-u>Coq Locate<space>
-    xmap <buffer> <localleader>lc :<C-u>Coq Locate "<C-r>=coqtail#util#getvisual()<CR>"
+    nnoremap <buffer> <localleader>lc :<C-u>Coq Locate<space>
+    xnoremap <buffer> <localleader>lc :<C-u>Coq Locate "<C-r>=coqtail#util#getvisual()<CR>"
 
     nmap <buffer> <localleader>ll <Plug>CoqRestorePanels
 
-    cmap <buffer> <C-r><C-w> <C-r>=coqtail#util#getcurword()<CR>
+    cnoremap <buffer> <C-r><C-w> <C-r>=coqtail#util#getcurword()<CR>
 
-    nmap <buffer> <localleader>fd <Cmd>exe 'normal! zE'\|call tomtomjhj#coq#folds()<CR>
+    nnoremap <buffer> <localleader>fd <Cmd>exe 'normal! zE'\|call tomtomjhj#coq#folds()<CR>
 
-    nmap <buffer> gq   <cmd>set opfunc=tomtomjhj#coq#gq<CR>g@
-    nmap <buffer> gqq  <cmd>set opfunc=tomtomjhj#coq#gq<CR>g@l
-    nmap <buffer> gqgq <cmd>set opfunc=tomtomjhj#coq#gq<CR>g@l
-    xmap <buffer> gq   <cmd>call tomtomjhj#coq#gq(visualmode(), 1)<CR>
+    nnoremap <buffer> gq   <Cmd>set opfunc=tomtomjhj#coq#gq<CR>g@
+    nnoremap <buffer> gqq  <Cmd>set opfunc=tomtomjhj#coq#gq<CR>g@l
+    nnoremap <buffer> gqgq <Cmd>set opfunc=tomtomjhj#coq#gq<CR>g@l
+    xnoremap <buffer> gq   <Cmd>call tomtomjhj#coq#gq(visualmode(), 1)<CR>
 
-    nmap <buffer> <localleader><C-L> <Cmd>call tomtomjhj#coq#clearhl()<CR>
+    nnoremap <buffer> <localleader><C-L> <Cmd>call tomtomjhj#coq#clearhl()<CR>
 
     nmap <buffer> [g <Plug>CoqGotoGoalPrevStart
     nmap <buffer> [G <Plug>CoqGotoGoalPrevEnd
     nmap <buffer> ]g <Plug>CoqGotoGoalNextStart
     nmap <buffer> ]G <Plug>CoqGotoGoalNextEnd
     if &ft ==# 'coq-goals'
-        nmap <buffer> [[ <Cmd>call tomtomjhj#coq#goal_section(1)<CR>
-        nmap <buffer> ]] <Cmd>call tomtomjhj#coq#goal_section(0)<CR>
+        nnoremap <buffer> [[ <Cmd>call tomtomjhj#coq#goal_section(1)<CR>
+        nnoremap <buffer> ]] <Cmd>call tomtomjhj#coq#goal_section(0)<CR>
     endif
 
     " (v : t) → v
-    nmap <buffer> ds<M-;> <Cmd>call <SID>simpl_binder()<CR>
+    nnoremap <buffer> ds<M-;> <Cmd>call <SID>simpl_binder()<CR>
 endfunction
 
 " NOTE: repeating didn't work when not using function
@@ -137,10 +137,10 @@ function! tomtomjhj#coq#clearhl()
 endfunction
 
 function! tomtomjhj#coq#folds()
-    let save_cursor = getcurpos()
+    let view = winsaveview()
     keepjumps keeppatterns global/\v^\s*\zs(End|Qed|Defined|Abort|Admitted|Save).*\./normal zf%
     normal! zM
-    call setpos('.', save_cursor)
+    call winrestview(view)
 endfunction
 
 function! tomtomjhj#coq#goal_section(back) abort

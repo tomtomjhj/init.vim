@@ -6,7 +6,17 @@ local disable = {
   "vim",  -- less complete
 }
 local disable_highlight = vim.list_extend({'latex'}, disable)
-local disable_indent = vim.list_extend({'latex', 'markdown'}, disable)
+local disable_indent = vim.list_extend({'latex', 'markdown', 'lua'}, disable)
+
+-- lua indet broken
+-- f(function()
+--   g()
+-- end, {
+--   f = function()
+--       -- two indents here. this also ignores autoindent
+--   end,
+-- })
+
 
 local custom_queries = {
   markdown = {
