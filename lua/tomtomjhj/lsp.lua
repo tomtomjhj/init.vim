@@ -125,6 +125,7 @@ local function register_breadcrumb(ag, client, bufnr)
       end,
     })
   end
+  -- TODO: clean up at LspStop?
 end
 
 local function register_breadcrumb_global(ag)
@@ -384,6 +385,7 @@ require'ltex-ls'.setup(config {
 
 lspconfig.bashls.setup(config())
 
+-- completion doesn't support "name.md#heading" style reference?
 lspconfig.marksman.setup(config {
   autostart = false,
 })
@@ -408,12 +410,19 @@ lspconfig.ocamllsp.setup(config())
 require'vscoq'.setup {
   vscoq = {
     proof = {
-      mode = 1,
+      mode = 0,
+      cursor = { sticky = false },
     },
   },
   lsp = config {
     autostart = false,
     -- trace = 'verbose',
+    on_attach = function(client, bufnr)
+      base_config.on_attach(client, bufnr)
+      vim.keymap.set({'n', 'i'}, '<C-M-j>', '<Cmd>VsCoq stepForward<CR>', { buffer = bufnr })
+      vim.keymap.set({'n', 'i'}, '<C-M-k>', '<Cmd>VsCoq stepBackward<CR>', { buffer = bufnr })
+      vim.keymap.set({'n', 'i'}, '<C-M-l>', '<Cmd>VsCoq interpretToPoint<CR>', { buffer = bufnr })
+    end
   },
 }
 -- }}}

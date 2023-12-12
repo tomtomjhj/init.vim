@@ -72,6 +72,9 @@ require'nvim-treesitter.configs'.setup {
       scope_incremental = "<leader><tab>",
     },
   },
+  -- TODO; matchup treesitter incurs noticeable input lag in the middle of big c file e.g. normal.c
+  -- 73%  matches
+  --   <- 100%  (for generator) < collect_group_results < fn < for_each_tree < fn < get_matches < fn < get_active_nodes < get_delim
   matchup = {
     enable = true,
   },

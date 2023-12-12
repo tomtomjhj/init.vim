@@ -302,6 +302,36 @@ See also
     * don't map closer
 
 
+## debugging
+```
+packadd termdebug
+TermdebugCommand ./build/bin/nvim --headless --listen /tmp/nvim-debug.pipe
+./build/bin/nvim --remote-ui --server /tmp/nvim-debug.pipe
+```
+
+Note that UI doesn't immediately reflect the editor state.
+It should be `ui_flush`ed (i guess).
+So editor state should be tracked with other methods.
+
+can't control gdb window???
+
+```
+GDB: Failed to set controlling terminal
+```
+???
+
+breakpoint condition on call stack
+<https://stackoverflow.com/a/55358445>
+Doesn't work???
+
+For most of input this appears???
+```
+Detaching after vfork from child process N
+```
+
+`:Evaluate` window is not cleared automatically
+
+
 # things that I should make more use of
 * marks
 * `:global`
@@ -535,7 +565,6 @@ invidunt *)
 
 ## treesitter integration low-level bugs
 * breaks `<cword>`?
-* slow with big region: <https://gist.github.com/tomtomjhj/95c2feec72f35e6a6942fd792587bb4e>
 * `:range!` does not emit proper on_bytes <https://github.com/neovim/neovim/blob/d667e0e4142ba8eb8623971539b0f9eec78b7529/src/nvim/ex_cmds.c#L1200-L1202>
 
 ## treesitter grammar/query issues
@@ -707,6 +736,29 @@ Sometimes lsp format falls into a state where `vim.lsp.buf.format` messes up the
 
 ## vim.secure
 in dir with .exrc, launch nvim -> .exrc not trusted -> view -> user-specified BufReadPost that depend on `plugin/` (my `UpdateGitStatus`)
+
+## treesitter comment injection performance
+tall screen (lines=77), big rust file with many big comments on screen (3k, sync.rs), with comment injection, j/k spamming redraw slow
+
+```
+75%  fn
+  <- 99%  for_each_tree < for_each_tree < on_line_impl < highlighter.lua:292
+  <-  1%  for_each_tree < on_line_impl < highlighter.lua:292
+11%  iter
+  <- 92%  fn < for_each_tree < for_each_tree < on_line_impl < highlighter.lua:292
+  <-  8%  fn < for_each_tree < on_line_impl < highlighter.lua:292
+ 4%  handler
+  <- 94%  match_preds < iter < fn < for_each_tree < for_each_tree < on_line_impl < highlighter.lua:292
+  <-  6%  match_preds < iter < fn < for_each_tree < on_line_impl < highlighter.lua:292
+ 4%  get_node_text
+  <- 96%  handler < match_preds < iter < fn < for_each_tree < for_each_tree < on_line_impl < highlighter.lua:292
+  <-  4%  handler < match_preds < iter < fn < for_each_tree < on_line_impl < highlighter.lua:292
+```
+
+see also <https://gist.github.com/tomtomjhj/95c2feec72f35e6a6942fd792587bb4e>
+
+## leak?
+After opening huge file and :bwipe-ing it, the memory usage doesn't reduce.
 
 # annoyances ingrained in vi(m)
 * `ge` ... design of inclusive/exclusive stuff
@@ -883,6 +935,9 @@ Problem: git conflict marker breaks parsers
 Solution:
 If conflict marker detected, make top-level language tree with "git conflict" parser.
 In does injection.combined to the original language.
+
+## inactive stl if nvim is not focused
+Problem: FocusLost/FocusGained are not reliable?
 
 # stuff
 * https://arxiv.org/abs/2006.03103

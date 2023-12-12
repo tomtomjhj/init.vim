@@ -34,6 +34,11 @@ function! GLStart(mods, args) abort
   call fugitive#MapJumps() " assumping nomodifiable
   silent! unmap <buffer> *
   silent! unmap <buffer> #
+  " :Gedit maps are not useful
+  silent! unmap <buffer> -
+  silent! unmap <buffer> P
+  silent! unmap <buffer> ~
+  silent! unmap <buffer> C
   " NOTE: fugitive's ri doesn't work as expected
   nnoremap <buffer> ri :<C-U>Git rb -i <C-R>=<SID>line_commit('.')<CR>~<CR>
   nnoremap <buffer> gq <C-W><C-Q>

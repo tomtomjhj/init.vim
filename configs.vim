@@ -1580,6 +1580,7 @@ function! s:init_fern() abort
     nmap <buffer> l <Plug>(fern-action-expand)
     Map  <buffer> x <Plug>(fern-action-mark:toggle)
     nmap <buffer> X <Plug>(fern-action-mark:clear)
+    " TODO: doesn't work for pdf???
     nmap <buffer> gx <Plug>(fern-action-open:system)
     nmap <buffer> <C-n> <Plug>(fern-action-new-file)
     cmap <buffer> <C-r><C-p> <Plug>BufDir
@@ -1588,6 +1589,7 @@ function! s:init_fern() abort
     nmap <buffer> . <Plug>(fern-action-ex)
     nmap <buffer> g. <Plug>(fern-action-repeat)
     nmap <buffer> g? <Plug>(fern-action-help)
+    " TODO: don't reset cursor to top after D
     nmap <buffer> D <Plug>(fern-action-remove)
     nmap <buffer> o <Plug>(fern-action-open:split)
     nmap <buffer> gO <Plug>(fern-action-open:vsplit)
