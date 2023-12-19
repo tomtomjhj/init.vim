@@ -1347,6 +1347,7 @@ if has('nvim')
     tnoremap <expr> <M-r> '<C-\><C-N>"'.nr2char(getchar()).'pi'
     " NOTE: When [Process exited $EXIT_CODE] in terminal mode, pressing any key wipes the terminal buffer.
     command! -nargs=? -complete=shellcmd T <mods> split | exe "terminal" <q-args> | if empty(<q-args>) | startinsert | endif
+    " TODO: termwinkey emultation https://github.com/VioletJewel/nvim-config/blob/main/plugin/term.lua
 else
     " NOTE: If 'hidden' is set and arg is provided, job finished + window closed doesn't wipe the buffer, in contrary to the doc:
     " > When the job has finished and no changes were made to the buffer: closing the
@@ -1619,6 +1620,7 @@ endfunction
 
 " Git. See also plugin/git.vim {{{
 augroup git-custom | au!
+    au Syntax git,gitcommit,diff syn sync minlines=321
     au FileType diff
         \ nnoremap <silent><buffer>zM :setlocal foldmethod=syntax\|unmap <lt>buffer>zM<CR>zM
     au FileType git,fugitive,gitcommit

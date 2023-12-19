@@ -329,9 +329,6 @@ For most of input this appears???
 Detaching after vfork from child process N
 ```
 
-`:Evaluate` window is not cleared automatically
-
-
 # things that I should make more use of
 * marks
 * `:global`
@@ -609,9 +606,6 @@ related? <https://github.com/neovim/neovim/issues/5799>
 ## `hi def link` + `hi clear`
 Somewhat broken. See [note on colorscheme customization](#colorscheme-customization).
 
-## ✓ nvim: mapping `<C-c>` disables interrupt
-If there's a mapping that starts with `<C-c>` in current mode (but not exactly `<C-c>`), `<C-c>` does not interrupt vimscript (loop, `:sleep`, ...). <https://github.com/neovim/neovim/issues/15258>
-
 ## typing imap prefix
 When typing a prefix of imap, the typed char is displayed during the timeout. Is this intended?
 
@@ -725,40 +719,22 @@ affected by the cursor of the other window displaying the same buffer
     * winfixheight should be number option?
 * but it doesn't change the height of quickfix window. the new window's height is too small
 
-## cursor blinking
-cursor blink after typing in insert mode, with one window each for tex and bib.
-sometimes screen completely borken.
-
-bisected to <https://github.com/neovim/neovim/pull/25395>.
-
 ## lsp format
 Sometimes lsp format falls into a state where `vim.lsp.buf.format` messes up the buffer text.
 
 ## vim.secure
 in dir with .exrc, launch nvim -> .exrc not trusted -> view -> user-specified BufReadPost that depend on `plugin/` (my `UpdateGitStatus`)
 
-## treesitter comment injection performance
-tall screen (lines=77), big rust file with many big comments on screen (3k, sync.rs), with comment injection, j/k spamming redraw slow
-
-```
-75%  fn
-  <- 99%  for_each_tree < for_each_tree < on_line_impl < highlighter.lua:292
-  <-  1%  for_each_tree < on_line_impl < highlighter.lua:292
-11%  iter
-  <- 92%  fn < for_each_tree < for_each_tree < on_line_impl < highlighter.lua:292
-  <-  8%  fn < for_each_tree < on_line_impl < highlighter.lua:292
- 4%  handler
-  <- 94%  match_preds < iter < fn < for_each_tree < for_each_tree < on_line_impl < highlighter.lua:292
-  <-  6%  match_preds < iter < fn < for_each_tree < on_line_impl < highlighter.lua:292
- 4%  get_node_text
-  <- 96%  handler < match_preds < iter < fn < for_each_tree < for_each_tree < on_line_impl < highlighter.lua:292
-  <-  4%  handler < match_preds < iter < fn < for_each_tree < on_line_impl < highlighter.lua:292
-```
-
-see also <https://gist.github.com/tomtomjhj/95c2feec72f35e6a6942fd792587bb4e>
-
 ## leak?
 After opening huge file and :bwipe-ing it, the memory usage doesn't reduce.
+
+## markdown comment undo doesn't update ts highlight
+* in markdown, html comment, then uncomment with u
+    * `yss*` undo works fine, so maybe it's injection problem
+* reproducible without the on_line optimization
+* not reproduced in 0.9.4, so maybe related to incremental parsing and injection
+* undo on_bytes order issue?
+* note that the highlighter uses ephemeral marks
 
 # annoyances ingrained in vi(m)
 * `ge` ... design of inclusive/exclusive stuff
