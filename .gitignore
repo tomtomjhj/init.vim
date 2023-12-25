@@ -14,3 +14,4 @@ plugged/*
 autoload/plug.vim.old
 .netrwhist
 *_local.vim
+local.vim

@@ -54,7 +54,7 @@ Plug 'inkarkat/vim-mark', { 'on': ['<Plug>MarkS', 'Mark'] }
 Plug 'inkarkat/vim-ingo-library'
 
 " lanauges
-Plug 'dense-analysis/ale', { 'on': ['<Plug>(ale_', 'ALEEnable'] } ")
+Plug 'dense-analysis/ale', { 'on': ['<Plug>(ale_', 'ALEEnable', 'ALEFix'] } ")
 if g:ide_client == 'coc'
     Plug 'neoclide/coc.nvim', { 'branch': 'release' }
     " Plug '~/apps/coc.nvim', { 'branch': 'master', 'do': 'yarn install --frozen-lockfile' }
@@ -539,6 +539,7 @@ let g:ale_linters = {}
 let g:ale_fixers = {
             \ 'c': ['clang-format'],
             \ 'cpp': ['clang-format'],
+            \ 'lua': ['stylua'],
             \ 'python': ['black'],
             \ 'ocaml': ['ocamlformat'],
             \ 'go': ['gofmt'],

@@ -700,7 +700,11 @@ Change `func1` to `func2` with `v_b_c`.
 * when `'wrap'`, the displayed cursor position is not consistent with the actual cursor position (e.g., insert mode input, j/k, ...)
 * unset/seting `'wrap'` seems to fix all the above issue
 * not completely fixed by 9.0.2105
+* https://github.com/vim/vim/issues/13528 이거랑 비슷한 문제 또있음.. breakindent 관련?
 
+## treesitter problem
+* perf tracking issue https://github.com/neovim/neovim/issues/22426
+* treesitter doesn't report tree changes if nodes are only removed https://github.com/neovim/neovim/issues/23286
 
 ## cmp
 sometimes cmp falls into the state where `<C-n>` doesn't insert the text.
@@ -727,14 +731,6 @@ in dir with .exrc, launch nvim -> .exrc not trusted -> view -> user-specified Bu
 
 ## leak?
 After opening huge file and :bwipe-ing it, the memory usage doesn't reduce.
-
-## markdown comment undo doesn't update ts highlight
-* in markdown, html comment, then uncomment with u
-    * `yss*` undo works fine, so maybe it's injection problem
-* reproducible without the on_line optimization
-* not reproduced in 0.9.4, so maybe related to incremental parsing and injection
-* undo on_bytes order issue?
-* note that the highlighter uses ephemeral marks
 
 # annoyances ingrained in vi(m)
 * `ge` ... design of inclusive/exclusive stuff

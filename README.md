@@ -22,13 +22,9 @@ cd ~/.vim
 # External dependencies
 ```sh
 pip3 install --user pynvim neovim-remote
-
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-cargo install ripgrep fd-find bat
-
-curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-sudo apt-get install -y nodejs yarn
 ```
+* ripgrep fd-find bat
+* node
 
 # Note
 * windows vim
