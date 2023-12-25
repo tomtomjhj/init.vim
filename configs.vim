@@ -1343,11 +1343,36 @@ xmap aB <Plug>(textobj-sandwich-query-a)
 
 " shell, terminal {{{
 if has('nvim')
-    tnoremap <M-[> <C-\><C-n>
-    tnoremap <expr> <M-r> '<C-\><C-N>"'.nr2char(getchar()).'pi'
     " NOTE: When [Process exited $EXIT_CODE] in terminal mode, pressing any key wipes the terminal buffer.
     command! -nargs=? -complete=shellcmd T <mods> split | exe "terminal" <q-args> | if empty(<q-args>) | startinsert | endif
-    " TODO: termwinkey emultation https://github.com/VioletJewel/nvim-config/blob/main/plugin/term.lua
+    " see also: https://github.com/VioletJewel/vimterm.nvim
+    tnoremap <expr> <C-w> &filetype !=# 'fzf' ? TermWinKey() : "\<C-w>"
+    tnoremap <expr> <M-w> TermWinKey()
+    function! TermWinKey() abort
+        let count = ''
+        let ch = getcharstr()
+        if ch !=# '0'
+            while ch =~# '\d'
+                let count .= ch
+                let ch = getcharstr()
+            endwhile
+        endif
+        let count = count is# '' ? 0 : str2nr(count)
+        if ch ==# '.'
+            return repeat("\<C-w>", count ? count : 1)
+        elseif ch ==# "\<C-\>"
+            return repeat("\<C-\>", count ? count : 1)
+        elseif ch ==# 'N' || ch ==# "\<C-n>"
+            return "\<C-\>\<C-n>" " bug: sometimes stl is not redrawn?? also happens when actually typed
+        elseif ch ==# '"'
+            return "\<C-\>\<C-o>" . (count ? count : '') . '"' . getcharstr() . 'p'
+        elseif ch ==# ':'
+            return "\<C-\>\<C-o>" . ':' " this seems to break cursor shape
+        elseif ch ==# 'g'
+            let ch .= getcharstr()
+        endif
+        return printf("\<Cmd>%s wincmd %s\<CR>", count ? count : '', ch)
+    endfunction
 else
     " NOTE: If 'hidden' is set and arg is provided, job finished + window closed doesn't wipe the buffer, in contrary to the doc:
     " > When the job has finished and no changes were made to the buffer: closing the
