@@ -293,8 +293,10 @@ end
 --   )
 -- }
 
+-- NOTE: lspconfig blocks when downing rust toolchain and it can't be interrrupted just like any other blocking lua code
 -- NOTE: rust-analyzer behaves weirdly for multi-crate project. especially workspace_symbols.
 -- NOTE: https://github.com/mrcjkb/rustaceanvim ... how to restart/manual start server with non-lspconfig config?
+--   see also https://github.com/LazyVim/LazyVim/pull/2198
 local rust_tools = require('rust-tools')
 rust_tools.setup {
   tools = {

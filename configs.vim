@@ -446,7 +446,8 @@ function! UpdateGitStatus(buf) abort
 endfunction
 
 augroup Statusline | au!
-    au BufReadPost,BufWritePost * call UpdateGitStatus(str2nr(expand('<abuf>')))
+    " this may be called during startup when plugin/ is still not loaded, e.g. viewing .exrc
+    au BufReadPost,BufWritePost * silent! call UpdateGitStatus(str2nr(expand('<abuf>')))
     " unloaded buffers will be refreshed on BufReadPost
     au User FugitiveChanged call map(getbufinfo({'bufloaded':1}), 'UpdateGitStatus(v:val.bufnr)')
     au ColorScheme * call StatuslineHighlightInit()
@@ -828,7 +829,7 @@ function! s:coq_common() abort
     setlocal indentkeys+=!^F
     setlocal path+=theories,_opam/lib/coq/theories,_opam/lib/coq/user-contrib/*
     call tomtomjhj#coq#mappings()
-    " make only TGTS="%:r.vo"
+    " `make %:r.vo` to build only the files related to the current buffer
 endfunction
 function! s:coq() abort
     setlocal foldmethod=manual
@@ -1930,11 +1931,17 @@ command! -range=% Unpdf
             \|unlet _view
 
 " Doesn't work with hard wrapped list.
-" Alternative: %!pandoc --from=commonmark_x --to=commonmark_x --wrap=none
 command! -range=% ZulipMarkdown
             \ keeppatterns keepjumps <line1>,<line2>substitute/^    \ze[-+*]\s/  /e
             \|keeppatterns keepjumps <line1>,<line2>substitute/^        \ze[-+*]\s/    /e
             \|keeppatterns keepjumps <line1>,<line2>substitute/^            \ze[-+*]\s/      /e
+
+" --wrap=auto|none|preserve
+command! -range=% -nargs=? Md
+            \ let _view = winsaveview()
+            \|exe '<line1>,<line2>!pandoc --from=commonmark_x --to=commonmark_x' <q-args>
+            \|call winrestview(_view)
+            \|unlet _view
 
 " :substitute using a dict, where key == submatch (like VisualStar)
 function! SubstituteDict(dict) range

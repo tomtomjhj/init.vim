@@ -701,6 +701,7 @@ Change `func1` to `func2` with `v_b_c`.
 * unset/seting `'wrap'` seems to fix all the above issue
 * not completely fixed by 9.0.2105
 * https://github.com/vim/vim/issues/13528 이거랑 비슷한 문제 또있음.. breakindent 관련?
+* smoothscroll still has topline problem. 2024-02-14
 
 ## treesitter problem
 * perf tracking issue https://github.com/neovim/neovim/issues/22426
@@ -726,11 +727,15 @@ affected by the cursor of the other window displaying the same buffer
 ## lsp format
 Sometimes lsp format falls into a state where `vim.lsp.buf.format` messes up the buffer text.
 
-## vim.secure
-in dir with .exrc, launch nvim -> .exrc not trusted -> view -> user-specified BufReadPost that depend on `plugin/` (my `UpdateGitStatus`)
-
 ## leak?
-After opening huge file and :bwipe-ing it, the memory usage doesn't reduce.
+* After opening huge file and :bwipe-ing it, the memory usage doesn't reduce.
+* 10 min cpu time, memory 200 MB
+
+## writing shada
+```
+Error detected while processing BufReadCmd Autocommands for "*.shada"..BufReadCmd Autocommands for "*.shada":
+E605: Exception not caught: ++opt not supported
+```
 
 # annoyances ingrained in vi(m)
 * `ge` ... design of inclusive/exclusive stuff
@@ -1002,6 +1007,7 @@ Problem: FocusLost/FocusGained are not reliable?
     * TODO: Use this for better syntax highlighting for diff filetype?
 * https://github.com/kevinhwang91/nvim-bqf
 * https://github.com/nvim-pack/nvim-spectre
+* https://github.com/jakewvincent/mkdnflow.nvim
 
 ## new (n)vim stuff
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.
