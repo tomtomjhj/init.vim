@@ -28,20 +28,21 @@ if &background is# 'dark'
     hi Todo guibg=NvimDarkRed ctermbg=1
     hi @function ctermfg=14 cterm=bold guifg=NvimLightCyan gui=bold
     hi @module guifg=NvimLightGrey2
-    hi DiffAdd guibg=#114422
-    hi DiffChange guibg=#333435
+    hi DiffAdd guibg=#114422 guifg=NONE
+    hi DiffChange guibg=#333435 guifg=NONE
     hi QuickFixLine guifg=NvimLightGrey1 guibg=NvimDarkCyan gui=bold ctermfg=0 ctermbg=14 cterm=bold
 else
     hi Normal guibg=#e8e9ea
     hi Todo guibg=NvimLightRed ctermbg=9
     hi @function ctermfg=6 cterm=bold guifg=NvimDarkCyan gui=bold
     hi @module guifg=NvimDarkGrey2
-    hi DiffAdd guibg=#aaddbb
-    hi DiffChange guibg=#c0c1c2
+    hi DiffAdd guibg=#aaddbb guifg=NONE
+    hi DiffChange guibg=#c0c1c2 guifg=NONE
     hi QuickFixLine guifg=NvimDarkGrey1 guibg=NvimLightCyan gui=bold ctermfg=15 ctermbg=6 cterm=bold
 endif
 
 hi! link LineNr Comment
+hi SignColumn ctermfg=8
 hi CurSearch gui=bold cterm=bold
 hi clear Conceal
 

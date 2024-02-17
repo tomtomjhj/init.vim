@@ -30,12 +30,11 @@ end
 
 function M.toggle_diagnostics()
   if vim.diagnostic.is_disabled() then
-    -- TODO: with ltex, diagnostic.lua:1010: Invalid 'line': out of range
     vim.diagnostic.enable()
-    print('Enabled diagnostics')
+    vim.api.nvim_echo({{'Enabled diagnostics'}}, false, {})
   else
     vim.diagnostic.disable()
-    print('Disabled diagnostics')
+    vim.api.nvim_echo({{'Disabled diagnostics'}}, false, {})
   end
 end
 --- }}}
@@ -266,10 +265,13 @@ local base_config = {
     vim.fn['SetupLSPPost']()
     register_breadcrumb(ag, client, bufnr)
     if client.server_capabilities.codeLensProvider then
-      vim.lsp.codelens.refresh()
+      vim.lsp.codelens.refresh { bufnr = 0 }
       vim.api.nvim_create_autocmd({'BufReadPost', 'BufWritePost', 'CursorHold'}, {
         group = ag, buffer = bufnr,
-        callback = vim.lsp.codelens.refresh,
+        callback = function()
+          vim.lsp.codelens.refresh { bufnr = 0 }
+        end,
+        desc = 'refresh codelens',
       })
     end
   end,

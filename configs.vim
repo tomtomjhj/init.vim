@@ -23,7 +23,7 @@ Plug 'tomtomjhj/quite.vim'
 " editing
 Plug 'tomtomjhj/vim-sneak'
 Plug 'machakann/vim-sandwich'
-Plug 'tpope/vim-repeat'
+Plug 'tomtomjhj/vim-repeat' " issue #63
 Plug 'tomtomjhj/pear-tree'
 Plug 'andymass/vim-matchup' " i%, a%, ]%, z%, g% TODO: % that seeks backward https://github.com/andymass/vim-matchup/issues/49#issuecomment-470933348
 Plug 'wellle/targets.vim' " multi (e.g. ib, iq), separator, argument
@@ -152,6 +152,7 @@ let $LANG='en'
 set langmenu=en
 set spellfile=~/.vim/spell/en.utf-8.add
 set spelllang=en,cjk
+set spellsuggest=best,13
 
 let mapleader = "\<Space>"
 Mnoremap <Space> <Nop>

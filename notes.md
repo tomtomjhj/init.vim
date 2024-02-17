@@ -522,6 +522,7 @@ Detaching after vfork from child process N
       There are quite many of them.
       There is no clean way to ensure that they use real `<CR>`.
       So just don't do this thing...
+    * See also: <https://github.com/tpope/vim-repeat/issues/63>
 
 
 # bugs
@@ -648,9 +649,6 @@ Not related to 2022-07-25 html ftplugin update.
 
 ## `^@` in statusline
 If a statusline compotent contains newline ("^@"), highlight is shifted.
-
-## `:LspStop` autostart
-LspStop: autostart=false. Manually LspStart. Then LspStop. Then automatically started.
 
 ## cmp-buffer dies
 Sometimes cmp-buffer dead.
