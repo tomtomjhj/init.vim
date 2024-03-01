@@ -297,20 +297,22 @@ end
 
 -- NOTE: lspconfig blocks when downing rust toolchain and it can't be interrrupted just like any other blocking lua code
 -- NOTE: rust-analyzer behaves weirdly for multi-crate project. especially workspace_symbols.
--- NOTE: https://github.com/mrcjkb/rustaceanvim ... how to restart/manual start server with non-lspconfig config?
---   see also https://github.com/LazyVim/LazyVim/pull/2198
-local rust_tools = require('rust-tools')
-rust_tools.setup {
-  tools = {
-    runnables = { use_telescope = false },
-    debuggables = { use_telescope = false },
-    inlay_hints = { auto = false },
-  },
-  -- lspconfig.rust_analyzer.setup
+-- NOTE: see https://github.com/LazyVim/LazyVim/pull/2198 for more config
+vim.g.rustaceanvim = {
   server = config {
+    on_attach = function(client, bufnr)
+      base_config.on_attach(client, bufnr)
+      vim.api.nvim_buf_create_user_command(bufnr, 'LspRestart', 'RustAnalyzer restart', {})
+    end,
     settings = { ['rust-analyzer'] = {
       rustc = { source = 'discover' }
-    }}
+    }},
+    auto_attach = function()
+      -- Only attach to buf with actual file. rust-analyzer expects real path and panics otherwise. Upstream?
+      local b = vim.api.nvim_get_current_buf()
+      local path = vim.fs.normalize(vim.api.nvim_buf_get_name(b), { expand_env = false })
+      return vim.bo[b].buftype == '' and path:sub(1,1) == '/'
+    end,
   },
 }
 
