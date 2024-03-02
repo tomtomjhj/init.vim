@@ -22,7 +22,7 @@
 "   Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 "
 "   " On-demand loading
-"   Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+"   Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
 "   Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
 "
 "   " Using a non-default branch
@@ -646,7 +646,7 @@ function! s:lod(names, types, ...)
     let rtp = s:rtp(g:plugs[name])
     for dir in a:types
       call s:source(rtp, dir.'/**/*.vim')
-      if has('nvim-0.5.0')
+      if has('nvim-0.5.0')  " see neovim#14686
         call s:source(rtp, dir.'/**/*.lua')
       endif
     endfor
@@ -1023,7 +1023,11 @@ function! s:is_updated(dir)
 endfunction
 
 function! s:do(pull, force, todo)
-  let &rtp = &rtp
+  if has('nvim')
+    " Reset &rtp to invalidate Neovim cache of loaded Lua modules
+    " See https://github.com/junegunn/vim-plug/pull/1157#issuecomment-1809226110
+    let &rtp = &rtp
+  endif
   for [name, spec] in items(a:todo)
     if !isdirectory(spec.dir)
       continue
@@ -2356,7 +2360,7 @@ function! s:git_validate(spec, check_branch)
         endif
       " Check branch
       elseif origin_branch !=# current_branch
-        let err = printf('Invalid branch: %s (expected: %s).',
+        let err = printf('Invalid branch: %s (expected: %s). Try PlugUpdate.',
               \ current_branch, origin_branch)
       endif
       if empty(err)
