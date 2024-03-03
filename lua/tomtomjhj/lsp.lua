@@ -1,3 +1,5 @@
+-- vim.lsp.set_log_level('DEBUG')
+
 local lspconfig = require('lspconfig')
 
 local M = {}
@@ -245,12 +247,12 @@ vim.api.nvim_create_autocmd("VimEnter", {
   end
 })
 
--- Disable workspace/didChangeWatchedFiles. Uses too much cpu.
+-- Disable workspace/didChangeWatchedFiles if a slow backend is used.
 -- https://github.com/neovim/neovim/issues/23291
 local capabilities = vim.tbl_deep_extend('force', require('cmp_nvim_lsp').default_capabilities(), {
   workspace = {
     didChangeWatchedFiles = {
-      dynamicRegistration = false,
+      dynamicRegistration = vim.fn.has('win32') == 1 or vim.fn.has('mac') == 1 or vim.fn.executable('fswatch') == 1,
     },
   },
 })
@@ -307,12 +309,6 @@ vim.g.rustaceanvim = {
     settings = { ['rust-analyzer'] = {
       rustc = { source = 'discover' }
     }},
-    auto_attach = function()
-      -- Only attach to buf with actual file. rust-analyzer expects real path and panics otherwise. Upstream?
-      local b = vim.api.nvim_get_current_buf()
-      local path = vim.fs.normalize(vim.api.nvim_buf_get_name(b), { expand_env = false })
-      return vim.bo[b].buftype == '' and path:sub(1,1) == '/'
-    end,
   },
 }
 
@@ -391,6 +387,7 @@ require'ltex-ls'.setup(config {
 
 lspconfig.bashls.setup(config())
 
+-- see also: https://github.com/Feel-ix-343/markdown-oxide
 -- completion doesn't support "name.md#heading" style reference?
 lspconfig.marksman.setup(config {
   autostart = false,

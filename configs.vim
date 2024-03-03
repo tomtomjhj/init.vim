@@ -1189,7 +1189,7 @@ function! BSWithoutSTS(n) abort
     let l:sts = &softtabstop
     let l:vsts = &varsofttabstop
     setlocal softtabstop=0 varsofttabstop=
-    return repeat("\<BS>", a:n). "\<C-R>=execute('".printf('setl sts=%d vsts=%s', l:sts, l:vsts)."')\<CR>"
+    return repeat("\<BS>", a:n) . printf("\<Cmd>setl sts=%d vsts=%s\<CR>", l:sts, l:vsts)
 endfunction
 " }}}
 

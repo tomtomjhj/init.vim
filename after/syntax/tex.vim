@@ -1,5 +1,14 @@
-hi! def link texMathDelim Delimiter
-hi! def link texZone Special
+" per-colorscheme customization
+function! s:colors()
+    if get(g:, 'colors_name', '') !=# 'quite'
+        hi! def link texMathDelim Delimiter
+        hi! def link texZone Special
+    endif
+endfunction
+call s:colors()
+augroup AfterSyntaxTex | au!
+  au ColorScheme * call s:colors()
+augroup END
 
 syntax match texCmdTodo '\\jaehwang'
 

@@ -40,6 +40,8 @@
       au CmdlineLeave * if expand('<afile>') =~ '[/?]' && !get(v:event, 'abort', 0) | let g:search_mode = '/' | endif
       ```
 * <https://www.reddit.com/r/neovim/comments/15c7rk3/quickfix_editing_tips_worth_resharing/>
+  <https://github.com/itchyny/vim-qfedit>
+  <https://github.com/jceb/vim-editqf>
 
 
 ## dictionary (`i_CTRL-X_CTRL-K`)
@@ -218,7 +220,7 @@ What to do with "global" things?
 * what's global?
     * "workspace" things: are they actually global?. There's :lcd.
         * git HEAD vs. file status (`status --porcelain`)
-        * diagnotics vs. buf diagnotics
+        * diagnostics vs. buf diagnostics
     * actually global
         * `g:` things, like asyncrun status
 * implementation
@@ -367,6 +369,7 @@ Detaching after vfork from child process N
 * `backtick-expansion`
 * yanking a line character-wise (not using `yy`) so that I can paste without trailing newline
 * appending to register to collect list of something + recording
+* select mode `<C-g>`. good for filling in snippet hole with default text. `<C-g>c<C-r>0`
 
 
 
@@ -728,12 +731,25 @@ Sometimes lsp format falls into a state where `vim.lsp.buf.format` messes up the
 ## leak?
 * After opening huge file and :bwipe-ing it, the memory usage doesn't reduce.
 * 10 min cpu time, memory 200 MB
+* keep `:e`-ing 1000 line markdown buffer increase mem usage by several MB???
+  Very likely to be related to treesitter.
+  just call `vim.treesitter.start()` repeatedly..
+
+```
+rm -f /tmp/nvim-debug.pipe; heaptrack nvim --clean --headless --listen /tmp/nvim-debug.pipe
+nvim --remote-ui --server /tmp/nvim-debug.pipe
+```
 
 ## writing shada
 ```
 Error detected while processing BufReadCmd Autocommands for "*.shada"..BufReadCmd Autocommands for "*.shada":
 E605: Exception not caught: ++opt not supported
 ```
+
+## lsp changetracking whole buffer
+<https://github.com/neovim/neovim/issues/27383>
+
+That seems to be the reason texlab crashes after `ggdGudG`.
 
 # annoyances ingrained in vi(m)
 * `ge` ... design of inclusive/exclusive stuff
@@ -914,6 +930,50 @@ In does injection.combined to the original language.
 ## inactive stl if nvim is not focused
 Problem: FocusLost/FocusGained are not reliable?
 
+## zed's multi buffer
+similar stuff
+* quickfix-based: no support for multi-line entry
+    * <https://github.com/stefandtw/quickfix-reflector.vim>
+    * <https://github.com/gabrielpoca/replacer.nvim>
+* dedicated buffer
+    * <https://github.com/AndrewRadev/writable_search.vim>
+    * <https://github.com/dyng/ctrlsf.vim> edit-mode
+
+scribble
+* "projection": it should behave as if the edits are happening inside the listed buffer
+    * this can be applied to other things, e.g., narrowing,
+* "multi-window": it's like a window containing multiple windows
+    * multi-window itself should be scrollable, because it may contain a lot of windows
+    * things that apply to whole buffer (e.g., `%` range) should apply to all contained windows' viewport
+        * introducing some wrapper is ok-ish. `:Mw %s/x/y`. But making it seamless would be quite difficult
+    * maybe can be simulated with floating windows
+
+
+## multi select
+it's like generalized version of `v_@-default` or `:g/pat/normal! @{reg}`
+* why? avoid manual execution of `@` when movement to target position is not trivial (can't be part of macro)
+* basically a nice interface to extmark management
+* select regions and record them as extmarks
+    * region can be either just a position or range
+        * if range, replay with visual selection
+    * commands to add/remove selection:
+        * a normal mode command (for position)
+        * an operator (for region)
+    * presets: cword, cword matches, search, lsp reference, diagnostics, ..
+    * command to move to next/prev selection (and visual select)
+    * multiple set of selections, designated by count (conflicts with navigation)
+* macro utils
+    * provide simple wrapper that runs macro on each selections (using the navigation command)
+    * need special case for the selection on which the macro is recorded
+* alternatives
+    * quickfix: provides similar primitives, but doesn't support ranges
+    * vim-mark: only supports patterns
+
+# todo
+
+TODO: `yy` → non-linewise paste that collapses indent. Something like `pkJ`
+
+
 # stuff
 * https://arxiv.org/abs/2006.03103
 * https://teukka.tech/vimloop.html
@@ -921,7 +981,6 @@ Problem: FocusLost/FocusGained are not reliable?
 * http://nikhilm.github.io/uvbook/ https://github.com/luvit/luv/tree/master/examples/uvbook
 * https://github.com/tweekmonster/helpful.vim https://www.arp242.net/vimlog/ https://axelf.nu/vim-helptag-versions/
 * https://zignar.net/2022/11/06/structuring-neovim-lua-plugins/
-* zed's multi-buffer looks nice
 
 ## plugins
 * https://github.com/mg979/vim-visual-multi
@@ -973,6 +1032,7 @@ Problem: FocusLost/FocusGained are not reliable?
     * https://github.com/vhyrro/neorg
     * https://github.com/kristijanhusak/orgmode.nvim
     * https://github.com/epwalsh/obsidian.nvim
+    * https://github.com/jakewvincent/mkdnflow.nvim
 * selector
     * https://github.com/stevearc/dressing.nvim
     * https://github.com/lifepillar/vim-zeef
@@ -984,7 +1044,6 @@ Problem: FocusLost/FocusGained are not reliable?
 * motion
     * https://github.com/phaazon/hop.nvim/
     * https://github.com/ggandor/leap.nvim
-    * https://github.com/folke/flash.nvim/
     * https://github.com/chrisgrieser/nvim-spider
 * https://github.com/rktjmp/lush.nvim interesting lua hack for DSL
 * https://github.com/hkupty/iron.nvim
@@ -1005,7 +1064,7 @@ Problem: FocusLost/FocusGained are not reliable?
     * TODO: Use this for better syntax highlighting for diff filetype?
 * https://github.com/kevinhwang91/nvim-bqf
 * https://github.com/nvim-pack/nvim-spectre
-* https://github.com/jakewvincent/mkdnflow.nvim
+* https://github.com/folke/neoconf.nvim
 
 ## new (n)vim stuff
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.
