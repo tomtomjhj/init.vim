@@ -252,7 +252,9 @@ vim.api.nvim_create_autocmd("VimEnter", {
 local capabilities = vim.tbl_deep_extend('force', require('cmp_nvim_lsp').default_capabilities(), {
   workspace = {
     didChangeWatchedFiles = {
-      dynamicRegistration = vim.fn.has('win32') == 1 or vim.fn.has('mac') == 1 or vim.fn.executable('fswatch') == 1,
+      -- vim.fn.has('win32') == 1 or vim.fn.has('mac') == 1 or vim.fn.executable('fswatch') == 1,
+      -- fswatch: "event queue overflow" when running rust-analyzer
+      dynamicRegistration = false
     },
   },
 })
@@ -329,10 +331,9 @@ lspconfig.pylsp.setup(config {
   }}
 })
 
--- clangd generates unnecessary ERROR messages in lsp.log
 lspconfig.clangd.setup(config {
   --- https://github.com/clangd/clangd/issues/1394#issuecomment-1328676884
-  cmd = { 'clangd', '--query-driver=/usr/bin/c++', }
+  cmd = { 'clangd', '--query-driver=/usr/bin/c++', '--log=error', }
 })
 
 require("neodev").setup()

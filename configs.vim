@@ -10,8 +10,6 @@ if !has('nvim')
 endif
 let g:loaded_spellfile_plugin = 1
 
-" NOTE: post-update hook doesn't work on nvim-0.6. https://github.com/neovim/neovim/issues/18822
-" Workaround: f1d32549e4a4657674fd0645185bb8ef730c018d
 " Plug {{{
 if has('vim_starting')
 call plug#begin('~/.vim/plugged')

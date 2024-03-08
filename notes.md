@@ -157,7 +157,9 @@ Commentary
     * doesn't work for html? <https://github.com/tpope/vim-commentary/issues/65> it actually works now
     * make it customizable?
 * forcing comment? (reverse of `:Commentary!`)
-* Doesn't work well with empty comment line. Note that commentary doesn't add comment marker to empty lines.
+* Doesn't work well with empty comment line.
+  This is kinda reasonable because commentary doesn't add comment marker to empty lines.
+  Fixed in my fork anyway.
     * Doesn't strip leading whitespace of non-empty comment line.
       ```
       # comment

@@ -120,7 +120,6 @@ function! SetupLSP()
   nnoremap <buffer>        [D    <cmd>lua vim.diagnostic.goto_prev{float=false}<CR>
   nnoremap <buffer>        ]D    <cmd>lua vim.diagnostic.goto_next{float=false}<CR>
   nnoremap <buffer>        <M-,> <cmd>lua vim.diagnostic.open_float(0, {scope="cursor"})<CR>
-  " NOTE: severity is not highlighted at the first call, it uses diagnostic sign definition under the hood, which are defined lazily when the diagnostics are first displayed (define_default_signs)
   nnoremap <buffer><leader>dl    <cmd>lua require('fzf-lua').diagnostics_workspace{severity_limit=3}<CR>
   nnoremap <buffer><leader>DL    <cmd>lua require('fzf-lua').diagnostics_workspace()<CR>
 endfunction
