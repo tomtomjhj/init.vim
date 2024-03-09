@@ -979,13 +979,9 @@ func! Files(query)
     call fzf#vim#files(l:query, spec)
 endfunc
 
-" TODO: fzf stuff
-" - reorg this section. split fzf and search things.
-" - thin compat layer for fzf.vim and fzf-lua?
 if has('nvim')
     lua require('tomtomjhj/fzf')
 endif
-
 " }}}
 
 " Motion {{{
