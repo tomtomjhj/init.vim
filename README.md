@@ -23,7 +23,7 @@ cd ~/.vim
 ```sh
 pip3 install --user pynvim neovim-remote
 ```
-* ripgrep fd-find bat
+* ripgrep fd-find bat git-delta
 * node
 
 # Note

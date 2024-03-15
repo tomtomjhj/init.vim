@@ -141,7 +141,7 @@ set nojoinspaces
 set list listchars=tab:\|\ ,trail:-,nbsp:+,extends:>
 
 set wrap linebreak breakindent showbreak=↪\ 
-if has('patch-9.0.2105') || has('nvim-0.10') | set smoothscroll | endif
+" if has('patch-9.0.2105') || has('nvim-0.10') | set smoothscroll | endif
 let &backspace = (has('patch-8.2.0590') || has('nvim-0.5')) ? 'indent,eol,nostop' : 'indent,eol,start'
 set whichwrap+=<,>,[,],h,l
 set cpoptions-=_
@@ -185,7 +185,7 @@ set undofile
 if has('nvim-0.5') | set undodir=~/.vim/undoo// | else | set undodir=~/.vim/undo// | endif
 
 set autoread
-set splitright splitbelow " TODO: not natural for Gdiffsplit with object
+set splitright splitbelow
 if (has('patch-8.1.2315') || has('nvim-0.5')) | set switchbuf+=uselast | endif
 if has('nvim-0.8') | set jumpoptions+=view | endif
 set hidden
@@ -917,12 +917,6 @@ command! -nargs=? -complete=dir Files call Files(<q-args>)
 " allow search on the full tag info, excluding the appended tagfile name
 " TODO: shift up/down not mapped to preview scroll
 command! -nargs=* Tags call fzf#vim#tags(<q-args>, fzf#vim#with_preview({ "placeholder": "--tag {2}:{-1}:{3..}", 'options': ['-d', '\t', '--nth', '..-2'] }))
-
-augroup fzf-custom | au!
-    if has('nvim')
-        au FileType fzf if (g:gui_running || &termguicolors) && has_key(nvim_get_hl_by_name('Normal', v:true), 'background') | setlocal winblend=17 | endif
-    endif
-augroup END
 
 func! FzfOpts(arg, spec)
     let l:opts = string(a:arg)

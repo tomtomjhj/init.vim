@@ -8,7 +8,7 @@ fzf.setup {
   "fzf-native",
   winopts = {
     border = false, -- Use fzf's --border=top instead
-    height = 0.5,
+    height = 0.499,
     width = 1,
     row = 1,
     col = 0,

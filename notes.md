@@ -132,9 +132,9 @@ asdfqwer
 
 ## commenting
 Commentary
-* Commetary is for quickly commenting out **lines of code** and reverting it.
+* Commentary is for quickly commenting out **lines of code** and reverting it.
     * Out of scope: fancy comments.
-        * three-piece comment `/*\n *\n */` (`:Commentary!` somewhat works, though)
+        * three-piece comment `/*\n *\n */`
         * Rust doc comment `///`, `//!`.
 * text object: don't span multiple paragraphs by default?
     * Current behavior is ok since commentary doesn't add comment marker to empty lines.
@@ -156,7 +156,6 @@ Commentary
     * uncommenting works well without it
     * doesn't work for html? <https://github.com/tpope/vim-commentary/issues/65> it actually works now
     * make it customizable?
-* forcing comment? (reverse of `:Commentary!`)
 * Doesn't work well with empty comment line.
   This is kinda reasonable because commentary doesn't add comment marker to empty lines.
   Fixed in my fork anyway.
@@ -528,6 +527,7 @@ Detaching after vfork from child process N
       There is no clean way to ensure that they use real `<CR>`.
       So just don't do this thing...
     * See also: <https://github.com/tpope/vim-repeat/issues/63>
+* nvim winblend in terminal puts characters from the below window in the cell, so they are copied with terminal's functionality
 
 
 # bugs
@@ -702,9 +702,11 @@ Change `func1` to `func2` with `v_b_c`.
 * rarely, displayed lines and the actual lines not consistent in diff mode
 * when `'wrap'`, the displayed cursor position is not consistent with the actual cursor position (e.g., insert mode input, j/k, ...)
 * unset/seting `'wrap'` seems to fix all the above issue
-* not completely fixed by 9.0.2105
 * https://github.com/vim/vim/issues/13528 이거랑 비슷한 문제 또있음.. breakindent 관련?
+* set wrap. diff (temporarily unsets wrap), side scroll, close diff. screenpos wrong.
+  manual wrap unset scrolls the text horizontally.
 * smoothscroll still has topline problem. 2024-02-14
+    * sometimes topline is wrapped even if there is nothing to be wrapped? interesting interaction with virtual text (e.g., diagnostics)
 
 ## treesitter problem
 * perf tracking issue https://github.com/neovim/neovim/issues/22426
@@ -981,8 +983,9 @@ TODO: `yy` → non-linewise paste that collapses indent. Something like `pkJ`
 * https://teukka.tech/vimloop.html
 * https://blog.fsouza.dev/prettierd-neovim-format-on-save/
 * http://nikhilm.github.io/uvbook/ https://github.com/luvit/luv/tree/master/examples/uvbook
-* https://github.com/tweekmonster/helpful.vim https://www.arp242.net/vimlog/ https://axelf.nu/vim-helptag-versions/
+* https://github.com/tweekmonster/helpful.vim https://www.arp242.net/vimlog/ https://axelf.se/vim-helptag-versions/
 * https://zignar.net/2022/11/06/structuring-neovim-lua-plugins/
+* https://gpanders.com/blog/state-of-the-terminal/
 
 ## plugins
 * https://github.com/mg979/vim-visual-multi
