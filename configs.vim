@@ -176,7 +176,7 @@ set noerrorbells novisualbell t_vb=
 set shortmess+=Ic shortmess-=S
 set belloff=all
 
-set history=1000
+set history=765
 set viminfo=!,'150,<50,s30,h,r/tmp,r/run,rterm://,rfugitive://,rfern://,rman://,rtemp://
 set updatetime=1234
 set noswapfile " set directory=~/.vim/swap//

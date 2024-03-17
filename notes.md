@@ -703,8 +703,6 @@ Change `func1` to `func2` with `v_b_c`.
 * when `'wrap'`, the displayed cursor position is not consistent with the actual cursor position (e.g., insert mode input, j/k, ...)
 * unset/seting `'wrap'` seems to fix all the above issue
 * https://github.com/vim/vim/issues/13528 이거랑 비슷한 문제 또있음.. breakindent 관련?
-* set wrap. diff (temporarily unsets wrap), side scroll, close diff. screenpos wrong.
-  manual wrap unset scrolls the text horizontally.
 * smoothscroll still has topline problem. 2024-02-14
     * sometimes topline is wrapped even if there is nothing to be wrapped? interesting interaction with virtual text (e.g., diagnostics)
 

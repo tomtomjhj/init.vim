@@ -98,10 +98,12 @@ end
 ---@type table<window, true>
 local need_cleanup_breadcrumb = {}
 
-local function register_breadcrumb(ag, client, bufnr)
+local breadcrumb_autocmds = vim.api.nvim_create_augroup("tomtomjhj/lsp-breadcrumb", { clear = true })
+
+local function register_breadcrumb(client, bufnr)
   if client.server_capabilities.documentSymbolProvider then
     vim.api.nvim_create_autocmd("CursorHold", {
-      group = ag,
+      group = breadcrumb_autocmds,
       buffer = bufnr,
       desc = "update breadcrumb",
       callback = update_breadcrumb,
@@ -110,7 +112,7 @@ local function register_breadcrumb(ag, client, bufnr)
     -- This should be "window-local" autocmd, but vim doesn't have such thing.
     -- So this is implemented in 3 steps: BufLeave → WinLeave → BufEnter.
     vim.api.nvim_create_autocmd("BufLeave", {
-      group = ag,
+      group = breadcrumb_autocmds,
       buffer = bufnr,
       desc = "initiate breadcrumb cleanup",
       callback = function()
@@ -118,7 +120,7 @@ local function register_breadcrumb(ag, client, bufnr)
       end,
     })
     vim.api.nvim_create_autocmd("WinLeave", {
-      group = ag,
+      group = breadcrumb_autocmds,
       buffer = bufnr,
       desc = "cancel breadcrumb cleanup",
       callback = function()
@@ -126,12 +128,11 @@ local function register_breadcrumb(ag, client, bufnr)
       end,
     })
   end
-  -- TODO: clean up at LspStop?
 end
 
-local function register_breadcrumb_global(ag)
+local function register_breadcrumb_global()
   vim.api.nvim_create_autocmd("BufEnter", {
-    group = ag,
+    group = breadcrumb_autocmds,
     desc = "execute breadcrumb cleanup",
     callback = function()
       local win = vim.api.nvim_get_current_win()
@@ -141,11 +142,21 @@ local function register_breadcrumb_global(ag)
       end
     end,
   })
+  vim.api.nvim_create_autocmd("LspDetach", {
+    group = breadcrumb_autocmds,
+    callback = function(ev)
+      vim.api.nvim_clear_autocmds { group = breadcrumb_autocmds, buffer = ev.buf }
+      for _, win in ipairs(vim.fn.win_findbuf(ev.buf)) do
+        pcall(vim.api.nvim_win_del_var, win, 'breadcrumb')
+      end
+    end
+  })
 end
 -- }}}
 
 -- progress {{{
 
+local progress_autocmds = vim.api.nvim_create_augroup("tomtomjhj/lsp-progress", { clear = true })
 local progress_message_clear_timer = assert(vim.loop.new_timer())
 
 -- TODO: cleanup after 0.10 release
@@ -191,26 +202,27 @@ local function update_status_message()
   vim.cmd.redrawstatus { bang = true }
 end
 
-local function register_progress_message(ag)
+local function register_progress_message()
   if vim.fn.exists('##LspProgress') == 1 then
     vim.api.nvim_create_autocmd("LspProgress", {
-      group = ag,
+      group = progress_autocmds,
       callback = update_status_message
     })
   else
     vim.api.nvim_create_autocmd("User", {
-      group = ag,
+      group = progress_autocmds,
       pattern = 'LspProgressUpdate',
       callback = update_status_message
     })
   end
   vim.api.nvim_create_autocmd("VimLeavePre", {
-    group = ag,
+    group = progress_autocmds,
     callback = function() progress_message_clear_timer:close() end,
   })
 end
 -- }}}
 
+-- diagnostics {{{
 vim.diagnostic.config {
   underline = { severity = { min = vim.diagnostic.severity.WARN } },
   virtual_text = true,
@@ -218,20 +230,18 @@ vim.diagnostic.config {
   serverity_sort = true,
 }
 
+vim.api.nvim_create_autocmd("DiagnosticChanged", {
+  group = vim.api.nvim_create_augroup("tomtomjhj/diagnostics", { clear = true }),
+  command = 'redrawstatus!',
+})
+-- }}}
+
 require('mason').setup()
 require('mason-lspconfig').setup() -- registers some hooks for lspconfig setup
 
-local ag = vim.api.nvim_create_augroup("nvim-lsp-custom", { clear = true })
-
-register_breadcrumb_global(ag)
-register_progress_message(ag)
-vim.api.nvim_create_autocmd("DiagnosticChanged", {
-  group = ag,
-  command = 'redrawstatus!',
-})
 -- override lspconfig's LspLog
 vim.api.nvim_create_autocmd("VimEnter", {
-  group = ag,
+  once = true,
   callback = function()
     vim.api.nvim_create_user_command('LspLog',
       function(opts)
@@ -259,6 +269,8 @@ local capabilities = vim.tbl_deep_extend('force', require('cmp_nvim_lsp').defaul
   },
 })
 
+local codelens_autocmds = vim.api.nvim_create_augroup("tomtomjhj/lsp-codelens", { clear = true })
+
 local base_config = {
   on_init = function(client, initialize_result)
     -- Disable semantic highlight for now.
@@ -267,11 +279,11 @@ local base_config = {
   on_attach = function(client, bufnr)
     vim.fn['SetupLSP']()
     vim.fn['SetupLSPPost']()
-    register_breadcrumb(ag, client, bufnr)
+    register_breadcrumb(client, bufnr)
     if client.server_capabilities.codeLensProvider then
       vim.lsp.codelens.refresh { bufnr = 0 }
       vim.api.nvim_create_autocmd({'BufReadPost', 'BufWritePost', 'CursorHold'}, {
-        group = ag, buffer = bufnr,
+        group = codelens_autocmds, buffer = bufnr,
         callback = function()
           vim.lsp.codelens.refresh { bufnr = 0 }
         end,
