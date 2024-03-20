@@ -55,7 +55,7 @@ function! GLStart(mods, args) abort
   syn region GL start='^' matchgroup=GLDate end='\s\zs\d\d\d\d-\d\d-\d\d\ze\s' oneline
   syn match GLHash '\v[*|]\s+\zs\x{6,}' containedin=GL contained
   syn match GLDecorate '\v\([^)]+\)' containedin=GL contained
-  syn match GLAuthor '\v\[[^][]*\]$'
+  syn match GLAuthor '\v\[[^[]*\]$'
 
   hi def link GLHash Identifier
   hi def link GLDate Number

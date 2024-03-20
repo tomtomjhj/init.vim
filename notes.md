@@ -1068,6 +1068,7 @@ TODO: `yy` → non-linewise paste that collapses indent. Something like `pkJ`
 * https://github.com/kevinhwang91/nvim-bqf
 * https://github.com/nvim-pack/nvim-spectre
 * https://github.com/folke/neoconf.nvim
+* https://github.com/habamax/vim-shout (vim9 only). vs. asyncrun?
 
 ## new (n)vim stuff
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.

@@ -1411,6 +1411,7 @@ call s:heights()
 
 augroup layout-custom | au!
     au VimResized * call s:heights()
+    au OptionSet winfixbuf setlocal nowinfixbuf
 augroup END
 " }}}
 
@@ -1892,6 +1893,7 @@ endfunction
 function! WriteC(cmd, mods) range abort
     call TempBuf(a:mods, ':w !' . a:cmd, systemlist(a:cmd, getline(a:firstline, a:lastline)))
 endfunction
+" NOTE: `:!cmd` does't capture the entire output.
 function! Bang(cmd, mods) abort
     call TempBuf(a:mods, ':!' . a:cmd, systemlist(a:cmd))
 endfunction

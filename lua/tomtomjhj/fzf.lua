@@ -1,3 +1,16 @@
+vim.cmd[[
+hi def link FzfLuaHeaderBind Special
+hi def link FzfLuaHeaderText Comment
+hi def link FzfLuaBufName    Normal
+hi def link FzfLuaBufNr      LineNr
+hi def link FzfLuaBufLineNr  LineNr
+hi def link FzfLuaBufFlagCur Label
+hi def link FzfLuaBufFlagAlt Label
+hi def link FzfLuaTabTitle   Title
+hi def link FzfLuaTabMarker  Normal
+hi def link FzfLuaLiveSym    Changed
+]]
+
 local fzf = require('fzf-lua')
 
 -- notes
@@ -50,21 +63,5 @@ fzf.setup {
 }
 
 fzf.register_ui_select()
-
--- default highlights are quite broken
-for group, hl in pairs {
-  FzfLuaHeaderBind = { force = true, link = "NONE" },
-  FzfLuaHeaderText = { force = true, link = "NONE" },
-  FzfLuaBufName = { force = true, link = "NONE" },
-  FzfLuaBufNr = { force = true, link = "NONE" },
-  FzfLuaBufLineNr = { force = true, link = "NONE" },
-  FzfLuaBufFlagCur = { force = true, link = "NONE" },
-  FzfLuaBufFlagAlt = { force = true, link = "NONE" },
-  FzfLuaTabTitle = { force = true, link = "NONE" },
-  FzfLuaTabMarker = { force = true, link = "NONE" },
-  FzfLuaLiveSym = { force = true, link = "NONE" },
-} do
-  vim.api.nvim_set_hl(0, group, hl)
-end
 
 vim.keymap.set("n", "<leader>b", function() fzf.buffers({ fzf_opts = { ["--layout"] = "default" } }) end)
