@@ -1,14 +1,14 @@
 vim.cmd[[
-hi def link FzfLuaHeaderBind Special
+hi def link FzfLuaHeaderBind String
 hi def link FzfLuaHeaderText Comment
 hi def link FzfLuaBufName    Normal
-hi def link FzfLuaBufNr      LineNr
+hi def link FzfLuaBufNr      Number
 hi def link FzfLuaBufLineNr  LineNr
 hi def link FzfLuaBufFlagCur Label
 hi def link FzfLuaBufFlagAlt Label
 hi def link FzfLuaTabTitle   Title
 hi def link FzfLuaTabMarker  Normal
-hi def link FzfLuaLiveSym    Changed
+hi def link FzfLuaLiveSym    Special
 ]]
 
 local fzf = require('fzf-lua')
@@ -35,6 +35,9 @@ fzf.setup {
       ["ctrl-alt-k"] = "preview-half-page-up",
       ["shift-down"] = "preview-down",
       ["shift-up"]   = "preview-up",
+      ["ctrl-/"]     = "toggle-preview",
+      ["alt-a"]      = "select-all",
+      ["alt-d"]      = "deselect-all",
     },
   },
   fzf_opts = {
@@ -54,6 +57,9 @@ fzf.setup {
   },
   lsp = {
     includeDeclaration = false,
+    symbols = {
+      symbol_fmt = function() return "" end,  -- this symbol thing is more or less useless
+    },
     code_actions = {
       winopts = {
         row = 1,

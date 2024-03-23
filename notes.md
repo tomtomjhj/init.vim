@@ -863,23 +863,38 @@ Other details
 
 ## fold
 nvim's optimization: don't update fold in insert mode.
-* <https://github.com/neovim/neovim/pull/5299>
-  <https://github.com/vim/vim/pull/1045>
-* limitation: InsertLeave is still slow; vimtex fold is slow even in normal mode
-    * `vim._foldupdate` does whole buffer update
-* Is this optimization still necessary for treesitter fold?
-    * perf: treesitter fold computation is fast enough
-    * folds can be wrong if it is recomputed while typing in insert mode
-    * see also <https://github.com/neovim/neovim/issues/24324> and FastFold README
+* <https://github.com/neovim/neovim/pull/5299>,
+  <https://github.com/vim/vim/pull/1045>,
+  <https://github.com/neovim/neovim/issues/24324>,
+  FastFold README,
+  <https://vim.fandom.com/wiki/Keep_folds_closed_while_inserting_text>
+* why?
+    * slow computation
+    * premature computation resulting in wrong folds that open during edit
+* original: update the fold in the changed ranged
+* nvim:
+    * no fold update in insert mode.
+    * no update fold after insert leave if fdm is syntax or expr... otherwise, need full buffer fold update, which would be slow. so insert mode edits can't ever update folds???
+        * This sounds broken, but I've not been affected since I use treesitter fold and previously FastFold.
+        * possible fix: in insert mode, collect ranges for which fold should be recomputed (or take over-approx), and recompute on InsertLeave
+* fastfold: don't update folds during edits; update fold on fold cmd, write, ...
+    * I think this should be implemented in vim. This is much saner than what vim and nvim does.
+* nvim and fastfold optimizations don't fully fix the problem. vimtex fold is slow even during normal mode and `:w`. traditional expr fold is just too slow.
+* treesitter fold
+    * fast enough to eagerly compute
+    * folds still can be wrong during edit
+    * fold computation uses api, which requires deferral.
+      So the deferred computation must always manually trigger fold update, regardless of insert mode.
+      Currently this is done with `vim._foldupdate`, which does whole buffer update.
+      `vim._foldupdate` is fast enough because it just reads the cache.
+        * possible improvement: track the changed range and pass to `vim._foldupdate`
+        * don't defer if not textlocked? is this possible?
 
 FastFold problems
 * expr fold (e.g. markdown) → Gdiffsplit → close diff → nofoldenable with residual diff fold when enabled.
   :diffoff disables fold if fdm was manual (FastFold sets fdm=manual).
   <https://github.com/vim/vim/blob/3ea8a1b1296af5b0c6a163ab995aa16d49ac5f10/src/diff.c#L1591-L1595>
 * <https://github.com/Konfekt/FastFold/pull/74>
-
-other possible optimizations that avoid the above problems
-* in insert mode, collect ranges for which fold should be recomputed (or take over-approx), and recompute on InsertLeave
 
 Some minor stuff:
 * close all folds under the cursor (sub-tree) `zC` doesn't do this.

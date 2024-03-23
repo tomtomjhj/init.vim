@@ -1231,6 +1231,7 @@ xnoremap u <nop>
 " delete without clearing regs
 Noremap x "_x
 
+" last changed region. useful for selecting last pasted stuff
 nnoremap gV `[v`]
 
 " repetitive pastes using designated register @p
@@ -1584,6 +1585,7 @@ nnoremap <C-w>et    <Cmd>call fern#internal#command#fern#command('', [BufDir(), 
 nnoremap <leader>cd :cd <Plug>BufDir/
 nnoremap <leader>e  :e! <Plug>BufDir/
 nnoremap <leader>te :tabedit <Plug>BufDir/
+" sometimes fern rename loses buffer content when the buffer is open???
 function! s:init_fern() abort
     let helper = fern#helper#new()
     if helper.sync.is_drawer()

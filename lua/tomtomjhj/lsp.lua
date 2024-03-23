@@ -239,6 +239,9 @@ vim.api.nvim_create_autocmd("DiagnosticChanged", {
 require('mason').setup()
 require('mason-lspconfig').setup() -- registers some hooks for lspconfig setup
 
+register_breadcrumb_global()
+register_progress_message()
+
 -- override lspconfig's LspLog
 vim.api.nvim_create_autocmd("VimEnter", {
   once = true,
