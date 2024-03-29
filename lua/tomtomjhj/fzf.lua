@@ -1,15 +1,16 @@
-vim.cmd[[
-hi def link FzfLuaHeaderBind String
-hi def link FzfLuaHeaderText Comment
-hi def link FzfLuaBufName    Normal
-hi def link FzfLuaBufNr      Number
-hi def link FzfLuaBufLineNr  LineNr
-hi def link FzfLuaBufFlagCur Label
-hi def link FzfLuaBufFlagAlt Label
-hi def link FzfLuaTabTitle   Title
-hi def link FzfLuaTabMarker  Normal
-hi def link FzfLuaLiveSym    Special
-]]
+-- -- now fzf-lua always overrides these????
+-- vim.cmd[[
+-- hi def link FzfLuaHeaderBind String
+-- hi def link FzfLuaHeaderText Comment
+-- hi def link FzfLuaBufName    Normal
+-- hi def link FzfLuaBufNr      Number
+-- hi def link FzfLuaBufLineNr  LineNr
+-- hi def link FzfLuaBufFlagCur Label
+-- hi def link FzfLuaBufFlagAlt Label
+-- hi def link FzfLuaTabTitle   Title
+-- hi def link FzfLuaTabMarker  Normal
+-- hi def link FzfLuaLiveSym    Special
+-- ]]
 
 local fzf = require('fzf-lua')
 

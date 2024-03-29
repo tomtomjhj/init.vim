@@ -37,6 +37,10 @@ let g:colors_name = 'nvim'
 if &background is# 'dark'
     hi Normal guifg=#eeeeee guibg=#151618
     hi Todo guibg=NvimDarkRed ctermbg=1
+    hi @variable.builtin guifg=NvimLightGrey2 gui=italic cterm=italic
+    hi @constant.builtin guifg=NvimLightGrey2 gui=italic cterm=italic
+    hi @module.builtin   guifg=NvimLightGrey2 gui=italic cterm=italic
+    hi @type.builtin     guifg=NvimLightGrey2 gui=italic cterm=italic
     hi @function ctermfg=14 cterm=bold guifg=NvimLightCyan gui=bold
     hi @module guifg=NvimLightGrey2
     hi @markup.raw.block guifg=NvimLightGreen
@@ -45,6 +49,7 @@ if &background is# 'dark'
     hi MatchParen guibg=#333435
     hi Visual guibg=#55585e
     hi QuickFixLine guifg=NvimLightGrey1 guibg=NvimDarkCyan gui=bold ctermfg=0 ctermbg=14 cterm=bold
+    hi SpellBad guisp=#ff5f5f
     " hi CurSearch guifg=NvimDarkGrey1 guibg=NvimLightMagenta
     hi FlashLabel gui=bold guifg=NvimDarkGrey1 guibg=#d777d7 cterm=bold ctermfg=0 ctermbg=13
     if str2nr(&t_Co) >= 256
@@ -53,6 +58,10 @@ if &background is# 'dark'
 else
     hi Normal guibg=#e8e9ea
     hi Todo guibg=NvimLightRed ctermbg=9
+    hi @variable.builtin guifg=NvimDarkGrey2 gui=italic cterm=italic
+    hi @constant.builtin guifg=NvimDarkGrey2 gui=italic cterm=italic
+    hi @module.builtin   guifg=NvimDarkGrey2 gui=italic cterm=italic
+    hi @type.builtin     guifg=NvimDarkGrey2 gui=italic cterm=italic
     hi @function ctermfg=6 cterm=bold guifg=NvimDarkCyan gui=bold
     hi @module guifg=NvimDarkGrey2
     hi @markup.raw.block guifg=NvimDarkGreen
@@ -61,6 +70,7 @@ else
     hi MatchParen guibg=#b7b8b9
     hi Visual guibg=#94979e
     hi QuickFixLine guifg=NvimDarkGrey1 guibg=NvimLightCyan gui=bold ctermfg=15 ctermbg=6 cterm=bold
+    hi SpellBad guisp=#991111
     " hi CurSearch guifg=NvimLightGrey1 guibg=NvimDarkMagenta
     hi FlashLabel gui=bold guifg=NvimLightGrey1 guibg=#871087  cterm=bold ctermfg=0 ctermbg=5
     if str2nr(&t_Co) >= 256
@@ -92,18 +102,13 @@ hi! link @function.macro Function
 hi! link @function.method @function
 hi! link @function.method.call @function.call
 
+hi! link @markup.raw String
+
 hi! link Operator Keyword
 
 hi! link StorageClass Keyword
 hi! link Structure Keyword
 hi! link Typedef Keyword
-hi! link @type.qualifier StorageClass
-hi! link @keyword.storage.lifetime NONE
-
-hi @variable.builtin gui=italic cterm=italic
-hi @constant.builtin gui=italic cterm=italic
-hi @module.builtin   gui=italic cterm=italic
-hi @type.builtin     gui=italic cterm=italic
 
 hi! link Character String
 hi! link Number String
@@ -113,3 +118,9 @@ hi! link Float String
 hi! link @markup.quote @markup.raw.block
 
 hi Title gui=bold,underline cterm=bold,underline
+
+
+hi! link coqTerm Keyword
+hi! link coqVernacCmd Keyword
+
+hi! link Sneak FlashLabel
