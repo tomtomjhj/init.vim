@@ -616,6 +616,7 @@ let g:cargo_shell_command_runner = 'AsyncRun -post=CW|try|cnewer|catch|endtry @'
 command! -nargs=* Cclippy call cargo#cmd("+nightly clippy -Zunstable-options " . <q-args>)
 command! -range=% PrettifyRustSymbol <line1>,<line2>SubstituteDict { '$SP$': '@', '$BP$': '*', '$RF$': '&', '$LT$': '<', '$GT$': '>', '$LP$': '(', '$RP$': ')', '$C$' : ',',  '$u20$': ' ', '$u5b$': '[', '$u5d$': ']', '$u7b$': '{', '$u7d$': '}', }
 function! s:rust() abort
+    silent! setlocal formatoptions+=/ " 8.2.4907
     setlocal path+=src
     " TODO fix 'spellcapcheck' for `//!` comments, also fix <leader>sc mapping
     " TODO: matchit handle < -> non-pair
@@ -656,7 +657,7 @@ let g:vimtex_indent_on_ampersands = 0
 let g:vimtex_toc_config = { 'show_help': 0, 'split_pos': 'vert' }
 let g:vimtex_toc_config_matchers = {
             \ 'todo_notes': {
-                \ 're' : g:vimtex#re#not_comment . '\\\w*%(todo|jaehwang)\w*%(\[[^]]*\])?\{\zs.*',
+                \ 're' : '\v%(' . '%(\\@<!%(\\\\)*)@<=' . '\%.*)@<!' . '\\\w*%(todo|jaehwang)\w*%(\[[^]]*\])?\{\zs.*',
                 \ 'prefilter_cmds': ['todo', 'jaehwang']}
             \}
 let g:vimtex_syntax_nospell_comments = 1
@@ -677,9 +678,12 @@ function! s:tex() abort
                 \ '$$': {'closer': '$$'},
                 \ '$': {'closer': '$'}
                 \ }, 'keep')
-    nmap <buffer><silent><leader>oo :call Zathura("<C-r>=expand("%:p:h").'/main.pdf'<CR>")<CR>
+    nmap <buffer><silent><leader>oo :<C-u>call Zathura("<C-r>=expand("%:p:h").'/main.pdf'<CR>")<CR>
     nmap <buffer>        <leader>C <Cmd>update<CR><Plug>(vimtex-compile-ss)
     nmap <buffer>        <localleader>t <Cmd>call vimtex#fzf#run('ctli', g:fzf_layout)<CR>
+    command! -range=% StripTexComment
+                \ keeppatterns keepjumps <line1>,<line2>substitute/\S\zs\s*\\\@<!%.\+//e
+                \|keeppatterns keepjumps <line1>,<line2>global/^\s*%/d
 endfunction
 function! s:bib() abort
     setlocal shiftwidth=2
@@ -726,7 +730,7 @@ function! s:markdown() abort
     " Set from $VIMRUNTIME/ftplugin/html.vim
     let b:match_words = substitute(b:match_words, '<:>,', '', '')
 
-    nmap     <buffer>             <leader>pd :setlocal ft=pandoc\|unmap <lt>buffer><lt>leader>pd<CR>
+    nmap     <buffer>             <leader>pd :<C-u>setlocal ft=pandoc\|unmap <lt>buffer><lt>leader>pd<CR>
     nnoremap <buffer><expr> <localleader>b tomtomjhj#surround#strong('')
     xnoremap <buffer><expr> <localleader>b tomtomjhj#surround#strong('')
     nnoremap <buffer><expr> <localleader>~ tomtomjhj#surround#strike('')
@@ -734,7 +738,7 @@ function! s:markdown() abort
     nmap     <buffer>          <MiddleMouse> <LeftMouse><localleader>biw
     xmap     <buffer>          <MiddleMouse> <localleader>b
     " NOTE: `:[range]!pandoc -t commonmark_x` also works.
-    nnoremap <buffer><silent>     <leader>tf :TableFormat<CR>
+    nnoremap <buffer><silent>     <leader>tf :<C-u>TableFormat<CR>
     nnoremap <buffer>             gO          <Cmd>Toc<CR>
 endfunction
 function! s:pandoc() abort
@@ -908,14 +912,14 @@ nnoremap <leader>b  :<C-u>Buffers<CR>
 nnoremap <C-f>      :<C-u>Files<CR>
 " TODO: filter out stuff that matches wildignore e.g. .git/index, .git/COMMIT_EDITMSG
 nnoremap <leader>hh :<C-u>History<CR>
-nnoremap <leader><C-t> :Tags ^<C-r><C-w>\  <CR>
-nnoremap <leader>fl :Folds<CR>
+nnoremap <leader><C-t> :<C-u>Tags <C-r><C-w><CR>
+nnoremap <leader>fl :<C-u>Folds<CR>
 
 " NOTE: not using -complete=file, because cmdline-spcial escaping is quite annoying
 command! -nargs=? -bang Grep call Ripgrep(<q-args>, <bang>0)
 command! -nargs=? -complete=dir Files call Files(<q-args>)
 " allow search on the full tag info, excluding the appended tagfile name
-" TODO: shift up/down not mapped to preview scroll
+" NOTE: preview scroll doesn't work
 command! -nargs=* Tags call fzf#vim#tags(<q-args>, fzf#vim#with_preview({ "placeholder": "--tag {2}:{-1}:{3..}", 'options': ['-d', '\t', '--nth', '..-2'] }))
 
 func! FzfOpts(arg, spec)
@@ -1182,13 +1186,13 @@ endfunction
 " }}}
 
 " etc mappings {{{
-nnoremap <silent><leader><CR> :let v:searchforward=1\|nohlsearch<CR>
-nnoremap <silent><leader><C-L> :diffupdate<CR><C-L>
-nnoremap <silent><leader>sfs :syntax sync fromstart<CR><C-L>
-nnoremap <leader>ss :setlocal spell! spell?<CR>
-nnoremap <leader>sc :if empty(&spc) \| setl spc< spc? \| else \| setl spc= spc? \| endif<CR>
-nnoremap <leader>sw :setlocal wrap! wrap?<CR>
-nnoremap <leader>ic :set ignorecase! smartcase! ignorecase?<CR>
+nnoremap <silent><leader><CR> :<C-u>let v:searchforward=1\|nohlsearch<CR>
+nnoremap <silent><leader><C-L> :<C-u>diffupdate<CR><C-L>
+nnoremap <silent><leader>sfs :<C-u>syntax sync fromstart<CR><C-L>
+nnoremap <leader>ss :<C-u>setlocal spell! spell?<CR>
+nnoremap <leader>sc :<C-u>if empty(&spc) \| setl spc< spc? \| else \| setl spc= spc? \| endif<CR>
+nnoremap <leader>sw :<C-u>setlocal wrap! wrap?<CR>
+nnoremap <leader>ic :<C-u>set ignorecase! smartcase! ignorecase?<CR>
 
 Noremap <leader>dp :diffput<CR>
 Noremap <leader>do :diffget<CR>
@@ -1231,8 +1235,9 @@ xnoremap u <nop>
 " delete without clearing regs
 Noremap x "_x
 
-" last changed region. useful for selecting last pasted stuff
-nnoremap gV `[v`]
+" last affected region. useful for selecting last pasted stuff
+" NOTE: writing the buffer resets '[, '] it to whole buffer. :h autocmd-use
+nnoremap <expr> gV (getpos("'[")[1:2] ==# [1,1] && getpos("']")[1:2] ==# [line("$"),1]) ? '`.' : '`[v`]'
 
 " repetitive pastes using designated register @p
 Noremap <M-y> "py
@@ -1267,10 +1272,10 @@ cnoreabbrev <expr> vsf <SID>cabbrev('vsf', "vert sf**/<Left><Left><Left>")
 cnoreabbrev <expr> tsb <SID>cabbrev('tsb', 'tab sb')
 cnoreabbrev <expr> tsf <SID>cabbrev('tsf', "tab sf**/<Left><Left><Left>")
 
-nnoremap <leader>cx :tabclose<CR>
-nnoremap <leader>td :tab split<CR>
-nnoremap <leader>tt :tabedit<CR>
-nnoremap <leader>fe :e!<CR>
+nnoremap <leader>cx :<C-u>tabclose<CR>
+nnoremap <leader>td :<C-u>tab split<CR>
+nnoremap <leader>tt :<C-u>tabedit<CR>
+nnoremap <leader>fe :<C-u>e!<CR>
 " }}}
 
 " pairs {{{
@@ -1338,6 +1343,10 @@ xmap aB <Plug>(textobj-sandwich-query-a)
 " }}}
 
 " shell, terminal {{{
+if &shell =~# 'bash$' && has('linux')
+    let &shell = &shell . ' -O globstar'  " ** globs for :!, system(), etc
+endif
+
 if has('nvim')
     " NOTE: When [Process exited $EXIT_CODE] in terminal mode, pressing any key wipes the terminal buffer.
     command! -nargs=? -complete=shellcmd T <mods> split | exe "terminal" <q-args> | if empty(<q-args>) | startinsert | endif
@@ -1386,10 +1395,10 @@ augroup END
 
 let g:asyncrun_exit = exists('*nvim_notify') ? 'lua vim.notify(vim.g.asyncrun_status .. ": AsyncRun " .. vim.g.asyncrun_cmd)' : 'echom g:asyncrun_status . ": AsyncRun " . g:asyncrun_cmd'
 Noremap <leader>R :AsyncRun<space>
-nnoremap <leader>ST :AsyncStop<CR>
+nnoremap <leader>ST :<C-u>AsyncStop<CR>
 " https://github.com/skywind3000/asyncrun.vim/issues/232
 command! -bang -nargs=* -complete=file Make exe 'AsyncRun -auto=make -program=make' ('-post=try|cnewer|catch|endtry' . (<bang>0 ? '' : '|CW')) '@' <q-args>
-nnoremap <leader>M :Make<space>
+nnoremap <leader>M :<C-u>Make<space>
 " }}}
 
 " window layout {{{
@@ -1412,15 +1421,14 @@ call s:heights()
 
 augroup layout-custom | au!
     au VimResized * call s:heights()
-    au OptionSet winfixbuf setlocal nowinfixbuf
 augroup END
 " }}}
 
 " quickfix, loclist, ... {{{
 packadd cfilter
 
-nnoremap <silent><leader>co :botright copen<CR>
-nnoremap <silent><leader>x  :pc\|ccl\|lcl<CR>
+nnoremap <silent><leader>co :<C-u>botright copen<CR>
+nnoremap <silent><leader>x  :<C-u>pc\|ccl\|lcl<CR>
 nnoremap <silent>[q :<C-u>call <SID>Cnext(1, 'c')<CR>
 nnoremap <silent>]q :<C-u>call <SID>Cnext(0, 'c')<CR>
 nnoremap <silent>[l :<C-u>call <SID>Cnext(1, 'l')<CR>
@@ -1569,7 +1577,7 @@ let s:url_regex = '\c\<\%([a-z][0-9A-Za-z_-]\+:\%(\/\{1,3}\|[a-z0-9%]\)\|www\d\{
 function! CursorURL() abort
     return matchstr(expand('<cWORD>'), s:url_regex)
 endfunction
-nnoremap <silent> gx :call GXBrowse(CursorURL())<cr>
+nnoremap <silent> gx :<C-u>call GXBrowse(CursorURL())<cr>
 
 " NOTE: :Fern that isn't drawer does not reuse "authority". Leaves too many garbage buffers.
 let g:fern#default_exclude = '\v(\.glob|\.vo[sk]?|\.o)$'
@@ -1582,9 +1590,9 @@ nnoremap <leader>-  <Cmd>call fern#internal#command#fern#command('', [BufDir(), 
 nnoremap <C-w>es    <Cmd>call fern#internal#command#fern#command('', [BufDir(), '-reveal='.expand('%:t'), '-opener=split'])<CR>
 nnoremap <C-w>ev    <Cmd>call fern#internal#command#fern#command('', [BufDir(), '-reveal='.expand('%:t'), '-opener=vsplit'])<CR>
 nnoremap <C-w>et    <Cmd>call fern#internal#command#fern#command('', [BufDir(), '-reveal='.expand('%:t'), '-opener=tabedit'])<CR>
-nnoremap <leader>cd :cd <Plug>BufDir/
-nnoremap <leader>e  :e! <Plug>BufDir/
-nnoremap <leader>te :tabedit <Plug>BufDir/
+nnoremap <leader>cd :<C-u>cd <Plug>BufDir/
+nnoremap <leader>e  :<C-u>e! <Plug>BufDir/
+nnoremap <leader>te :<C-u>tabedit <Plug>BufDir/
 " sometimes fern rename loses buffer content when the buffer is open???
 function! s:init_fern() abort
     let helper = fern#helper#new()
@@ -1645,10 +1653,10 @@ endfunction
 augroup git-custom | au!
     au Syntax git,gitcommit,diff syn sync minlines=321
     au FileType diff
-        \ nnoremap <silent><buffer>zM :setlocal foldmethod=syntax\|unmap <lt>buffer>zM<CR>zM
+        \ nnoremap <silent><buffer>zM :<C-u>setlocal foldmethod=syntax\|unmap <lt>buffer>zM<CR>zM
     au FileType git,fugitive,gitcommit
         \ setlocal foldtext=fugitive#Foldtext()
-        \|nnoremap <silent><buffer>zM :setlocal foldmethod=syntax\|unmap <lt>buffer>zM<CR>zM
+        \|nnoremap <silent><buffer>zM :<C-u>setlocal foldmethod=syntax\|unmap <lt>buffer>zM<CR>zM
         \|silent! unmap <buffer> *
         \|Mmap <buffer> <localleader>* <Plug>fugitive:*
     au FileType fugitiveblame setlocal cursorline
@@ -1763,7 +1771,7 @@ endif
 
 " undotree
 let g:undotree_WindowLayout = 4
-nnoremap U :UndotreeToggle<CR>
+nnoremap U :<C-u>UndotreeToggle<CR>
 augroup undotree-custom | au!
     au FileType undotree let &l:statusline = ' @%{winnr()} %{t:undotree.GetStatusLine()}'
 augroup END

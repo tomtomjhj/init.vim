@@ -290,8 +290,12 @@ au WinLeave * unsilent echom 'WinLeave' bufnr() win_getid()
 au WinEnter * unsilent echom 'WinEnter' bufnr() win_getid()
 au BufEnter * unsilent echom 'BufEnter' bufnr() win_getid()
 ```
-* BufEnter not triggerd when switching to window with the same buffer
 * BufLeave → WinLeave → WinEnter → BufEnter
+* BufEnter not triggerd when switching to window with the same buffer
+    * also when `:split` without arg
+    * Difficult to do something on `:split` without arg, because its trace is a prefix of that of `:split` with args (or `:new`).
+      Should schedule or something.
+    * this is very annoying :/ seriously what's the point of this
 * Maintain a global registry of window-local job, then handle them using those autocmds.
 * See my implementation of window-local lsp breadcrumb (`register_breadcrumb`)
 
@@ -528,6 +532,7 @@ Detaching after vfork from child process N
       So just don't do this thing...
     * See also: <https://github.com/tpope/vim-repeat/issues/63>
 * nvim winblend in terminal puts characters from the below window in the cell, so they are copied with terminal's functionality
+* copying (to lua) or stringifying cyclic vim value is quadratic <https://github.com/ibhagwan/fzf-lua/pull/1124>
 
 
 # bugs
@@ -571,7 +576,6 @@ invidunt *)
 * `:range!` does not emit proper on_bytes <https://github.com/neovim/neovim/blob/d667e0e4142ba8eb8623971539b0f9eec78b7529/src/nvim/ex_cmds.c#L1200-L1202>
 
 ## treesitter grammar/query issues
-* c: `preproc_arg → @function.macro` highlights macro definition body.
 * `@function` → `@function.definition`?
 
 ## cannot control composition of extmark-based highlights
@@ -591,6 +595,7 @@ There's also `"hl_eol"`
 Priority is configurable:
 <https://github.com/nvim-treesitter/nvim-treesitter/blob/1b5a7334bb9862abafcf6676d2a2a6973d15ae3a/CONTRIBUTING.md#priority>.
 
+Partial solution: use `nocombine` highlight attribute (N/A for colors).
 
 ## vim: mapping that starts with `<Esc>`
 Without tmux, in gnome-terminal,
@@ -1020,6 +1025,7 @@ TODO: `yy` → non-linewise paste that collapses indent. Something like `pkJ`
     * https://github.com/SmiteshP/nvim-navic
     * https://github.com/utilyre/barbecue.nvim
     * https://github.com/kevinhwang91/nvim-ufo
+    * https://github.com/jmbuhr/otter.nvim
 * ale-like stuff
     * <https://github.com/jose-elias-alvarez/null-ls.nvim> (dead).
       Revived: <https://github.com/nvimtools/none-ls.nvim>

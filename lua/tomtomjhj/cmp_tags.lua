@@ -81,6 +81,8 @@ end
 
 function source:resolve(completion_item, callback)
   completion_item.documentation = {
+    -- NOTE: cmp always applies stylize_markdown regardless of kind,
+    -- resulting in ugly lsp_markdown syntax highlighting.
     kind = cmp.lsp.MarkupKind.PlainText,
     value = buildDocumentation(completion_item.word)
   }
