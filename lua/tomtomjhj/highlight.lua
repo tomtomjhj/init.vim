@@ -1,5 +1,9 @@
 -- An alternative implmentation of <https://github.com/folke/paint.nvim>
 -- with decoration provider
+--
+-- vs. matchadd()?
+--
+-- Not using the new matchbufline() function because it doesn't have column limit.
 
 local M = {}
 
@@ -22,56 +26,46 @@ M.config = {
 
 local ns = vim.api.nvim_create_namespace('tomtomjhj/hightlight')
 
----@return PaintHighlight[]
-local function get_highlights(buf)
-  return vim.tbl_filter(
-  ---@param hl PaintHighlight
-    function(hl)
-      return hl.filter(buf)
-    end,
-    M.config
-  )
-end
+---@type PaintHighlight[]?
+local highlighting
 
----@return boolean
-local function set_marks(buf, topline, botline)
-  local highlights = get_highlights(buf)
-  if #highlights == 0 then
-    return false
+local function on_line(buf, lnum)
+  local line = vim.api.nvim_buf_get_lines(buf, lnum, lnum + 1, false)[1]
+  -- If there is a diff filler line at the end of buffer, on_line is
+  -- invoked for the next line of the last line. 0.8-0.10 are affected.
+  if not line then
+    return
   end
 
-  local lines = vim.api.nvim_buf_get_lines(buf, topline, botline + 1, false)
-  for l, line in ipairs(lines) do
-    local lnum = topline + (l - 1)
-    if #line > 1024 then
-      line = line:sub(1, 1024)
-    end
+  if #line > 1024 then
+    line = line:sub(1, 1024)
+  end
 
-    for _, hl in ipairs(highlights) do
-      local from, to, match = line:find(hl.pattern)
+  for _, hl in ipairs(assert(highlighting)) do
+    local from, to, match = line:find(hl.pattern)
 
-      while from do
-        if match and match ~= "" then
-          from, to = line:find(match, from, true)
-        end
-
-        vim.api.nvim_buf_set_extmark(buf, ns, lnum, from - 1, {
-          end_col = to, hl_group = hl.hl, priority = 110, ephemeral = true,
-        })
-
-        from, to, match = line:find(hl.pattern, to + 1)
+    while from do
+      if match and match ~= "" then
+        from, to = line:find(match, from, true)
       end
+
+      vim.api.nvim_buf_set_extmark(buf, ns, lnum, from - 1, {
+        end_col = to, hl_group = hl.hl, priority = 110, ephemeral = true,
+      })
+
+      from, to, match = line:find(hl.pattern, to + 1)
     end
   end
-
-  return true
 end
 
 vim.api.nvim_set_decoration_provider(ns, {
-  -- Fast enough.
-  on_win = function(_, _, buf, topline, botline)
-    return set_marks(buf, topline, botline)
-  end
+  on_win = function(_, _, buf, _, _)
+    highlighting = vim.tbl_filter(function(hl) return hl.filter(buf) end, M.config)
+    return #highlighting > 0
+  end,
+  on_line = function(_, _, buf, lnum)
+    on_line(buf, lnum)
+  end,
 })
 
 return M
