@@ -32,7 +32,7 @@ local highlighting
 local function on_line(buf, lnum)
   local line = vim.api.nvim_buf_get_lines(buf, lnum, lnum + 1, false)[1]
   -- If there is a diff filler line at the end of buffer, on_line is
-  -- invoked for the next line of the last line. 0.8-0.10 are affected.
+  -- invoked for the next line of the last line. 0.8-0.9 are affected.
   if not line then
     return
   end

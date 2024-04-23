@@ -95,6 +95,7 @@ endfunction
 "   * AsyncRun -save=1 -cwd=%:p:h pandoc %:p --from commonmark_x -o %:p:h/%:t:r.docx
 "   * AsyncRun -save=1 -cwd=%:p:h pandoc %:p --from commonmark_x -o %:p:h/%:t:r.txt --strip-comments
 " * for complex sets of options, use make or something
+" * NOTE: 9.1.0276 adds pandoc :compiler
 func! tomtomjhj#markdown#RunPandoc(open)
     let src = expand("%:p")
     let out = expand('%:p:s?[.]\w*$?.pdf?')

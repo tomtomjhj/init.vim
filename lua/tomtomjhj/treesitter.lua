@@ -6,7 +6,7 @@ local disable = {
   "vim",  -- less complete
 }
 local disable_highlight = vim.list_extend({'latex'}, disable)
-local disable_indent = vim.list_extend({'latex', 'markdown', 'lua'}, disable)
+local disable_indent = vim.list_extend({'latex', 'markdown', 'lua', 'c'}, disable)
 
 -- lua indet broken
 -- f(function()
@@ -61,8 +61,8 @@ vim.api.nvim_create_autocmd(
 require'nvim-treesitter.configs'.setup {
   ensure_installed = {},
   indent = {
-    enable = true;
-    disable = disable_indent,
+    enable = false; -- uses full buffer query. 100ms latency for 10K line file
+    -- disable = disable_indent,
   },
   incremental_selection = {
     enable = true,

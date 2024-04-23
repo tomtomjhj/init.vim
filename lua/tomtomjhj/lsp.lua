@@ -31,13 +31,9 @@ local function in_range(pos, range)
 end
 
 function M.toggle_diagnostics()
-  if vim.diagnostic.is_disabled() then
-    vim.diagnostic.enable()
-    vim.api.nvim_echo({{'Enabled diagnostics'}}, false, {})
-  else
-    vim.diagnostic.disable()
-    vim.api.nvim_echo({{'Disabled diagnostics'}}, false, {})
-  end
+  local new = not vim.diagnostic.is_enabled()
+  vim.diagnostic.enable(new)
+  vim.api.nvim_echo({{'Diagnostics: ' .. tostring(new)}}, false, {})
 end
 --- }}}
 

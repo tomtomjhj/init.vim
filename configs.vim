@@ -100,7 +100,6 @@ endif
 if g:nvim_latest_stable
     " NOTE: when using local install of nvim, should reinstall
     Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
-    " Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'stevearc/aerial.nvim'
     Plug 'jbyuki/venn.nvim'
@@ -141,7 +140,7 @@ set nojoinspaces
 set list listchars=tab:\|\ ,trail:-,nbsp:+,extends:>
 
 set wrap linebreak breakindent showbreak=↪\ 
-" if has('patch-9.0.2105') || has('nvim-0.10') | set smoothscroll | endif
+" if has('patch-9.1.0280') || has('nvim-0.10') | set smoothscroll | endif
 let &backspace = (has('patch-8.2.0590') || has('nvim-0.5')) ? 'indent,eol,nostop' : 'indent,eol,start'
 set whichwrap+=<,>,[,],h,l
 set cpoptions-=_

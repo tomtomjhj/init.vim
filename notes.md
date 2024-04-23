@@ -571,9 +571,23 @@ invidunt *)
 *)
 ```
 
-## treesitter integration low-level bugs
+## treesitter issues
+treesitter doesn't report tree changes if nodes are only removed https://github.com/neovim/neovim/issues/23286
+
+Can't capture grouped sibling nodes. A capture can only capture a node or repetition of nodes.
+<https://tree-sitter.github.io/tree-sitter/playground>
+```
+asdf();
+// awef
+```
+```
+((expression_statement) (comment)*) @cap
+```
+
+## treesitter integration issues
 * breaks `<cword>`?
 * `:range!` does not emit proper on_bytes <https://github.com/neovim/neovim/blob/d667e0e4142ba8eb8623971539b0f9eec78b7529/src/nvim/ex_cmds.c#L1200-L1202>
+* perf tracking issue https://github.com/neovim/neovim/issues/22426
 
 ## treesitter grammar/query issues
 * `@function` → `@function.definition`?
@@ -710,10 +724,6 @@ Change `func1` to `func2` with `v_b_c`.
 * https://github.com/vim/vim/issues/13528 이거랑 비슷한 문제 또있음.. breakindent 관련?
 * smoothscroll still has topline problem. 2024-02-14
     * sometimes topline is wrapped even if there is nothing to be wrapped? interesting interaction with virtual text (e.g., diagnostics)
-
-## treesitter problem
-* perf tracking issue https://github.com/neovim/neovim/issues/22426
-* treesitter doesn't report tree changes if nodes are only removed https://github.com/neovim/neovim/issues/23286
 
 ## cmp
 sometimes cmp falls into the state where `<C-n>` doesn't insert the text.
@@ -890,10 +900,6 @@ nvim's optimization: don't update fold in insert mode.
     * folds still can be wrong during edit
     * fold computation uses api, which requires deferral.
       So the deferred computation must always manually trigger fold update, regardless of insert mode.
-      Currently this is done with `vim._foldupdate`, which does whole buffer update.
-      `vim._foldupdate` is fast enough because it just reads the cache.
-        * possible improvement: track the changed range and pass to `vim._foldupdate`
-        * don't defer if not textlocked? is this possible?
 
 FastFold problems
 * expr fold (e.g. markdown) → Gdiffsplit → close diff → nofoldenable with residual diff fold when enabled.
