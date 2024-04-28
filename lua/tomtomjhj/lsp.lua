@@ -1,5 +1,7 @@
 -- vim.lsp.set_log_level('DEBUG')
 
+-- NOTE: lspconfig can be lazy-loaded in BufEnter,BufNewFile (LazyVim does this)
+
 local lspconfig = require('lspconfig')
 
 local M = {}
@@ -292,6 +294,7 @@ local base_config = {
   end,
   capabilities = capabilities,
 }
+-- TODO: clear diagnostics in on_exit
 
 local function config(more)
   if more == nil then return base_config end

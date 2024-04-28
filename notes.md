@@ -85,12 +85,25 @@ fd -t f -e EXT -x cat {} | tr '[:punct:]' ' ' | tr 'A-Z' 'a-z' | tr -s ' ' | tr 
       `hi clear` changes the behavior of subsequent `hi def link`.
       This is clearly a bug.
       ```
-      syn keyword Group word
-      hi def link Group Todo
+      hi def link Group To1
       hi clear
-      hi def link Group Comment
-      " "word" is highlighted as Comment
-      " if hi clear is run again, "word" is highlighted as Todo
+      hi def link Group To2
+      " To2
+      echom nvim_get_hl(0, #{name: 'Group'})
+      " To1
+      hi clear
+      echom nvim_get_hl(0, #{name: 'Group'})
+      ```
+      TODO: my `nvim_set_hl` behaves differently.
+      ```
+      call nvim_set_hl(0, 'Group', #{default: v:true, link: 'To1'})
+      hi clear
+      call nvim_set_hl(0, 'Group', #{default: v:true, link: 'To2'})
+      " To1
+      echo nvim_get_hl(0, #{name: 'Group'})
+      hi clear
+      " To1
+      echo nvim_get_hl(0, #{name: 'Group'})
       ```
     * ✗ `hi clear Group` and then `hi def link`?
       `hi clear` does not clear the default link.
@@ -588,6 +601,8 @@ asdf();
 * breaks `<cword>`?
 * `:range!` does not emit proper on_bytes <https://github.com/neovim/neovim/blob/d667e0e4142ba8eb8623971539b0f9eec78b7529/src/nvim/ex_cmds.c#L1200-L1202>
 * perf tracking issue https://github.com/neovim/neovim/issues/22426
+* Manage regions/trees with interval tree (or extrange) for efficient range query.
+* Clip injected ranges to the parent LanguageTree's ranges [#21310](https://github.com/neovim/neovim/pull/21310)
 
 ## treesitter grammar/query issues
 * `@function` → `@function.definition`?
@@ -767,6 +782,17 @@ E605: Exception not caught: ++opt not supported
 <https://github.com/neovim/neovim/issues/27383>
 
 That seems to be the reason texlab crashes after `ggdGudG`.
+
+## redundant `on_win`
+If some conditions are met, `on_win` is called on j/k without scrolling, which slows them down.
+```
+lua _G.count = 0
+lua vim.api.nvim_set_decoration_provider(vim.api.nvim_create_namespace('testing'), { on_win = function(_, win, buf, _, _) _G.count = _G.count + 1 print('on_win', _G.count, vim.fn.bufname(buf), win) end, })
+```
+
+conditions
+* diff mode: why?
+* hlsearch: maybe for cursearch
 
 # annoyances ingrained in vi(m)
 * `ge` ... design of inclusive/exclusive stuff

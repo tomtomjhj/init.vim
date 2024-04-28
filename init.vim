@@ -11,4 +11,13 @@ if has('nvim-0.8')
     aunmenu PopUp.-1-
 endif
 
+if has('nvim-0.10')
+    silent! unmap <C-w>d
+    silent! unmap <C-w><C-d>
+    silent! unmap crn
+    silent! unmap crr
+    silent! unmap gr
+    silent! iunmap <C-s>
+endif
+
 source ~/.vim/configs.vim

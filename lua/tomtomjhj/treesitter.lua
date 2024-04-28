@@ -1,6 +1,6 @@
 local parsers = require("nvim-treesitter.parsers")
 
-M = {}
+local M = {}
 
 local disable = {
   "vim",  -- less complete
@@ -79,6 +79,7 @@ require'nvim-treesitter.configs'.setup {
   --   <- 100%  (for generator) < collect_group_results < fn < for_each_tree < fn < get_matches < fn < get_active_nodes < get_delim
   matchup = {
     enable = true,
+    disable = { "c", },
   },
 }
 

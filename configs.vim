@@ -17,6 +17,7 @@ call plug#begin('~/.vim/plugged')
 " appearance
 Plug 'tomtomjhj/taiga.vim'
 Plug 'tomtomjhj/quite.vim'
+Plug 'tomtomjhj/pal.vim'
 
 " editing
 Plug 'tomtomjhj/vim-sneak'
@@ -379,7 +380,7 @@ function! STLTitle(...) abort
     elseif ft is# 'fzf'
         return 'fzf'
     elseif bt is# 'terminal'
-        return has('nvim') ? '!' . fnamemodify(matchstr(bname, 'term://.\{-}//\d\+:\zs.*'), ':t') : bname
+        return has('nvim') ? '!' . matchstr(bname, 'term://.\{-}//\d\+:\zs.*') : bname
     elseif ft is# 'fern'
         return pathshorten(fnamemodify(getbufvar(b, 'fern').root._path, ":~")) . '/'
     elseif bname =~# '^fugitive://'
@@ -479,6 +480,7 @@ augroup colors-custom | au!
     " To workaround the fact that it's impossible to set default highlight to NONE,
     " set its highlight to something visually unnoticeable
     au ColorScheme * hi markdownError cterm=bold ctermbg=NONE ctermfg=NONE gui=NONE guibg=NONE guifg=NONE
+    au ColorScheme pal set notermguicolors
 augroup END
 
 if has('vim_starting')
@@ -514,6 +516,7 @@ elseif g:ide_client == 'nvim'
         au! LoadLuaSnip
         call plug#load('LuaSnip', 'cmp_luasnip')
 
+        " TODO: sometimes snippets are not loaded? :e fixes it.
         lua require("luasnip.loaders.from_vscode").lazy_load { paths = { "~/.vim/vsnip", "~/.vim/plugged/friendly-snippets" } }
         lua require("luasnip.loaders.from_lua").lazy_load { paths = "~/.vim/lsnip/" }
         lua require("luasnip").config.setup { store_selection_keys = "<C-L>", region_check_events = 'InsertEnter', delete_check_events = 'InsertLeave' }

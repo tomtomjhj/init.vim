@@ -18,6 +18,8 @@ local fzf = require('fzf-lua')
 -- * Preview buffer's ftdetect uses `:filetype detect`, which is somewhat broken? `*.v` file doesn't get recognized as coq.
 -- * Does not reuse the buffer for preview <https://github.com/ibhagwan/fzf-lua/issues/208#issuecomment-962550013>...
 
+-- TODO: add selected items to quickfix. useful for collecting non-immediate references
+
 fzf.setup {
   "fzf-native",
   winopts = {

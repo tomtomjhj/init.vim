@@ -89,6 +89,8 @@ function! SetupLSP()
   " TODO: hover floating window width is not sufficient
   nnoremap <buffer>        <M-.> <cmd>lua vim.lsp.buf.hover()<CR>
 
+  " TODO adapt to 0.10 default lsp/diagnostic mappings
+
   " location_handler
   nnoremap <buffer><leader>rf    <cmd>lua require('fzf-lua').lsp_references{jump_to_single_result=true}<CR>
   nnoremap <buffer>        <M-]> <cmd>lua require('fzf-lua').lsp_definitions{jump_to_single_result=true}<CR>
@@ -103,7 +105,7 @@ function! SetupLSP()
   " call_hierarchy_handler
 
   " ...
-  nnoremap <buffer><leader>ac    <cmd>lua require('fzf-lua').lsp_code_actions()<CR>
+  Noremap <buffer><leader>ac    <cmd>lua require('fzf-lua').lsp_code_actions()<CR>
   nnoremap <buffer><leader>fm    <cmd>lua vim.lsp.buf.format{async=true}<CR>
   xnoremap <buffer><expr><leader>fm  NvimLSPRangeFormat('')
   nnoremap <buffer><leader>rn    <cmd>lua vim.lsp.buf.rename()<CR>
