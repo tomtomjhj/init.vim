@@ -364,6 +364,7 @@ lspconfig.texlab.setup(config())
 -- NOTE: Codeaction-ed rules are recorded in .ltex_ls_cache.json.
 -- NOTE: Codeaction custom commands broken
 -- See also https://github.com/barreiroleo/ltex_extra.nvim.
+--[[
 require'ltex-ls'.setup(config {
   autostart = false,
   -- Not quite useful, because it's not updated on zg.
@@ -394,14 +395,18 @@ require'ltex-ls'.setup(config {
       logLevel = "severe", -- NOTE: "INFO: ltex-ls 16.0.0 - initializing..." still logged
     },
   }}
-}
-)
+})
+--]]
+
+-- TODO: write latex support https://github.com/znck/grammarly?tab=readme-ov-file#adding-support-for-new-language
+lspconfig.grammarly.setup(config {
+  autostart = false,
+  filetypes = { 'markdown', 'tex', },
+})
 
 lspconfig.bashls.setup(config())
 
--- see also: https://github.com/Feel-ix-343/markdown-oxide
--- completion doesn't support "name.md#heading" style reference?
-lspconfig.marksman.setup(config {
+lspconfig.markdown_oxide.setup(config {
   autostart = false,
 })
 
