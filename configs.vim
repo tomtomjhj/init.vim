@@ -732,6 +732,7 @@ function! s:markdown() abort
     nmap     <buffer>             <leader>pd :<C-u>setlocal ft=pandoc\|unmap <lt>buffer><lt>leader>pd<CR>
     nnoremap <buffer><expr> <localleader>b tomtomjhj#surround#strong('')
     xnoremap <buffer><expr> <localleader>b tomtomjhj#surround#strong('')
+    nnoremap <buffer><expr> <localleader>b<localleader>b tomtomjhj#surround#strong('') ..'_'
     nnoremap <buffer><expr> <localleader>~ tomtomjhj#surround#strike('')
     xnoremap <buffer><expr> <localleader>~ tomtomjhj#surround#strike('')
     nmap     <buffer>          <MiddleMouse> <LeftMouse><localleader>biw

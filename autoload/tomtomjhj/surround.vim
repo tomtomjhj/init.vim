@@ -1,5 +1,5 @@
 " NOTE: 8.2.3619 supports funcref/lambda for operatorfunc
-function! tomtomjhj#surround#(type, ends) abort
+function! tomtomjhj#surround#(type, surrounding) abort
     if a:type ==# 'char'
         let cmd_x = '`[v`]x'
     elseif a:type ==# 'line'
@@ -10,19 +10,23 @@ function! tomtomjhj#surround#(type, ends) abort
 
     let sel_save = &selection
     let reg_save = exists('*getreginfo') ? getreginfo('"') : getreg('"')
+    let ve_save = [&l:virtualedit, &g:virtualedit]
     let cb_save = &clipboard
 
+    let end_empty_eol = col([line("']"), "$"]) == 1
     try
-        " handle the cursor on eol
-        let l:p = (col([line("']"), "$"]) - col("']") <= 1) ? 'p' : 'P'
-        set clipboard= selection=inclusive
+        " if cursor is on the last char or eol of non-empty line, x moves the resulting cursor from eol to the last char, so use p
+        let p = (col([line("']"), "$"]) - col("']") <= 1 && !end_empty_eol)  ? 'p' : 'P'
+        set clipboard= selection=inclusive ve=
         silent exe 'noautocmd keepjumps normal!' cmd_x
-        call setreg('"', a:ends.getreg('"').a:ends)
-        silent exe 'noautocmd keepjumps normal!' l:p
+        " put the closer before the newline
+        call setreg('"', a:surrounding . (end_empty_eol ? getreg('"')[:-2] . a:surrounding . getreg('"')[-1:] : getreg('"') . a:surrounding))
+        silent exe 'noautocmd keepjumps normal!' p
     finally
         call setreg('"', reg_save)
         let &clipboard = cb_save
         let &selection = sel_save
+        let [&l:virtualedit, &g:virtualedit] = ve_save
     endtry
 endfunction
 
