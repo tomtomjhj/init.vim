@@ -14,8 +14,12 @@ endif
 if has('nvim-0.10')
     silent! unmap <C-w>d
     silent! unmap <C-w><C-d>
+endif
+if has('nvim-0.11')
     silent! unmap crn
     silent! unmap crr
+    silent! unmap <C-r><C-r>
+    silent! unmap <C-r>r
     silent! unmap gr
     silent! iunmap <C-s>
 endif

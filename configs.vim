@@ -47,8 +47,8 @@ if has('nvim')
 endif
 Plug 'roosta/fzf-folds.vim'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
-Plug 'lambdalisue/fern.vim'
-Plug 'lambdalisue/fern-hijack.vim'
+Plug 'lambdalisue/vim-fern'
+Plug 'lambdalisue/vim-fern-hijack'
 Plug 'inkarkat/vim-mark', { 'on': ['<Plug>MarkS', 'Mark'] }
 Plug 'inkarkat/vim-ingo-library'
 

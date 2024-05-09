@@ -601,7 +601,7 @@ asdf();
 * breaks `<cword>`?
 * `:range!` does not emit proper on_bytes <https://github.com/neovim/neovim/blob/d667e0e4142ba8eb8623971539b0f9eec78b7529/src/nvim/ex_cmds.c#L1200-L1202>
 * perf tracking issue https://github.com/neovim/neovim/issues/22426
-* Manage regions/trees with interval tree (or extrange) for efficient range query.
+* Manage regions/trees with interval tree (or extrange ... textlock?) for efficient range query.
 * Clip injected ranges to the parent LanguageTree's ranges [#21310](https://github.com/neovim/neovim/pull/21310)
 
 ## treesitter grammar/query issues
