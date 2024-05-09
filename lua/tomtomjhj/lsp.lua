@@ -228,9 +228,22 @@ vim.diagnostic.config {
   serverity_sort = true,
 }
 
+local diagnostic_autocmds = vim.api.nvim_create_augroup("tomtomjhj/diagnostics", { clear = true })
+
+-- texlab triggers DiagnosticChanged too frequently, which makes the cursor flicker
+local diagnostic_debounce_timer = assert(vim.loop.new_timer())
 vim.api.nvim_create_autocmd("DiagnosticChanged", {
-  group = vim.api.nvim_create_augroup("tomtomjhj/diagnostics", { clear = true }),
-  command = 'redrawstatus!',
+  group = diagnostic_autocmds,
+  callback = function()
+    diagnostic_debounce_timer:stop()
+    diagnostic_debounce_timer:start(210, 0, vim.schedule_wrap(function()
+      vim.cmd.redrawstatus { bang = true }
+    end))
+  end
+})
+vim.api.nvim_create_autocmd("VimLeavePre", {
+  group = diagnostic_autocmds,
+  callback = function() diagnostic_debounce_timer:close() end,
 })
 -- }}}
 
