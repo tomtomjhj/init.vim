@@ -103,7 +103,7 @@ hi! link @function.method @function
 hi! link @function.method.call @function.call
 
 hi! link @markup.raw String
-hi! link @markup.quote @markup.raw.block
+hi! link @markup.quote NONE
 
 hi! link Operator Keyword
 
@@ -123,7 +123,7 @@ hi! link coqVernacCmd Keyword
 
 hi! link Sneak FlashLabel
 
-" https://github.com/neovim/neovim/issues/26857 + more intensity for 0 and 15
+" https://github.com/neovim/neovim/issues/26857 + tweaks for 0, 8, 15
 let s:bg = &background is# 'dark' ? 'NvimDark'  : 'NvimLight'
 let s:fg = &background is# 'dark' ? 'NvimLight' : 'NvimDark'
 let g:terminal_color_0  = s:bg .. 'Grey1'
@@ -134,7 +134,7 @@ let g:terminal_color_4  = s:fg .. 'Blue'
 let g:terminal_color_5  = s:fg .. 'Magenta'
 let g:terminal_color_6  = s:fg .. 'Cyan'
 let g:terminal_color_7  = s:fg .. 'Grey2'
-let g:terminal_color_8  = s:bg .. 'Grey2'
+let g:terminal_color_8  = s:bg .. 'Grey3'
 let g:terminal_color_9  = s:fg .. 'Red'
 let g:terminal_color_10 = s:fg .. 'Green'
 let g:terminal_color_11 = s:fg .. 'Yellow'

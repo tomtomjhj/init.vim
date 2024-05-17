@@ -141,7 +141,7 @@ set nojoinspaces
 set list listchars=tab:\|\ ,trail:-,nbsp:+,extends:>
 
 set wrap linebreak breakindent showbreak=↪\ 
-" if has('patch-9.1.0280') || has('nvim-0.10') | set smoothscroll | endif
+if has('patch-9.1.0413') || has('nvim-0.10') | set smoothscroll | endif
 let &backspace = (has('patch-8.2.0590') || has('nvim-0.5')) ? 'indent,eol,nostop' : 'indent,eol,start'
 set whichwrap+=<,>,[,],h,l
 set cpoptions-=_
@@ -668,6 +668,7 @@ let g:vimtex_text_obj_variant = 'vimtex' " I don't use those targets.vim feature
 let g:vimtex_doc_handlers = ['vimtex#doc#handlers#texdoc']
 let g:vimtex_ui_method = { 'confirm': 'legacy', 'input': 'legacy', 'select': 'legacy', }
 let g:vimtex_syntax_conceal = { 'spacing': 0 }
+let g:vimtex_indent_bib_enabled = 0
 " NOTE: If inverse search doesn't work, check if zathura is run with -x option (vimtex sets this when launching it), and source files are correctly recognized by vimtex.
 " TODO: compiling with vimtex lags fzf. sometimes input is completely blocked
 function! s:tex() abort
@@ -1211,6 +1212,8 @@ nnoremap <silent> yY :<C-u>%yank+<CR>
 " buf/filename
 nnoremap <leader>fn 2<C-g>
 
+onoremap <LeftMouse> <Esc><LeftMouse>
+
 noremap <F1> <Esc>
 inoremap <F1> <Esc>
 nmap     <C-q> <Esc>
@@ -1279,6 +1282,11 @@ nnoremap <leader>cx :<C-u>tabclose<CR>
 nnoremap <leader>td :<C-u>tab split<CR>
 nnoremap <leader>tt :<C-u>tabedit<CR>
 nnoremap <leader>fe :<C-u>e!<CR>
+
+for s:cmd in ["]", "\<C-]>", "f", "F", "g\<C-]>", "g]"]
+    exe printf('nnoremap <silent> g<C-w>%s <Cmd>vert wincmd %s<CR>', s:cmd, s:cmd)
+endfor
+unlet! s:cmd
 " }}}
 
 " pairs {{{
