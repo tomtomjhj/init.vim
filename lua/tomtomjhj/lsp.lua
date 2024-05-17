@@ -157,31 +157,10 @@ end
 local progress_autocmds = vim.api.nvim_create_augroup("tomtomjhj/lsp-progress", { clear = true })
 local progress_message_clear_timer = assert(vim.loop.new_timer())
 
--- TODO: cleanup after 0.10 release
-local get_status_message ---@type fun(): string|nil
-if vim.fn.exists('##LspProgress') == 1 then
-  get_status_message = function()
-    local msg = vim.lsp.status()
-    if #msg == 0 then return end
-    return '[' .. msg .. ']'
-  end
-else
-  get_status_message = function()
-    local report = vim.lsp.util.get_progress_messages()[1]
-    if not report then return end
-    local msg = string.format('[%s] %s', report.name, report.title)
-    local details = {}
-    if report.message then
-      details[#details+1] = report.message
-    end
-    if report.done then
-      details[#details+1] = 'Done'
-    end
-    if #details > 0 then
-      msg = msg .. ': ' .. table.concat(details, '. ')
-    end
-    return msg
-  end
+local function get_status_message()
+  local msg = vim.lsp.status()
+  if #msg == 0 then return end
+  return '[' .. msg .. ']'
 end
 
 local function update_status_message()
@@ -201,18 +180,10 @@ local function update_status_message()
 end
 
 local function register_progress_message()
-  if vim.fn.exists('##LspProgress') == 1 then
-    vim.api.nvim_create_autocmd("LspProgress", {
-      group = progress_autocmds,
-      callback = update_status_message
-    })
-  else
-    vim.api.nvim_create_autocmd("User", {
-      group = progress_autocmds,
-      pattern = 'LspProgressUpdate',
-      callback = update_status_message
-    })
-  end
+  vim.api.nvim_create_autocmd("LspProgress", {
+    group = progress_autocmds,
+    callback = update_status_message
+  })
   vim.api.nvim_create_autocmd("VimLeavePre", {
     group = progress_autocmds,
     callback = function() progress_message_clear_timer:close() end,

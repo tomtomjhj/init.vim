@@ -1,6 +1,6 @@
 " vim: set foldmethod=marker foldlevel=0:
 
-let g:nvim_latest_stable = has('nvim-0.9')
+let g:nvim_latest_stable = has('nvim-0.10')
 let g:ide_client = get(g:, 'ide_client', g:nvim_latest_stable ? 'nvim' : 'coc')
 
 if !has('nvim')

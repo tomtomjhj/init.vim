@@ -89,7 +89,7 @@ function! SetupLSP()
   " TODO: hover floating window width is not sufficient
   nnoremap <buffer>        <M-.> <cmd>lua vim.lsp.buf.hover()<CR>
 
-  " TODO adapt to 0.10 default lsp/diagnostic mappings
+  " TODO adapt to 0.11 default lsp mappings
 
   " location_handler
   nnoremap <buffer><leader>rf    <cmd>lua require('fzf-lua').lsp_references{jump_to_single_result=true}<CR>
@@ -132,7 +132,6 @@ endfunction
 function! STLProgress()
   return get(g:, 'lsp_status', '')
 endfunction
-if has('nvim-0.10')
 function! STLDiagnosticErrors()
   let errors = luaeval('vim.diagnostic.count(0, {severity=vim.diagnostic.severity.ERROR})[vim.diagnostic.severity.ERROR]')
   return errors ? 'E' . errors : ''
@@ -141,16 +140,6 @@ function! STLDiagnosticWarnings()
   let warnings = luaeval('vim.diagnostic.count(0, {severity=vim.diagnostic.severity.WARN})[vim.diagnostic.severity.WARN]')
   return warnings ? 'W' . warnings : ''
 endfunction
-else
-function! STLDiagnosticErrors()
-  let errors = luaeval('#vim.diagnostic.get(0, {severity=vim.diagnostic.severity.ERROR})')
-  return errors ? 'E' . errors : ''
-endfunction
-function! STLDiagnosticWarnings()
-  let warnings = luaeval('#vim.diagnostic.get(0, {severity=vim.diagnostic.severity.WARN})')
-  return warnings ? 'W' . warnings : ''
-endfunction
-endif
 
 function! NvimLSPRangeFormat(type) abort
   if a:type == ''
