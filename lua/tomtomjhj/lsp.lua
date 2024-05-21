@@ -155,6 +155,7 @@ end
 -- progress {{{
 
 local progress_autocmds = vim.api.nvim_create_augroup("tomtomjhj/lsp-progress", { clear = true })
+local progress_message_throttle_timer = assert(vim.loop.new_timer())
 local progress_message_clear_timer = assert(vim.loop.new_timer())
 
 local function get_status_message()
@@ -165,18 +166,16 @@ end
 
 local function update_status_message()
   local msg = get_status_message()
-  -- NOTE: this doesn't cancel already scheduled callback, but this isn't critical
-  progress_message_clear_timer:stop()
-  progress_message_clear_timer:start(
-    2345,
-    0,
-    vim.schedule_wrap(function()
-      vim.g.lsp_status = nil
-      vim.cmd.redrawstatus { bang = true }
-    end)
-  )
+  if progress_message_throttle_timer:is_active() then return end
+  progress_message_throttle_timer:start(123, 0, function() end)
   vim.g.lsp_status = msg
   vim.cmd.redrawstatus { bang = true }
+  -- NOTE: this doesn't cancel already scheduled callback, but this isn't critical
+  progress_message_clear_timer:stop()
+  progress_message_clear_timer:start(1234, 0, vim.schedule_wrap(function()
+    vim.g.lsp_status = nil
+    vim.cmd.redrawstatus { bang = true }
+  end))
 end
 
 local function register_progress_message()
@@ -186,7 +185,10 @@ local function register_progress_message()
   })
   vim.api.nvim_create_autocmd("VimLeavePre", {
     group = progress_autocmds,
-    callback = function() progress_message_clear_timer:close() end,
+    callback = function()
+      progress_message_throttle_timer:close()
+      progress_message_clear_timer:close()
+    end,
   })
 end
 -- }}}
