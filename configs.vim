@@ -1436,7 +1436,7 @@ augroup END
 " }}}
 
 " quickfix, loclist, ... {{{
-packadd cfilter
+packadd! cfilter
 
 nnoremap <silent><leader>co :<C-u>botright copen<CR>
 nnoremap <silent><leader>x  :<C-u>pc\|ccl\|lcl<CR>

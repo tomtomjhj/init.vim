@@ -1,6 +1,6 @@
 " per-colorscheme customization
 function! s:colors()
-    if get(g:, 'colors_name', '') !=# 'quite'
+    if index(['quite', 'graey'], get(g:, 'colors_name', '')) < 0
         hi! def link texMathDelim Delimiter
         hi! def link texZone Special
     endif

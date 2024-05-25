@@ -280,7 +280,6 @@ local base_config = {
   end,
   capabilities = capabilities,
 }
--- TODO: clear diagnostics in on_exit
 
 local function config(more)
   if more == nil then return base_config end
@@ -353,7 +352,6 @@ lspconfig.texlab.setup(config())
 -- NOTE: Codeaction-ed rules are recorded in .ltex_ls_cache.json.
 -- NOTE: Codeaction custom commands broken
 -- See also https://github.com/barreiroleo/ltex_extra.nvim.
---[[
 require'ltex-ls'.setup(config {
   autostart = false,
   -- Not quite useful, because it's not updated on zg.
@@ -384,13 +382,6 @@ require'ltex-ls'.setup(config {
       logLevel = "severe", -- NOTE: "INFO: ltex-ls 16.0.0 - initializing..." still logged
     },
   }}
-})
---]]
-
--- TODO: write latex support https://github.com/znck/grammarly?tab=readme-ov-file#adding-support-for-new-language
-lspconfig.grammarly.setup(config {
-  autostart = false,
-  filetypes = { 'markdown', 'tex', },
 })
 
 lspconfig.bashls.setup(config())

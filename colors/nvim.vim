@@ -32,7 +32,8 @@ let g:colors_name = 'nvim'
 " - conceal too dim
 " - not enough saturation for red
 " - cterm Visual assumes 0 = absolute black and 15 = absolute white
-" - cterm TabLine and TabLineSel
+" - CurSearch cursor is not eligible in gnome-terminal because the Normal bg matches CurSearch + Cursor bg.
+"   So CurSearch fg should be opposite of Normal bg.
 
 if &background is# 'dark'
     hi Normal guifg=#eeeeee guibg=#151618
@@ -50,7 +51,8 @@ if &background is# 'dark'
     hi Visual guibg=#55585e
     hi QuickFixLine guifg=NvimLightGrey1 guibg=NvimDarkCyan gui=bold ctermfg=0 ctermbg=14 cterm=bold
     hi SpellBad guisp=#ff5f5f
-    " hi CurSearch guifg=NvimDarkGrey1 guibg=NvimLightMagenta
+    hi CurSearch guifg=#000000
+    " hi CurSearch guifg=NvimLightGrey1 guibg=#991199
     hi FlashLabel gui=bold guifg=NvimDarkGrey1 guibg=#d777d7 cterm=bold ctermfg=0 ctermbg=13
     if str2nr(&t_Co) >= 256
         hi Comment ctermfg=250
@@ -71,7 +73,8 @@ else
     hi Visual guibg=#94979e
     hi QuickFixLine guifg=NvimDarkGrey1 guibg=NvimLightCyan gui=bold ctermfg=15 ctermbg=6 cterm=bold
     hi SpellBad guisp=#991111
-    " hi CurSearch guifg=NvimLightGrey1 guibg=NvimDarkMagenta
+    hi CurSearch guifg=#ffffff
+    " hi CurSearch guifg=NvimDarkGrey1 guibg=#ff5fff
     hi FlashLabel gui=bold guifg=NvimLightGrey1 guibg=#871087  cterm=bold ctermfg=0 ctermbg=5
     if str2nr(&t_Co) >= 256
         hi Comment ctermfg=241
