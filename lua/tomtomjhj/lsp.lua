@@ -335,8 +335,23 @@ lspconfig.clangd.setup(config {
   cmd = { 'clangd', '--query-driver=/usr/bin/c++', '--log=error', }
 })
 
-require("neodev").setup()
+-- https://github.com/folke/lazydev.nvim/ is probably overkill for my usage
 lspconfig.lua_ls.setup(config {
+  on_init = function(client, initialize_result)
+    base_config.on_init(client, initialize_result)
+    local path = client.workspace_folders[1].name
+    if vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc') then
+      return
+    end
+    client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+      runtime = { version = 'LuaJIT' },
+      workspace = { library = {
+        vim.env.VIMRUNTIME,
+        "${3rd}/luv/library",
+        -- "${3rd}/busted/library",
+      }},
+    })
+  end,
   settings = { Lua = {
     workspace = {
       -- disable "Do you need to configure your work environment as" prompts
