@@ -31,12 +31,4 @@ flash.setup {
   prompt = { enabled = false },
 }
 
-for _, map in ipairs {
-  { { "n", "o", "x" }, "<M-s>", function() flash.jump() end, },
-  { { "n", "o", "x" }, "M",     function() flash.treesitter() end, },
-  -- { "o",               "r",     function() flash.remote() end, },
-  { { "o", "x" },      "R",     function() flash.treesitter_search() end, },
-  { { "c" },           "<C-s>", function() flash.toggle() end, },
-} do
-  vim.keymap.set(unpack(map))
-end
+return flash

@@ -1055,7 +1055,13 @@ let g:sneak#alias = {
             \}
 
 if g:nvim_latest_stable
-    lua require('tomtomjhj/flash')
+lua << EOF
+vim.keymap.set({ "n", "o", "x" }, "<M-s>", function() require'tomtomjhj/flash'.jump() end)
+vim.keymap.set({ "n", "o", "x" }, "M",     function() require'tomtomjhj/flash'.treesitter() end)
+-- vim.keymap.set("o",               "r",     function() require'tomtomjhj/flash'.remote() end)
+vim.keymap.set({ "o", "x" },      "R",     function() require'tomtomjhj/flash'.treesitter_search() end)
+vim.keymap.set({ "c" },           "<C-s>", function() require'tomtomjhj/flash'.toggle() end)
+EOF
 endif
 " }}}
 
