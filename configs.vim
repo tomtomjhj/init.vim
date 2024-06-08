@@ -907,6 +907,8 @@ let g:fzf_action = { 'ctrl-t': 'tab split', 'ctrl-s': 'split', 'ctrl-x': 'split'
 let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.5, 'yoffset': 1, 'border': 'top' } }
 let g:fzf_vim = {}
 let g:fzf_vim.listproc = function('tomtomjhj#qf#fzf_listproc_qf')
+" NOTE: fzf can't sidescroll https://github.com/junegunn/fzf/issues/577
+let g:fzf_vim.grep_multi_line = 1
 
 nnoremap <C-g>      :<C-u>Grep<space>
 nnoremap <leader>g/ :<C-u>Grep! <C-r>=shellescape(RgInput(@/))<CR>

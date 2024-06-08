@@ -58,6 +58,9 @@ fzf.setup {
   default = {
     file_icons = false,
   },
+  grep = {
+    multiline = 1,
+  },
   lsp = {
     includeDeclaration = false,
     symbols = {
