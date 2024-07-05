@@ -45,7 +45,7 @@ vim.api.nvim_create_autocmd(
         end
         custom_queries[lang] = nil
       end
-      if not vim.tbl_contains(disable_highlight, lang) then
+      if not vim.tbl_contains(disable_highlight, lang) and not vim.b.ts_highlight then
         vim.treesitter.start(ev.buf, lang)
         vim.b.undo_ftplugin = (vim.b.undo_ftplugin and vim.b.undo_ftplugin .. '|' or '') .. [[exe 'lua vim.treesitter.stop()']]
       end
@@ -59,7 +59,7 @@ vim.api.nvim_create_autocmd(
 )
 
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = {},
+  ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
   indent = {
     enable = false; -- uses full buffer query. 100ms latency for 10K line file
     -- disable = disable_indent,

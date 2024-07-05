@@ -210,6 +210,7 @@ augroup BasicSetup | au!
     au BufWritePost ~/.vim/configs.vim nested source ~/.vim/configs.vim
     au BufRead,BufNewFile *.k setlocal filetype=k
     au BufRead,BufNewFile *.mir setlocal syntax=rust
+    au BufRead *.pdf_tex setfiletype tex
     if has('nvim-0.5')
         au TextYankPost * silent! lua vim.highlight.on_yank()
     endif
@@ -1789,6 +1790,7 @@ endif
 
 " undotree
 let g:undotree_WindowLayout = 4
+let g:undotree_SetFocusWhenToggle = 1
 nnoremap U :<C-u>UndotreeToggle<CR>
 augroup undotree-custom | au!
     au FileType undotree let &l:statusline = ' @%{winnr()} %{t:undotree.GetStatusLine()}'

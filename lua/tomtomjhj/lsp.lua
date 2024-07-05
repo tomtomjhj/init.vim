@@ -66,7 +66,13 @@ local function build_breadcrumb(symbols, position)
     end
   end
   search(symbols)
-  return table.concat(stack, " > ")
+  local result = table.concat(stack, " > ")
+  -- texlab: \n in caption source preserved in symbol name. This seems to break statusline.
+  local nl = result:find('\n')
+  if nl then
+    result = result:sub(1, nl - 1) .. ' ...'
+  end
+  return result
 end
 
 local function update_breadcrumb()
@@ -362,7 +368,15 @@ lspconfig.lua_ls.setup(config {
 
 -- lspconfig.vimls.setup(config())
 
-lspconfig.texlab.setup(config())
+-- TODO: texlab 5.18 sends weird escape chars to completion. e.g. type "\", then boom
+lspconfig.texlab.setup(config {
+  settings = { texlab = {
+    experimental = {
+      labelDefinitionCommands = { 'axiomH', 'inferH', },
+      labelReferenceCommands = { 'ruleref', },
+    },
+  }},
+})
 
 -- NOTE: Codeaction-ed rules are recorded in .ltex_ls_cache.json.
 -- NOTE: Codeaction custom commands broken

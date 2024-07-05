@@ -17,11 +17,6 @@ local flash = require('flash')
 --   * don't map if parser not available
 --   * namp
 --     * use <M-;> to decrease
---   * omap
---     * if <Esc>-ed, then shouldn't execute 'c' operator
---   * after "fix(treesitter): include treesitter injections. Fixes #242", cannot climb up the injection.
---     Makes markdown unusable.
---     This happens because `tree_for_range` returns child tree, but there is not way to climb up to the injecting tree.
 
 flash.setup {
   modes = {

@@ -388,6 +388,7 @@ Detaching after vfork from child process N
 * yanking a line character-wise (not using `yy`) so that I can paste without trailing newline
 * appending to register to collect list of something + recording
 * select mode `<C-g>`. good for filling in snippet hole with default text. `<C-g>c<C-r>0`
+* `:h /\&`
 
 
 
@@ -427,6 +428,7 @@ Detaching after vfork from child process N
         * <https://github.com/itchyny/lightline.vim/issues/352>
         * <https://github.com/neovim/neovim/issues/16872>
 * `expand()` before passing to `filereadable()` (for `~`)
+    * but `expand()` uses wildignore
 * `useopen` applies to `CTRL-W_CTRL-]` and `:sfind` etc but I only want it for quickfix commands.
 * `formatexpr` and `indentexpr` silence errors
 * ftplugin runs before other `au FileType` because the `filetype plugin indent on` is usually invoked before defining other autocmds (so the order is not built-in).
@@ -606,6 +608,7 @@ asdf();
 
 ## treesitter grammar/query issues
 * `@function` → `@function.definition`?
+* rust doc comment `TODO` not highlighted
 
 ## cannot control composition of extmark-based highlights
 If multiple captures apply, their hightlights overlap.
@@ -1058,6 +1061,10 @@ TODO: `yy` → non-linewise paste that collapses indent. Something like `pkJ`
     * https://github.com/utilyre/barbecue.nvim
     * https://github.com/kevinhwang91/nvim-ufo
     * https://github.com/jmbuhr/otter.nvim
+    * https://github.com/folke/trouble.nvim
+      Does fzf-lua + aerial cover all of this?
+      Showing the results in nvim buffer instead of fzf can be useful.
+      But quickfix can do that too.
 * ale-like stuff
     * <https://github.com/jose-elias-alvarez/null-ls.nvim> (dead).
       Revived: <https://github.com/nvimtools/none-ls.nvim>
@@ -1122,6 +1129,12 @@ TODO: `yy` → non-linewise paste that collapses indent. Something like `pkJ`
 * https://github.com/nvim-pack/nvim-spectre
 * https://github.com/folke/neoconf.nvim
 * https://github.com/habamax/vim-shout (vim9 only). vs. asyncrun?
+* markdown preview alternatives
+    * https://github.com/wallpants/github-preview.nvim
+        * requires bun. distribute executable? <https://bun.sh/docs/bundler/executables>
+        * had to run `bun install` manually in the repository
+        * manual sync feature?
+    * https://www.reddit.com/r/neovim/comments/1cgcw3b/anyone_maintaining_iamccomarkdownpreview/
 
 ## new (n)vim stuff
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.
