@@ -7,7 +7,7 @@
 " - when CTLR-C'ed, show the output so far?
 
 command! -nargs=? -complete=customlist,fugitive#LogComplete GL call GLStart(<q-mods>, empty(trim(<q-args>)) ? '--all' : <q-args>)
-command! -nargs=? -complete=customlist,fugitive#Complete TG exe <q-mods> 'T' FugitiveShellCommand(GLSplitExpandChain(<q-args>, FugitiveWorkTree())[0])
+command! -nargs=? -complete=customlist,fugitive#Complete TG exe <q-mods> 'T' FugitiveShellCommand(['-c', 'core.pager=delta'] + GLSplitExpandChain(<q-args>, FugitiveWorkTree())[0])
 
 augroup GL | au!
   au User FugitiveChanged if exists('b:gl_args') | call GLRun() | endif

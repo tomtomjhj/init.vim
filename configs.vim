@@ -909,6 +909,7 @@ let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.5, 'yoffset': 1, 'borde
 let g:fzf_vim = {}
 let g:fzf_vim.listproc = function('tomtomjhj#qf#fzf_listproc_qf')
 " NOTE: fzf can't sidescroll https://github.com/junegunn/fzf/issues/577
+" But can toggle line wrapping with alt-/.
 let g:fzf_vim.grep_multi_line = 1
 
 nnoremap <C-g>      :<C-u>Grep<space>
@@ -1708,7 +1709,7 @@ endfunction
 call s:conflict_marker_hi()
 au colors-custom ColorScheme * call s:conflict_marker_hi()
 
-let g:fugitive_gitlab_domains = {'ssh://git.fearless.systems:9001': 'https://git.fearless.systems'} " no "git@"
+let g:fugitive_gitlab_domains = {'ssh://git.fearless.systems:9001': 'https://git.fearless.systems', 'ssh://cp-git.kaist.ac.kr:9001': 'https://cp-git.kaist.ac.kr' } " no "git@"
 " }}}
 
 " firenvim {{{
