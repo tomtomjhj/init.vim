@@ -28,6 +28,7 @@ Plug 'andymass/vim-matchup' " i%, a%, ]%, z%, g% TODO: % that seeks backward htt
 Plug 'wellle/targets.vim' " multi (e.g. ib, iq), separator, argument
 Plug 'kana/vim-textobj-user'
 Plug 'Julian/vim-textobj-variable-segment' " iv, av
+Plug 'machakann/vim-textobj-functioncall'
 Plug 'tomtomjhj/vim-commentary'
 Plug 'godlygeek/tabular', { 'on': 'Tabularize' }
 Plug 'AndrewRadev/splitjoin.vim'
@@ -627,6 +628,21 @@ function! s:rust() abort
     xnoremap <buffer><leader>fm :RustFmtRange<CR>
     Mnoremap <silent><buffer> [[ <Cmd>call tomtomjhj#rust#section(1)<CR>
     Mnoremap <silent><buffer> ]] <Cmd>call tomtomjhj#rust#section(0)<CR>
+
+    let b:textobj_functioncall_patterns = [
+      \   {
+      \     'header' : '\v\C<\h@=%(\k+%(::|\.))*\k+\!?',
+      \     'bra'    : '\v\(',
+      \     'ket'    : '\v\)',
+      \     'footer' : '',
+      \   },
+      \   {
+      \     'header' : '\v\C\<\h@=%(\k+(::|\.))*\k+\!?',
+      \     'bra'    : '\v\[',
+      \     'ket'    : '\v\]',
+      \     'footer' : '',
+      \   },
+      \ ]
 endfunction
 " }}}
 
