@@ -437,12 +437,6 @@ Detaching after vfork from child process N
 * If `lazyredraw` is set, entering cmdline-mode with a mapping doesn't update the statusline.
     * Manually: `noremap <C-g> :<C-u>Grep <Cmd>redrawstatus<CR>`
     * `redrawstatus` on `CmdlineEnter`: Mappings that enter&exit cmdline mode also trigger this. Must use `<Cmd>`.
-* vim-plug can't lazy-load lua plugins.
-    * issues
-        * `plug#load` only sources `.vim` files. <https://github.com/hrsh7th/nvim-cmp/issues/65>
-        * Order of `setup()` and `plugin/*.lua` sourcing?
-    * impatient.nvim makes lua plugin startup fast enough.
-    * <https://github.com/junegunn/vim-plug/pull/1157>
 * vim-plug does `doautocmd BufRead` when lazy-loaded plugin is loaded, which re-triggers `FileType`, etc.
   My patch 0f8833a682d1c07564927905efc49e5859c8b2e3.
 * Once a map prefix is entered, single-char mapping doesn't take the effect.
@@ -1135,6 +1129,7 @@ TODO: `yy` → non-linewise paste that collapses indent. Something like `pkJ`
         * had to run `bun install` manually in the repository
         * manual sync feature?
     * https://www.reddit.com/r/neovim/comments/1cgcw3b/anyone_maintaining_iamccomarkdownpreview/
+    * https://github.com/oflisback/obsidian-bridge.nvim
 
 ## new (n)vim stuff
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.

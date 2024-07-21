@@ -31,6 +31,7 @@ fzf.setup {
     preview = {
       vertical = "up:45%",
     },
+    backdrop = false,
   },
   keymap = {
     fzf = {

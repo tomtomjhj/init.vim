@@ -1,7 +1,7 @@
 -- An alternative implmentation of <https://github.com/folke/paint.nvim>
 -- with decoration provider
 --
--- vs. matchadd()?
+-- Not using matchadd() because it's window-local and thus cumbersome to manage.
 --
 -- Not using the new matchbufline() function because it doesn't have column limit.
 

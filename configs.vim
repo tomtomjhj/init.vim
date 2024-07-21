@@ -211,7 +211,6 @@ augroup BasicSetup | au!
     au BufWritePost ~/.vim/configs.vim nested source ~/.vim/configs.vim
     au BufRead,BufNewFile *.k setlocal filetype=k
     au BufRead,BufNewFile *.mir setlocal syntax=rust
-    au BufRead *.pdf_tex setfiletype tex
     if has('nvim-0.5')
         au TextYankPost * silent! lua vim.highlight.on_yank()
     endif
