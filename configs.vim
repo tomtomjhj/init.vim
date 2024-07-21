@@ -23,7 +23,6 @@ Plug 'tomtomjhj/pal.vim'
 Plug 'tomtomjhj/vim-sneak'
 Plug 'machakann/vim-sandwich'
 Plug 'tomtomjhj/vim-repeat' " issue #63
-Plug 'tomtomjhj/pear-tree'
 Plug 'andymass/vim-matchup' " i%, a%, ]%, z%, g% TODO: % that seeks backward https://github.com/andymass/vim-matchup/issues/49#issuecomment-470933348
 Plug 'wellle/targets.vim' " multi (e.g. ib, iq), separator, argument
 Plug 'kana/vim-textobj-user'
@@ -573,7 +572,6 @@ augroup Languages | au!
     au FileType coq-goals,coq-infos call s:coq_aux()
     au FileType go call s:go()
     au FileType haskell call s:haskell()
-    au FileType lisp let b:pear_tree_pairs = deepcopy(g:pear_tree_pairs) | call remove(b:pear_tree_pairs, "'")
     au FileType lua call s:lua()
     au FileType markdown call s:markdown()
     au FileType ocaml call s:ocaml()
@@ -619,7 +617,10 @@ function! s:rust() abort
     setlocal path+=src
     " TODO fix 'spellcapcheck' for `//!` comments, also fix <leader>sc mapping
     " TODO: matchit handle < -> non-pair
-    let b:pear_tree_pairs['|'] = {'closer': '|'}
+    inoremap <buffer><expr> < MuPairsAngleOpen()
+    inoremap <buffer><expr> > MuPairsAngleClose()
+    inoremap <buffer> ' '
+
     nnoremap <buffer><leader>C <Cmd>Make test --no-run<CR>
     xnoremap <buffer><leader>fm :RustFmtRange<CR>
     Mnoremap <silent><buffer> [[ <Cmd>call tomtomjhj#rust#section(1)<CR>
@@ -648,6 +649,10 @@ function s:c_cpp() abort
     setlocal commentstring=//%s
     silent! setlocal formatoptions+=/ " 8.2.4907
     setlocal path+=include,/usr/include
+    if &filetype !=# 'c'
+        inoremap <buffer><expr> < MuPairsAngleOpen()
+        inoremap <buffer><expr> > MuPairsAngleClose()
+    endif
 endfunction
 " }}}
 
@@ -688,11 +693,7 @@ function! s:tex() abort
     setlocal conceallevel=2
     " {[{[
     setlocal indentkeys-=] indentkeys-=} indentkeys-=\& indentkeys+=0],0}
-    " https://github.com/tmsvg/pear-tree/pull/27
-    let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), {
-                \ '$$': {'closer': '$$'},
-                \ '$': {'closer': '$'}
-                \ }, 'keep')
+    inoremap <buffer><expr> $ MuPairsDumb('$')
     nmap <buffer><silent><leader>oo :<C-u>call Zathura("<C-r>=expand("%:p:h").'/main.pdf'<CR>")<CR>
     nmap <buffer>        <leader>C <Cmd>update<CR><Plug>(vimtex-compile-ss)
     nmap <buffer>        <localleader>t <Cmd>call vimtex#fzf#run('ctli', g:fzf_layout)<CR>
@@ -781,12 +782,7 @@ function! s:pandoc() abort
     silent! call textobj#user#plugin('pandoc', s:pandoc_textobj)
     silent! TextobjPandocDefaultKeyMappings!
 
-    let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), {
-                \ '$': {'closer': '$'},
-                \ '$$': {'closer': '$$'},
-                \ '`': {'closer': '`'},
-                \ '```': {'closer': '```'},
-                \ })
+    inoremap <buffer><expr> $ MuPairsDumb('$')
 
     let b:match_words = &l:matchpairs .
                 \ ',' . '\%(^\s*\)\@<=\\begin{\(\w\+\*\?\)}' . ':' . '\%(^\s*\)\@<=\\end{\1}'
@@ -832,8 +828,6 @@ let g:coqtail_nomap = 1
 let g:coqtail_noindent_comment = 1
 let g:coqtail_tagfunc = 0
 function! s:coq_common() abort
-    let b:pear_tree_pairs = deepcopy(g:pear_tree_pairs)
-    call remove(b:pear_tree_pairs, "'")
     setlocal shiftwidth=2
     " no middle piece & comment leader
     setlocal comments=s:(*,e:*) formatoptions=qnj
@@ -1132,7 +1126,7 @@ function! ScanRubout(cmap, scanner) abort
     elseif line[to] =~# '[^(){}[\]<>''"`$|]'
         return BSWithoutSTS(from - to)
     else
-        return BSWithoutSTS(from - (to + 1)) . "\<C-R>=pear_tree#insert_mode#Backspace()\<CR>"
+        return BSWithoutSTS(from - (to + 1)) . "\<C-R>=MuPairsBS()\<CR>"
     endif
 endfunction
 
@@ -1316,14 +1310,90 @@ unlet! s:cmd
 let g:matchup_override_vimtex = 1
 let g:matchup_matchparen_offscreen = {}
 let g:matchup_matchparen_deferred = 1
-let g:pear_tree_map_special_keys = 0
-let g:pear_tree_smart_openers = 1
-let g:pear_tree_smart_backspace = 1
-let g:pear_tree_timeout = 23
-let g:pear_tree_repeatable_expand = 0
-" assumes nosmartindent
-imap <expr> <CR> match(getline('.'), '\k') >= 0 ? "\<C-G>u\<Plug>(PearTreeExpand)" : "\<Plug>(PearTreeExpand)"
-imap <BS> <Plug>(PearTreeBackspace)
+
+inoremap <expr> ( MuPairsOpen('(', ')')
+inoremap <expr> ) MuPairsClose('(', ')')
+inoremap <expr> [ MuPairsOpen('[', ']')
+inoremap <expr> ] MuPairsClose('[', ']')
+inoremap <expr> { MuPairsOpen('{', '}')
+inoremap <expr> } MuPairsClose('{', '}')
+inoremap <expr> <CR> (match(getline('.'), '\k') >= 0 ? "\<C-G>u" : "") . MuPairsCR()
+inoremap <expr> <BS> MuPairsBS()
+inoremap <expr> " MuPairsDumb('"')
+inoremap <expr> ' MuPairsDumb("'")
+inoremap <expr> ` MuPairsDumb('`')
+inoremap <C-g>(    (
+inoremap <C-g>)    )
+inoremap <C-g>[    [
+inoremap <C-g>]    ]
+inoremap <C-g>{    {
+inoremap <C-g>}    }
+inoremap <C-g><BS> <BS>
+inoremap <C-g>"    "
+inoremap <C-g>'    '
+inoremap <C-g>`    `
+
+function! MuPairsOpen(open, close) abort
+    if s:prevcurchars()[1] =~# '\k'
+        return a:open
+    endif
+    return a:open . a:close . "\<C-g>U\<Left>"
+endfunction
+function! MuPairsClose(open, close) abort
+    if s:prevcurchars()[1] ==# a:close
+        return "\<C-g>U\<Right>"
+    endif
+    return a:close
+endfunction
+function! MuPairsBS() abort
+    let [prev, cur] = s:prevcurchars()
+    if empty(prev) || empty(cur) | return "\<BS>" | endif
+    let prevcur = prev . cur
+    if index(['()', '[]', '{}', '""', "''", '``', '<>', '$$'], prevcur) >= 0
+        return "\<Del>\<BS>"
+    endif
+    return "\<BS>"
+endfunction
+function! MuPairsCR() abort
+    let [prev, cur] = s:prevcurchars()
+    if empty(prev) || empty(cur) | return "\<CR>" | endif
+    if index(['()', '[]', '{}', '<>'], prev . cur) >= 0
+        return "\<CR>\<C-c>O" " NOTE: using i_CTRL-C
+    endif
+    return "\<CR>"
+endfunction
+" NOTE: For html-like languages, use MuPairsOpen
+function! MuPairsAngleOpen() abort
+    let [prev, cur] = s:prevcurchars()
+    if prev =~# '[[:space:]=<]' || cur =~# '\k'
+        return '<'
+    endif
+    return "<>\<C-g>U\<Left>"
+endfunction
+function! MuPairsAngleClose() abort
+    let [prev, cur] = s:prevcurchars()
+    if cur !=# '>' || prev =~# '\s'
+        return '>'
+    endif
+    return "\<C-g>U\<Right>"
+endfunction
+function! MuPairsDumb(char) abort
+    let [prev, cur] = s:prevcurchars()
+    if cur ==# a:char
+        return "\<C-g>U\<Right>"
+    elseif cur =~# '\k\|[[({]' " might be opening
+        return a:char
+    elseif prev =~# '\S\&[^({[]' " might be closing or 's
+        return a:char
+    endif
+    return a:char . a:char . "\<C-g>U\<Left>"
+endfunction
+function! s:prevcurchars() abort
+    let c = s:charcol() - 1
+    if c == 0 | return ['', strcharpart(getline('.'), 0, 1)] | endif
+    let prevcur = strcharpart(getline('.'), c - 1, 2)
+    return [strcharpart(prevcur, 0, 1), strcharpart(prevcur, 1, 1)]
+endfunction
 
 " NOTE
 " - https://github.com/machakann/vim-sandwich/wiki/Magic-characters
@@ -1870,6 +1940,17 @@ else
     function! s:charidx(string, idx)
         if a:idx >= strlen(a:string) | return -1 | endif
         return s:strcharlen(strpart(a:string, 0, a:idx))
+    endfunction
+endif
+if exists('*charcol') " 8.2.2324
+    function! s:charcol() abort
+        return charcol('.')
+    endfunction
+else
+    function! s:charcol() abort
+        let c = col('.')
+        if c == 1 | return 1 | endif
+        return strchars(getline('.')[0 : c - 1 - 1], 1) + 1
     endfunction
 endif
 if exists('*strcharlen') " 8.2.2606
