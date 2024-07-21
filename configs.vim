@@ -23,7 +23,6 @@ Plug 'tomtomjhj/pal.vim'
 Plug 'tomtomjhj/vim-sneak'
 Plug 'machakann/vim-sandwich'
 Plug 'tomtomjhj/vim-repeat' " issue #63
-Plug 'tomtomjhj/pear-tree'
 Plug 'andymass/vim-matchup' " i%, a%, ]%, z%, g% TODO: % that seeks backward https://github.com/andymass/vim-matchup/issues/49#issuecomment-470933348
 Plug 'wellle/targets.vim' " multi (e.g. ib, iq), separator, argument
 Plug 'kana/vim-textobj-user'
@@ -573,7 +572,6 @@ augroup Languages | au!
     au FileType coq-goals,coq-infos call s:coq_aux()
     au FileType go call s:go()
     au FileType haskell call s:haskell()
-    au FileType lisp let b:pear_tree_pairs = deepcopy(g:pear_tree_pairs) | call remove(b:pear_tree_pairs, "'")
     au FileType lua call s:lua()
     au FileType markdown call s:markdown()
     au FileType ocaml call s:ocaml()
@@ -619,7 +617,6 @@ function! s:rust() abort
     setlocal path+=src
     " TODO fix 'spellcapcheck' for `//!` comments, also fix <leader>sc mapping
     " TODO: matchit handle < -> non-pair
-    let b:pear_tree_pairs['|'] = {'closer': '|'}
     nnoremap <buffer><leader>C <Cmd>Make test --no-run<CR>
     xnoremap <buffer><leader>fm :RustFmtRange<CR>
     Mnoremap <silent><buffer> [[ <Cmd>call tomtomjhj#rust#section(1)<CR>
@@ -688,11 +685,7 @@ function! s:tex() abort
     setlocal conceallevel=2
     " {[{[
     setlocal indentkeys-=] indentkeys-=} indentkeys-=\& indentkeys+=0],0}
-    " https://github.com/tmsvg/pear-tree/pull/27
-    let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), {
-                \ '$$': {'closer': '$$'},
-                \ '$': {'closer': '$'}
-                \ }, 'keep')
+    inoremap <buffer><expr> $ MuPairsDumb('$')
     nmap <buffer><silent><leader>oo :<C-u>call Zathura("<C-r>=expand("%:p:h").'/main.pdf'<CR>")<CR>
     nmap <buffer>        <leader>C <Cmd>update<CR><Plug>(vimtex-compile-ss)
     nmap <buffer>        <localleader>t <Cmd>call vimtex#fzf#run('ctli', g:fzf_layout)<CR>
@@ -781,12 +774,7 @@ function! s:pandoc() abort
     silent! call textobj#user#plugin('pandoc', s:pandoc_textobj)
     silent! TextobjPandocDefaultKeyMappings!
 
-    let b:pear_tree_pairs = extend(deepcopy(g:pear_tree_pairs), {
-                \ '$': {'closer': '$'},
-                \ '$$': {'closer': '$$'},
-                \ '`': {'closer': '`'},
-                \ '```': {'closer': '```'},
-                \ })
+    inoremap <buffer><expr> $ MuPairsDumb('$')
 
     let b:match_words = &l:matchpairs .
                 \ ',' . '\%(^\s*\)\@<=\\begin{\(\w\+\*\?\)}' . ':' . '\%(^\s*\)\@<=\\end{\1}'
@@ -832,8 +820,6 @@ let g:coqtail_nomap = 1
 let g:coqtail_noindent_comment = 1
 let g:coqtail_tagfunc = 0
 function! s:coq_common() abort
-    let b:pear_tree_pairs = deepcopy(g:pear_tree_pairs)
-    call remove(b:pear_tree_pairs, "'")
     setlocal shiftwidth=2
     " no middle piece & comment leader
     setlocal comments=s:(*,e:*) formatoptions=qnj
@@ -1131,7 +1117,7 @@ function! ScanRubout(cmap, scanner) abort
     elseif line[to] =~# '[^(){}[\]<>''"`$]'
         return BSWithoutSTS(from - to)
     else
-        return BSWithoutSTS(from - (to + 1)) . "\<C-R>=pear_tree#insert_mode#Backspace()\<CR>"
+        return BSWithoutSTS(from - (to + 1)) . "\<C-R>=MuPairsBS()\<CR>"
     endif
 endfunction
 
@@ -1315,14 +1301,100 @@ unlet! s:cmd
 let g:matchup_override_vimtex = 1
 let g:matchup_matchparen_offscreen = {}
 let g:matchup_matchparen_deferred = 1
-let g:pear_tree_map_special_keys = 0
-let g:pear_tree_smart_openers = 1
-let g:pear_tree_smart_backspace = 1
-let g:pear_tree_timeout = 23
-let g:pear_tree_repeatable_expand = 0
-" assumes nosmartindent
-imap <expr> <CR> match(getline('.'), '\k') >= 0 ? "\<C-G>u\<Plug>(PearTreeExpand)" : "\<Plug>(PearTreeExpand)"
-imap <BS> <Plug>(PearTreeBackspace)
+
+inoremap <expr> ( MuPairsOpen('(', ')')
+inoremap <expr> ) MuPairsClose('(', ')')
+inoremap <expr> [ MuPairsOpen('[', ']')
+inoremap <expr> ] MuPairsClose('[', ']')
+inoremap <expr> { MuPairsOpen('{', '}')
+inoremap <expr> } MuPairsClose('{', '}')
+inoremap <expr> <CR> (match(getline('.'), '\k') >= 0 ? "\<C-G>u" : "") . MuPairsCR()
+inoremap <expr> <BS> MuPairsBS()
+" TODO: customizations: vim comment with ", ' in identifier/lisp, ..., language-specific dumb pairs
+inoremap <expr> " MuPairsDumb('"')
+inoremap <expr> ' MuPairsDumb("'")
+inoremap <expr> ` MuPairsDumb('`')
+
+function! MuPairsOpen(open, close) abort
+    if MuPairsBalance(a:open, a:close) > 0
+        return a:open
+    elseif s:curchar() =~# '\k'
+        return a:open
+    endif
+    return a:open . a:close . "\<C-g>U\<Left>"
+endfunction
+function! MuPairsClose(open, close) abort
+    if s:curchar() !=# a:close
+        return a:close
+    elseif MuPairsBalance(a:open, a:close) >= 0
+        return "\<C-g>U\<Right>"
+    endif
+    return a:close
+endfunction
+function! MuPairsBS() abort
+    let cur = s:curchar()
+    if empty(cur) | return "\<BS>" | endif
+    let prev = s:prevchar()
+    if empty(prev) | return "\<BS>" | endif
+    let prevcur = prev . cur
+    if index(['""', "''", '``'], prevcur) >= 0 || (index(['pandoc', 'tex'], &filetype) >= 0 && prevcur ==# '$$')
+        return "\<Del>\<BS>"
+    elseif index(['()', '[]', '{}'], prevcur) == -1
+        return "\<BS>"
+    elseif MuPairsBalance(prev, cur) < 0
+        return "\<BS>"
+    endif
+    return "\<Del>\<BS>"
+endfunction
+function! MuPairsCR() abort
+    let cur = s:curchar()
+    if empty(cur) | return "\<CR>" | endif
+    let prev = s:prevchar()
+    if empty(prev) | return "\<CR>" | endif
+    if index(['()', '[]', '{}'], prev . cur) == -1
+        return "\<CR>"
+    endif
+    return "\<CR>\<C-c>O" " NOTE: using i_CTRL-C
+endfunction
+function! MuPairsBalance(open, close) abort
+    let openpat = '\V' . a:open
+    let closepat = '\V' . a:close
+    return searchpair(openpat, '', closepat, 'cnrm', '', line('.'), 10)
+       \ - searchpair(openpat, '', closepat, 'bnrm', '', line('.'), 10)
+endfunction
+function! MuPairsDumb(char) abort
+    if a:char ==# "'" && index(['coq', 'lisp', 'rust'], &filetype) >= 0
+        return "'"
+    endif
+    let cur = s:curchar()
+    if cur ==# a:char
+        return "\<C-g>U\<Right>"
+    elseif cur =~# '\k'
+        return a:char
+    endif
+    let prev = s:prevchar()
+    if prev =~# '\S\&[^({[]'
+        return a:char
+    endif
+    return a:char . a:char . "\<C-g>U\<Left>"
+endfunction
+if exists('*charcol') " 8.2.2324
+    function! s:prevchar() abort
+        let c = charcol('.')
+        if c == 1 | return '' | endif
+        let l = getline('.')
+        return matchstr(l, '.', byteidx(l, c - 1 - 1))
+    endfunction
+else
+    " NOTE: Returns empty string if prev char is multibyte. This actually
+    " isn't that problematic for mupairs since parens are usually 1 byte.
+    function! s:prevchar() abort
+        return matchstr(getline('.'), '\%' . (col('.') - 1) . 'c.')
+    endfunction
+endif
+function! s:curchar() abort
+    return matchstr(getline('.'), '\%' . col('.') . 'c.')
+endfunction
 
 " NOTE
 " - https://github.com/machakann/vim-sandwich/wiki/Magic-characters
