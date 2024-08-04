@@ -775,10 +775,6 @@ Error detected while processing BufReadCmd Autocommands for "*.shada"..BufReadCm
 E605: Exception not caught: ++opt not supported
 ```
 
-## lsp changetracking whole buffer
-<https://github.com/neovim/neovim/issues/27383>
-
-That seems to be the reason texlab crashes after `ggdGudG`.
 
 ## redundant `on_win`
 If some conditions are met, `on_win` is called on j/k without scrolling, which slows them down.
@@ -790,6 +786,14 @@ lua vim.api.nvim_set_decoration_provider(vim.api.nvim_create_namespace('testing'
 conditions
 * diff mode: why?
 * hlsearch: maybe for cursearch
+
+## nvim_buf_set_text undo
+When undoing nvim_buf_set_text, the cursor is put on the first non-whitespace of the starting line.
+This is quite annoying when using Venn.
+
+IMO cursor should be on either the first modified char or the last modified char.
+
+<https://github.com/neovim/neovim/pull/25119>
 
 # annoyances ingrained in vi(m)
 * `ge` ... design of inclusive/exclusive stuff
@@ -850,6 +854,10 @@ function s:CtrlW()
 endfunction
 nnoremap <expr> <C-w> <SID>CtrlW()
 ```
+
+## "nomap" mode
+Generic leader for inputing the original keys without map?
+Requires the knowledge of all builtin commands.
 
 ## custom command modifier
 (`<mods>`).

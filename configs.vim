@@ -609,13 +609,11 @@ endfunction
 " }}}
 
 " Rust {{{
-" RLS hover info is more accurate than rust-analyzer!
 " https://doc.ecoscentric.com/gnutools/doc/gdb/Rust.html
 let g:termdebugger = 'rust-gdb'
 " TODO: add completion in cargo command
 let g:cargo_shell_command_runner = 'AsyncRun -post=CW|try|cnewer|catch|endtry @'
-" https://github.com/rust-lang/rust-clippy/issues/4612
-command! -nargs=* Cclippy call cargo#cmd("+nightly clippy -Zunstable-options " . <q-args>)
+command! -nargs=* Cclippy call cargo#cmd("clippy " . <q-args>)
 command! -range=% PrettifyRustSymbol <line1>,<line2>SubstituteDict { '$SP$': '@', '$BP$': '*', '$RF$': '&', '$LT$': '<', '$GT$': '>', '$LP$': '(', '$RP$': ')', '$C$' : ',',  '$u20$': ' ', '$u5b$': '[', '$u5d$': ']', '$u7b$': '{', '$u7d$': '}', }
 function! s:rust() abort
     silent! setlocal formatoptions+=/ " 8.2.4907
@@ -1053,6 +1051,7 @@ function! PSWordMotion(motion, cnt, pre, post) abort
     if !empty(a:post) | exe 'normal!' a:post | endif
 endfunction
 
+Mnoremap <expr> 0 col('.') - 1 == match(getline('.'), '\S') ? '0' : '^'
 Mnoremap <M-0> ^w
 
 let g:sneak#s_next = 0

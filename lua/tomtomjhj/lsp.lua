@@ -1,4 +1,4 @@
--- vim.lsp.set_log_level('DEBUG')
+-- vim.lsp.set_log_level('TRACE')
 
 -- NOTE: lspconfig can be lazy-loaded in BufEnter,BufNewFile (LazyVim does this)
 

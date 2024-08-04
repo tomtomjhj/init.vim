@@ -2,7 +2,8 @@
 " * use <c-a> with set nrformats+=alpha
 " * char2nr
 function! s:SetupDigraph()
-    digraph mt 8614
+    digraph mt 8614 " ↦
+    digraph mf 8612 " ↤
     digraph Mt 10503 " ⤇
     digraph ** 8727
     digraph oo 9679
