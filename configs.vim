@@ -521,8 +521,7 @@ elseif g:ide_client == 'nvim'
         lua require("luasnip.loaders.from_lua").lazy_load { paths = "~/.vim/lsnip/" }
         lua require("luasnip").config.setup { store_selection_keys = "<C-L>", region_check_events = 'InsertEnter', delete_check_events = 'InsertLeave' }
 
-        " See cmp.lua for imap <C-l>
-        inoremap <silent> <C-h> <Cmd>lua require('luasnip').jump(-1)<CR>
+        " See cmp.lua for imap <C-l>, <C-h>
         snoremap <silent> <C-l> <Cmd>lua require('luasnip').jump(1)<CR>
         snoremap <silent> <C-h> <Cmd>lua require('luasnip').jump(-1)<CR>
     endfunction

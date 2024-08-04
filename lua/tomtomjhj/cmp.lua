@@ -20,6 +20,43 @@ local function after_iskeyword()
   return col > 0 and vim.regex([[\k]]):match_str(vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col)) ~= nil
 end
 
+local function undobreak()
+  vim.cmd [[let &g:undolevels = &g:undolevels]]
+end
+
+-- Based on cmp.confirm, but breaks undo if
+-- * it has an additionalTextEdits, or
+-- * it's a snippet
+--   * note: ideally, undo point should be set before the insertion of the trigger text,
+--     but vim doesn't undo breaking in hindsight (or prophecy)
+-- Also removed unused stuff: branch for builtin pum, callback
+local function confirm(option)
+  option = option or {}
+  option.select = option.select or false
+  option.behavior = option.behavior or cmp.get_config().confirmation.default_behavior or cmp.ConfirmBehavior.Insert
+  if cmp.core.view:visible() then
+    local e = cmp.core.view:get_selected_entry()
+    if not e and option.select then
+      e = cmp.core.view:get_first_entry()
+    end
+    if e then
+      local item = e:get_completion_item() ---@type lsp.CompletionItem
+      if (item.additionalTextEdits and #item.additionalTextEdits > 0)
+          or item.insertTextFormat == 2
+      then
+        undobreak()
+      end
+      cmp.core:confirm(e, {
+        behavior = option.behavior,
+      }, function()
+        cmp.core:complete(cmp.core:get_context({ reason = cmp.ContextReason.TriggerOnly }))
+      end)
+      return true
+    end
+  end
+  return false
+end
+
 local menu = {
   buffer = "[B]",
   nvim_lsp = "[LS]",
@@ -75,10 +112,14 @@ cmp.setup {
     -- ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     -- ['<C-f>'] = cmp.mapping.scroll_docs(4),
     -- ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-y>'] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true, -- automatically select the entry
-    },
+    ['<C-y>'] = function(fallback)
+      if not confirm {
+            behavior = cmp.ConfirmBehavior.Replace,
+            select = true, -- automatically select the entry
+          } then
+        fallback()
+      end
+    end,
     ['<Tab>'] = function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
@@ -99,20 +140,30 @@ cmp.setup {
     end,
     ['<C-l>'] = function(fallback)
       local luasnip = require'luasnip'
-      -- Try expanding before cofirm, because otherwise the snippet won't expand if
+      -- Try expanding before confirm, because otherwise the snippet won't expand if
       -- the selected (and inserted) entry has the same text as the snippet's prefix.
       if luasnip.expandable() then
         luasnip.expand()
-      elseif cmp.get_selected_entry() then
-        cmp.confirm()
+      elseif cmp.core.view:get_selected_entry() then
+        confirm()
       else
         -- Don't jump to out-of-region snippet from the past.
         luasnip.exit_out_of_region(luasnip.session.current_nodes[vim.api.nvim_get_current_buf()])
         if luasnip.jumpable(1) then
+          undobreak()
           luasnip.jump(1)
         else
           fallback()
         end
+      end
+    end,
+    ['<C-h>'] = function(fallback)
+      local luasnip = require'luasnip'
+      if luasnip.jumpable(-1) then
+        undobreak()
+        luasnip.jump(-1)
+      else
+        fallback()
       end
     end,
   },
