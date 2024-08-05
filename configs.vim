@@ -1114,7 +1114,7 @@ function! ScanRubout(cmap, scanner) abort
         return "\<C-w>"
     elseif a:cmap
         return repeat("\<BS>", from - to)
-    elseif line[to] =~# '[^(){}[\]<>''"`$]'
+    elseif line[to] =~# '[^(){}[\]<>''"`$|]'
         return BSWithoutSTS(from - to)
     else
         return BSWithoutSTS(from - (to + 1)) . "\<C-R>=MuPairsBS()\<CR>"
@@ -1129,7 +1129,7 @@ function! PrevBoundary(pat, line, from) abort
         let to = SkipPatBackward(a:line, to, '\s')
     elseif c =~# a:pat " to the left end of the current token/subword
         let to = SkipPatBackward(a:line, to, a:pat)
-    elseif c =~# '[^(){}[\]<>''"`$]'
+    elseif c =~# '[^(){}[\]<>''"`$|]'
         let to = SkipCharBackward(a:line, to, c)
     endif
     return to
@@ -1146,7 +1146,7 @@ function! NextTokenBoundary(line, from) abort
         let to = SkipPatForward(a:line, to, '\s')
     elseif c =~# '\k' " to the right end of the current token
         let to = SkipPatForward(a:line, to, '\k')
-    elseif c =~# '[^(){}[\]<>''"`$]'
+    elseif c =~# '[^(){}[\]<>''"`$|]'
         let to = SkipCharForward(a:line, to, c)
     endif
     return to
@@ -1160,7 +1160,7 @@ function! PrevTokenLeftBoundary(line, from) abort
     let c = a:line[to]
     if c =~# '\k' " to the left end of the word
         let to = SkipPatBackward(a:line, to, '\k')
-    elseif c =~# '[^(){}[\]<>''"`$]'
+    elseif c =~# '[^(){}[\]<>''"`$|]'
         let to = SkipCharBackward(a:line, to, c)
     endif
     return to
@@ -1310,13 +1310,12 @@ inoremap <expr> { MuPairsOpen('{', '}')
 inoremap <expr> } MuPairsClose('{', '}')
 inoremap <expr> <CR> (match(getline('.'), '\k') >= 0 ? "\<C-G>u" : "") . MuPairsCR()
 inoremap <expr> <BS> MuPairsBS()
-" TODO: customizations: vim comment with ", ' in identifier/lisp, ..., language-specific dumb pairs
 inoremap <expr> " MuPairsDumb('"')
 inoremap <expr> ' MuPairsDumb("'")
 inoremap <expr> ` MuPairsDumb('`')
 
 function! MuPairsOpen(open, close) abort
-    if MuPairsBalance(a:open, a:close) > 0
+    if MuPairsBalance('\V' . a:open, '\V' . a:close) > 0
         return a:open
     elseif s:curchar() =~# '\k'
         return a:open
@@ -1326,7 +1325,7 @@ endfunction
 function! MuPairsClose(open, close) abort
     if s:curchar() !=# a:close
         return a:close
-    elseif MuPairsBalance(a:open, a:close) >= 0
+    elseif MuPairsBalance('\V' . a:open, '\V' . a:close) >= 0
         return "\<C-g>U\<Right>"
     endif
     return a:close
@@ -1337,35 +1336,35 @@ function! MuPairsBS() abort
     let prev = s:prevchar()
     if empty(prev) | return "\<BS>" | endif
     let prevcur = prev . cur
-    if index(['""', "''", '``'], prevcur) >= 0 || (index(['pandoc', 'tex'], &filetype) >= 0 && prevcur ==# '$$')
+    if index(['""', "''", '``', '<>', '$$'], prevcur) >= 0
         return "\<Del>\<BS>"
-    elseif index(['()', '[]', '{}'], prevcur) == -1
-        return "\<BS>"
-    elseif MuPairsBalance(prev, cur) < 0
-        return "\<BS>"
+    elseif index(['()', '[]', '{}'], prevcur) >= 0
+        return MuPairsBalance('\V' . prev, '\V' . cur) >= 0 ? "\<Del>\<BS>" : "\<BS>"
     endif
-    return "\<Del>\<BS>"
+    return "\<BS>"
 endfunction
 function! MuPairsCR() abort
     let cur = s:curchar()
     if empty(cur) | return "\<CR>" | endif
     let prev = s:prevchar()
     if empty(prev) | return "\<CR>" | endif
-    if index(['()', '[]', '{}'], prev . cur) == -1
-        return "\<CR>"
+    if index(['()', '[]', '{}', '<>'], prev . cur) >= 0
+        return "\<CR>\<Esc>O"
     endif
-    return "\<CR>\<C-c>O" " NOTE: using i_CTRL-C
+    return "\<CR>"
 endfunction
-function! MuPairsBalance(open, close) abort
-    let openpat = '\V' . a:open
-    let closepat = '\V' . a:close
-    return searchpair(openpat, '', closepat, 'cnrm', '', line('.'), 10)
-       \ - searchpair(openpat, '', closepat, 'bnrm', '', line('.'), 10)
+function! MuPairsAngleOpen() abort
+    return s:prevchar() =~# '[^[:space:]<]' && MuPairsBalance('[^[:space:]<]\zs<', '[^-]\zs>') <= 0 ? "<>\<C-g>U\<Left>" : '<'
+endfunction
+function! MuPairsAngleClose() abort
+    if s:curchar() !=# '>'
+        return '>'
+    elseif MuPairsBalance('[^[:space:]<]\zs<', '[^-]\zs>') >= 0
+        return "\<C-g>U\<Right>"
+    endif
+    return '>'
 endfunction
 function! MuPairsDumb(char) abort
-    if a:char ==# "'" && index(['coq', 'lisp', 'rust'], &filetype) >= 0
-        return "'"
-    endif
     let cur = s:curchar()
     if cur ==# a:char
         return "\<C-g>U\<Right>"
@@ -1377,6 +1376,10 @@ function! MuPairsDumb(char) abort
         return a:char
     endif
     return a:char . a:char . "\<C-g>U\<Left>"
+endfunction
+function! MuPairsBalance(open, close) abort
+    return searchpair(a:open, '', a:close, 'cnrm', '', line('.'), 10)
+       \ - searchpair(a:open, '', a:close, 'bnrm', '', line('.'), 10)
 endfunction
 if exists('*charcol') " 8.2.2324
     function! s:prevchar() abort
