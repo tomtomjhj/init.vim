@@ -121,10 +121,17 @@ hi! link Float String
 
 hi Title gui=bold,underline cterm=bold,underline
 
+hi PmenuMatch cterm=reverse guibg=NvimDarkGrey3 gui=bold
+hi PmenuMatchSel cterm=underline,reverse guifg=NvimDarkGrey3 guibg=NvimLightGrey2 gui=bold blend=0
+
+hi CmpItemAbbrMatch gui=bold cterm=bold
+hi! link CmpItemKind NONE
+
+hi! link Sneak FlashLabel
+
 hi! link coqTerm Keyword
 hi! link coqVernacCmd Keyword
 
-hi! link Sneak FlashLabel
 
 " https://github.com/neovim/neovim/issues/26857 + tweaks for 0, 8, 15
 let s:bg = &background is# 'dark' ? 'NvimDark'  : 'NvimLight'

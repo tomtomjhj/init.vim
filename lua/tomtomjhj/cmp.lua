@@ -143,6 +143,7 @@ cmp.setup {
       -- Try expanding before confirm, because otherwise the snippet won't expand if
       -- the selected (and inserted) entry has the same text as the snippet's prefix.
       if luasnip.expandable() then
+        undobreak()
         luasnip.expand()
       elseif cmp.core.view:get_selected_entry() then
         confirm()

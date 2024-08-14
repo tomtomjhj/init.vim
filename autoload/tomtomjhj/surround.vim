@@ -1,9 +1,9 @@
 " NOTE: 8.2.3619 supports funcref/lambda for operatorfunc
 function! tomtomjhj#surround#(type, surrounding) abort
     if a:type ==# 'char'
-        let cmd_x = '`[v`]x'
+        let cmd_sel = '`[v`]'
     elseif a:type ==# 'line'
-        let cmd_x = "'[V']vg_x"
+        let cmd_sel = "'[V']vg_"
     else
         return
     endif
@@ -12,21 +12,34 @@ function! tomtomjhj#surround#(type, surrounding) abort
     let reg_save = exists('*getreginfo') ? getreginfo('"') : getreg('"')
     let ve_save = [&l:virtualedit, &g:virtualedit]
     let cb_save = &clipboard
+    let visual_save = [getpos("'<"), getpos("'>")]
 
-    let end_empty_eol = col([line("']"), "$"]) == 1
+    " NOTE: '[, '], '<, '> are difficult to work with.
     try
-        " if cursor is on the last char or eol of non-empty line, x moves the resulting cursor from eol to the last char, so use p
-        let p = (col([line("']"), "$"]) - col("']") <= 1 && !end_empty_eol)  ? 'p' : 'P'
         set clipboard= selection=inclusive ve=
-        silent exe 'noautocmd keepjumps normal!' cmd_x
-        " put the closer before the newline
-        call setreg('"', a:surrounding . (end_empty_eol ? getreg('"')[:-2] . a:surrounding . getreg('"')[-1:] : getreg('"') . a:surrounding))
+        silent exe 'noautocmd keepjumps normal!' cmd_sel
+        let end_eol_col = col([line("."), "$"])
+        let end_line_empty = end_eol_col == 1
+        " if cursor is on the last char or eol of non-empty line,
+        " x moves the resulting cursor from eol to the last char, so use p
+        let p = (end_eol_col - col(".") <= 1 && !end_line_empty) ? 'p' : 'P'
+        silent exe 'noautocmd keepjumps normal! x'
+        let surrounded = a:surrounding
+        if end_line_empty
+            " put the closer before the newline of empty line
+            let surrounded .= getreg('"')[:-2] . a:surrounding . getreg('"')[-1:]
+        else
+            let surrounded .= getreg('"') . a:surrounding
+        endif
+        call setreg('"', surrounded)
         silent exe 'noautocmd keepjumps normal!' p
     finally
         call setreg('"', reg_save)
         let &clipboard = cb_save
         let &selection = sel_save
         let [&l:virtualedit, &g:virtualedit] = ve_save
+        call setpos("'<", visual_save[0])
+        call setpos("'>", visual_save[1])
     endtry
 endfunction
 

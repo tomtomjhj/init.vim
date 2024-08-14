@@ -122,7 +122,7 @@ command! -nargs=1 Map      exe 'nmap' <q-args>     | exe 'xmap' <q-args>
 if has('vim_starting')
 set encoding=utf-8
 
-set mouse=nvi
+set mouse=nvir
 set number signcolumn=number
 set ruler showcmd
 set foldcolumn=1 foldnestmax=9 foldlevel=99
@@ -849,6 +849,7 @@ function! s:coq_common() abort
     setlocal path+=theories,_opam/lib/coq/theories,_opam/lib/coq/user-contrib/*
     call tomtomjhj#coq#mappings()
     " `make %:r.vo` to build only the files related to the current buffer
+    nnoremap <buffer><leader>C <Cmd>Make -j4 -k %:r.vo<CR>
 endfunction
 function! s:coq() abort
     setlocal foldmethod=manual
@@ -1700,6 +1701,7 @@ augroup git-custom | au!
 augroup END
 
 cnoreabbrev <expr> gd <SID>cabbrev('gd', 'Gvdiffsplit')
+" NOTE: pass -C for moved line detection
 cnoreabbrev <expr> gb <SID>cabbrev('gb', 'G blame')
 
 " TODO: matchit integration doesn't work with matchup
