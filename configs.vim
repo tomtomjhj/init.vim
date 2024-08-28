@@ -73,7 +73,7 @@ elseif g:ide_client == 'nvim'
     Plug 'williamboman/mason-lspconfig.nvim'
     Plug 'mrcjkb/rustaceanvim'
     Plug 'p00f/clangd_extensions.nvim'
-    Plug 'vigoux/ltex-ls.nvim'
+    Plug 'tomtomjhj/ltex-ls.nvim'
     Plug 'tomtomjhj/coq-lsp.nvim'
     Plug 'tomtomjhj/vscoq.nvim'
 endif
@@ -519,7 +519,7 @@ elseif g:ide_client == 'nvim'
         " TODO: sometimes snippets are not loaded? :e fixes it.
         lua require("luasnip.loaders.from_vscode").lazy_load { paths = { "~/.vim/vsnip", "~/.vim/plugged/friendly-snippets" } }
         lua require("luasnip.loaders.from_lua").lazy_load { paths = "~/.vim/lsnip/" }
-        lua require("luasnip").config.setup { store_selection_keys = "<C-L>", region_check_events = 'InsertEnter', delete_check_events = 'InsertLeave' }
+        lua require("luasnip").config.setup { cut_selection_keys = "<C-L>", region_check_events = 'InsertEnter', delete_check_events = 'InsertLeave' }
 
         " See cmp.lua for imap <C-l>, <C-h>
         snoremap <silent> <C-l> <Cmd>lua require('luasnip').jump(1)<CR>
@@ -1416,7 +1416,7 @@ else
     " NOTE: If 'hidden' is set and arg is provided, job finished + window closed doesn't wipe the buffer, in contrary to the doc:
     " > When the job has finished and no changes were made to the buffer: closing the
     " > window will wipe out the buffer.
-    command! -nargs=? -complete=shellcmd T exe <q-mods> "terminal" <q-args>
+    command! -nargs=? -complete=shellcmd T exe <q-mods> "terminal ++shell" <q-args>
 endif
 
 augroup terminal-custom | au!

@@ -209,6 +209,8 @@ Commentary
 note
 * '--git-completion-helper'-based completion (fugitive #1265) doesn't complete many things for git log e.g. --grep
 
+see also: <https://github.com/isakbm/gitgraph.nvim>
+
 ## plain text diagrams
 https://blog.regehr.org/archives/1653
 
@@ -997,6 +999,7 @@ similar stuff
 * dedicated buffer
     * <https://github.com/AndrewRadev/writable_search.vim>
     * <https://github.com/dyng/ctrlsf.vim> edit-mode
+* <https://github.com/stevearc/quicker.nvim>
 
 scribble
 * "projection": it should behave as if the edits are happening inside the listed buffer
@@ -1027,6 +1030,9 @@ it's like generalized version of `v_@-default` or `:g/pat/normal! @{reg}`
 * alternatives
     * quickfix: provides similar primitives, but doesn't support ranges
     * vim-mark: only supports patterns
+
+see also
+* <https://github.com/jake-stewart/multicursor.nvim>
 
 # todo
 

@@ -368,7 +368,6 @@ lspconfig.lua_ls.setup(config {
 
 -- lspconfig.vimls.setup(config())
 
--- TODO: texlab 5.18 sends weird escape chars to completion. e.g. type "\", then boom
 lspconfig.texlab.setup(config {
   settings = { texlab = {
     experimental = {

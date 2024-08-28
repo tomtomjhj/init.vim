@@ -1,0 +1,2 @@
+---@alias buffer integer
+---@alias window integer
