@@ -82,6 +82,8 @@ local menu = {
 --       because it's inserted as a snippet.
 --       https://github.com/hrsh7th/nvim-cmp/issues/649
 --   * workaround: use <C-n>/<C-p> and manually type "()"
+-- * sorting
+--   * https://www.reddit.com/r/neovim/comments/1f406tx/autocomplete_order_for_rust_different_in_neovim/
 
 -- NOTE: make sure that luasnip is in rtp at require'luasnip'
 

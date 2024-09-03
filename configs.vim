@@ -480,7 +480,7 @@ augroup colors-custom | au!
     " To workaround the fact that it's impossible to set default highlight to NONE,
     " set its highlight to something visually unnoticeable
     au ColorScheme * hi markdownError cterm=bold ctermbg=NONE ctermfg=NONE gui=NONE guibg=NONE guifg=NONE
-    au ColorScheme pal set notermguicolors
+    au ColorScheme pal let s:tgc = &termguicolors | set notermguicolors | au ColorSchemePre * ++once let &termguicolors = s:tgc | unlet! s:tgc
 augroup END
 
 if has('vim_starting')
@@ -1051,7 +1051,7 @@ function! PSWordMotion(motion, cnt, pre, post) abort
     if !empty(a:post) | exe 'normal!' a:post | endif
 endfunction
 
-Mnoremap <expr> 0 col('.') - 1 == match(getline('.'), '\S') ? '0' : '^'
+Mnoremap <expr> 0 index([col('.') - 1, -1], match(getline('.'), '\S')) >= 0 ? '0' : '^'
 Mnoremap <M-0> ^w
 
 let g:sneak#s_next = 0

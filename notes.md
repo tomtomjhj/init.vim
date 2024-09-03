@@ -749,7 +749,8 @@ Sometimes indentkeys are messed up too.
 So `feedkeys.call` is somehow failing during execution???
 
 ## :G blame scrollbind
-affected by the cursor of the other window displaying the same buffer
+* affected by the cursor of the other window displaying the same buffer
+* when blaming in diff mode, the blame window doesn't get filler lines inserted in the main window
 
 ## botright split window size
 * botright split changes height of existing window even if it's winfixheight
