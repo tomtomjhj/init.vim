@@ -1129,7 +1129,7 @@ function! ScanRubout(cmap, scanner) abort
         return "\<C-w>"
     elseif a:cmap
         return repeat("\<BS>", from - to)
-    elseif line[to] =~# '[^(){}[\]<>''"`$]'
+    elseif line[to] =~# '[^(){}[\]<>''"`$|]'
         return BSWithoutSTS(from - to)
     else
         return BSWithoutSTS(from - (to + 1)) . "\<C-R>=pear_tree#insert_mode#Backspace()\<CR>"
@@ -1144,7 +1144,7 @@ function! PrevBoundary(pat, line, from) abort
         let to = SkipPatBackward(a:line, to, '\s')
     elseif c =~# a:pat " to the left end of the current token/subword
         let to = SkipPatBackward(a:line, to, a:pat)
-    elseif c =~# '[^(){}[\]<>''"`$]'
+    elseif c =~# '[^(){}[\]<>''"`$|]'
         let to = SkipCharBackward(a:line, to, c)
     endif
     return to
@@ -1161,7 +1161,7 @@ function! NextTokenBoundary(line, from) abort
         let to = SkipPatForward(a:line, to, '\s')
     elseif c =~# '\k' " to the right end of the current token
         let to = SkipPatForward(a:line, to, '\k')
-    elseif c =~# '[^(){}[\]<>''"`$]'
+    elseif c =~# '[^(){}[\]<>''"`$|]'
         let to = SkipCharForward(a:line, to, c)
     endif
     return to
@@ -1175,7 +1175,7 @@ function! PrevTokenLeftBoundary(line, from) abort
     let c = a:line[to]
     if c =~# '\k' " to the left end of the word
         let to = SkipPatBackward(a:line, to, '\k')
-    elseif c =~# '[^(){}[\]<>''"`$]'
+    elseif c =~# '[^(){}[\]<>''"`$|]'
         let to = SkipCharBackward(a:line, to, c)
     endif
     return to
