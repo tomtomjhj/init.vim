@@ -8,7 +8,11 @@ endif
 
 if has('nvim-0.8')
     aunmenu PopUp.How-to\ disable\ mouse
-    aunmenu PopUp.-1-
+    if has('nvim-0.11')
+        aunmenu PopUp.-2-
+    else
+        aunmenu PopUp.-1-
+    endif
 endif
 
 if has('nvim-0.10')

@@ -345,9 +345,11 @@ lspconfig.clangd.setup(config {
 lspconfig.lua_ls.setup(config {
   on_init = function(client, initialize_result)
     base_config.on_init(client, initialize_result)
-    local path = client.workspace_folders[1].name
-    if vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc') then
-      return
+    if client.workspace_folders and client.workspace_folders[1] then
+      local path = client.workspace_folders[1].name
+      if vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc') then
+        return
+      end
     end
     client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
       runtime = { version = 'LuaJIT' },
@@ -378,7 +380,6 @@ lspconfig.texlab.setup(config {
 })
 
 -- NOTE: Codeaction-ed rules are recorded in .ltex_ls_cache.json.
--- NOTE: Codeaction custom commands broken
 -- See also https://github.com/barreiroleo/ltex_extra.nvim.
 require'ltex-ls'.setup(config {
   autostart = false,

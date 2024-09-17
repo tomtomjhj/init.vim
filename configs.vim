@@ -186,6 +186,7 @@ if has('nvim-0.5') | set undodir=~/.vim/undoo// | else | set undodir=~/.vim/undo
 set autoread
 set splitright splitbelow
 if (has('patch-8.1.2315') || has('nvim-0.5')) | set switchbuf+=uselast | endif
+if (has('patch-9.1.0572') || has('nvim-0.11')) | set tabclose+=uselast | endif
 if has('nvim-0.8') | set jumpoptions+=view | endif
 set hidden
 set lazyredraw
@@ -1436,6 +1437,8 @@ let g:sandwich#recipes += [
       \ ]
 " NOTE: ib/ab is quite slow in tex
 " NOTE: 'e' (environment) doesn't do autoindent
+" TODO: Disable this only for letters? It is useful for punctuations.
+" let g:sandwich#input_fallback = 0
 omap ib <Plug>(textobj-sandwich-auto-i)
 xmap ib <Plug>(textobj-sandwich-auto-i)
 omap ab <Plug>(textobj-sandwich-auto-a)
@@ -1681,6 +1684,7 @@ let s:url_regex = '\c\<\%([a-z][0-9A-Za-z_-]\+:\%(\/\{1,3}\|[a-z0-9%]\)\|www\d\{
 function! CursorURL() abort
     return matchstr(expand('<cWORD>'), s:url_regex)
 endfunction
+" TODO: Use nvim default gx?
 nnoremap <silent> gx :<C-u>call GXBrowse(CursorURL())<cr>
 
 " NOTE: :Fern that isn't drawer does not reuse "authority". Leaves too many garbage buffers.
@@ -2047,12 +2051,6 @@ command! -range=% Unpdf
             \|keeppatterns keepjumps <line1>,<line2>substitute/\w\zs-\n//ge
             \|call winrestview(_view)
             \|unlet _view
-
-" Doesn't work with hard wrapped list.
-command! -range=% ZulipMarkdown
-            \ keeppatterns keepjumps <line1>,<line2>substitute/^    \ze[-+*]\s/  /e
-            \|keeppatterns keepjumps <line1>,<line2>substitute/^        \ze[-+*]\s/    /e
-            \|keeppatterns keepjumps <line1>,<line2>substitute/^            \ze[-+*]\s/      /e
 
 " --wrap=auto|none|preserve
 command! -range=% -nargs=? Md

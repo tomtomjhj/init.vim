@@ -322,6 +322,16 @@ See also
     * map opener to opener + closer
     * map `<C-g>` + opener (or double opener) to opener
     * don't map closer
+* vscode doesn't do balancing.
+  It remembers auto-closed pairs, and invalidates them when cursor moves over the paren (maybe).
+  The auto-closed pairs are finalized when cursor moves out of the enclosed region.
+  Example: vscode skips the closer in the following case
+  ```
+  ()
+  (a)
+  ((a)
+  ((a?)
+  ```
 
 
 ## debugging
@@ -416,6 +426,7 @@ Detaching after vfork from child process N
 * `=` does `C-indenting` when `equalprg` is not set
     * auto-pairs adds weird indent if the previous line ends with `,`. Indent size if the size of the first word in the previous line.
         * `<CR><C-c>O` (`nosmartindent`) vs. `<CR><C-c>=ko` (`&indentexpr != ''`)
+* `i_CTRL-F` works only when `indentexpr` is set. IMO it should default to autoindent-like behavior?
 * stuff highlighted as `Normal` -> bg doesn't match in floatwin
 * recording doesn't work well with async completion → **TODO** `wildcharm`?
 * `gq` internal formatting uses `indentexpr` (not documented?)
@@ -544,6 +555,9 @@ Detaching after vfork from child process N
     * See also: <https://github.com/tpope/vim-repeat/issues/63>
 * nvim winblend in terminal puts characters from the below window in the cell, so they are copied with terminal's functionality
 * copying (to lua) or stringifying cyclic vim value is quadratic <https://github.com/ibhagwan/fzf-lua/pull/1124>
+* `a"` includes leading (or trailing) spaces.
+  Useful when deleting it (it's like 'aw').
+  Not useful when copying.
 
 
 # bugs
@@ -798,6 +812,9 @@ IMO cursor should be on either the first modified char or the last modified char
 
 <https://github.com/neovim/neovim/pull/25119>
 
+## `<C-BS>` in terminal
+it does random weird stuff
+
 # annoyances ingrained in vi(m)
 * `ge` ... design of inclusive/exclusive stuff
 * `^` vs `0`
@@ -1000,6 +1017,7 @@ similar stuff
 * dedicated buffer
     * <https://github.com/AndrewRadev/writable_search.vim>
     * <https://github.com/dyng/ctrlsf.vim> edit-mode
+    * <https://github.com/MagicDuck/grug-far.nvim>
 * <https://github.com/stevearc/quicker.nvim>
 
 scribble
@@ -1034,6 +1052,46 @@ it's like generalized version of `v_@-default` or `:g/pat/normal! @{reg}`
 
 see also
 * <https://github.com/jake-stewart/multicursor.nvim>
+
+## better inline diff
+The best is usual inline diff + additional highlighting like delta.
+* what can be added
+    * git's `--word-diff=color|plain|porcelain`
+        * `plain` kinda works, but highlight is quite broken in :syn and non-existent in tree-sitter-diff. Also it's ambiguous.
+        * `porcelain`:
+            * https://github.com/search?q=%22--word-diff%3Dporcelain%22&type=code
+        * I think usual inline diff + additional highlighting looks better than word diff format
+        * expose git's builtin --word-diff as usual inline diff format + highlights?
+    * git's `--color-moved`: git-delta just forwards this
+    * note: `--word-diff` and `--color-moved` don't work when combined??
+    * delta's word diff like stuff
+        * `delta`'s `-s` (side-by-side) does something similar to linematch
+    * ATM the best output seems to be `git diff --color-moved --color=always | delta --color-only` (after my delta fix)
+* how to get these
+    * The best format would be usual inline diff text + the hightlight positions, so that I don't need to compute the positions to add extmarks.
+      For seemless integration, it should be produced from inline diff text; then in vim I run command to add additional highlights.
+      Bu this can't utilize --color-moved
+    * parsing ansi escape code (magit-delta does this)
+        * baleia.nvim
+        * https://github.com/neovim/neovim/issues/30415
+    * Does delta support program-consumable output, e.g., json?
+        * how to preserve the inline diff format?
+          add `--color-only`;
+          but in contrary to --help, it doesn't suppress `line-numbers = true`, which can't be overriden in cli.
+          Make issue. Already tested, but not for config in .gitconfig
+          <https://github.com/dandavison/delta/blob/587fe8f0787d89c1dc499e1b9cb149d42b8fff6c/src/tests/test_example_diffs.rs#L997>
+* how to show these
+    * the text should be usual inline diff so that it can be copied as is; the only addition is highlighting in vim
+    * so `:syn` highlighting can't be used; need to use extmarks/textprop
+    * integration with fugitive, etc? Simple ftplugin would work
+* just compute in nvim?
+    * move detection: git's --color-moved=zebra (default)
+    * edit detection: delta's within-line diff
+    * linematch: already in nvim, but might as well check out delta's side-by-side
+    * Expose these features as api (`vim.diff`)
+    * Use move/edit detection to enhance diff mode highlighting.
+    * related: <https://github.com/rickhowe/diffunitsyntax>.
+        * doesn't seem to do linematch
 
 # todo
 
@@ -1133,7 +1191,6 @@ TODO: `yy` → non-linewise paste that collapses indent. Something like `pkJ`
   https://github.com/cocopon/iceberg.vim
 * https://github.com/stevearc/gkeep.nvim
 * https://github.com/m00qek/baleia.nvim
-    * TODO: Use this for better syntax highlighting for diff filetype?
 * https://github.com/kevinhwang91/nvim-bqf
 * https://github.com/nvim-pack/nvim-spectre
 * https://github.com/folke/neoconf.nvim
