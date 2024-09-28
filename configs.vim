@@ -1456,7 +1456,17 @@ endif
 
 if has('nvim')
     " NOTE: When [Process exited $EXIT_CODE] in terminal mode, pressing any key wipes the terminal buffer.
-    command! -nargs=? -complete=shellcmd T <mods> split | exe "terminal" <q-args> | if empty(<q-args>) | startinsert | endif
+    command! -nargs=? -complete=shellcmd T call Terminal(<q-mods>, <q-args>)
+    function! Terminal(mods, args) abort
+        exe a:mods 'new'
+        setlocal nonumber norelativenumber foldcolumn=0 signcolumn=no
+        if empty(a:args)
+            call termopen(ShellWords(&shell))
+            startinsert
+        else " a:args can be string or list
+            call termopen(a:args)
+        endif
+    endfunction
     " see also: https://github.com/VioletJewel/vimterm.nvim
     tnoremap <expr> <C-w> &filetype !=# 'fzf' ? TermWinKey() : "\<C-w>"
     tnoremap <expr> <M-w> TermWinKey()
@@ -1491,14 +1501,6 @@ else
     " > window will wipe out the buffer.
     command! -nargs=? -complete=shellcmd T exe <q-mods> "terminal ++shell" <q-args>
 endif
-
-augroup terminal-custom | au!
-    if has('nvim')
-        au TermOpen,WinEnter *           if &buftype is# 'terminal' | setlocal nonumber norelativenumber foldcolumn=0 signcolumn=no | endif
-    elseif exists('##TerminalWinOpen')
-        au TerminalWinOpen,BufWinEnter * if &buftype is# 'terminal' | setlocal nonumber norelativenumber foldcolumn=0 signcolumn=no | endif
-    endif
-augroup END
 
 let g:asyncrun_exit = exists('*nvim_notify') ? 'lua vim.notify(vim.g.asyncrun_status .. ": AsyncRun " .. vim.g.asyncrun_cmd)' : 'echom g:asyncrun_status . ": AsyncRun " . g:asyncrun_cmd'
 Noremap <leader>R :AsyncRun<space>
@@ -1970,6 +1972,23 @@ endif
 " helpers {{{
 function! s:cabbrev(lhs, rhs) abort
     return (getcmdtype() == ':' && getcmdline() ==# a:lhs) ? a:rhs : a:lhs
+endfunction
+" Taken from s:GitCmd() in autoload/fugitive.vim
+function! ShellWords(string) abort
+  let dquote = '"\%([^"]\|""\|\\"\)*"\|'
+  let fnameescape = has('win32') ? " \t\n*?`%#'\"|!<" : " \t\n*?[{`$\\%#'\"|!<"
+  let string = a:string
+  let list = []
+  while string =~# '\S'
+    let arg = matchstr(string, '^\s*\%(' . dquote . '''[^'']*''\|\\.\|[^' . "\t" . ' |]\)\+')
+    let string = strpart(string, len(arg))
+    let arg = substitute(arg, '^\s\+', '', '')
+    let arg = substitute(arg,
+          \ '\(' . dquote . '''\%(''''\|[^'']\)*''\|\\[' . fnameescape . ']\|^\\[>+-]\)',
+          \ '\=submatch(0)[0] ==# "\\" ? submatch(0)[1] : submatch(0)[1:-2]', 'g')
+    call add(list, arg)
+  endwhile
+  return list
 endfunction
 " }}}
 
