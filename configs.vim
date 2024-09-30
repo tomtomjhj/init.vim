@@ -1456,7 +1456,7 @@ endif
 
 if has('nvim')
     " NOTE: When [Process exited $EXIT_CODE] in terminal mode, pressing any key wipes the terminal buffer.
-    command! -nargs=? -complete=shellcmd T call Terminal(<q-mods>, <q-args>)
+    command! -nargs=? -complete=customlist,s:shellcomplete T call Terminal(<q-mods>, expandcmd(<q-args>))
     function! Terminal(mods, args) abort
         exe a:mods 'new'
         setlocal nonumber norelativenumber foldcolumn=0 signcolumn=no
@@ -1499,8 +1499,14 @@ else
     " NOTE: If 'hidden' is set and arg is provided, job finished + window closed doesn't wipe the buffer, in contrary to the doc:
     " > When the job has finished and no changes were made to the buffer: closing the
     " > window will wipe out the buffer.
-    command! -nargs=? -complete=shellcmd T exe <q-mods> "terminal ++shell" <q-args>
+    command! -nargs=? -complete=customlist,s:shellcomplete T exe <q-mods> "terminal ++shell" <q-args>
 endif
+" Unlike :!/:term completion, -complete=shellcmd doesn't complete files after the first word is given.
+" So, use :! completion by replacing the command with !.
+" :! doesn't ignore leading shell variable assignments, so do it myself. For now it doesn't handle quoted values.
+function! s:shellcomplete(A, L, P) abort
+    return getcompletion(substitute(a:L[:(a:P-1)], '\<\u\a*[![:space:]]\s*\(\w\+=\S*\s\+\)*', '!', ''), 'cmdline')
+endfunction
 
 let g:asyncrun_exit = exists('*nvim_notify') ? 'lua vim.notify(vim.g.asyncrun_status .. ": AsyncRun " .. vim.g.asyncrun_cmd)' : 'echom g:asyncrun_status . ": AsyncRun " . g:asyncrun_cmd'
 Noremap <leader>R :AsyncRun<space>
@@ -2048,8 +2054,8 @@ function! Bang(cmd, mods) abort
     call TempBuf(a:mods, ':!' . a:cmd, systemlist(a:cmd))
 endfunction
 command! -nargs=* -complete=command Execute call Execute(<q-args>, '<mods>')
-command! -nargs=* -range=% -complete=shellcmd WC <line1>,<line2>call WriteC(expandcmd(<q-args>), '<mods>')
-command! -nargs=* -complete=shellcmd Bang call Bang(expandcmd(<q-args>), '<mods>')
+command! -nargs=* -range=% -complete=customlist,s:shellcomplete WC <line1>,<line2>call WriteC(expandcmd(<q-args>), '<mods>')
+command! -nargs=* -complete=customlist,s:shellcomplete Bang call Bang(expandcmd(<q-args>), '<mods>')
 
 command! -range=% TrimWhitespace
             \ let _view = winsaveview()
