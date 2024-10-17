@@ -299,27 +299,27 @@ let s:stl_active_hl["\<C-s>"] = s:stl_active_hl['i']
 let s:stl_active_hl['t'] = s:stl_active_hl['i']
 
 function! StatuslineHighlightInit()
-    hi! STLModeNormal1  guifg=#005f00 ctermfg=22  guibg=#afdf00 ctermbg=148 gui=bold cterm=bold
-    hi! STLModeNormal2  guifg=#ffffff ctermfg=231 guibg=#626262 ctermbg=241
-    hi! STLModeNormal3  guifg=#bcbcbc ctermfg=250 guibg=#303030 ctermbg=236
-    hi! STLModeNormal4  guifg=#585858 ctermfg=240 guibg=#d0d0d0 ctermbg=252
-    hi! STLModeVisual   guifg=#870000 ctermfg=88  guibg=#ff8700 ctermbg=208 gui=bold cterm=bold
-    hi! STLModeReplace  guifg=#ffffff ctermfg=231 guibg=#df0000 ctermbg=160 gui=bold cterm=bold
-    hi! STLModeInsert1  guifg=#005f5f ctermfg=23  guibg=#ffffff ctermbg=231 gui=bold cterm=bold
-    hi! STLModeInsert2  guifg=#ffffff ctermfg=231 guibg=#0087af ctermbg=31
-    hi! STLModeInsert3  guifg=#afd7ff ctermfg=153 guibg=#005f87 ctermbg=24
-    hi! STLModeInsert4  guifg=#005f5f ctermfg=23  guibg=#87dfff ctermbg=117
-    hi! STLModeCmdline1 guifg=#262626 ctermfg=235 guibg=#ffffff ctermbg=231 gui=bold cterm=bold
-    hi! STLModeCmdline2 guifg=#303030 ctermfg=236 guibg=#d0d0d0 ctermbg=252
-    hi! STLModeCmdline3 guifg=#303030 ctermfg=236 guibg=#8a8a8a ctermbg=245
-    hi! STLModeCmdline4 guifg=#585858 ctermfg=240 guibg=#ffffff ctermbg=231
+    hi! STLModeNormal1  guifg=#005f00 ctermfg=22  guibg=#afdf00 ctermbg=148 gui=nocombine,bold cterm=nocombine,bold
+    hi! STLModeNormal2  guifg=#ffffff ctermfg=231 guibg=#626262 ctermbg=241 gui=nocombine cterm=nocombine
+    hi! STLModeNormal3  guifg=#bcbcbc ctermfg=250 guibg=#303030 ctermbg=236 gui=nocombine cterm=nocombine
+    hi! STLModeNormal4  guifg=#585858 ctermfg=240 guibg=#d0d0d0 ctermbg=252 gui=nocombine cterm=nocombine
+    hi! STLModeVisual   guifg=#870000 ctermfg=88  guibg=#ff8700 ctermbg=208 gui=nocombine,bold cterm=nocombine,bold
+    hi! STLModeReplace  guifg=#ffffff ctermfg=231 guibg=#df0000 ctermbg=160 gui=nocombine,bold cterm=nocombine,bold
+    hi! STLModeInsert1  guifg=#005f5f ctermfg=23  guibg=#ffffff ctermbg=231 gui=nocombine,bold cterm=nocombine,bold
+    hi! STLModeInsert2  guifg=#ffffff ctermfg=231 guibg=#0087af ctermbg=31  gui=nocombine cterm=nocombine
+    hi! STLModeInsert3  guifg=#afd7ff ctermfg=153 guibg=#005f87 ctermbg=24  gui=nocombine cterm=nocombine
+    hi! STLModeInsert4  guifg=#005f5f ctermfg=23  guibg=#87dfff ctermbg=117 gui=nocombine cterm=nocombine
+    hi! STLModeCmdline1 guifg=#262626 ctermfg=235 guibg=#ffffff ctermbg=231 gui=nocombine,bold cterm=nocombine,bold
+    hi! STLModeCmdline2 guifg=#303030 ctermfg=236 guibg=#d0d0d0 ctermbg=252 gui=nocombine cterm=nocombine
+    hi! STLModeCmdline3 guifg=#303030 ctermfg=236 guibg=#8a8a8a ctermbg=245 gui=nocombine cterm=nocombine
+    hi! STLModeCmdline4 guifg=#585858 ctermfg=240 guibg=#ffffff ctermbg=231 gui=nocombine cterm=nocombine
 
-    hi! STLInactive2  guifg=#8a8a8a ctermfg=245 guibg=#1c1c1c ctermbg=234
-    hi! STLInactive3  guifg=#8a8a8a ctermfg=245 guibg=#303030 ctermbg=236
-    hi! STLInactive4  guifg=#262626 ctermfg=235 guibg=#606060 ctermbg=241
+    hi! STLInactive2  guifg=#8a8a8a ctermfg=245 guibg=#1c1c1c ctermbg=234 gui=nocombine cterm=nocombine
+    hi! STLInactive3  guifg=#8a8a8a ctermfg=245 guibg=#303030 ctermbg=236 gui=nocombine cterm=nocombine
+    hi! STLInactive4  guifg=#262626 ctermfg=235 guibg=#606060 ctermbg=241 gui=nocombine cterm=nocombine
 
-    hi! STLError   guifg=#262626 ctermfg=235 guibg=#ff5f5f ctermbg=203
-    hi! STLWarning guifg=#262626 ctermfg=235 guibg=#ffaf5f ctermbg=215
+    hi! STLError   guifg=#262626 ctermfg=235 guibg=#ff5f5f ctermbg=203  gui=nocombine cterm=nocombine
+    hi! STLWarning guifg=#262626 ctermfg=235 guibg=#ffaf5f ctermbg=215  gui=nocombine cterm=nocombine
 endfunction
 call StatuslineHighlightInit()
 
