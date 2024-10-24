@@ -1124,7 +1124,7 @@ function! ScanRubout(cmap, scanner) abort
         return "\<C-w>"
     elseif a:cmap
         return repeat("\<BS>", from - to)
-    elseif line[to] =~# '[^(){}[\]<>''"`$|]'
+    elseif line[to] =~# '[^(){}[\]<>''"`$|/]'
         return BSWithoutSTS(from - to)
     else
         return BSWithoutSTS(from - (to + 1)) . "\<C-R>=MuPairsBS()\<CR>"
@@ -1139,7 +1139,7 @@ function! PrevBoundary(pat, line, from) abort
         let to = SkipPatBackward(a:line, to, '\s')
     elseif c =~# a:pat " to the left end of the current token/subword
         let to = SkipPatBackward(a:line, to, a:pat)
-    elseif c =~# '[^(){}[\]<>''"`$|]'
+    elseif c =~# '[^(){}[\]<>''"`$|/]'
         let to = SkipCharBackward(a:line, to, c)
     endif
     return to
@@ -1156,7 +1156,7 @@ function! NextTokenBoundary(line, from) abort
         let to = SkipPatForward(a:line, to, '\s')
     elseif c =~# '\k' " to the right end of the current token
         let to = SkipPatForward(a:line, to, '\k')
-    elseif c =~# '[^(){}[\]<>''"`$|]'
+    elseif c =~# '[^(){}[\]<>''"`$|/]'
         let to = SkipCharForward(a:line, to, c)
     endif
     return to
@@ -1170,7 +1170,7 @@ function! PrevTokenLeftBoundary(line, from) abort
     let c = a:line[to]
     if c =~# '\k' " to the left end of the word
         let to = SkipPatBackward(a:line, to, '\k')
-    elseif c =~# '[^(){}[\]<>''"`$|]'
+    elseif c =~# '[^(){}[\]<>''"`$|/]'
         let to = SkipCharBackward(a:line, to, c)
     endif
     return to
@@ -1501,9 +1501,8 @@ else
     " > window will wipe out the buffer.
     command! -nargs=? -complete=customlist,s:shellcomplete T exe <q-mods> "terminal ++shell" <q-args>
 endif
-" Unlike :!/:term completion, -complete=shellcmd doesn't complete files after the first word is given.
-" So, use :! completion by replacing the command with !.
-" :! doesn't ignore leading shell variable assignments, so do it myself. For now it doesn't handle quoted values.
+" Like -complete=shellcmdline, but try to ignore leading shell variable assignments.
+" For now it doesn't handle quoted values.
 function! s:shellcomplete(A, L, P) abort
     return getcompletion(substitute(a:L[:(a:P-1)], '\<\u\a*[![:space:]]\s*\(\w\+=\S*\s\+\)*', '!', ''), 'cmdline')
 endfunction
@@ -1696,6 +1695,7 @@ endfunction
 nnoremap <silent> gx :<C-u>call GXBrowse(CursorURL())<cr>
 
 " NOTE: :Fern that isn't drawer does not reuse "authority". Leaves too many garbage buffers.
+" NOTE: prefer fern-action-rename to fern-action-move for moving multiple files.
 let g:fern#default_exclude = '\v(\.glob|\.vo[sk]?|\.o)$'
 let g:fern#disable_drawer_hover_popup = 1
 let g:fern#disable_viewer_auto_duplication = 1
@@ -1728,7 +1728,6 @@ function! s:init_fern() abort
     nmap <buffer> l <Plug>(fern-action-expand)
     Map  <buffer> x <Plug>(fern-action-mark:toggle)
     nmap <buffer> X <Plug>(fern-action-mark:clear)
-    " TODO: doesn't work for pdf???
     nmap <buffer> gx <Plug>(fern-action-open:system)
     nmap <buffer> <C-n> <Plug>(fern-action-new-file)
     cmap <buffer> <C-r><C-p> <Plug>BufDir
@@ -1742,6 +1741,14 @@ function! s:init_fern() abort
     nmap <buffer> o <Plug>(fern-action-open:split)
     nmap <buffer> gO <Plug>(fern-action-open:vsplit)
     nmap <buffer> O <Plug>(fern-action-open:tabedit)
+    nnoremap <buffer><nowait> y <Cmd>call <SID>fern_yank()<CR>
+endfunction
+function! s:fern_yank() abort
+    let helper = fern#helper#new()
+    let nodes = helper.sync.get_selected_nodes()
+    let paths = map(copy(nodes), { -> v:val._path })
+    call setreg(v:register, join(paths, "\n"))
+    redraw | echo 'yanked' len(paths) 'items'
 endfunction
 
 augroup fern-custom | au!

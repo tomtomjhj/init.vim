@@ -54,6 +54,7 @@ if &background is# 'dark'
     hi QuickFixLine guifg=NvimLightGrey1 guibg=NvimDarkCyan gui=bold ctermfg=0 ctermbg=14 cterm=bold
     hi SpellBad guisp=#ff5f5f
     hi CurSearch guifg=#000000
+    hi TablineSel guibg=#151618
     " hi CurSearch guifg=NvimLightGrey1 guibg=#991199
     hi FlashLabel gui=bold guifg=NvimDarkGrey1 guibg=#d777d7 cterm=bold ctermfg=0 ctermbg=13
     if str2nr(&t_Co) >= 256
@@ -79,6 +80,7 @@ else
     hi SpellBad guisp=#991111
     hi CurSearch guifg=#ffffff
     " hi CurSearch guifg=NvimDarkGrey1 guibg=#ff5fff
+    hi TablineSel guibg=#e8e9ea
     hi FlashLabel gui=bold guifg=NvimLightGrey1 guibg=#871087  cterm=bold ctermfg=0 ctermbg=5
     if str2nr(&t_Co) >= 256
         hi Comment ctermfg=241

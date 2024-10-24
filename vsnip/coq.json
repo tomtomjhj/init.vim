@@ -2,12 +2,12 @@
   "pure": {
     "prefix": "pure",
     "description": "⌜...⌝",
-    "body": "⌜${TM_SELECTED_TEXT}$0⌝"
+    "body": "⌜ ${TM_SELECTED_TEXT}$0 ⌝"
   },
   "embed": {
     "prefix": "embed",
     "description": "⎡...⎤",
-    "body": "⎡${TM_SELECTED_TEXT}$0⎤"
+    "body": "⎡ ${TM_SELECTED_TEXT}$0 ⎤"
   },
   "sp1": {
     "prefix": "sp1",
