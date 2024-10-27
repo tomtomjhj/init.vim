@@ -139,6 +139,23 @@ asdfqwer
          < new_last
 ```
 
+## keys
+```
+lua X = {}; vim.on_key(function(key, typed) table.insert(X, key == typed and key or {key, typed}) end)
+```
+* `<80>`: `K_SPECIAL`
+    * `<fd>`: `KS_EXTRA`
+        * `h`: `KE_COMMAND`?
+        * `g`: `KE_LUA`. when map to lua function used
+    * `<fc>`: `KS_MODIFIER`.
+        * `\4`: ctrl. `<80><fc>\4L` is `<C-L>`
+* `<BS>` is `<80>kb` (`K_BS`).
+  `<C-h>` is `"\b"`.
+  `<Esc>` is `"\27"`.
+  `<CR>` is `"\r"`
+* terminal may or may not distinguish some key combinations
+    * `<C-BS>`: `"\b"` in gnome-terminal, `<80><fc>\4<80>kb` in kitty
+
 ## operators
 * use `relativenumber` for operator pending mode?
 * `:h omap-info`
@@ -753,14 +770,8 @@ Change `func1` to `func2` with `v_b_c`.
 * smoothscroll still has topline problem. 2024-02-14
     * sometimes topline is wrapped even if there is nothing to be wrapped? interesting interaction with virtual text (e.g., diagnostics)
 
-## cmp
-sometimes cmp falls into the state where `<C-n>` doesn't insert the text.
-`<C-y>` works.
-
-In that case, check `require'cmp.view.custom_entries_view'._insert`.
-Indeed the `pending` was `true`. Setting it back to `false` fixes the problem.
-Sometimes indentkeys are messed up too.
-So `feedkeys.call` is somehow failing during execution???
+## inconsistent state due when feedkeys-ed keys are interrupted
+https://github.com/hrsh7th/nvim-cmp/issues/2077
 
 ## :G blame scrollbind
 * affected by the cursor of the other window displaying the same buffer
@@ -812,8 +823,10 @@ IMO cursor should be on either the first modified char or the last modified char
 
 <https://github.com/neovim/neovim/pull/25119>
 
-## `<C-BS>` in terminal
-it does random weird stuff
+## LuaSnip corrupts undo
+<https://github.com/L3MON4D3/LuaSnip/issues/1248>
+
+also ran into "invalid bot" error from `_foldupdate`, but can't reproduce..
 
 # annoyances ingrained in vi(m)
 * `ge` ... design of inclusive/exclusive stuff

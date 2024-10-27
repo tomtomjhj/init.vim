@@ -31,3 +31,5 @@ execute 'syntax region texMathZoneTD matchgroup=texMathDelimZoneTD'
 syntax match texMathSymbol "\\Box\>"                 contained conceal cchar=☐
 syntax match texMathSymbol "\\impliedby\>"           contained conceal cchar=⇐
 syntax match texMathSymbol "\\leftsquigarrow\>"      contained conceal cchar=⇜
+" defined in vimtex/autoload/vimtex/syntax/p/amssymb.vim, but vimtex doesn't detect this package when using acmart?
+syntax match texMathSymbol "\\rightsquigarrow\>"      contained conceal cchar=⇝

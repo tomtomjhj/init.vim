@@ -92,7 +92,8 @@ local function update_breadcrumb()
     if bufnr ~= vim.api.nvim_win_get_buf(win) then return end
     local offset_encoding, symbols
     for _client_id, _result in pairs(results) do
-      if _result.error == nil then
+      -- TODO: "error" is renamed to "err". Clean up this after has('nvim-0.11')
+      if _result.err == nil and _result.error == nil then
         offset_encoding = vim.lsp.get_client_by_id(_client_id).offset_encoding
         symbols = _result.result
         break
@@ -450,8 +451,9 @@ require'vscoq'.setup {
     },
   },
   lsp = config {
-    autostart = false,
+    -- cmd = { 'vscoqtop', '-bt', '-vscoq-d', 'all' },
     -- trace = 'verbose',
+    autostart = false,
     on_attach = function(client, bufnr)
       base_config.on_attach(client, bufnr)
       vim.keymap.set({'n', 'i'}, '<C-M-j>', '<Cmd>VsCoq stepForward<CR>', { buffer = bufnr })

@@ -24,6 +24,7 @@ if has('nvim-0.11')
     silent! unmap gra
     silent! unmap gri
     silent! unmap grr
+    silent! unmap gO
     silent! iunmap <C-s>
 endif
 

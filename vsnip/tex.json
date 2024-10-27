@@ -75,37 +75,49 @@
   "mf": {
     "prefix": "mf",
     "description": "mathfrak",
-    "body": "\\mathfrak{$0}",
+    "body": "\\mathfrak{${0:${TM_SELECTED_TEXT}}}",
     "luasnip": { "wordTrig": false }
   },
   "mc": {
     "prefix": "mc",
     "description": "mathcal",
-    "body": "\\mathcal{$0}",
+    "body": "\\mathcal{${0:${TM_SELECTED_TEXT}}}",
     "luasnip": { "wordTrig": false }
   },
   "ms": {
     "prefix": "ms",
     "description": "mathscr",
-    "body": "\\mathscr{$0}",
+    "body": "\\mathscr{${0:${TM_SELECTED_TEXT}}}",
     "luasnip": { "wordTrig": false }
   },
   "bf": {
     "prefix": "bf",
     "description": "mathbf",
-    "body": "\\mathbf{$0}",
+    "body": "\\mathbf{${0:${TM_SELECTED_TEXT}}}",
     "luasnip": { "wordTrig": false }
   },
   "bb": {
     "prefix": "bb",
     "description": "mathbb",
-    "body": "\\mathbb{$0}",
+    "body": "\\mathbb{${0:${TM_SELECTED_TEXT}}}",
     "luasnip": { "wordTrig": false }
+  },
+  "em": {
+    "prefix": "em",
+    "description": "emph",
+    "body": "\\emph{${0:${TM_SELECTED_TEXT}}}",
+    "luasnip": { "wordTrig": true }
   },
   "sf": {
     "prefix": "sf",
     "description": "textsf",
-    "body": "\\textsf{$0}",
+    "body": "\\textsf{${0:${TM_SELECTED_TEXT}}}",
+    "luasnip": { "wordTrig": true }
+  },
+  "msf": {
+    "prefix": "msf",
+    "description": "mathsf",
+    "body": "\\mathsf{${0:${TM_SELECTED_TEXT}}}",
     "luasnip": { "wordTrig": false }
   },
   "tt": {
@@ -123,7 +135,7 @@
   "yf": {
     "prefix": "yf",
     "description": "symbf",
-    "body": "\\symbf{$0}",
+    "body": "\\symbf{${0:${TM_SELECTED_TEXT}}}",
     "luasnip": { "wordTrig": false }
   },
   "math": {
@@ -164,7 +176,7 @@
   "bar": {
     "prefix": "bar",
     "description": "\\bar{}",
-    "body": "\\bar{$0}",
+    "body": "\\bar{${0:${TM_SELECTED_TEXT}}}",
     "luasnip": { "wordTrig": false }
   },
   "over": {
@@ -176,7 +188,7 @@
   "hat": {
     "prefix": "hat",
     "description": "\\hat{}",
-    "body": "\\hat{$0}",
+    "body": "\\hat{${0:${TM_SELECTED_TEXT}}}",
     "luasnip": { "wordTrig": false }
   },
   "sq": {
@@ -188,7 +200,7 @@
   "mod": {
     "prefix": "mod",
     "description": "\\pmod{}",
-    "body": "\\pmod{$0}",
+    "body": "\\pmod{${0:${TM_SELECTED_TEXT}}}",
     "luasnip": { "wordTrig": false }
   },
   "norm": {

@@ -87,6 +87,8 @@ local menu = {
 
 -- NOTE: make sure that luasnip is in rtp at require'luasnip'
 
+-- see also: https://github.com/Saghen/blink.cmp
+
 vim.opt.completeopt:append('menuone')
 cmp.setup {
   completion = {
@@ -160,13 +162,11 @@ cmp.setup {
         end
       end
     end,
-    ['<C-h>'] = function(fallback)
+    ['<C-M-h>'] = function()
       local luasnip = require'luasnip'
       if luasnip.jumpable(-1) then
         undobreak()
         luasnip.jump(-1)
-      else
-        fallback()
       end
     end,
   },
