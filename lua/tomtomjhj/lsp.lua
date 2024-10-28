@@ -12,13 +12,19 @@ local function position_mark_to_api(position)
   return { position[1] - 1, position[2] }
 end
 
+local str_utfindex = vim.fn.has('nvim-0.11') == 1 and function(s, encoding, index)
+  return vim.str_utfindex(s, encoding, index, false)
+end or function(s, encoding, index)
+  return vim.lsp.util._str_utfindex_enc(s, index, encoding)
+end
+
 local function position_api_to_lsp(bufnr, position, offset_encoding)
   local row, col = unpack(position)
   local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, true)[1]
   if not line then
     return { line = 0, character = 0 }
   end
-  return { line = row, character = vim.lsp.util._str_utfindex_enc(line, col, offset_encoding) }
+  return { line = row, character = str_utfindex(line, offset_encoding, col) }
 end
 
 local function in_range(pos, range)
