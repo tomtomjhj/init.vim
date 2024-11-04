@@ -25,7 +25,7 @@ function! SetupLSP()
   xnoremap <silent><buffer><leader><tab>  :<C-u>call CocAction('rangeSelect', visualmode(),  v:true)<CR>
   xnoremap <silent><buffer>      <S-tab>  :<C-u>call CocAction('rangeSelect', visualmode(), v:false)<CR>
   nmap             <buffer><leader>ac    <Plug>(coc-codelens-action)
-  nmap     <silent><buffer><leader>ol    :<C-u>CocFzfList outline<CR>
+  nmap     <silent><buffer>gO            :<C-u>CocFzfList outline<CR>
   nmap             <buffer><leader>sb    :<C-u>CocFzfList symbols<space>
   nmap     <silent><buffer><leader>dl    :<C-U>CocFzfList diagnostics<CR>
   nmap     <silent><buffer>        [d    <Plug>(coc-diagnostic-prev)
