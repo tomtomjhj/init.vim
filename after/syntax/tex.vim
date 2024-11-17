@@ -1,6 +1,6 @@
 " per-colorscheme customization
 function! s:colors()
-    if index(['quite', 'graey'], get(g:, 'colors_name', '')) < 0
+    if index(['quite', 'graey', 'pal'], get(g:, 'colors_name', '')) < 0
         hi! def link texMathDelim Delimiter
         hi! def link texZone Special
     endif
@@ -26,6 +26,8 @@ execute 'syntax region texMathZoneTD matchgroup=texMathDelimZoneTD'
         \ 'start="\$\$"'
         \ 'end="\$\$"'
         \ 'contains=@texClusterMath keepend'
+
+syntax match texCmdRef nextgroup=texRefArg skipwhite skipnl "\%#=1\v\\%(ruleref)>"
 
 " Symbols. TODO: upstream
 syntax match texMathSymbol "\\Box\>"                 contained conceal cchar=☐

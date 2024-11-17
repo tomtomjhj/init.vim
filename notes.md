@@ -575,6 +575,10 @@ Detaching after vfork from child process N
 * `a"` includes leading (or trailing) spaces.
   Useful when deleting it (it's like 'aw').
   Not useful when copying.
+* Weird things happen if I don't key-up ctrl promptly.
+  It gets combined with the next key.
+  Example: `<C-XX>i` → `<C-XX><C-i>` (tab). If `<C-XX>` is mapping for invoking fzf, `<C-i>` selects the item on cursor.
+  Also this could lead to `<C-c>`, which breaks cmp...
 
 
 # bugs
@@ -1145,6 +1149,7 @@ TODO: `yy` → non-linewise paste that collapses indent. Something like `pkJ`
       Does fzf-lua + aerial cover all of this?
       Showing the results in nvim buffer instead of fzf can be useful.
       But quickfix can do that too.
+    * https://github.com/oskarrrrrrr/symbols.nvim
 * ale-like stuff
     * <https://github.com/jose-elias-alvarez/null-ls.nvim> (dead).
       Revived: <https://github.com/nvimtools/none-ls.nvim>
@@ -1215,6 +1220,12 @@ TODO: `yy` → non-linewise paste that collapses indent. Something like `pkJ`
         * manual sync feature?
     * https://www.reddit.com/r/neovim/comments/1cgcw3b/anyone_maintaining_iamccomarkdownpreview/
     * https://github.com/oflisback/obsidian-bridge.nvim
+* https://github.com/ColinKennedy/nvim-best-practices-plugin-template
+* https://github.com/chrisgrieser/nvim-rip-substitute
 
 ## new (n)vim stuff
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.
+
+## nvim breaking changes and deprecations
+* things that check `has('nvim-0.11')`
+* lsp client functions are not method https://github.com/neovim/neovim/commit/454ae672aad172a299dcff7c33c5e61a3b631c90

@@ -121,7 +121,7 @@ function! SetupLSP()
   nnoremap <buffer>        ]d    <cmd>lua vim.diagnostic.goto_next{float=false, severity={min=vim.diagnostic.severity.WARN}}<CR>
   nnoremap <buffer>        [D    <cmd>lua vim.diagnostic.goto_prev{float=false}<CR>
   nnoremap <buffer>        ]D    <cmd>lua vim.diagnostic.goto_next{float=false}<CR>
-  nnoremap <buffer>        <M-,> <cmd>lua vim.diagnostic.open_float(0, {scope="cursor"})<CR>
+  nnoremap <buffer>        <M-,> <cmd>lua vim.diagnostic.open_float{scope="cursor"}<CR>
   nnoremap <buffer><leader>dl    <cmd>lua require('fzf-lua').diagnostics_workspace{severity_limit=3}<CR>
   nnoremap <buffer><leader>DL    <cmd>lua require('fzf-lua').diagnostics_workspace()<CR>
 endfunction

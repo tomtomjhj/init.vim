@@ -84,6 +84,7 @@ local menu = {
 --   * workaround: use <C-n>/<C-p> and manually type "()"
 -- * sorting
 --   * https://www.reddit.com/r/neovim/comments/1f406tx/autocomplete_order_for_rust_different_in_neovim/
+-- * "insert" is not compatible with fancy lsp resolving completion stuff.. https://github.com/hrsh7th/cmp-nvim-lsp/issues/72#issuecomment-2505482892
 
 -- NOTE: make sure that luasnip is in rtp at require'luasnip'
 

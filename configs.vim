@@ -496,11 +496,11 @@ endif
 
 " Completion {{{
 if g:ide_client == 'coc'
-    let g:coc_snippet_prev = '<C-h>'
+    let g:coc_snippet_prev = '<C-M-h>'
     let g:coc_snippet_next = '<C-l>'
 
     inoremap <expr> <Tab> coc#pum#visible() ? coc#pum#next(1): <SID>check_back_space() ? '<Tab>' : '<Cmd>call coc#start()<CR>'
-    inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : <SID>check_back_space() ? '<C-h>' : '<Cmd>call coc#start()<CR>'
+    inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : <SID>check_back_space() ? '<C-M-h>' : '<Cmd>call coc#start()<CR>'
     inoremap <expr> <C-l> coc#expandableOrJumpable() ? '<Cmd>call coc#rpc#request("doKeymap", ["snippets-expand-jump",""])<CR>' : '<C-l>'
 
     function! s:check_back_space() abort
@@ -521,9 +521,9 @@ elseif g:ide_client == 'nvim'
         lua require("luasnip.loaders.from_lua").lazy_load { paths = "~/.vim/lsnip/" }
         lua require("luasnip").config.setup { cut_selection_keys = "<C-L>", region_check_events = 'InsertEnter', delete_check_events = 'InsertLeave' }
 
-        " See cmp.lua for imap <C-l>, <C-h>
+        " See cmp.lua for imap <C-l>, <C-M-h>
         snoremap <silent> <C-l> <Cmd>lua require('luasnip').jump(1)<CR>
-        snoremap <silent> <C-h> <Cmd>lua require('luasnip').jump(-1)<CR>
+        snoremap <silent> <C-M-h> <Cmd>lua require('luasnip').jump(-1)<CR>
     endfunction
 
     if has('vim_starting')
