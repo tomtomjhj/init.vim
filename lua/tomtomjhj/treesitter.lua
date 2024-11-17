@@ -1,7 +1,5 @@
 local parsers = require("nvim-treesitter.parsers")
 
-local M = {}
-
 local disable = {
   "vim",  -- less complete
 }
@@ -82,17 +80,3 @@ require'nvim-treesitter.configs'.setup {
     disable = { "c", },
   },
 }
-
---- function for textobj-user
-function M.markdown_fenced_codeblock(outer)
-  local ok, node = pcall(vim.treesitter.get_node)
-  if not ok or not node then return 0 end
-  if node:type() == 'block_continuation' then
-    node = node:parent()
-  end
-  if node:type() ~= 'code_fence_content' then return 0 end
-  local srow, _, erow, _ = node:range()
-  return {'V', {0, srow + 1 - (outer and 1 or 0), 1, 0}, {0, erow + 1 - (outer and 0 or 1), 1, 0}}
-end
-
-return M

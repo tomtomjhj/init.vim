@@ -733,6 +733,8 @@ let g:mkdp_preview_options = {
             \ 'mkit': { 'typographer': v:false },
             \ 'disable_sync_scroll': 1 }
 function! s:markdown() abort
+    nnoremap <buffer> <M-]> <Cmd>call tomtomjhj#markdown#goto('buffer')<CR>
+    nnoremap <buffer> <C-w><M-]> <Cmd>call tomtomjhj#markdown#goto('sbuffer')<CR>
     silent! call textobj#user#plugin('markdown', {
                 \ 'code': {
                 \    'select-a-function': 'tomtomjhj#markdown#FencedCodeBlocka',
