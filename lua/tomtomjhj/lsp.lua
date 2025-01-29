@@ -262,9 +262,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 local capabilities = vim.tbl_deep_extend('force', require('cmp_nvim_lsp').default_capabilities(), {
   workspace = {
     didChangeWatchedFiles = {
-      -- vim.fn.has('win32') == 1 or vim.fn.has('mac') == 1 or vim.fn.executable('fswatch') == 1,
-      -- fswatch: "event queue overflow" when running rust-analyzer
-      dynamicRegistration = false
+      dynamicRegistration = vim.fn.has('win32') == 1 or vim.fn.has('mac') == 1 or vim.fn.executable('inotifywait') == 1,
     },
   },
 })
@@ -326,21 +324,32 @@ vim.g.rustaceanvim = {
   },
 }
 
-lspconfig.pylsp.setup(config {
-  settings = { pylsp = {
-    plugins = {
-      pylint = {
-        enabled = true,
-        args = {"-dR", "-dC", "-dW0401", "-dW0511", "-dW0614", "-dW0621", "-dW0231", "-dF0401", "--generated-members=cv2.*,onnx.*,tf.*,np.*"}
-      },
-      ["flake8"] = { enabled = false },
-      mccabe = { enabled = false },
-      pycodestyle = { enabled = false },
-      pyflakes = { enabled = false },
-      rope_completion = { enabled = false },
-      yapf = { enabled = false },
+-- lspconfig.pylsp.setup(config {
+--   settings = { pylsp = {
+--     plugins = {
+--       pylint = {
+--         enabled = true,
+--         args = {"-dR", "-dC", "-dW0401", "-dW0511", "-dW0614", "-dW0621", "-dW0231", "-dF0401", "--generated-members=cv2.*,onnx.*,tf.*,np.*"}
+--       },
+--       ["flake8"] = { enabled = false },
+--       mccabe = { enabled = false },
+--       pycodestyle = { enabled = false },
+--       pyflakes = { enabled = false },
+--       rope_completion = { enabled = false },
+--       yapf = { enabled = false },
+--     }
+--   }}
+-- })
+
+-- TODO: reference() seems to exclude the reference at the cursor... confusing
+-- https://github.com/DetachHead/basedpyright/blob/aba927d9e09203ad37cb92054416e28e8dbd5a66/packages/pyright-internal/src/languageService/referencesProvider.ts#L152
+-- https://github.com/microsoft/pyright/blob/db368a1ace131372cb78d9c866ca3f5867495052/packages/pyright-internal/src/languageService/referencesProvider.ts#L152
+lspconfig.basedpyright.setup(config {
+  settings = { basedpyright = {
+    analysis = {
+      typeCheckingMode = "basic",
     }
-  }}
+  }},
 })
 
 lspconfig.clangd.setup(config {

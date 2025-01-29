@@ -85,6 +85,7 @@ local menu = {
 -- * sorting
 --   * https://www.reddit.com/r/neovim/comments/1f406tx/autocomplete_order_for_rust_different_in_neovim/
 -- * "insert" is not compatible with fancy lsp resolving completion stuff.. https://github.com/hrsh7th/cmp-nvim-lsp/issues/72#issuecomment-2505482892
+--    see also https://github.com/hrsh7th/nvim-cmp/issues/2106
 
 -- NOTE: make sure that luasnip is in rtp at require'luasnip'
 
@@ -99,6 +100,7 @@ cmp.setup {
   preselect = cmp.PreselectMode.None,
   sources = {
     { name = 'nvim_lsp' },
+    -- TODO: don't allow when only / is typed
     { name = 'path' },
     { name = 'buffer',
       option = {

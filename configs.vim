@@ -661,7 +661,7 @@ endfunction
 let g:python_highlight_all = 1
 let g:python_highlight_builtin_funcs = 0
 function! s:python() abort
-    setlocal foldmethod=indent foldnestmax=2 foldignore=
+    " setlocal foldmethod=indent foldnestmax=2 foldignore=
     setlocal formatoptions+=ro
 endfunction
 " }}}
@@ -1509,7 +1509,7 @@ function! s:shellcomplete(A, L, P) abort
     return getcompletion(substitute(a:L[:(a:P-1)], '\<\u\a*[![:space:]]\s*\(\w\+=\S*\s\+\)*', '!', ''), 'cmdline')
 endfunction
 
-let g:asyncrun_exit = exists('*nvim_notify') ? 'lua vim.notify(vim.g.asyncrun_status .. ": AsyncRun " .. vim.g.asyncrun_cmd)' : 'echom g:asyncrun_status . ": AsyncRun " . g:asyncrun_cmd'
+let g:asyncrun_exit = has('nvim') ? 'lua vim.notify(vim.g.asyncrun_status .. ": AsyncRun " .. vim.g.asyncrun_cmd)' : 'echom g:asyncrun_status . ": AsyncRun " . g:asyncrun_cmd'
 Noremap <leader>R :AsyncRun<space>
 nnoremap <leader>ST :<C-u>AsyncStop<CR>
 " https://github.com/skywind3000/asyncrun.vim/issues/232
@@ -1698,6 +1698,7 @@ nnoremap <silent> gx :<C-u>call GXBrowse(CursorURL())<cr>
 
 " NOTE: :Fern that isn't drawer does not reuse "authority". Leaves too many garbage buffers.
 " NOTE: prefer fern-action-rename to fern-action-move for moving multiple files.
+" TODO: fern-action-rename does not rename open buffers?
 let g:fern#default_exclude = '\v(\.glob|\.vo[sk]?|\.o)$'
 let g:fern#disable_drawer_hover_popup = 1
 let g:fern#disable_viewer_auto_duplication = 1
@@ -1725,6 +1726,7 @@ function! s:init_fern() abort
     endfor
     silent! vunmap <buffer> -
     nnoremap <buffer> ~ <Cmd>Fern ~<CR>
+    " TODO: cursor should be on the directory I left
     nmap <buffer> - <Plug>(fern-action-leave)
     nmap <buffer><leader><C-l> <Plug>(fern-action-reload)
     nmap <buffer> l <Plug>(fern-action-expand)
@@ -1735,6 +1737,9 @@ function! s:init_fern() abort
     cmap <buffer> <C-r><C-p> <Plug>BufDir
     " toggle both hidden and exclude
     nmap <buffer> <expr> gh '<Plug>(fern-action-exclude=)<C-u>' . (!b:fern.hidden ? '' : g:fern#default_exclude) . '<CR>' . '<Plug>(fern-action-hidden:toggle)'
+    " TODO: If the list of target nodes overflows the screen, cmdline is repeated
+    " Also, it's not in the ':' history because it uses input().
+    " It's using input() because ..?
     nmap <buffer> . <Plug>(fern-action-ex)
     nmap <buffer> g. <Plug>(fern-action-repeat)
     nmap <buffer> g? <Plug>(fern-action-help)
@@ -1886,14 +1891,8 @@ imap <M-/> <C-G>u<Plug>CommentaryInsert
 
 " etc plugins {{{
 let g:EditorConfig_exclude_patterns = ['.*[.]git/.*', 'fugitive://.*', 'scp://.*']
-if has('nvim-0.9')
-    " Disable nvim's builtin editorconfig.
-    let g:editorconfig = v:false
-    " editorconfig-vim and nvim's editorconfig use the same augroup name.
-    augroup override-editorconfig | au!
-        au SourcePost */runtime/plugin/editorconfig.lua EditorConfigEnable
-    augroup END
-endif
+" Disable nvim's builtin editorconfig.
+let g:editorconfig = v:false
 
 " undotree
 let g:undotree_WindowLayout = 4
@@ -1902,6 +1901,8 @@ nnoremap U :<C-u>UndotreeToggle<CR>
 augroup undotree-custom | au!
     au FileType undotree let &l:statusline = ' @%{winnr()} %{t:undotree.GetStatusLine()}'
 augroup END
+" TODO: when coqtail active, UndoTree content is not populated. Populated after doing an undo.
+" Happens because coqtail sets nomodifiable in WinNew (refresh)
 
 " sentencer
 let g:sentencer_filetypes = []
@@ -1919,6 +1920,7 @@ nmap m? <Plug>MarkSearchAnyPrev
 nmap m<BS> <Plug>MarkToggle
 
 " venn
+" TODO: don't let <BS> delete indentation .. this is enabled by smarttab, which is global...
 command! Venn call s:toggle_venn()
 function! s:toggle_venn() abort
     if !exists('b:venn')

@@ -579,6 +579,7 @@ Detaching after vfork from child process N
   It gets combined with the next key.
   Example: `<C-XX>i` → `<C-XX><C-i>` (tab). If `<C-XX>` is mapping for invoking fzf, `<C-i>` selects the item on cursor.
   Also this could lead to `<C-c>`, which breaks cmp...
+* `print()` is not reliable for debugging. Sometimes the output is not added to `:mess`.
 
 
 # bugs
@@ -831,6 +832,31 @@ IMO cursor should be on either the first modified char or the last modified char
 <https://github.com/L3MON4D3/LuaSnip/issues/1248>
 
 also ran into "invalid bot" error from `_foldupdate`, but can't reproduce..
+
+## multiple hit-enter from `:echo`s in job `on_exit`
+Original problem:
+fzf to enter buffer + vimtex's legacy selection ui → multiple hit-enter for the selection prompt.
+Does not happen with manual `:edit`.
+
+Minimized
+```
+nvim --clean -c 'au FileType vim echo 1 | echo 2 | echo 3'
+```
+```
+call termopen('echo 1', #{on_exit: {-> execute('edit $VIMRUNTIME/ftplugin.vim', '')}})
+```
+hit-enter prompts after printing "2" and "3".
+hit-enter is invoked in `msg_end()`. At the second `msg_end()`,
+* on_exit: `need_wait_return=true`, `no_wait_return=0`
+* manual: `need_wait_return=true`, `no_wait_return=1`.
+  When the comamnd is run manually (`nv_colon()`), `do_cmdline()` is invoked WITHOUT `DOCMD_NOWAIT`.
+
+other cases
+* what about `vim.cmd`?
+* the does not reproduce
+  ```
+  call termopen('echo 1', #{on_exit: {-> execute('echo 1 | echo 2 | echo 3', '')}})
+  ```
 
 # annoyances ingrained in vi(m)
 * `ge` ... design of inclusive/exclusive stuff
@@ -1229,3 +1255,4 @@ TODO: `yy` → non-linewise paste that collapses indent. Something like `pkJ`
 ## nvim breaking changes and deprecations
 * things that check `has('nvim-0.11')`
 * lsp client functions are not method https://github.com/neovim/neovim/commit/454ae672aad172a299dcff7c33c5e61a3b631c90
+* how to disable terminal cursor blinking?

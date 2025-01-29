@@ -44,11 +44,12 @@ function! GLStart(mods, args) abort
 
   " tip: use czz, czp to stash/pop
   " fugitive mappings recognize current line's commit only in temp files created by fugitive (SquashArgument/RebaseArgument)
+  nnoremap <buffer> cW  :<C-U>Git commit --fixup=reword:<C-R>=<SID>line_commit('.')<CR>
   nnoremap <buffer> cf  :<C-U>G commit --fixup=<C-R>=<SID>line_commit('.')<CR>
   nnoremap <buffer> cF  :<C-U><Bar>G -c sequence.editor=true rebase -i --autosquash <C-R>=<SID>line_commit('.')<CR>^<Home>G commit --fixup=<C-R>=<SID>line_commit('.')<CR>
   nnoremap <buffer> cs  :<C-U>G commit --no-edit --squash=<C-R>=<SID>line_commit('.')<CR>
   nnoremap <buffer> cS  :<C-U><Bar>G -c sequence.editor=true rebase -i --autosquash <C-R>=<SID>line_commit('.')<CR>^<Home>G commit --no-edit --squash=<C-R>=<SID>line_commit('.')<CR>
-  nnoremap <buffer> cA  :<C-U>G commit --edit --squash=<C-R>=<SID>line_commit('.')<CR>
+  nnoremap <buffer> cn  :<C-U>G commit --edit --squash=<C-R>=<SID>line_commit('.')<CR>
   nnoremap <buffer> crc :<C-U>G revert <C-R>=<SID>line_commit('.')<CR><CR>
   nnoremap <buffer> crn :<C-U>G revert --no-commit <C-R>=<SID>line_commit('.')<CR><CR>
   nnoremap <buffer> coo :<C-U>G checkout <C-R>=<SID>line_commit('.')<CR> --<CR>
