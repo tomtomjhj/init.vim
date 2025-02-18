@@ -1,0 +1,35 @@
+diff --git a/autoload/fern/internal/command/fern.vim b/autoload/fern/internal/command/fern.vim
+index de486bc..70d64cb 100644
+--- a/autoload/fern/internal/command/fern.vim
++++ b/autoload/fern/internal/command/fern.vim
+@@ -70,7 +70,7 @@ function! fern#internal#command#fern#command(mods, fargs) abort
+           \ ? right
+           \   ? printf('drawer-right:%d', tabpagenr())
+           \   : printf('drawer:%d', tabpagenr())
+-          \ : ''
++          \ : 'default' " prevent using default fresh authority
+     if drawer && g:fern#disable_drawer_tabpage_isolation
+       let fri.authority = right ? 'drawer-right:0' : 'drawer:0'
+     endif
+diff --git a/autoload/fern/internal/viewer.vim b/autoload/fern/internal/viewer.vim
+index be500b5..9307c51 100644
+--- a/autoload/fern/internal/viewer.vim
++++ b/autoload/fern/internal/viewer.vim
+@@ -46,6 +46,8 @@ function! s:init() abort
+         \ FernReveal
+         \ call fern#internal#command#reveal#command(<q-mods>, [<f-args>])
+ 
++  " bufhidden=unload instead of delete to remember states like unfolded nodes in buffer variable
++  " TODO: use getbufinfo() "lastused" to clear sufficiently old states.
+   setlocal buftype=nofile bufhidden=unload
+   setlocal noswapfile nobuflisted nomodifiable
+   setlocal signcolumn=yes
+@@ -67,7 +69,7 @@ function! s:init() abort
+   let bufname = bufname('%')
+   let fri = fern#fri#parse(bufname)
+   if empty(fri.authority)
+-    let fri.authority = sha256(localtime())[:7]
++    let fri.authority = sha256(localtime())[:7] " default fresh authority
+     let previous = bufname
+     let bufname = fern#fri#format(fri)
+     execute printf('silent! keepalt file %s', fnameescape(bufname))

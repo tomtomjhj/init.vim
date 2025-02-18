@@ -455,7 +455,7 @@ lspconfig.ocamllsp.setup(config())
 require'vscoq'.setup {
   vscoq = {
     proof = {
-      mode = 0,
+      mode = 'Manual',
       cursor = { sticky = false },
     },
   },

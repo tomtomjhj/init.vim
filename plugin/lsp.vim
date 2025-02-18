@@ -92,11 +92,11 @@ function! SetupLSP()
   " TODO adapt to 0.11 default lsp mappings
 
   " location_handler
-  nnoremap <buffer><leader>rf    <cmd>lua require('fzf-lua').lsp_references{jump_to_single_result=true}<CR>
-  nnoremap <buffer>        <M-]> <cmd>lua require('fzf-lua').lsp_definitions{jump_to_single_result=true}<CR>
-  nnoremap <buffer><leader>gd    <cmd>lua require('fzf-lua').lsp_declarations{jump_to_single_result=true}<CR>
-  nnoremap <buffer><leader>gy    <cmd>lua require('fzf-lua').lsp_typedefs{jump_to_single_result=true}<CR>
-  nnoremap <buffer><leader>gi    <cmd>lua require('fzf-lua').lsp_implementations{jump_to_single_result=true}<CR>
+  nnoremap <buffer><leader>rf    <cmd>lua require('fzf-lua').lsp_references{jump1=true}<CR>
+  nnoremap <buffer>        <M-]> <cmd>lua require('fzf-lua').lsp_definitions{jump1=true}<CR>
+  nnoremap <buffer><leader>gd    <cmd>lua require('fzf-lua').lsp_declarations{jump1=true}<CR>
+  nnoremap <buffer><leader>gy    <cmd>lua require('fzf-lua').lsp_typedefs{jump1=true}<CR>
+  nnoremap <buffer><leader>gi    <cmd>lua require('fzf-lua').lsp_implementations{jump1=true}<CR>
   " symbol_handler
   nnoremap <buffer><leader>ds    <cmd>lua require('fzf-lua').lsp_document_symbols()<CR>
   " NOTE: rust-analyzer doesn't seem to send all result with empty query (capped at 128 entries?). Must switch to live query mode.
