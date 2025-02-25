@@ -15,6 +15,11 @@
 " * show diff of unification error
 " * completion source to get names from goal/info panel
 " * compatibility with :Gedit
+" * If I type `<CR>` after `.`, then the comment closer doesn't get indentation.
+"   ```
+"     (* something that ends with period. *)
+"   ```
+"   This only happens to comments inside another statement.
 
 " NOTE:
 " * hang → send SIGINT to coq

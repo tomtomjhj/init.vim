@@ -858,6 +858,24 @@ other cases
   call termopen('echo 1', #{on_exit: {-> execute('echo 1 | echo 2 | echo 3', '')}})
   ```
 
+## vim dict serialization
+vim dict printing doesn't perfectly dedup sub dicts with the same identity.
+```
+id(b:fern.nodes[0]) id(b:fern.visible_nodes[0]) id(b:fern.root)
+```
+
+vim->lua conversion as well.
+
+```
+let a = []
+let b = [a, a]
+```
+
+## manual fold lost
+use manual folding → Gdiffsplit → diffoff → zi → original manual folds gone, residual of diff fold left
+
+fixing this would require maintaining the original manual fold while diff is active
+
 # annoyances ingrained in vi(m)
 * `ge` ... design of inclusive/exclusive stuff
 * `^` vs `0`
@@ -880,11 +898,20 @@ other cases
 There are user-level alternatives, but it's difficult to make it not break undo.
 See my `FineGrainedICtrlW()`.
 
-## hlsearch + conceal
+## conceal (cchar) highlighting
 Better interaction of `hlsearch` and conceal?
 * disable conceal when hlsearch set?
 
-I don't recall what I meant by this.
+I don't recall what I meant by that.
+
+Conceal cchar should combine with diff highlight. not even the bg is combined.
+
+note: listchar is similar.
+
+cchar doesn't get Search highlight.
+
+See also https://github.com/neovim/neovim/issues/31555
+
 
 ## better 'paragraph' and 'sentence'
 * sentence is not customizable at all
@@ -1135,6 +1162,20 @@ The best is usual inline diff + additional highlighting like delta.
     * Use move/edit detection to enhance diff mode highlighting.
     * related: <https://github.com/rickhowe/diffunitsyntax>.
         * doesn't seem to do linematch
+
+## fre + fzf
+https://github.com/camdencheek/fre
+
+maybe
+```
+fzf.fzf_exec("fre --sorted", { fzf_opts = { ['--no-sort'] = '' })
+```
+
+## full tui experience + quickfix
+* no color: `:cbuffer` https://vi.stackexchange.com/questions/24661/neovim-read-entries-from-the-terminal-into-quickfix-buffer
+    * ansi to extmark
+* false match: if the matched stuff doesn't exist (or BufReadCmd doesn't work), it shouldn't be recognized as quickfix entry
+
 
 # todo
 

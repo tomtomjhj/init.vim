@@ -93,6 +93,7 @@ Plug 'rhysd/vim-llvm'
 " etc etc
 if has('nvim')
     Plug 'nvim-lua/plenary.nvim', { 'do': 'rm -rf plugin' }
+    " Plug 'github/copilot.vim' " no support for chat
 endif
 if has('nvim') && !has('nvim-0.8')
     Plug 'antoinemadec/FixCursorHold.nvim'
@@ -532,6 +533,9 @@ elseif g:ide_client == 'nvim'
         augroup END
         xnoremap <silent> <C-l> <Cmd>call <SID>LoadLuaSnip()\|call feedkeys("<C-l>")<CR>
     endif
+
+    let g:copilot_no_tab_map = v:true
+    inoremap <silent><expr> <C-M-I> copilot#Accept("")
 endif
 " }}}
 
@@ -1095,6 +1099,9 @@ cnoremap <M-?> <C-d>
 cnoremap <M-*> <C-a>
 
 inoremap <expr> <C-u> match(getline('.'), '\S') >= 0 ? '<C-g>u<C-u>' : '<C-u>'
+
+" Make <C-f> work when using autoindent only. the last case doesn't maintain cursor position.
+inoremap <expr> <C-f> (!empty(&indentexpr) \|\| &cindent) ? '<C-f>' : getline('.') !~# '\S' ? repeat(' ', indent(prevnonblank(line('.'))) - indent(line('.'))) : "\<C-\>\<C-o>=="
 
 inoremap         <expr> <C-j>  ScanJump(0, 'NextTokenBoundary', "\<Right>")
 cnoremap         <expr> <C-j>  ScanJump(1, 'NextTokenBoundary', "")
