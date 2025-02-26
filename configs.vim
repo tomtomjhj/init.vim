@@ -1481,7 +1481,7 @@ if has('nvim')
     tnoremap <expr> <M-w> TermWinKey()
     function! TermWinKey() abort
         let count = ''
-        let ch = getcharstr()
+        let ch = keytrans(getcharstr())
         if ch !=# '0'
             while ch =~# '\d'
                 let count .= ch
@@ -1493,7 +1493,7 @@ if has('nvim')
             return repeat("\<C-w>", count ? count : 1)
         elseif ch ==# "\<C-\>"
             return repeat("\<C-\>", count ? count : 1)
-        elseif ch ==# 'N' || ch ==# "\<C-n>"
+        elseif ch ==# 'N' || ch ==# '<C-N>'
             return "\<C-\>\<C-n>" " bug: sometimes stl is not redrawn?? also happens when actually typed
         elseif ch ==# '"'
             return "\<C-\>\<C-o>" . (count ? count : '') . '"' . getcharstr() . 'p'
