@@ -198,7 +198,7 @@ set exrc secure
 if has('nvim-0.3.2') || has("patch-8.1.0360")
     set diffopt+=algorithm:histogram,indent-heuristic
 endif
-if has('nvim-0.9')
+if has('nvim-0.9') || has('patch-9.1.1072')
     " NOTE: this makes `dp` finer-grained than needed
     set diffopt+=linematch:60
 endif
@@ -2117,5 +2117,5 @@ endif
 
 command! Profile profile start profile.log | profile func * | profile file *
 command! -bang LProfile exe (<bang>1 ? 'lua require"plenary.profile".start("profile.log")' : 'lua require"plenary.profile".stop()')
-" See also: https://github.com/stevearc/profile.nvim
+" See also: https://github.com/stevearc/profile.nvim https://github.com/folke/snacks.nvim/blob/main/docs/profiler.md
 " }}}
