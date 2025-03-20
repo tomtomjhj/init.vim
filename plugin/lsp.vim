@@ -87,7 +87,7 @@ function! SetupLSP()
   setlocal formatexpr=
 
   " TODO: hover floating window width is not sufficient
-  nnoremap <buffer>        <M-.> <cmd>lua vim.lsp.buf.hover()<CR>
+  nnoremap <buffer>        <M-.> <cmd>lua vim.lsp.buf.hover{border={'','','',' ','','','',' '}}<CR>
 
   " TODO adapt to 0.11 default lsp mappings
 
@@ -111,7 +111,7 @@ function! SetupLSP()
   nnoremap <buffer><leader>rn    <cmd>lua vim.lsp.buf.rename()<CR>
   nnoremap <buffer><localleader>*    <cmd>lua vim.lsp.buf.document_highlight()<CR>
   nnoremap <buffer><localleader><CR> <cmd>lua vim.lsp.buf.clear_references()<CR>
-  inoremap <buffer>        <M-i> <cmd>lua vim.lsp.buf.signature_help()<CR>
+  inoremap <buffer>        <M-i> <cmd>lua vim.lsp.buf.signature_help{border={'','','',' ','','','',' '}}<CR>
   nnoremap <buffer>        <M-i> <cmd>lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({bufnr=0}), {bufnr=0})<CR>
   " NOTE: some commands require client side extension (vim.lsp.commands, etc), e.g. running test with rust-analyzer
   nnoremap <buffer><leader>cr    <cmd>lua vim.lsp.codelens.run()<CR>
@@ -121,7 +121,7 @@ function! SetupLSP()
   nnoremap <buffer>        ]d    <cmd>lua vim.diagnostic.goto_next{float=false, severity={min=vim.diagnostic.severity.WARN}}<CR>
   nnoremap <buffer>        [D    <cmd>lua vim.diagnostic.goto_prev{float=false}<CR>
   nnoremap <buffer>        ]D    <cmd>lua vim.diagnostic.goto_next{float=false}<CR>
-  nnoremap <buffer>        <M-,> <cmd>lua vim.diagnostic.open_float{scope="cursor"}<CR>
+  nnoremap <buffer>        <M-,> <cmd>lua vim.diagnostic.open_float{scope="cursor",border={'','','',' ','','','',' '}}<CR>
   nnoremap <buffer><leader>dl    <cmd>lua require('fzf-lua').diagnostics_workspace{severity_limit=3}<CR>
   nnoremap <buffer><leader>DL    <cmd>lua require('fzf-lua').diagnostics_workspace()<CR>
 endfunction
