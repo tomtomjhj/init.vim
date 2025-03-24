@@ -1873,6 +1873,12 @@ function! IndentObj(skipblank, header, footer) abort
         let start -= 1
     endwhile
     let start = a:header ? prevnonblank(start - 1) : nextnonblank(start)
+    " def f(a1,
+    "       a2):
+    "     body
+    while start < line && indent(start) > level
+        let start += 1
+    endwhile
     while end < line('$') && !(getline(end + 1) =~ '\S' ? indent(end + 1) < level : !a:skipblank)
         let end += 1
     endwhile
