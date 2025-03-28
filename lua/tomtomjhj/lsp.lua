@@ -12,19 +12,13 @@ local function position_mark_to_api(position)
   return { position[1] - 1, position[2] }
 end
 
-local str_utfindex = vim.fn.has('nvim-0.11') == 1 and function(s, encoding, index)
-  return vim.str_utfindex(s, encoding, index, false)
-end or function(s, encoding, index)
-  return vim.lsp.util._str_utfindex_enc(s, index, encoding)
-end
-
 local function position_api_to_lsp(bufnr, position, offset_encoding)
   local row, col = unpack(position)
   local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, true)[1]
   if not line then
     return { line = 0, character = 0 }
   end
-  return { line = row, character = str_utfindex(line, offset_encoding, col) }
+  return { line = row, character = vim.str_utfindex(line, offset_encoding, col, false) }
 end
 
 local function in_range(pos, range)
@@ -92,8 +86,7 @@ local function update_breadcrumb()
     if bufnr ~= vim.api.nvim_win_get_buf(win) then return end
     local offset_encoding, symbols
     for _client_id, _result in pairs(results) do
-      -- TODO: "error" is renamed to "err". Clean up this after has('nvim-0.11')
-      if _result.err == nil and _result.error == nil then
+      if _result.err == nil then
         offset_encoding = vim.lsp.get_client_by_id(_client_id).offset_encoding
         symbols = _result.result
         break

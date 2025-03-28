@@ -818,7 +818,7 @@ lua vim.api.nvim_set_decoration_provider(vim.api.nvim_create_namespace('testing'
 
 conditions
 * diff mode: why?
-* hlsearch: maybe for cursearch
+* hlsearch: maybe for cursearch (no longer in 0.11)
 
 ## nvim_buf_set_text undo
 When undoing nvim_buf_set_text, the cursor is put on the first non-whitespace of the starting line.

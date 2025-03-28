@@ -26,6 +26,11 @@ if has('nvim-0.11')
     silent! unmap grr
     silent! unmap gO
     silent! iunmap <C-s>
+    silent! sunmap <C-s>
+    silent! iunmap <Tab>
+    silent! sunmap <Tab>
+    silent! iunmap <S-Tab>
+    silent! sunmap <S-Tab>
 endif
 
 source ~/.vim/configs.vim
