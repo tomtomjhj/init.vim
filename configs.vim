@@ -212,6 +212,7 @@ augroup BasicSetup | au!
     au BufWritePost ~/.vim/configs.vim nested source ~/.vim/configs.vim
     au BufRead,BufNewFile *.k setlocal filetype=k
     au BufRead,BufNewFile *.mir setlocal syntax=rust
+    au BufRead,BufNewFile *.h.inc,*.cpp.inc setlocal filetype=cpp
     if has('nvim-0.5')
         au TextYankPost * silent! lua vim.highlight.on_yank()
     endif
@@ -579,9 +580,11 @@ augroup Languages | au!
     au FileType haskell call s:haskell()
     au FileType lua call s:lua()
     au FileType markdown call s:markdown()
+    au FileType mlir setlocal comments=:///,:// commentstring=//\ %s
     au FileType ocaml call s:ocaml()
     au FileType pandoc call s:pandoc()
     au FileType python call s:python()
+    au FileType tablegen setlocal comments=:///,:// commentstring=//\ %s
     au FileType tex call s:tex()
     au FileType rust call s:rust()
     au FileType vim setlocal formatoptions-=c
