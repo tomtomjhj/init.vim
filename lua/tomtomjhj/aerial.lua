@@ -33,11 +33,19 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "*",
   group = ag,
   callback = function(ev)
-    local ab = require('aerial.backends')
-    if vim.b[ev.buf].aerial_backend then
+    local backend = vim.b[ev.buf].aerial_backend
+    if backend then
       on_attach(ev.buf)
+      if backend == "treesitter" then
+        -- https://github.com/neovim/neovim/issues/33151
+        vim.treesitter.get_parser():invalidate(true)
+      end
       aerial.refetch_symbols(ev.buf)
+      -- * treesitter fetch_symbols is synchronous but non-scheduled update_position didn't work
+      -- * still not 100% reliable because lsp fetch_symbols is async
+      vim.schedule(function()
+        require('aerial.window').update_position(0, 0)
+      end)
     end
   end,
 })
-
