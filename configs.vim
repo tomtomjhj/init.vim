@@ -1,6 +1,6 @@
 " vim: set foldmethod=marker foldlevel=0:
 
-let g:nvim_latest_stable = has('nvim-0.10')
+let g:nvim_latest_stable = has('nvim-0.11')
 let g:ide_client = get(g:, 'ide_client', g:nvim_latest_stable ? 'nvim' : 'coc')
 
 if !has('nvim')
@@ -200,7 +200,10 @@ if has('nvim-0.3.2') || has("patch-8.1.0360")
 endif
 if has('nvim-0.9') || has('patch-9.1.1072')
     " NOTE: this makes `dp` finer-grained than needed
-    set diffopt+=linematch:60
+    set diffopt-=linematch:40 diffopt+=linematch:60
+endif
+if has('nvim-0.12') || has('patch-9.1.1252')
+    set diffopt-=inline:simple diffopt+=inline:char
 endif
 endif
 
@@ -1106,6 +1109,9 @@ inoremap <expr> <C-u> match(getline('.'), '\S') >= 0 ? '<C-g>u<C-u>' : '<C-u>'
 " Make <C-f> work when using autoindent only. the last case doesn't maintain cursor position.
 inoremap <expr> <C-f> (!empty(&indentexpr) \|\| &cindent) ? '<C-f>' : getline('.') !~# '\S' ? repeat(' ', indent(prevnonblank(line('.'))) - indent(line('.'))) : "\<C-\>\<C-o>=="
 
+" Paste without leading/trailing whitespace. Useful when for text copied linewise.
+inoremap <silent> <C-r><C-i> <C-r><C-p>=trim(getreg(nr2char(getchar())))<CR>
+
 inoremap         <expr> <C-j>  ScanJump(0, 'NextTokenBoundary', "\<Right>")
 cnoremap         <expr> <C-j>  ScanJump(1, 'NextTokenBoundary', "")
 inoremap         <expr> <C-k>  ScanJump(0, g:PrevTokenBoundary, "\<Left>")
@@ -1799,10 +1805,12 @@ augroup git-custom | au!
         \|nnoremap <silent><buffer>zM :<C-u>setlocal foldmethod=syntax\|unmap <lt>buffer>zM<CR>zM
         \|silent! unmap <buffer> *
         \|Mmap <buffer> <localleader>* <Plug>fugitive:*
+        \|silent! unmap <buffer> <2-LeftMouse>
     au FileType fugitiveblame setlocal cursorline
     au User FugitiveObject,FugitiveIndex
         \ silent! unmap <buffer> *
         \|Mmap <buffer> <localleader>* <Plug>fugitive:*
+        \|silent! unmap <buffer> <2-LeftMouse>
     " TODO: diff mapping for gitcommit
 augroup END
 

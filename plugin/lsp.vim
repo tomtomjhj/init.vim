@@ -118,10 +118,10 @@ function! SetupLSP()
   nnoremap <buffer><leader>cr    <cmd>lua vim.lsp.codelens.run()<CR>
 
   nnoremap <buffer><leader>ud    <cmd>lua require'tomtomjhj/lsp'.toggle_diagnostics()<CR>
-  nnoremap <buffer>        [d    <cmd>lua vim.diagnostic.goto_prev{float=false, severity={min=vim.diagnostic.severity.WARN}}<CR>
-  nnoremap <buffer>        ]d    <cmd>lua vim.diagnostic.goto_next{float=false, severity={min=vim.diagnostic.severity.WARN}}<CR>
-  nnoremap <buffer>        [D    <cmd>lua vim.diagnostic.goto_prev{float=false}<CR>
-  nnoremap <buffer>        ]D    <cmd>lua vim.diagnostic.goto_next{float=false}<CR>
+  nnoremap <buffer>        [d    <cmd>lua vim.diagnostic.jump{count=-1, float=false, severity={min=vim.diagnostic.severity.WARN}}<CR>
+  nnoremap <buffer>        ]d    <cmd>lua vim.diagnostic.jump{count=1, float=false, severity={min=vim.diagnostic.severity.WARN}}<CR>
+  nnoremap <buffer>        [D    <cmd>lua vim.diagnostic.jump{count=-1, float=false}<CR>
+  nnoremap <buffer>        ]D    <cmd>lua vim.diagnostic.jump{count=1, float=false}<CR>
   nnoremap <buffer>        <M-,> <cmd>lua vim.diagnostic.open_float{scope="cursor",border={'','','',' ','','','',' '}}<CR>
   nnoremap <buffer><leader>dl    <cmd>lua require('fzf-lua').diagnostics_workspace{severity_limit=3}<CR>
   nnoremap <buffer><leader>DL    <cmd>lua require('fzf-lua').diagnostics_workspace()<CR>

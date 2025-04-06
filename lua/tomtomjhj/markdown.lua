@@ -26,6 +26,10 @@ end
 
 ---@return {text: string, line: integer}[]
 function M.headings(bufnr)
+  if not vim.api.nvim_buf_is_loaded(bufnr) then
+    vim.fn.bufload(bufnr)
+    vim.bo[bufnr].buflisted = true
+  end
   local parser = vim.treesitter.get_parser(bufnr, 'markdown')
   if not parser then return {} end
   -- NOTE: Using aeiral's query for convenience, but this can be done with highlights query as well

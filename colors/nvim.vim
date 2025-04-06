@@ -37,6 +37,7 @@ let g:colors_name = 'nvim'
 
 if &background is# 'dark'
     hi Normal guifg=#eeeeee guibg=#151618
+    hi NormalFloat guibg=#020304
     hi Todo guibg=NvimDarkRed ctermbg=1
     hi @variable.builtin guifg=NvimLightGrey2 gui=italic cterm=italic
     hi @constant.builtin guifg=NvimLightGrey2 gui=italic cterm=italic
@@ -49,8 +50,6 @@ if &background is# 'dark'
     hi DiffChange guibg=#333435 guifg=NONE
     hi MatchParen guibg=#333435
     hi Visual guibg=#55585e
-    hi PmenuMatch cterm=reverse guibg=NvimDarkGrey3 gui=bold
-    hi PmenuMatchSel cterm=underline,reverse guifg=NvimDarkGrey3 guibg=NvimLightGrey2 gui=bold blend=0
     hi QuickFixLine guifg=NvimLightGrey1 guibg=NvimDarkCyan gui=bold ctermfg=0 ctermbg=14 cterm=bold
     hi SpellBad guisp=#ff5f5f
     hi CurSearch guifg=#000000
@@ -74,8 +73,6 @@ else
     hi DiffChange guibg=#b7b8b9 guifg=NONE
     hi MatchParen guibg=#b7b8b9
     hi Visual guibg=#94979e
-    hi PmenuMatch cterm=reverse guibg=NvimLightGrey3 gui=bold
-    hi PmenuMatchSel cterm=underline,reverse guifg=NvimLightGrey3 guibg=NvimDarkGrey2 gui=bold blend=0
     hi QuickFixLine guifg=NvimDarkGrey1 guibg=NvimLightCyan gui=bold ctermfg=15 ctermbg=6 cterm=bold
     hi SpellBad guisp=#991111
     hi CurSearch guifg=#ffffff
@@ -129,6 +126,11 @@ hi Title gui=bold,underline cterm=bold,underline
 
 hi CmpItemAbbrMatch gui=bold cterm=bold
 hi! link CmpItemKind NONE
+
+hi! link diffFile Statement
+hi! link diffOldFile Function
+hi! link diffNewFile Function
+hi! link diffIndexLine Comment
 
 hi! link Sneak FlashLabel
 
