@@ -216,8 +216,8 @@ augroup BasicSetup | au!
     au BufRead,BufNewFile *.k setlocal filetype=k
     au BufRead,BufNewFile *.mir setlocal syntax=rust
     au BufRead,BufNewFile *.h.inc,*.cpp.inc setlocal filetype=cpp
-    if has('nvim-0.5')
-        au TextYankPost * silent! lua vim.highlight.on_yank()
+    if has('nvim-0.11')
+        au TextYankPost * silent! lua vim.hl.on_yank()
     endif
 augroup END
 
@@ -417,24 +417,19 @@ function! STLBufState() abort
 endfunction
 function! SearchCount()
     if !v:hlsearch | return '' | endif
-    try
-        let result = searchcount(#{recompute: 1, maxcount: -1})
-        if empty(result) || result.total ==# 0
-            return ''
-        endif
-        if result.incomplete ==# 1
-            return printf('[?/??]')
-        elseif result.incomplete ==# 2
-            if result.total > result.maxcount && result.current > result.maxcount
-                return printf('[>%d/>%d]', result.current, result.total)
-            elseif result.total > result.maxcount
-                return printf('[%d/>%d]', result.current, result.total)
-            endif
-        endif
-        return printf('[%d/%d]', result.current, result.total)
-    catch
+    let result = searchcount(#{recompute: 0})
+    if empty(result) || result.total ==# 0
         return ''
-    endtry
+    elseif result.incomplete ==# 1
+        return printf('[?/??]')
+    elseif result.incomplete ==# 2 && result.total > result.maxcount
+        if result.current > result.maxcount
+            return printf('[>%d/>%d]', result.maxcount, result.maxcount)
+        else
+            return printf('[%d/>%d]', result.current, result.maxcount)
+        endif
+    endif
+    return printf('[%d/%d]', result.current, result.total)
 endfunction
 
 " sets b:stl_git for real files that may be tracked by some git repo
@@ -485,7 +480,6 @@ augroup colors-custom | au!
     " To workaround the fact that it's impossible to set default highlight to NONE,
     " set its highlight to something visually unnoticeable
     au ColorScheme * hi markdownError cterm=bold ctermbg=NONE ctermfg=NONE gui=NONE guibg=NONE guifg=NONE
-    au ColorScheme pal let s:tgc = &termguicolors | set notermguicolors | au ColorSchemePre * ++once let &termguicolors = s:tgc | unlet! s:tgc
 augroup END
 
 if has('vim_starting')
@@ -1715,7 +1709,8 @@ nnoremap <silent> gx :<C-u>call GXBrowse(CursorURL())<cr>
 " NOTE: :Fern that isn't drawer does not reuse "authority". Leaves too many garbage buffers.
 " NOTE: prefer fern-action-rename to fern-action-move for moving multiple files.
 " TODO: fern-action-rename does not rename open buffers?
-let g:fern#default_exclude = '\v(\.glob|\.vo[sk]?|\.o)$'
+" TODO: fern-action-rename is slow
+let g:fern#default_exclude = '\v(__pycache__|\.glob|\.vo[sk]?|\.o)$'
 let g:fern#disable_drawer_hover_popup = 1
 let g:fern#disable_viewer_auto_duplication = 1
 let g:fern#disable_viewer_spinner = 1 " runs timer even when idle
