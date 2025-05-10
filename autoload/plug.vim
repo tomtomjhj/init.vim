@@ -1285,7 +1285,7 @@ function! s:update_finish()
         let current = s:git_local_branch(spec.dir)
         let branch = s:git_origin_branch(spec)
         " Don't checkout to origin HEAD if on differnt branch
-        if branch !=# current
+        if empty(spec.branch) && branch !=# current
           let out .= printf("Not updating. current: %s, origin: %s\n", current, branch)
         else
           " Stash if dirty.

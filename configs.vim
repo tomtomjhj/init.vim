@@ -68,8 +68,8 @@ elseif g:ide_client == 'nvim'
     Plug 'L3MON4D3/LuaSnip', { 'on': [] }
     Plug 'saadparwaiz1/cmp_luasnip', { 'on': [] }
     Plug 'neovim/nvim-lspconfig'
-    Plug 'williamboman/mason.nvim'
-    Plug 'williamboman/mason-lspconfig.nvim'
+    Plug 'mason-org/mason.nvim', {'branch': 'v1.x'}
+    Plug 'mason-org/mason-lspconfig.nvim', {'branch': 'v1.x'}
     Plug 'mrcjkb/rustaceanvim'
     Plug 'p00f/clangd_extensions.nvim'
     Plug 'tomtomjhj/ltex-ls.nvim'
