@@ -67,7 +67,7 @@ elseif g:ide_client == 'nvim'
     Plug 'hrsh7th/cmp-path'
     Plug 'L3MON4D3/LuaSnip', { 'on': [] }
     Plug 'saadparwaiz1/cmp_luasnip', { 'on': [] }
-    Plug 'neovim/nvim-lspconfig'
+    Plug 'neovim/nvim-lspconfig', {'commit': 'v2.0.0~'}
     Plug 'mason-org/mason.nvim', {'branch': 'v1.x'}
     Plug 'mason-org/mason-lspconfig.nvim', {'branch': 'v1.x'}
     Plug 'mrcjkb/rustaceanvim'
