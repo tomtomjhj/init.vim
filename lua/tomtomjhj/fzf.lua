@@ -56,6 +56,13 @@ fzf.setup {
     builtin = { syntax = false },
   },
 
+  actions = {
+    files = {
+      true, -- inherit defaults
+      ["alt-f"] = false, -- M-b and M-f for cursor
+    }
+  },
+
   -- providers
   default = {
     file_icons = false,
