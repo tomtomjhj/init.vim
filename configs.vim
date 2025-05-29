@@ -87,7 +87,6 @@ Plug 'neovimhaskell/haskell-vim'
 Plug 'tomtomjhj/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'lervag/vimtex'
 Plug 'tomtomjhj/Coqtail'
-" Plug 'puremourning/vimspector' | let g:vimspector_enable_mappings = 'HUMAN'
 Plug 'rhysd/vim-llvm'
 
 " etc etc
@@ -105,6 +104,9 @@ if g:nvim_latest_stable
     Plug 'stevearc/aerial.nvim'
     Plug 'jbyuki/venn.nvim'
     Plug 'folke/flash.nvim'
+    Plug 'mfussenegger/nvim-dap', {'on': []}
+    Plug 'igorlfs/nvim-dap-view', {'on': []}
+    Plug 'mfussenegger/nvim-dap-python'
 endif
 
 " NOTE: This runs `filetype plugin indent on`, which registers au FileType.
@@ -565,6 +567,24 @@ nmap ]d <Plug>(ale_next_wrap)
 nmap [d <Plug>(ale_previous_wrap)
 " }}}
 
+" dap {{{
+if g:nvim_latest_stable && has('vim_starting')
+" Lazy load dap. Use the command name provided by nvim-dap(-view) as entrypoint.
+" TODO: What about lsp-provided debuggables (e.g., via rustaceanvim)?
+" Load dap on LspAttach? Or, make 'dap' and 'dap-view' modules to hijack the require()s?
+function! s:LoadDap() abort
+    for entrypoint in ['DapNew', 'DapContinue', 'DapToggleBreakpoint', 'DapViewOpen', 'DapViewToggle']
+        exe 'delcommand' entrypoint
+    endfor
+    call plug#load('nvim-dap', 'nvim-dap-view')
+    lua require('tomtomjhj/dap')
+endfunction
+for s:entrypoint in ['DapNew', 'DapContinue', 'DapToggleBreakpoint', 'DapViewOpen', 'DapViewToggle']
+    exe printf('command -nargs=0 %s call s:LoadDap() | %s', s:entrypoint, s:entrypoint)
+endfor
+endif
+" }}}
+
 " Languages {{{
 " see also {,after/}{indent,ftplugin}/, SetupLSP(), SetupLSPPost()
 augroup Languages | au!
@@ -612,7 +632,6 @@ endfunction
 
 " Rust {{{
 " https://doc.ecoscentric.com/gnutools/doc/gdb/Rust.html
-let g:termdebugger = 'rust-gdb'
 " TODO: add completion in cargo command
 let g:cargo_shell_command_runner = 'AsyncRun -post=CW|try|cnewer|catch|endtry @'
 command! -nargs=* Cclippy call cargo#cmd("clippy " . <q-args>)
