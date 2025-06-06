@@ -262,10 +262,13 @@ local capabilities = vim.tbl_deep_extend('force', require('cmp_nvim_lsp').defaul
 
 local codelens_autocmds = vim.api.nvim_create_augroup("tomtomjhj/lsp-codelens", { clear = true })
 
+-- "cmd" is required in vim.lsp.ClientConfig. Make it optional
+---@class PartialClientConfig: vim.lsp.ClientConfig
+---@field cmd? string[]|fun(dispatchers: vim.lsp.rpc.Dispatchers): vim.lsp.rpc.PublicClient
+
+---@type PartialClientConfig
 local base_config = {
   on_init = function(client, initialize_result)
-    -- Disable semantic highlight for now.
-    client.server_capabilities.semanticTokensProvider = nil
   end,
   on_attach = function(client, bufnr)
     vim.fn['SetupLSP']()
@@ -285,6 +288,8 @@ local base_config = {
   capabilities = capabilities,
 }
 
+---@param more? PartialClientConfig
+---@return PartialClientConfig
 local function config(more)
   if more == nil then return base_config end
   return vim.tbl_deep_extend('force', base_config, more)
@@ -344,6 +349,9 @@ lspconfig.basedpyright.setup(config {
     }
   }},
 })
+lspconfig.ruff.setup(config {
+  autostart = false,
+})
 
 lspconfig.clangd.setup(config {
   --- https://github.com/clangd/clangd/issues/1394#issuecomment-1328676884
@@ -352,15 +360,17 @@ lspconfig.clangd.setup(config {
 
 -- https://github.com/folke/lazydev.nvim/ is probably overkill for my usage
 lspconfig.lua_ls.setup(config {
-  on_init = function(client, initialize_result)
-    base_config.on_init(client, initialize_result)
+  on_init = function(client)
+    -- Worse than treesitter. Doesn't highlight method definition as definition.
+    client.server_capabilities.semanticTokensProvider = nil
+
     if client.workspace_folders and client.workspace_folders[1] then
       local path = client.workspace_folders[1].name
       if vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc') then
         return
       end
     end
-    client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+    client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua --[[@as table<string, lsp.LSPAny>]], {
       runtime = { version = 'LuaJIT' },
       workspace = { library = {
         vim.env.VIMRUNTIME,

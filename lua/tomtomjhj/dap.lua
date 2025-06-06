@@ -34,12 +34,17 @@ function M.smartsplit(bufnr)
   table.sort(base_win_candidates, function(l, r) return l[2] * l[3] < r[2] * r[3] end)
   if #base_win_candidates > 0 then
     local base_win, width, _ = unpack(base_win_candidates[#base_win_candidates])
+    local saved_curwin = api.nvim_get_current_win()
     api.nvim_set_current_win(base_win)
     if width >= 160 then
       vim.cmd('vert sbuffer ' .. bufnr)
     else
       vim.cmd('sbuffer ' .. bufnr)
     end
+    -- make CTRL-W_p work as expected
+    local target_win = api.nvim_get_current_win()
+    api.nvim_set_current_win(saved_curwin)
+    api.nvim_set_current_win(target_win)
   else
     vim.cmd('topleft sbuffer ' .. bufnr)
   end
@@ -78,6 +83,8 @@ dap_view.setup {
 dap.defaults.fallback.switchbuf = "usevisible,useopen,smartsplit"
 
 dap.listeners.before.event_initialized['tomtomjhj'] = dap_view.open
+-- dap.listeners.before.event_terminated["tomtomjhj"] = dap_view.close
+-- dap.listeners.before.event_exited["tomtomjhj"] = dap_view.close
 
 require("dap.ext.vscode").json_decode = function(str)
   return vim.json.decode(require("plenary.json").json_strip_comments(str))
