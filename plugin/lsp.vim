@@ -76,7 +76,7 @@ command! -nargs=? Fold   call CocAction('fold', <f-args>)
 
 elseif get(g:, 'ide_client', '') == 'nvim' " {{{
 
-lua require('tomtomjhj/lsp')
+lua require('tomtomjhj.lsp')
 
 function! SetupLSP()
   augroup LocalNvimLSPStuff | au! * <buffer>
@@ -115,7 +115,7 @@ function! SetupLSP()
   " NOTE: some commands require client side extension (vim.lsp.commands, etc), e.g. running test with rust-analyzer
   nnoremap <buffer><leader>cr    <cmd>lua vim.lsp.codelens.run()<CR>
 
-  nnoremap <buffer><leader>ud    <cmd>lua require'tomtomjhj/lsp'.toggle_diagnostics()<CR>
+  nnoremap <buffer><leader>ud    <cmd>lua require'tomtomjhj.lsp'.toggle_diagnostics()<CR>
   nnoremap <buffer>        [d    <cmd>lua vim.diagnostic.jump{count=-1, float=false, severity={min=vim.diagnostic.severity.WARN}}<CR>
   nnoremap <buffer>        ]d    <cmd>lua vim.diagnostic.jump{count=1, float=false, severity={min=vim.diagnostic.severity.WARN}}<CR>
   nnoremap <buffer>        [D    <cmd>lua vim.diagnostic.jump{count=-1, float=false}<CR>

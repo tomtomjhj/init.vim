@@ -1,6 +1,6 @@
 local cmp = require'cmp'
 
-cmp.register_source('tags', require'tomtomjhj/cmp_tags'.new())
+cmp.register_source('tags', require'tomtomjhj.cmp_tags'.new())
 
 -- TODO: ignore huge buffer, huge buffer updates
 local ignored_buftype = { quickfix = true, terminal = true, prompt = true }

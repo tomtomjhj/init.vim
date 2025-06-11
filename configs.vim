@@ -510,7 +510,7 @@ if g:ide_client == 'coc'
     endfunction
 
 elseif g:ide_client == 'nvim'
-    lua require'tomtomjhj/cmp'
+    lua require'tomtomjhj.cmp'
 
     " lazy-load luasnip
     function! s:LoadLuaSnip() abort
@@ -577,7 +577,7 @@ function! s:LoadDap() abort
         exe 'delcommand' entrypoint
     endfor
     call plug#load('nvim-dap', 'nvim-dap-view')
-    lua require('tomtomjhj/dap')
+    lua require('tomtomjhj.dap')
 endfunction
 for s:entrypoint in ['DapNew', 'DapContinue', 'DapToggleBreakpoint', 'DapViewOpen', 'DapViewToggle']
     exe printf('command -nargs=0 %s call s:LoadDap() | %s', s:entrypoint, s:entrypoint)
@@ -610,9 +610,9 @@ augroup END
 
 " NOTE: treesitter FileType autocmd should override the above stuff
 if g:nvim_latest_stable
-    lua require('tomtomjhj/treesitter')
-    lua require('tomtomjhj/aerial')
-    lua require('tomtomjhj/highlight')
+    lua require('tomtomjhj.treesitter')
+    lua require('tomtomjhj.aerial')
+    lua require('tomtomjhj.highlight')
 endif
 
 " Haskell {{{
@@ -1018,7 +1018,7 @@ func! Files(query)
 endfunc
 
 if has('nvim')
-    lua require('tomtomjhj/fzf')
+    lua require('tomtomjhj.fzf')
 endif
 " }}}
 
@@ -1094,11 +1094,11 @@ let g:sneak#alias = {
 
 if g:nvim_latest_stable
 lua << EOF
-vim.keymap.set({ "n", "o", "x" }, "<M-s>", function() require'tomtomjhj/flash'.jump() end)
-vim.keymap.set({ "n", "o", "x" }, "M",     function() require'tomtomjhj/flash'.treesitter() end)
--- vim.keymap.set("o",               "r",     function() require'tomtomjhj/flash'.remote() end)
-vim.keymap.set({ "o", "x" },      "R",     function() require'tomtomjhj/flash'.treesitter_search() end)
-vim.keymap.set({ "c" },           "<C-s>", function() require'tomtomjhj/flash'.toggle() end)
+vim.keymap.set({ "n", "o", "x" }, "<M-s>", function() require'tomtomjhj.flash'.jump() end)
+vim.keymap.set({ "n", "o", "x" }, "M",     function() require'tomtomjhj.flash'.treesitter() end)
+-- vim.keymap.set("o",               "r",     function() require'tomtomjhj.flash'.remote() end)
+vim.keymap.set({ "o", "x" },      "R",     function() require'tomtomjhj.flash'.treesitter_search() end)
+vim.keymap.set({ "c" },           "<C-s>", function() require'tomtomjhj.flash'.toggle() end)
 EOF
 endif
 " }}}

@@ -172,7 +172,7 @@ endfunction
 
 function! tomtomjhj#coq#ctags() abort
     !coqtags $(fd -e v)
-    lua require'tomtomjhj/etags2ctags'()
+    lua require'tomtomjhj.etags2ctags'()
     !rm TAGS
     split tags
     keeppatterns g/iris.proofmode\|Build_/d
