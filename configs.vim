@@ -681,8 +681,10 @@ endfunction
 " }}}
 
 " Python {{{
-let g:python_highlight_all = 1
-let g:python_highlight_builtin_funcs = 0
+let python_no_builtin_highlight = 1
+let python_no_doctest_code_highlight = 1
+let python_no_doctest_highlight = 1
+let python_no_exception_highlight = 1
 function! s:python() abort
     " setlocal foldmethod=indent foldnestmax=2 foldignore=
     setlocal formatoptions+=ro
@@ -1093,13 +1095,12 @@ let g:sneak#alias = {
             \}
 
 if g:nvim_latest_stable
-lua << EOF
-vim.keymap.set({ "n", "o", "x" }, "<M-s>", function() require'tomtomjhj.flash'.jump() end)
-vim.keymap.set({ "n", "o", "x" }, "M",     function() require'tomtomjhj.flash'.treesitter() end)
--- vim.keymap.set("o",               "r",     function() require'tomtomjhj.flash'.remote() end)
-vim.keymap.set({ "o", "x" },      "R",     function() require'tomtomjhj.flash'.treesitter_search() end)
-vim.keymap.set({ "c" },           "<C-s>", function() require'tomtomjhj.flash'.toggle() end)
-EOF
+Mnoremap <M-s> <Cmd>lua require'tomtomjhj.flash'.jump()<CR>
+Mnoremap M <Cmd>lua require'tomtomjhj.flash'.treesitter()<CR>
+" onoremap r <Cmd>lua require'tomtomjhj.flash'.remote()<CR>
+" onoremap R <Cmd>lua require'tomtomjhj.flash'.treesitter_search()<CR>
+" xnoremap R <Cmd>lua require'tomtomjhj.flash'.treesitter_search()<CR>
+" cnoremap <C-s> <Cmd>lua require'tomtomjhj.flash'.toggle()<CR>
 endif
 " }}}
 

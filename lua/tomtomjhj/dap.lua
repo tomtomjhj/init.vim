@@ -92,5 +92,16 @@ end
 
 -- Use the binary installed in mason's PATH
 require('dap-python').setup("debugpy-adapter")
+-- NOTE: The default for cwd is the parent directory of the script being
+-- debugged, which in most cases not what I would expect. Set it to workspace
+-- root. vscode does something similar (launches debugpy after cd-ing into
+-- workspaceFolder).
+-- For configs in launch.json, put this:
+--   "cwd": "${workspaceFolder}"
+for _, conf in ipairs(dap.configurations.python) do
+  conf.cwd = "${workspaceFolder}"
+  -- still does not show call stack for those code..
+  conf.justMyCode = false
+end
 
 return M

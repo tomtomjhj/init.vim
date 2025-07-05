@@ -268,8 +268,6 @@ local codelens_autocmds = vim.api.nvim_create_augroup("tomtomjhj/lsp-codelens", 
 
 ---@type PartialClientConfig
 local base_config = {
-  on_init = function(client, initialize_result)
-  end,
   on_attach = function(client, bufnr)
     vim.fn['SetupLSP']()
     vim.fn['SetupLSPPost']()
