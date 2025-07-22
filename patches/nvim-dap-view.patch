@@ -1,18 +1,17 @@
 diff --git a/lua/dap-view/views/util.lua b/lua/dap-view/views/util.lua
-index d53d3b4..8b1e71b 100644
+index 3f3baf4..8fe55f1 100644
 --- a/lua/dap-view/views/util.lua
 +++ b/lua/dap-view/views/util.lua
-@@ -53,23 +53,14 @@ M.jump_to_location = function(pattern, column)
- 
+@@ -54,22 +54,14 @@ M.jump_to_location = function(pattern, column)
      local switchbufopt = config.switchbuf
      local win = window.get_win_respecting_switchbuf(switchbufopt, bufnr)
--
+ 
 -    if not win then
 -        win = api.nvim_open_win(0, true, {
 -            split = util.inverted_directions[config.windows.position],
 -            win = -1,
 -            height = config.windows.height < 1 and math.floor(vim.go.lines * (1 - config.windows.height))
--                or vim.go.lines - config.windows.height,
+-                or math.floor(vim.go.lines - config.windows.height),
 -        })
 +    if win then
 +      api.nvim_set_current_win(win)

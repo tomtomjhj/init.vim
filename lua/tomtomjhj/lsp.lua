@@ -354,6 +354,7 @@ lspconfig.ruff.setup(config {
 lspconfig.clangd.setup(config {
   --- https://github.com/clangd/clangd/issues/1394#issuecomment-1328676884
   cmd = { 'clangd', '--query-driver=/usr/bin/c++', '--log=error', }
+  -- clangd doesn't support configuration via LSP
 })
 
 -- https://github.com/folke/lazydev.nvim/ is probably overkill for my usage
@@ -382,6 +383,7 @@ lspconfig.lua_ls.setup(config {
       -- disable "Do you need to configure your work environment as" prompts
       checkThirdParty = false,
     },
+    codeLens = { enable = true, },
   }},
 })
 
