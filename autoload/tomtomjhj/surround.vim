@@ -1,46 +1,49 @@
 " NOTE: 8.2.3619 supports funcref/lambda for operatorfunc
 function! tomtomjhj#surround#(type, surrounding) abort
+    let start_line = line("'[")
+    let end_line = line("']")
+    let start_line_text = getline(start_line)
+    let end_line_text = getline(end_line)
+
+    " end_byte: exclusive
     if a:type ==# 'char'
-        let cmd_sel = '`[v`]'
+        let start_byte = col("'[") - 1
+        let end_char_charidx = charcol("']") - 1
+        let end_byte = len(strcharpart(end_line_text, 0, end_char_charidx + 1))
     elseif a:type ==# 'line'
-        let cmd_sel = "'[V']vg_"
+        let start_byte = match(start_line_text, '\S')
+        if start_byte < 0 | return | endif
+        let end_byte = col([end_line, '$']) - 1
     else
         return
     endif
 
-    let sel_save = &selection
-    let reg_save = exists('*getreginfo') ? getreginfo('"') : getreg('"')
-    let ve_save = [&l:virtualedit, &g:virtualedit]
-    let cb_save = &clipboard
-    let visual_save = [getpos("'<"), getpos("'>")]
-
-    " NOTE: '[, '], '<, '> are difficult to work with.
-    try
-        set clipboard= selection=inclusive ve=
-        silent exe 'noautocmd keepjumps normal!' cmd_sel
-        let end_eol_col = col([line("."), "$"])
-        let end_line_empty = end_eol_col == 1
-        " if cursor is on the last char or eol of non-empty line,
-        " x moves the resulting cursor from eol to the last char, so use p
-        let p = (end_eol_col - col(".") <= 1 && !end_line_empty) ? 'p' : 'P'
-        silent exe 'noautocmd keepjumps normal! x'
-        let surrounded = a:surrounding
-        if end_line_empty
-            " put the closer before the newline of empty line
-            let surrounded .= getreg('"')[:-2] . a:surrounding . getreg('"')[-1:]
+    if has('nvim')
+        let ns = nvim_create_namespace('tomtomjhj#surround')
+        let end_mark = nvim_buf_set_extmark(0, ns, end_line-1, end_byte, {})
+        call nvim_buf_set_text(0, start_line-1, start_byte, start_line-1, start_byte, [a:surrounding])
+        let [end_row, end_byte] = nvim_buf_get_extmark_by_id(0, ns, end_mark, {})
+        call nvim_buf_clear_namespace(0, ns, 0, -1)
+        call nvim_buf_set_text(0, end_row, end_byte, end_row, end_byte, [a:surrounding])
+    else
+        " NOTE: only works for surrounding without newline
+        if start_line == end_line
+            let left = strpart(start_line_text, 0, start_byte)
+            let surrounded = strpart(start_line_text, start_byte, end_byte - start_byte)
+            let right = strpart(start_line_text, end_byte)
+            let updated = left . a:surrounding . surrounded . a:surrounding . right
+            call setline(start_line, updated)
         else
-            let surrounded .= getreg('"') . a:surrounding
+            let start_left = strpart(start_line_text, 0, start_byte)
+            let start_surrounded = strpart(start_line_text, start_byte)
+            let start_updated = start_left . a:surrounding . start_surrounded
+            let end_surrounded = strpart(end_line_text, 0, end_byte)
+            let end_right = strpart(end_line_text, end_byte)
+            let end_updated = end_surrounded . a:surrounding . end_right
+            call setline(start_line, start_updated)
+            call setline(end_line, end_updated)
         endif
-        call setreg('"', surrounded)
-        silent exe 'noautocmd keepjumps normal!' p
-    finally
-        call setreg('"', reg_save)
-        let &clipboard = cb_save
-        let &selection = sel_save
-        let [&l:virtualedit, &g:virtualedit] = ve_save
-        call setpos("'<", visual_save[0])
-        call setpos("'>", visual_save[1])
-    endtry
+    endif
 endfunction
 
 function! tomtomjhj#surround#strong(type) abort
