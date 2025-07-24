@@ -52,88 +52,30 @@ function M.smartsplit(bufnr)
   end
 end
 
-local statusline = require("dap-view.util.statusline")
 dap_view.setup {
   switchbuf = "useopen", -- NOTE: my nvim-dap-view patch to use smartsplit as fallback
   winbar = {
     base_sections = {
-      breakpoints = {
-        label = "[B]reakpoints",
-        short_label = "[B]",
-      },
-      scopes = {
-        label = "[S]copes",
-        short_label = "[S]",
-      },
-      exceptions = {
-        label = "[E]xceptions",
-        short_label = "[E]",
-      },
-      watches = {
-        label = "[W]atches",
-        short_label = "[W]",
-      },
-      threads = {
-        label = "[T]hreads",
-        short_label = "[T]",
-      },
-      repl = {
-        label = "[R]EPL",
-        short_label = "[R]",
-      },
-      console = {
-        label = "[C]onsole",
-        short_label = "[C]",
-      },
+      breakpoints = { label = "[B]reakpoints", short_label = "[B]" },
+      scopes = { label = "[S]copes", short_label = "[S]" },
+      exceptions = { label = "[E]xceptions", short_label = "[E]" },
+      watches = { label = "[W]atches", short_label = "[W]" },
+      threads = { label = "[T]hreads", short_label = "[T]" },
+      repl = { label = "[R]EPL", short_label = "[R]" },
+      console = { label = "[C]onsole", short_label = "[C]" },
     },
     controls = {
       enabled = true,
-      base_buttons = {
-        play = {
-          render = function(session)
-            local pausable = session and not session.stopped_thread_id
-            return statusline.hl(pausable and "⏸︎" or "⏵︎", pausable and "ControlPause" or "ControlPlay")
-          end,
-        },
-        step_into = {
-          render = function(session)
-            local stopped = session and session.stopped_thread_id
-            return statusline.hl("↓", stopped and "ControlStepInto" or "ControlNC")
-          end,
-        },
-        step_over = {
-          render = function(session)
-            local stopped = session and session.stopped_thread_id
-            return statusline.hl("→", stopped and "ControlStepOver" or "ControlNC")
-          end,
-        },
-        step_out = {
-          render = function(session)
-            local stopped = session and session.stopped_thread_id
-            return statusline.hl("↑", stopped and "ControlStepOut" or "ControlNC")
-          end,
-        },
-        step_back = {
-          render = function(session)
-            local stopped = session and session.stopped_thread_id
-            return statusline.hl("←", stopped and "ControlStepBack" or "ControlNC")
-          end,
-        },
-        run_last = {
-          render = function()
-            return statusline.hl("↻", "ControlRunLast")
-          end,
-        },
-        terminate = {
-          render = function(session)
-            return statusline.hl("⏹︎", session and "ControlTerminate" or "ControlNC")
-          end,
-        },
-        disconnect = {
-          render = function(session)
-            return statusline.hl("⏏︎", session and "ControlDisconnect" or "ControlNC")
-          end,
-        },
+      icons = {
+        pause = "⏸︎",
+        play = "⏵︎",
+        step_into = "↓",
+        step_over = "→",
+        step_out = "↑",
+        step_back = "←",
+        run_last = "↻",
+        terminate = "⏹︎",
+        disconnect = "⏏︎",
       },
     }
   }
