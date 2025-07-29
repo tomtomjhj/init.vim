@@ -354,7 +354,12 @@ lspconfig.ruff.setup(config {
 lspconfig.clangd.setup(config {
   --- https://github.com/clangd/clangd/issues/1394#issuecomment-1328676884
   cmd = { 'clangd', '--query-driver=/usr/bin/c++', '--log=error', }
-  -- clangd doesn't support configuration via LSP
+  -- clangd doesn't support configuration via LSP.
+  -- Should use per-project or global ~/.config/clangd/config.yaml
+  -- ```
+  -- SemanticTokens:
+  --   DisabledKinds: [InactiveCode]
+  -- ```
 })
 
 -- https://github.com/folke/lazydev.nvim/ is probably overkill for my usage

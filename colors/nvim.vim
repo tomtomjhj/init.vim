@@ -38,14 +38,19 @@ let g:colors_name = 'nvim'
 if &background is# 'dark'
     hi Normal guifg=#eeeeee guibg=#151618
     hi NormalFloat guibg=#020304
+
+    hi SignificantDefinition ctermfg=14 cterm=bold guifg=NvimLightCyan gui=bold
+
     hi Todo guibg=NvimDarkRed ctermbg=1
+    hi SpecialChar guifg=NvimLightMagenta ctermfg=14
+
     hi @variable.builtin guifg=NvimLightGrey2 gui=italic cterm=italic
     hi @constant.builtin guifg=NvimLightGrey2 gui=italic cterm=italic
     hi @module.builtin   guifg=NvimLightGrey2 gui=italic cterm=italic
     hi @type.builtin     guifg=NvimLightGrey2 gui=italic cterm=italic
-    hi @function ctermfg=14 cterm=bold guifg=NvimLightCyan gui=bold
     hi @module guifg=NvimLightGrey2
     hi @markup.raw.block guifg=NvimLightGreen
+
     hi DiffAdd guibg=#114422 guifg=NONE
     hi DiffChange guibg=#333435 guifg=NONE
     hi MatchParen guibg=#333435
@@ -61,14 +66,19 @@ if &background is# 'dark'
     endif
 else
     hi Normal guibg=#e8e9ea
+
+    hi SignificantDefinition ctermfg=6 cterm=bold guifg=NvimDarkCyan gui=bold
+
     hi Todo guibg=NvimLightRed ctermbg=9
+    hi SpecialChar guifg=NvimDarkMagenta ctermfg=14
+
     hi @variable.builtin guifg=NvimDarkGrey2 gui=italic cterm=italic
     hi @constant.builtin guifg=NvimDarkGrey2 gui=italic cterm=italic
     hi @module.builtin   guifg=NvimDarkGrey2 gui=italic cterm=italic
     hi @type.builtin     guifg=NvimDarkGrey2 gui=italic cterm=italic
-    hi @function ctermfg=6 cterm=bold guifg=NvimDarkCyan gui=bold
     hi @module guifg=NvimDarkGrey2
     hi @markup.raw.block guifg=NvimDarkGreen
+
     hi DiffAdd guibg=#aaddbb guifg=NONE
     hi DiffChange guibg=#b7b8b9 guifg=NONE
     hi MatchParen guibg=#b7b8b9
@@ -85,7 +95,7 @@ else
 endif
 
 hi Visual ctermfg=Black ctermbg=Grey
-
+hi! link debugPC CursorLine
 hi! link LineNr Comment
 hi SignColumn ctermfg=8
 hi CurSearch gui=bold,underline cterm=bold,underline
@@ -103,13 +113,30 @@ hi LspReferenceWrite gui=underline cterm=underline
 hi! link LspCodeLens NonText
 hi! link LspCodeLensSeparator NonText
 
-hi! link @function.call Function
-hi! link @function.macro Function
-hi! link @function.method @function
-hi! link @function.method.call @function.call
-
+hi! link @constructor @function
+hi! link @punctuation.special SpecialChar
+hi! link @string.special.path @string.special.url
 hi! link @markup.raw String
 hi! link @markup.quote NONE
+
+hi! link @lsp.typemod.class.declaration SignificantDefinition
+hi! link @lsp.typemod.enum.declaration SignificantDefinition
+hi! link @lsp.typemod.event.declaration SignificantDefinition
+hi! link @lsp.typemod.function.declaration SignificantDefinition
+hi! link @lsp.typemod.interface.declaration SignificantDefinition
+hi! link @lsp.typemod.method.declaration SignificantDefinition
+hi! link @lsp.typemod.namespace.declaration SignificantDefinition
+hi! link @lsp.typemod.struct.declaration SignificantDefinition
+hi! link @lsp.typemod.type.declaration SignificantDefinition
+hi! link @lsp.typemod.class.definition SignificantDefinition
+hi! link @lsp.typemod.enum.definition SignificantDefinition
+hi! link @lsp.typemod.event.definition SignificantDefinition
+hi! link @lsp.typemod.function.definition SignificantDefinition
+hi! link @lsp.typemod.interface.definition SignificantDefinition
+hi! link @lsp.typemod.method.definition SignificantDefinition
+hi! link @lsp.typemod.namespace.definition SignificantDefinition
+hi! link @lsp.typemod.struct.definition SignificantDefinition
+hi! link @lsp.typemod.type.definition SignificantDefinition
 
 hi! link Operator Keyword
 

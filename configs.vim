@@ -401,7 +401,7 @@ function! STLTitle(...) abort
     elseif bname =~# '^temp://'
         return matchstr(bname, '^temp://\zs.*')
     elseif empty(bname)
-        return empty(bt) ? '[No Name]' : bt is# 'nofile' ? '[Scratch]' : '?'
+        return empty(bt) ? '[No Name #' . b . ']' : bt is# 'nofile' ? '[Scratch #' . b . ']' : '[? #' . b . ']'
     else
         return pathshorten(fnamemodify(simplify(bname), ":~:."))
     endif
