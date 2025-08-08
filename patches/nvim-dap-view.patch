@@ -1,5 +1,17 @@
+diff --git a/lua/dap-view/breakpoints/view.lua b/lua/dap-view/breakpoints/view.lua
+index 7b78b10..9e99582 100644
+--- a/lua/dap-view/breakpoints/view.lua
++++ b/lua/dap-view/breakpoints/view.lua
+@@ -36,7 +36,6 @@ M.show = function()
+                 local col_offset = #relative_path + #tostring(entry.lnum) + 2
+ 
+                 treesitter.copy_highlights(buf, entry.lnum - 1, line, col_offset)
+-                extmarks.copy_extmarks(buf, entry.lnum - 1, line, col_offset)
+ 
+                 hl.highlight_file_name_and_line_number(line, #relative_path, #tostring(entry.lnum))
+ 
 diff --git a/lua/dap-view/views/util.lua b/lua/dap-view/views/util.lua
-index 3f3baf4..8fe55f1 100644
+index 127d584..2111a67 100644
 --- a/lua/dap-view/views/util.lua
 +++ b/lua/dap-view/views/util.lua
 @@ -54,22 +54,14 @@ M.jump_to_location = function(pattern, column)

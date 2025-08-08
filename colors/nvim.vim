@@ -139,6 +139,7 @@ hi! link @lsp.typemod.struct.definition SignificantDefinition
 hi! link @lsp.typemod.type.definition SignificantDefinition
 
 hi! link Operator Keyword
+hi Delimiter gui=nocombine cterm=nocombine
 
 hi! link StorageClass Keyword
 hi! link Structure Keyword

@@ -13,6 +13,10 @@ local M = {}
 local dap_view = require('dap-view')
 local dap = require('dap')
 
+vim.keymap.set({'n', 'v'}, '<M->>', function()
+  require('dap.ui.widgets').hover()
+end)
+
 -- Custom method for switchbuf config.
 -- nvim-dap and nvim-dap-view should be patched to use this function,
 -- because do not yet support proper customization.
@@ -102,7 +106,7 @@ require('dap-python').setup("debugpy-adapter")
 --   "cwd": "${workspaceFolder}"
 for _, conf in ipairs(dap.configurations.python) do
   conf.cwd = "${workspaceFolder}"
-  -- still does not show call stack for those code..
+  -- NOTE: dap-view hides "subtle" frames by default. toggle with `t`
   conf.justMyCode = false
 end
 

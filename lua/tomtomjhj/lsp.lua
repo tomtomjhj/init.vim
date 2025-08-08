@@ -341,9 +341,11 @@ vim.g.rustaceanvim = {
 -- https://github.com/DetachHead/basedpyright/blob/aba927d9e09203ad37cb92054416e28e8dbd5a66/packages/pyright-internal/src/languageService/referencesProvider.ts#L152
 -- https://github.com/microsoft/pyright/blob/db368a1ace131372cb78d9c866ca3f5867495052/packages/pyright-internal/src/languageService/referencesProvider.ts#L152
 lspconfig.basedpyright.setup(config {
+  -- https://github.com/DetachHead/basedpyright/blob/main/packages/vscode-pyright/package.json
   settings = { basedpyright = {
     analysis = {
-      typeCheckingMode = "basic",
+      typeCheckingMode = "standard",
+      diagnosticSeverityOverrides = {},
     }
   }},
 })
