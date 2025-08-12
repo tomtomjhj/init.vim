@@ -70,19 +70,23 @@ dap_view.setup {
     },
     controls = {
       enabled = true,
-      icons = {
-        pause = "⏸︎",
-        play = "⏵︎",
-        step_into = "↓",
-        step_over = "→",
-        step_out = "↑",
-        step_back = "←",
-        run_last = "↻",
-        terminate = "⏹︎",
-        disconnect = "⏏︎",
-      },
     }
-  }
+  },
+  icons = {
+    disabled = "⮾",
+    disconnect = "⏏︎",
+    enabled = "◯",
+    filter = "⊆",
+    negate = "¬ ",
+    pause = "⏸︎",
+    play = "⏵︎",
+    run_last = "↻",
+    step_back = "←",
+    step_into = "↓",
+    step_out = "↑",
+    step_over = "→",
+    terminate = "⏹︎",
+  },
 }
 
 -- NOTE: my nvim-dap patch to use smartsplit
