@@ -218,6 +218,7 @@ augroup BasicSetup | au!
     au BufRead,BufNewFile *.k setlocal filetype=k
     au BufRead,BufNewFile *.mir setlocal syntax=rust
     au BufRead,BufNewFile *.h.inc,*.cpp.inc setlocal filetype=cpp
+    au BufRead,BufNewFile */.vscode/launch.json setlocal filetype=jsonc
     if has('nvim-0.11')
         au TextYankPost * silent! lua vim.hl.on_yank()
     endif
@@ -580,7 +581,7 @@ function! s:LoadDap() abort
     lua require('tomtomjhj.dap')
 endfunction
 for s:entrypoint in ['DapNew', 'DapContinue', 'DapToggleBreakpoint', 'DapViewOpen', 'DapViewToggle']
-    exe printf('command -nargs=0 %s call s:LoadDap() | %s', s:entrypoint, s:entrypoint)
+    exe printf('command -nargs=? %s call s:LoadDap() | %s <args>', s:entrypoint, s:entrypoint)
 endfor
 endif
 " }}}

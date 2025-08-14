@@ -17,6 +17,17 @@ vim.keymap.set({'n', 'v'}, '<M->>', function()
   require('dap.ui.widgets').hover()
 end)
 
+vim.api.nvim_create_user_command('DapToggleBreakpoint', function(args)
+  if #args.args > 0 then
+    dap.set_breakpoint(args.args) -- conditional breakpoint
+  else
+    dap.toggle_breakpoint()
+  end
+end, {
+  nargs = "?",
+  force = true,
+})
+
 -- Custom method for switchbuf config.
 -- nvim-dap and nvim-dap-view should be patched to use this function,
 -- because do not yet support proper customization.
@@ -100,6 +111,8 @@ require("dap.ext.vscode").json_decode = function(str)
   return vim.json.decode(require("plenary.json").json_strip_comments(str))
 end
 
+-------------------------------------------------------------------------------
+
 -- Use the binary installed in mason's PATH
 require('dap-python').setup("debugpy-adapter")
 -- NOTE: The default for cwd is the parent directory of the script being
@@ -113,5 +126,13 @@ for _, conf in ipairs(dap.configurations.python) do
   -- NOTE: dap-view hides "subtle" frames by default. toggle with `t`
   conf.justMyCode = false
 end
+
+-- from cpptools
+-- https://codeberg.org/mfussenegger/nvim-dap/wiki/C-C---Rust-(gdb-via--vscode-cpptools)
+dap.adapters.cppdbg = {
+  id = 'cppdbg',
+  type = 'executable',
+  command = 'OpenDebugAD7', -- in mason path
+}
 
 return M
