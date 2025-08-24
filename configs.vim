@@ -1741,9 +1741,9 @@ nnoremap <leader>-  <Cmd>call fern#internal#command#fern#command('', [BufDir(), 
 nnoremap <C-w>es    <Cmd>call fern#internal#command#fern#command('', [BufDir(), '-reveal='.expand('%:t'), '-opener=split'])<CR>
 nnoremap <C-w>ev    <Cmd>call fern#internal#command#fern#command('', [BufDir(), '-reveal='.expand('%:t'), '-opener=vsplit'])<CR>
 nnoremap <C-w>et    <Cmd>call fern#internal#command#fern#command('', [BufDir(), '-reveal='.expand('%:t'), '-opener=tabedit'])<CR>
-nnoremap <leader>cd :<C-u>cd <Plug>BufDir/
-nnoremap <leader>e  :<C-u>e! <Plug>BufDir/
-nnoremap <leader>te :<C-u>tabedit <Plug>BufDir/
+nmap <leader>cd :<C-u>cd <Plug>BufDir/
+nmap <leader>e  :<C-u>e! <Plug>BufDir/
+nmap <leader>te :<C-u>tabedit <Plug>BufDir/
 " sometimes fern rename loses buffer content when the buffer is open???
 function! s:init_fern() abort
     let helper = fern#helper#new()

@@ -42,7 +42,7 @@ if &background is# 'dark'
     hi SignificantDefinition ctermfg=14 cterm=bold guifg=NvimLightCyan gui=bold
 
     hi Todo guibg=NvimDarkRed ctermbg=1
-    hi SpecialChar guifg=NvimLightMagenta ctermfg=14
+    hi SpecialChar guifg=NvimLightMagenta ctermfg=13
 
     hi @variable.builtin guifg=NvimLightGrey2 gui=italic cterm=italic
     hi @constant.builtin guifg=NvimLightGrey2 gui=italic cterm=italic
@@ -55,9 +55,9 @@ if &background is# 'dark'
     hi DiffChange guibg=#333435 guifg=NONE
     hi MatchParen guibg=#333435
     hi Visual guibg=#55585e
-    hi QuickFixLine guifg=NvimLightGrey1 guibg=NvimDarkCyan gui=bold ctermfg=0 ctermbg=14 cterm=bold
+    hi QuickFixLine guifg=NvimLightGrey1 guibg=NvimDarkMagenta gui=bold ctermfg=0 ctermbg=13 cterm=bold
     hi SpellBad guisp=#ff5f5f
-    hi CurSearch guifg=#000000
+    hi CurSearch guifg=#ffffff guibg=#9d7c02
     hi TablineSel guibg=#151618
     " hi CurSearch guifg=NvimLightGrey1 guibg=#991199
     hi FlashLabel gui=bold guifg=NvimDarkGrey1 guibg=#d777d7 cterm=bold ctermfg=0 ctermbg=13
@@ -70,7 +70,7 @@ else
     hi SignificantDefinition ctermfg=6 cterm=bold guifg=NvimDarkCyan gui=bold
 
     hi Todo guibg=NvimLightRed ctermbg=9
-    hi SpecialChar guifg=NvimDarkMagenta ctermfg=14
+    hi SpecialChar guifg=NvimDarkMagenta ctermfg=5
 
     hi @variable.builtin guifg=NvimDarkGrey2 gui=italic cterm=italic
     hi @constant.builtin guifg=NvimDarkGrey2 gui=italic cterm=italic
@@ -83,7 +83,7 @@ else
     hi DiffChange guibg=#b7b8b9 guifg=NONE
     hi MatchParen guibg=#b7b8b9
     hi Visual guibg=#94979e
-    hi QuickFixLine guifg=NvimDarkGrey1 guibg=NvimLightCyan gui=bold ctermfg=15 ctermbg=6 cterm=bold
+    hi QuickFixLine guifg=NvimDarkGrey1 guibg=NvimLightMagenta gui=bold ctermfg=15 ctermbg=5 cterm=bold
     hi SpellBad guisp=#991111
     hi CurSearch guifg=#ffffff
     " hi CurSearch guifg=NvimDarkGrey1 guibg=#ff5fff

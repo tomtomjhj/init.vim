@@ -1030,7 +1030,7 @@ FastFold problems
 
 Some minor stuff:
 * close all folds under the cursor (sub-tree) `zC` doesn't do this.
-  solution: visual mode.
+  visual mode `zC` climbs up the fold tree.
 * ignore folded region while `/`-searching
 
 ## `:syn`-based highlight in extmark region

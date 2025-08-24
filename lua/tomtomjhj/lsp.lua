@@ -356,13 +356,22 @@ lspconfig.ruff.setup(config {
 lspconfig.clangd.setup(config {
   --- https://github.com/clangd/clangd/issues/1394#issuecomment-1328676884
   cmd = { 'clangd', '--query-driver=/usr/bin/c++', '--log=error', }
-  -- clangd doesn't support configuration via LSP.
-  -- Should use per-project or global ~/.config/clangd/config.yaml
-  -- ```
-  -- SemanticTokens:
-  --   DisabledKinds: [InactiveCode]
-  -- ```
 })
+--[[
+clangd doesn't support configuration via LSP.
+Should use per-project or global ~/.config/clangd/config.yaml
+
+Disabling inactive code highlight
+```
+SemanticTokens:
+  DisabledKinds: [InactiveCode]
+```
+Setting preprocessor variable
+```
+CompileFlags:
+  Add: [-D__CUDA_ARCH__=800]
+```
+--]]
 
 -- https://github.com/folke/lazydev.nvim/ is probably overkill for my usage
 lspconfig.lua_ls.setup(config {
