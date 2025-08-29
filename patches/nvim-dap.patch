@@ -1,5 +1,18 @@
+diff --git a/lua/dap.lua b/lua/dap.lua
+index 7d9aebc..25c82c5 100644
+--- a/lua/dap.lua
++++ b/lua/dap.lua
+@@ -538,7 +538,7 @@ local function select_config_and_run(opts)
+ 
+     opts = opts or {}
+     opts.filetype = opts.filetype or filetype
+-    lazy.ui.pick_if_many(
++    lazy.ui.pick_one(
+       all_configs,
+       "Configuration: ",
+       function(i) return i.name end,
 diff --git a/lua/dap/session.lua b/lua/dap/session.lua
-index e64e2c5..16ee261 100644
+index 6ef7237..455545e 100644
 --- a/lua/dap/session.lua
 +++ b/lua/dap/session.lua
 @@ -505,6 +505,12 @@ local function jump_to_location(bufnr, line, column, switchbuf, filetype)

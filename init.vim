@@ -13,6 +13,11 @@ if has('nvim-0.8')
     else
         aunmenu PopUp.-1-
     endif
+
+    " TODO: context
+    anoremenu PopUp.Hover <Cmd>lua vim.lsp.buf.hover{border={'','','',' ','','','',' '}}<CR>
+    anoremenu PopUp.Toggle\ breakpoint  <Cmd>DapToggleBreakpoint<CR>
+    " TODO: just wipe out all the default menu and start over.
 endif
 
 if has('nvim-0.10')

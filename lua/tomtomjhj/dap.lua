@@ -134,5 +134,34 @@ dap.adapters.cppdbg = {
   type = 'executable',
   command = 'OpenDebugAD7', -- in mason path
 }
+-- NOTE: OpenDebugAD7 does not have supportsTerminateRequest capability.
+
+dap.providers.configs['global_gdb'] = function()
+  return {
+    {
+      name = "global cppdbg",
+      type = "cppdbg",
+      request = "launch",
+      cwd = '${workspaceFolder}',
+      -- NOTE: There is no evalution ordering guarantee.
+      -- Also it's impossible to prompt a single command and split into program and args.
+      program = function()
+        local ok, path = pcall(vim.fn.input, 'Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+        if not ok then
+          return dap.ABORT
+        end
+        return path
+      end,
+      args = function()
+        local ok, args_string = pcall(vim.fn.input, 'Arguments: ', '', 'file')
+        if not ok then
+          return dap.ABORT
+        end
+        return require("dap.utils").splitstr(args_string)
+      end,
+      console = "integratedTerminal",
+    },
+  }
+end
 
 return M
