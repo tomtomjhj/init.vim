@@ -17,6 +17,8 @@ local fzf = require('fzf-lua')
 -- notes
 -- * Preview buffer's ftdetect uses `:filetype detect`, which is somewhat broken? `*.v` file doesn't get recognized as coq.
 -- * Does not reuse the buffer for preview <https://github.com/ibhagwan/fzf-lua/issues/208#issuecomment-962550013>...
+-- * Sometimes ctx is not cleared properly, leading to Invalid window error. Then run
+--   :lua require'fzf-lua.ctx'.reset()
 
 -- TODO: add selected items to quickfix. useful for collecting non-immediate references
 

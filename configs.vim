@@ -137,6 +137,7 @@ set laststatus=2
 set shiftwidth=4
 set expandtab smarttab
 set autoindent
+set cinoptions=(s,m1,j1
 set formatoptions+=jn formatoptions-=c
 set formatlistpat=\\C^\\s*[\\[({]\\\?\\([0-9]\\+\\\|[iIvVxXlLcCdDmM]\\+\\\|[a-zA-Z]\\)[\\]:.)}]\\s\\+\\\|^\\s*[-+o*]\\s\\+
 set nojoinspaces
@@ -290,7 +291,7 @@ set statusline=%!STLFunc()
 set tabline=%!TALFunc()
 let g:qf_disable_statusline = 1
 
-let s:stl_mode_map = {'n' : 'N ', 'i' : 'I ', 'R' : 'R ', 'v' : 'V ', 'V' : 'VL', "\<C-v>": 'VB', 'c' : 'C ', 's' : 'S ', 'S' : 'SL', "\<C-s>": 'SB', 't': 'T '}
+let s:stl_mode_map = {'n' : 'N ', 'i' : 'I ', 'R' : 'R ', 'v' : 'V ', 'V' : 'VL', "\<C-v>": 'VB', 'c' : 'C ', 's' : 'S ', 'S' : 'SL', "\<C-s>": 'SB', 't': 'T ', 'r': 'P ', '!': '! '}
 let s:stl_inactive_hl = [''                  , '%#STLInactive2#'   , '%#STLInactive3#'   , '%#STLInactive4#' , ]
 let s:stl_active_hl = {
             \ 'n' :     ['%#STLModeNormal1#' , '%#STLModeNormal2#' , '%#STLModeNormal3#' , '%#STLModeNormal4#' , ],
@@ -305,6 +306,8 @@ let s:stl_active_hl['s'] = s:stl_active_hl['i']
 let s:stl_active_hl['S'] = s:stl_active_hl['i']
 let s:stl_active_hl["\<C-s>"] = s:stl_active_hl['i']
 let s:stl_active_hl['t'] = s:stl_active_hl['i']
+let s:stl_active_hl['r'] = s:stl_active_hl['n']
+let s:stl_active_hl['!'] = s:stl_active_hl['n']
 
 function! StatuslineHighlightInit()
     hi! STLModeNormal1  guifg=#005f00 ctermfg=22  guibg=#afdf00 ctermbg=148 gui=nocombine,bold cterm=nocombine,bold
