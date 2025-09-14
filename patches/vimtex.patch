@@ -1,5 +1,5 @@
 diff --git a/autoload/vimtex/fzf.vim b/autoload/vimtex/fzf.vim
-index 980543b5..3eeaac9d 100644
+index 980543b..3eeaac9 100644
 --- a/autoload/vimtex/fzf.vim
 +++ b/autoload/vimtex/fzf.vim
 @@ -76,7 +76,7 @@ def format_number(n):
@@ -21,13 +21,13 @@ index 980543b5..3eeaac9d 100644
                 'label' : "\u001b[32m",
                 'todo' : "\u001b[31m"}[e['type']]
 diff --git a/autoload/vimtex/parser/tex.vim b/autoload/vimtex/parser/tex.vim
-index c844d7ba..d7d6eb10 100644
+index c3cba39..a607a37 100644
 --- a/autoload/vimtex/parser/tex.vim
 +++ b/autoload/vimtex/parser/tex.vim
-@@ -105,8 +105,9 @@ endfunction
- " }}}1
+@@ -120,8 +120,9 @@ function! vimtex#parser#tex#input_parser(line, current_file, root) abort " {{{1
+         \ new_root: a:root,
+         \}
  
- function! vimtex#parser#tex#input_parser(line, current_file, root) abort " {{{1
 +  let l:sanitized_line = strpart(a:line, match(a:line, g:vimtex#re#tex_input . '|^\s*\\loadglsentries'))
    " Handle \space commands
 -  let l:file = substitute(a:line, '\\space\s*', ' ', 'g')
@@ -36,7 +36,7 @@ index c844d7ba..d7d6eb10 100644
    " Handle import and subfile package commands
    if l:file =~# g:vimtex#re#tex_input_import
 diff --git a/autoload/vimtex/re.vim b/autoload/vimtex/re.vim
-index 2b47cc2c..cba47cfb 100644
+index 4e395c9..3bb726a 100644
 --- a/autoload/vimtex/re.vim
 +++ b/autoload/vimtex/re.vim
 @@ -22,7 +22,7 @@ let g:vimtex#re#tex_input_import = '\v\\%('
