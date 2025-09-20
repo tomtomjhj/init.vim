@@ -1,5 +1,5 @@
 diff --git a/lua/dap.lua b/lua/dap.lua
-index 7d9aebc..25c82c5 100644
+index ac24d5a..2260077 100644
 --- a/lua/dap.lua
 +++ b/lua/dap.lua
 @@ -538,7 +538,7 @@ local function select_config_and_run(opts)
@@ -12,11 +12,11 @@ index 7d9aebc..25c82c5 100644
        "Configuration: ",
        function(i) return i.name end,
 diff --git a/lua/dap/session.lua b/lua/dap/session.lua
-index 6ef7237..455545e 100644
+index 3fea8c1..b795db3 100644
 --- a/lua/dap/session.lua
 +++ b/lua/dap/session.lua
-@@ -505,6 +505,12 @@ local function jump_to_location(bufnr, line, column, switchbuf, filetype)
-     return true
+@@ -516,6 +516,12 @@ local function jump_to_location(bufnr, line, column, switchbuf, filetype)
+     switchbuf_fn.split = switchbuf_fn.newtab
    end
  
 +  function switchbuf_fn.smartsplit()
@@ -25,6 +25,6 @@ index 6ef7237..455545e 100644
 +    return true
 +  end
 +
-   if switchbuf:find('usetab') then
-     switchbuf_fn.useopen = switchbuf_fn.usetab
-   end
+   if type(switchbuf) == "function" then
+     switchbuf(bufnr, line, column)
+     return
