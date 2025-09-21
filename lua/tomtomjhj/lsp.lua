@@ -7,6 +7,8 @@
 --   and call the old callback in the new callback?
 -- * mason-lspconfig: does auto lsp.enable(), but adds big overhead at startup
 -- * `:LspStart` does lsp.enable()
+-- * no clean way to disable on specific buffer (e.g., fugitive://)
+--   https://github.com/neovim/neovim/issues/32037
 
 local M = {}
 
@@ -320,6 +322,13 @@ vim.lsp.config('basedpyright', {
       diagnosticSeverityOverrides = {},
     }
   }},
+  root_dir = function(bufnr, on_dir)
+    -- disable on fugitive:// buffer to avoid this error:
+    -- LSP[basedpyright] Enumeration of workspace source files is taking longer than 10 seconds.
+    local filepath = vim.api.nvim_buf_get_name(bufnr)
+    if filepath:match('^%w+://') then return end
+    on_dir(vim.fs.root(bufnr, vim.lsp.config['basedpyright'].root_markers))
+  end
 })
 vim.lsp.enable('basedpyright')
 -- NOTE: For import resolution to work with an editable installation of a local package built with setuptools, it should use the compat or strict mode.
