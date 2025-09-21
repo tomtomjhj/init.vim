@@ -1124,6 +1124,10 @@ function! s:check_ruby()
 endfunction
 
 function! s:update_impl(pull, force, args) abort
+  if has('nvim-0.11')
+    " With vim.loader, require()-ing from newly installed plugin fails to locate the package
+    lua vim.loader.enable(false)
+  endif
   let sync = index(a:args, '--sync') >= 0 || has('vim_starting')
   let args = filter(copy(a:args), 'v:val != "--sync"')
   let threads = (len(args) > 0 && args[-1] =~ '^[1-9][0-9]*$') ?
