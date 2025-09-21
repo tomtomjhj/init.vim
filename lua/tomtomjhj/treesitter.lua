@@ -1,5 +1,3 @@
-local parsers = require("nvim-treesitter.parsers")
-
 local disable = {
   "vim",  -- less complete
 }
@@ -29,14 +27,17 @@ local ag = vim.api.nvim_create_augroup("treesitter-custom", { clear = true })
 
 -- NOTE: This autocmd is run AFTER syntaxset autocmd, which loads syntax/*.vim
 -- files, because this file must be sourced after plug#end, because it depends
--- on nvim-treesitter.
+-- on nvim-treesitter. 2025-09-22: No longer true.
 vim.api.nvim_create_autocmd(
   { "FileType" },
   { group = ag, pattern = "*",
     desc = 'enable treesitter stuff and custom treesitter stuff',
     callback = function(ev)
       local lang = vim.treesitter.language.get_lang(ev.match)
-      if not lang or vim.tbl_contains(disable, lang) or not parsers.has_parser(lang) then return end
+      if not lang or vim.tbl_contains(disable, lang) or
+          not vim.treesitter.get_parser(ev.buf, lang, { error = false }) then
+        return
+      end
       if custom_queries[lang] then
         for name, query in pairs(custom_queries[lang]) do
           vim.treesitter.query.set(lang, name, query)
@@ -47,6 +48,10 @@ vim.api.nvim_create_autocmd(
         vim.treesitter.start(ev.buf, lang)
         vim.b.undo_ftplugin = (vim.b.undo_ftplugin and vim.b.undo_ftplugin .. '|' or '') .. [[exe 'lua vim.treesitter.stop()']]
       end
+      -- uses full buffer query. 100ms latency for 10K line file
+      if false and not vim.tbl_contains(disable_indent, lang) and vim.treesitter.query.get(lang, 'indent') then
+        vim.opt_local.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+      end
       if vim.treesitter.query.get(lang, 'folds') and vim.wo.foldmethod ~= 'diff' then
         vim.opt_local.foldmethod = 'expr'
         vim.opt_local.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
@@ -56,23 +61,9 @@ vim.api.nvim_create_autocmd(
   }
 )
 
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
-  indent = {
-    enable = false; -- uses full buffer query. 100ms latency for 10K line file
-    -- disable = disable_indent,
-  },
-  incremental_selection = {
-    enable = true,
-    disable = disable,
-    keymaps = {
-      init_selection = "<leader><tab>",
-      node_incremental = "<tab>", -- fine, because the builtin CTRL-I doesn't work in visual mode
-      node_decremental = "<s-tab>",
-      scope_incremental = "<leader><tab>",
-    },
-  },
-}
+-- NOTE: These are bundled with nvim, which can get out of sync with nvim-treesitter queries.
+-- So I install these in vim-plug post-update hook.
+-- require("nvim-treesitter").install({ "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" })
 
 -- TODO: (2024) matchup treesitter incurs noticeable input lag in the middle of big c file e.g. normal.c
 -- 73%  matches

@@ -96,7 +96,7 @@ endif
 if g:nvim_latest_stable
     " NOTE: when using local install of nvim, should reinstall
     Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
-    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+    Plug 'nvim-treesitter/nvim-treesitter', {'branch': 'main', 'do': ':TSInstall c lua vim vimdoc query markdown markdown_inline \| TSUpdate'}
     Plug 'stevearc/aerial.nvim'
     Plug 'jbyuki/venn.nvim'
     Plug 'folke/flash.nvim'
@@ -1096,7 +1096,7 @@ let g:sneak#alias = {
 
 if g:nvim_latest_stable
 Mnoremap <M-s> <Cmd>lua require'tomtomjhj.flash'.jump()<CR>
-Mnoremap M <Cmd>lua require'tomtomjhj.flash'.treesitter()<CR>
+Mnoremap M <Cmd>lua require'tomtomjhj.flash'.treesitter({actions = {["<tab>"] = "next", ["<s-tab>"] = "prev"}})<CR>
 " onoremap r <Cmd>lua require'tomtomjhj.flash'.remote()<CR>
 " onoremap R <Cmd>lua require'tomtomjhj.flash'.treesitter_search()<CR>
 " xnoremap R <Cmd>lua require'tomtomjhj.flash'.treesitter_search()<CR>

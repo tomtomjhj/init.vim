@@ -15,8 +15,6 @@ local flash = require('flash')
 --     * dot-repeating {operator}f{char} is weird
 -- * treesitter()
 --   * don't map if parser not available
---   * namp
---     * use <M-;> to decrease
 
 flash.setup {
   modes = {

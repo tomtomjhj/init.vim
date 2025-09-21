@@ -22,8 +22,9 @@ cd ~/.vim
 # External dependencies
 ```sh
 pip3 install --user pynvim neovim-remote
+cargo-binstall ripgrep fd-find bat git-delta
+mkdir -p ~/.local/bin &&  curl -L https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-linux-x64.gz | gunzip > ~/.local/bin/tree-sitter && chmod +x ~/.local/bin/tree-sitter
 ```
-* ripgrep fd-find bat git-delta
 * node
 
 # Note
