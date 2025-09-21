@@ -1,8 +1,12 @@
 -- vim.lsp.set_log_level('TRACE')
 
--- NOTE: lspconfig can be lazy-loaded in BufEnter,BufNewFile (LazyVim does this)
-
-local lspconfig = require('lspconfig')
+-- vim.lsp.config
+-- * no merging for before_init, on_init, and on_attach?
+--   https://github.com/neovim/neovim/issues/33577.
+--   Get the old config (vim.lsp.config[name]) before calling the config,
+--   and call the old callback in the new callback?
+-- * mason-lspconfig: does auto lsp.enable(), but adds big overhead at startup
+-- * `:LspStart` does lsp.enable()
 
 local M = {}
 
@@ -226,8 +230,7 @@ vim.api.nvim_create_autocmd("VimLeavePre", {
 })
 -- }}}
 
-require('mason').setup()
-require('mason-lspconfig').setup() -- registers some hooks for lspconfig setup
+require('mason').setup() -- shouldn't lazy load as it sets up PATH
 
 register_breadcrumb_global()
 register_progress_message()
@@ -243,7 +246,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
         --   args = { [[+setlocal\ nobuflisted|$ ]] .. vim.lsp.get_log_path() },
         --   mods = opts.smods,
         -- }
-        vim.cmd([[pedit +setlocal\ nobuflisted\ nowrap|$ ]] .. vim.lsp.get_log_path() )
+        vim.cmd([[pedit +setlocal\ nobuflisted\ nowrap|$ ]] .. vim.lsp.log.get_filename())
       end,
       { force = true, }
     )
@@ -252,23 +255,25 @@ vim.api.nvim_create_autocmd("VimEnter", {
 
 -- Disable workspace/didChangeWatchedFiles if a slow backend is used.
 -- https://github.com/neovim/neovim/issues/23291
-local capabilities = vim.tbl_deep_extend('force', require('cmp_nvim_lsp').default_capabilities(), {
-  workspace = {
-    didChangeWatchedFiles = {
-      dynamicRegistration = vim.fn.has('win32') == 1 or vim.fn.has('mac') == 1 or vim.fn.executable('inotifywait') == 1,
+vim.lsp.config('*', {
+  capabilities = vim.tbl_deep_extend('force', require('cmp_nvim_lsp').default_capabilities(), {
+    workspace = {
+      didChangeWatchedFiles = {
+        dynamicRegistration = vim.fn.has('win32') == 1 or vim.fn.has('mac') == 1 or vim.fn.executable('inotifywait') == 1,
+      },
     },
-  },
+  }),
 })
 
 local codelens_autocmds = vim.api.nvim_create_augroup("tomtomjhj/lsp-codelens", { clear = true })
 
--- "cmd" is required in vim.lsp.ClientConfig. Make it optional
----@class PartialClientConfig: vim.lsp.ClientConfig
----@field cmd? string[]|fun(dispatchers: vim.lsp.rpc.Dispatchers): vim.lsp.rpc.PublicClient
-
----@type PartialClientConfig
-local base_config = {
-  on_attach = function(client, bufnr)
+---@type table<string, fun(client: vim.lsp.Client, bufnr: number)> name ↦ on_attach.
+---Not using lsp.config('*', { on_attach = ... }) because it doesn't merge with server-specific on_attach.
+local custom_on_attach = {}
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(ev)
+    local bufnr = ev.buf
+    local client = assert(vim.lsp.get_client_by_id(ev.data.client_id))
     vim.fn['SetupLSP']()
     vim.fn['SetupLSPPost']()
     register_breadcrumb(client, bufnr)
@@ -282,65 +287,32 @@ local base_config = {
         desc = 'refresh codelens',
       })
     end
+    if custom_on_attach[client.name] then
+      custom_on_attach[client.name](client, bufnr)
+    end
   end,
-  capabilities = capabilities,
-}
-
----@param more? PartialClientConfig
----@return PartialClientConfig
-local function config(more)
-  if more == nil then return base_config end
-  return vim.tbl_deep_extend('force', base_config, more)
-end
+  desc = 'common lsp setup',
+})
 
 -- server configs {{{
 
--- local path = require "mason-core.path"
--- local mason_path = path.concat { vim.fn.stdpath("data"), "mason" , "packages" }
--- local codelldb_path = path.concat { mason_path, "codelldb", "extension" }
--- dap = {
---   adapter = require('rust-tools.dap').get_codelldb_adapter(
---     path.concat { codelldb_path, "adapter", "codelldb" },
---     path.concat { codelldb_path, "lldb", "lib", "liblldb.so" }
---   )
--- }
-
--- NOTE: lspconfig blocks when downing rust toolchain and it can't be interrrupted just like any other blocking lua code
+-- NOTE: `cargo metadata` in root_dir blocks when downing rust toolchain and it can't be interrrupted.
 -- NOTE: rust-analyzer behaves weirdly for multi-crate project. especially workspace_symbols.
 -- NOTE: see https://github.com/LazyVim/LazyVim/pull/2198 for more config
-vim.g.rustaceanvim = {
-  server = config {
-    on_attach = function(client, bufnr)
-      base_config.on_attach(client, bufnr)
-      vim.api.nvim_buf_create_user_command(bufnr, 'LspRestart', 'RustAnalyzer restart', {})
-    end,
-    settings = { ['rust-analyzer'] = {
-      rustc = { source = 'discover' }
-    }},
-  },
-}
-
--- lspconfig.pylsp.setup(config {
---   settings = { pylsp = {
---     plugins = {
---       pylint = {
---         enabled = true,
---         args = {"-dR", "-dC", "-dW0401", "-dW0511", "-dW0614", "-dW0621", "-dW0231", "-dF0401", "--generated-members=cv2.*,onnx.*,tf.*,np.*"}
---       },
---       ["flake8"] = { enabled = false },
---       mccabe = { enabled = false },
---       pycodestyle = { enabled = false },
---       pyflakes = { enabled = false },
---       rope_completion = { enabled = false },
---       yapf = { enabled = false },
---     }
---   }}
--- })
+vim.lsp.config('rust_analyzer', {
+  settings = { ['rust-analyzer'] = {
+    rustc = { source = 'discover' }
+  }},
+})
+custom_on_attach['rust_analyzer'] = function(_, bufnr)
+  vim.api.nvim_buf_create_user_command(bufnr, 'LspRestart', 'RustAnalyzer restart', {})
+end
+vim.lsp.enable('rust_analyzer')
 
 -- TODO: reference() seems to exclude the reference at the cursor... confusing
 -- https://github.com/DetachHead/basedpyright/blob/aba927d9e09203ad37cb92054416e28e8dbd5a66/packages/pyright-internal/src/languageService/referencesProvider.ts#L152
 -- https://github.com/microsoft/pyright/blob/db368a1ace131372cb78d9c866ca3f5867495052/packages/pyright-internal/src/languageService/referencesProvider.ts#L152
-lspconfig.basedpyright.setup(config {
+vim.lsp.config('basedpyright', {
   -- https://github.com/DetachHead/basedpyright/blob/main/packages/vscode-pyright/package.json
   settings = { basedpyright = {
     analysis = {
@@ -349,14 +321,19 @@ lspconfig.basedpyright.setup(config {
     }
   }},
 })
-lspconfig.ruff.setup(config {
-  autostart = false,
-})
+vim.lsp.enable('basedpyright')
+-- NOTE: For import resolution to work with an editable installation of a local package built with setuptools, it should use the compat or strict mode.
+-- pip install -e dir --config-settings editable_mode=compat
+-- https://docs.basedpyright.com/dev/usage/import-resolution/
+-- https://setuptools.pypa.io/en/latest/userguide/development_mode.html
+-- Note that with strict mode, goto-def on the package goes to the build dir (each file symlinks to the original file, which isn't ideal).
 
-lspconfig.clangd.setup(config {
+vim.lsp.config('clangd', {
   --- https://github.com/clangd/clangd/issues/1394#issuecomment-1328676884
-  cmd = { 'clangd', '--query-driver=/usr/bin/c++', '--log=error', }
+  cmd = { 'clangd', '--query-driver=/usr/bin/c++', '--log=error', },
+  root_markers = { '.clangd', 'compile_commands.json', 'compile_flags.txt', 'configure.ac', '.git', },
 })
+vim.lsp.enable('clangd')
 --[[
 clangd doesn't support configuration via LSP.
 Should use per-project or global ~/.config/clangd/config.yaml
@@ -374,8 +351,9 @@ CompileFlags:
 --]]
 
 -- https://github.com/folke/lazydev.nvim/ is probably overkill for my usage
-lspconfig.lua_ls.setup(config {
-  on_init = function(client)
+local lua_ls_old_on_init = nil
+vim.lsp.config('lua_ls', {
+  on_init = function(client, init_result)
     -- Worse than treesitter. Doesn't highlight method definition as definition.
     client.server_capabilities.semanticTokensProvider = nil
 
@@ -402,10 +380,9 @@ lspconfig.lua_ls.setup(config {
     codeLens = { enable = true, },
   }},
 })
+vim.lsp.enable('lua_ls')
 
--- lspconfig.vimls.setup(config())
-
-lspconfig.texlab.setup(config {
+vim.lsp.config('texlab', {
   settings = { texlab = {
     experimental = {
       labelDefinitionCommands = { 'axiomH', 'inferH', },
@@ -413,16 +390,12 @@ lspconfig.texlab.setup(config {
     },
   }},
 })
+vim.lsp.enable('texlab')
 
--- NOTE: Codeaction-ed rules are recorded in .ltex_ls_cache.json.
--- See also https://github.com/barreiroleo/ltex_extra.nvim.
-require'ltex-ls'.setup(config {
-  autostart = false,
-  -- Not quite useful, because it's not updated on zg.
-  -- In the meantime, use the built-in spellchecker.
-  -- use_spellfile = true, -- ltex-ls.nvim setting
+vim.lsp.config('ltex_plus', {
   settings = { ltex = {
     checkFrequency = "save",
+    -- not compatible with stuff like zg; jsust disable ltex's spellchecking
     -- dictionary = {
     --   ["en-US"] = { ":~/.vim/spell/en.utf-8.add" }
     -- },
@@ -447,50 +420,8 @@ require'ltex-ls'.setup(config {
     },
   }}
 })
+-- vim.lsp.enable('ltex_plus')
 
-lspconfig.bashls.setup(config())
-
-lspconfig.markdown_oxide.setup(config {
-  autostart = false,
-})
-
--- Old ocamllsp spams "failed to poll dune registry" warning in lsp.log.
--- Lastest ocamllsp requires ocaml>=4.14.
--- This dune thing should be MANUALLY run with `dune build -w`.
-lspconfig.ocamllsp.setup(config())
-
--- require'coq-lsp'.setup {
---   lsp = config {
---     autostart = false,
---     init_options = {
---       max_errors = 50,
---       show_notices_as_diagnostics = true,
---       debug = true,
---     },
---     -- trace = 'verbose',
---   },
--- }
-
-require'vscoq'.setup {
-  vscoq = {
-    proof = {
-      mode = 'Manual',
-      cursor = { sticky = false },
-    },
-  },
-  lsp = config {
-    -- cmd = { 'vscoqtop', '-bt', '-vscoq-d', 'all' },
-    -- trace = 'verbose',
-    autostart = false,
-    on_attach = function(client, bufnr)
-      base_config.on_attach(client, bufnr)
-      vim.keymap.set({'n', 'i'}, '<C-M-j>', '<Cmd>VsCoq stepForward<CR>', { buffer = bufnr })
-      vim.keymap.set({'n', 'i'}, '<C-M-k>', '<Cmd>VsCoq stepBackward<CR>', { buffer = bufnr })
-      vim.keymap.set({'n', 'i'}, '<C-M-l>', '<Cmd>VsCoq interpretToPoint<CR>', { buffer = bufnr })
-    end
-  },
-}
--- }}}
 
 return M
 
