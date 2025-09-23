@@ -3,6 +3,9 @@ local disable = {
 }
 local disable_highlight = vim.list_extend({'latex'}, disable)
 local disable_indent = vim.list_extend({'latex', 'markdown', 'lua', 'c'}, disable)
+local syn = {
+  "python", -- TODO: indent/python.vim relies too much on :syn
+}
 
 -- lua indet broken
 -- f(function()
@@ -53,6 +56,9 @@ vim.api.nvim_create_autocmd(
       if not vim.tbl_contains(disable_highlight, lang) and not vim.b.ts_highlight then
         vim.treesitter.start(ev.buf, lang)
         vim.b.undo_ftplugin = (vim.b.undo_ftplugin and vim.b.undo_ftplugin .. '|' or '') .. [[exe 'lua vim.treesitter.stop()']]
+        if vim.tbl_contains(syn, lang) then
+          vim.bo.syntax = 'on'
+        end
       end
       -- uses full buffer query. 100ms latency for 10K line file
       if false and not vim.tbl_contains(disable_indent, lang) and vim.treesitter.query.get(lang, 'indent') then
