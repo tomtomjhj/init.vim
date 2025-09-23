@@ -360,7 +360,6 @@ CompileFlags:
 --]]
 
 -- https://github.com/folke/lazydev.nvim/ is probably overkill for my usage
-local lua_ls_old_on_init = nil
 vim.lsp.config('lua_ls', {
   on_init = function(client, init_result)
     -- Worse than treesitter. Doesn't highlight method definition as definition.

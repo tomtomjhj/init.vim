@@ -42,6 +42,8 @@
 * <https://www.reddit.com/r/neovim/comments/15c7rk3/quickfix_editing_tips_worth_resharing/>
   <https://github.com/itchyny/vim-qfedit>
   <https://github.com/jceb/vim-editqf>
+* `lua package.loaded['module.path'] = nil` to un/re-load module ... doesn't work well because the user modules reference the old module?
+* `set redrawdebug=compositor writedelay=10` to debug redraw
 
 
 ## dictionary (`i_CTRL-X_CTRL-K`)

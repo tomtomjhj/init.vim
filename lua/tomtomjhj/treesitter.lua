@@ -33,9 +33,15 @@ vim.api.nvim_create_autocmd(
   { group = ag, pattern = "*",
     desc = 'enable treesitter stuff and custom treesitter stuff',
     callback = function(ev)
+      if not vim.api.nvim_buf_is_loaded(ev.buf) then
+        -- not sure why this can happen, but it did happen, which made get_parser fail
+        return
+      end
       local lang = vim.treesitter.language.get_lang(ev.match)
-      if not lang or vim.tbl_contains(disable, lang) or
-          not vim.treesitter.get_parser(ev.buf, lang, { error = false }) then
+      if not lang
+          or vim.tbl_contains(disable, lang)
+          or not vim.treesitter.get_parser(ev.buf, lang, { error = false })
+      then
         return
       end
       if custom_queries[lang] then
