@@ -11,20 +11,3 @@ index ac24d5a..2260077 100644
        all_configs,
        "Configuration: ",
        function(i) return i.name end,
-diff --git a/lua/dap/session.lua b/lua/dap/session.lua
-index 3fea8c1..b795db3 100644
---- a/lua/dap/session.lua
-+++ b/lua/dap/session.lua
-@@ -516,6 +516,12 @@ local function jump_to_location(bufnr, line, column, switchbuf, filetype)
-     switchbuf_fn.split = switchbuf_fn.newtab
-   end
- 
-+  function switchbuf_fn.smartsplit()
-+    require('tomtomjhj.dap').smartsplit(bufnr)
-+    set_cursor(0, line, column)
-+    return true
-+  end
-+
-   if type(switchbuf) == "function" then
-     switchbuf(bufnr, line, column)
-     return

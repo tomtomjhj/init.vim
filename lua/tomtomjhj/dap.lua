@@ -8,12 +8,10 @@ local api = vim.api
 -- * dap-view: <C-w><CR> to split open breakpoint/...
 -- * dap-view: terminal closes on session end. https://github.com/mfussenegger/nvim-dap/discussions/1523
 
-local M = {}
-
 local dap_view = require('dap-view')
 local dap = require('dap')
 
-vim.keymap.set({'n', 'v'}, '<M->>', function()
+vim.keymap.set({ 'n', 'v' }, '<M->>', function()
   require('dap.ui.widgets').hover()
 end)
 
@@ -28,31 +26,39 @@ end, {
   force = true,
 })
 
--- Custom method for switchbuf config.
--- nvim-dap and nvim-dap-view should be patched to use this function,
--- because do not yet support proper customization.
--- See also: https://github.com/mfussenegger/nvim-dap/pull/1485
-function M.smartsplit(bufnr)
-  local base_win_candidates = {}
+local function maybe_smartsplit(bufnr)
+  local max_area = -1
+  local max_area_win = -1
+  local max_winnr = -1
   for _, win in ipairs(api.nvim_tabpage_list_wins(0)) do
     local bo = vim.bo[api.nvim_win_get_buf(win)]
+    -- only consider normal file windows
     if not bo.filetype:match('^dap-')
-      and bo.buftype == ''
-      and api.nvim_win_get_config(win).relative == ''
+        and bo.buftype == ''
+        and api.nvim_win_get_config(win).relative == ''
     then
-      base_win_candidates[#base_win_candidates + 1] = {
-        win,
-        api.nvim_win_get_width(win),
-        api.nvim_win_get_height(win),
-      }
+      local area = api.nvim_win_get_width(win) * api.nvim_win_get_height(win)
+      if area > max_area then
+        max_area = area
+        max_area_win = win
+      elseif area == max_area and api.nvim_win_get_number(win) > max_winnr then
+        max_area_win = win
+      end
+      max_winnr = math.max(max_winnr, api.nvim_win_get_number(win))
     end
   end
-  -- sort by area
-  table.sort(base_win_candidates, function(l, r) return l[2] * l[3] < r[2] * r[3] end)
-  if #base_win_candidates > 0 then
-    local base_win, width, _ = unpack(base_win_candidates[#base_win_candidates])
+
+  if max_area_win < 0 then
+    vim.cmd('topleft sbuffer ' .. bufnr)
+    return
+  end
+
+  -- split from the largest window, if large enough
+  local width = api.nvim_win_get_width(max_area_win)
+  local height = api.nvim_win_get_height(max_area_win)
+  if width >= 160 or height >= 30 then
     local saved_curwin = api.nvim_get_current_win()
-    api.nvim_set_current_win(base_win)
+    api.nvim_set_current_win(max_area_win)
     if width >= 160 then
       vim.cmd('vert sbuffer ' .. bufnr)
     else
@@ -62,13 +68,75 @@ function M.smartsplit(bufnr)
     local target_win = api.nvim_get_current_win()
     api.nvim_set_current_win(saved_curwin)
     api.nvim_set_current_win(target_win)
+    return
+  end
+
+  api.nvim_set_current_win(vim.fn.win_getid(max_winnr))
+  api.nvim_win_set_buf(0, bufnr)
+end
+
+local function set_cursor(win, line, column)
+  local ok, err = pcall(api.nvim_win_set_cursor, win, { line, column - 1 })
+  if ok then
+    local curbuf = api.nvim_get_current_buf()
+    if vim.bo[curbuf].filetype ~= "dap-repl" then
+      api.nvim_set_current_win(win)
+    end
+    api.nvim_win_call(win, function()
+      api.nvim_command('normal! zv')
+    end)
   else
-    vim.cmd('topleft sbuffer ' .. bufnr)
+    local msg = string.format(
+      "Adapter reported a frame in buf %d line %s column %s, but: %s. "
+      .. "Ensure executable is up2date and if using a source mapping ensure it is correct",
+      api.nvim_win_get_buf(win),
+      line,
+      column,
+      err
+    )
+    require('dap.utils').notify(msg, vim.log.levels.WARN)
   end
 end
 
+local function dap_switchbuf(bufnr, line, column)
+  local cur_win = api.nvim_get_current_win()
+
+  -- usevisible
+  if api.nvim_win_get_buf(cur_win) == bufnr then
+    local first = vim.fn.line("w0", cur_win)
+    local last = vim.fn.line("w$", cur_win)
+    if first <= line and line <= last then
+      return true
+    end
+  end
+
+  -- useopen
+  if api.nvim_win_get_buf(cur_win) == bufnr then
+    set_cursor(cur_win, line, column)
+    return true
+  end
+  for _, win in ipairs(api.nvim_tabpage_list_wins(0)) do
+    if api.nvim_win_get_buf(win) == bufnr then
+      set_cursor(win, line, column)
+      return true
+    end
+  end
+
+  maybe_smartsplit(bufnr)
+  set_cursor(api.nvim_get_current_win(), line, column)
+  return true
+end
+
+-- buf, win → win?; no jump needed (but ok to do)
+local function dap_view_switchbuf(buf, win)
+  local win = require('dap-view.views.windows.switchbuf').switchbuf_winfn.useopen(buf, win)
+  if win then return win end
+  maybe_smartsplit(buf)
+  return api.nvim_get_current_win()
+end
+
 dap_view.setup {
-  switchbuf = "useopen", -- NOTE: my nvim-dap-view patch to use smartsplit as fallback
+  switchbuf = dap_view_switchbuf,
   winbar = {
     base_sections = {
       breakpoints = { label = "[B]reakpoints", short_label = "[B]" },
@@ -101,7 +169,7 @@ dap_view.setup {
 }
 
 -- NOTE: my nvim-dap patch to use smartsplit
-dap.defaults.fallback.switchbuf = "usevisible,useopen,smartsplit"
+dap.defaults.fallback.switchbuf = dap_switchbuf
 
 dap.listeners.before.event_initialized['tomtomjhj'] = dap_view.open
 -- dap.listeners.before.event_terminated["tomtomjhj"] = dap_view.close
@@ -163,5 +231,3 @@ dap.providers.configs['global_gdb'] = function()
     },
   }
 end
-
-return M
