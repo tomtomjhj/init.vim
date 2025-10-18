@@ -104,8 +104,6 @@ function! SetupLSP()
 
   " ...
   Noremap <buffer><leader>ac    <cmd>lua require('fzf-lua').lsp_code_actions()<CR>
-  nnoremap <buffer><leader>fm    <cmd>lua vim.lsp.buf.format{async=true}<CR>
-  xnoremap <buffer><expr><leader>fm  NvimLSPRangeFormat('')
   nnoremap <buffer><leader>rn    <cmd>lua vim.lsp.buf.rename()<CR>
   nnoremap <buffer><localleader>*    <cmd>lua vim.lsp.buf.document_highlight()<CR>
   nnoremap <buffer><localleader><CR> <cmd>lua vim.lsp.buf.clear_references()<CR>
@@ -139,24 +137,10 @@ function! STLDiagnosticWarnings()
   let warnings = luaeval('vim.diagnostic.count(0, {severity=vim.diagnostic.severity.WARN})[vim.diagnostic.severity.WARN]')
   return warnings ? 'W' . warnings : ''
 endfunction
-
-function! NvimLSPRangeFormat(type) abort
-  if a:type == ''
-    set opfunc=NvimLSPRangeFormat
-    return 'g@'
-  endif
-  lua vim.lsp.buf.format{ range = { start = vim.api.nvim_buf_get_mark(0, '['), ['end'] = vim.api.nvim_buf_get_mark(0, ']') } }
-endfunction
 " }}}
 
-else " ale {{{
+else " {{{
 function! SetupLSP()
-  nmap <buffer><M-.> <Plug>(ale_hover)
-  nmap <buffer><M-]> <Plug>(ale_go_to_definition)
-  nmap <buffer><silent><M-\> <Plug>(ale_go_to_definition_in_tab)
-  nmap <buffer><silent><leader><M-\> :if IsWide() \| ALEGoToDefinitionInVSplit \| else \| ALEGoToDefinitionInSplit \| endif<CR>
-  nmap <buffer><leader>rn :ALERename<CR>
-  nmap <buffer><leader>rf <Plug>(ale_find_references)
 endfunction
 function! STLBreadCrumb()
   return ''
@@ -173,10 +157,6 @@ endif " }}}
 " Override things done in SetupLSP
 " TODO: in general, should run my FileType after SetupLSP
 function! SetupLSPPost()
-  " lsp format didn't work well for these filetypes. Format using ale.
-  if &filetype =~# '\v^(go|ocaml)$'
-    nmap <buffer><leader>fm <Plug>(ale_fix)
-  endif
   if &filetype ==# 'vim'
     noremap <silent><buffer> <M-.> K
   endif

@@ -53,7 +53,6 @@ Plug 'inkarkat/vim-mark', { 'on': ['<Plug>MarkS', 'Mark'] }
 Plug 'inkarkat/vim-ingo-library'
 
 " lanauges
-Plug 'dense-analysis/ale', { 'on': ['<Plug>(ale_', 'ALEEnable', 'ALEFix'] } ")
 if g:ide_client == 'coc'
     Plug 'neoclide/coc.nvim', { 'branch': 'release' }
     " Plug '~/apps/coc.nvim', { 'branch': 'master', 'do': 'yarn install --frozen-lockfile' }
@@ -71,6 +70,7 @@ elseif g:ide_client == 'nvim'
     Plug 'mason-org/mason.nvim'
     Plug 'mrcjkb/rustaceanvim'
     Plug 'p00f/clangd_extensions.nvim'
+    Plug 'stevearc/conform.nvim'
 endif
 Plug 'rafamadriz/friendly-snippets'
 Plug 'tomtomjhj/tpope-vim-markdown'
@@ -539,20 +539,8 @@ elseif g:ide_client == 'nvim'
 endif
 " }}}
 
-" ALE, LSP, ... global settings. See ./plugin/lsp.vim {{{
-let g:ale_linters = {}
-let g:ale_fixers = {
-            \ 'c': ['clang-format'],
-            \ 'cpp': ['clang-format'],
-            \ 'lua': ['stylua'],
-            \ 'python': ['black'],
-            \ 'ocaml': ['ocamlformat'],
-            \ 'go': ['gofmt'],
-            \ '*': ['trim_whitespace']
-            \ }
-let g:ale_set_highlights = 1
-let g:ale_linters_explicit = 1
-
+" LSP. See ./plugin/lsp.vim {{{
+if g:ide_client == 'coc'
 let g:coc_config_home = '~/.vim'
 " coc-rust-analyzer coc-pyright coc-texlab coc-clangd coc-tsserver coc-go coc-tag
 let g:coc_global_extensions = ['coc-snippets', 'coc-vimlsp', 'coc-json']
@@ -560,11 +548,17 @@ let g:coc_quickfix_open_command = 'CW'
 let g:coc_fzf_preview = 'up:66%'
 " for https://github.com/valentjn/vscode-ltex/issues/425
 let g:coc_filetype_map = {'tex': 'latex'}
+endif
 
-nmap <leader>fm <Plug>(ale_fix)
-nmap <M-,> <Plug>(ale_detail)<C-W>p
-nmap ]d <Plug>(ale_next_wrap)
-nmap [d <Plug>(ale_previous_wrap)
+if g:ide_client == 'nvim' && has('vim_starting')
+function! s:LoadConform() abort
+    delcommand Format
+    call plug#load('conform.nvim')
+    lua require('tomtomjhj.conform')
+endfunction
+command! -range=% Format call s:LoadConform() | <line1>,<line2>Format
+Map <leader>fm :Format<CR>
+endif
 " }}}
 
 " dap {{{
