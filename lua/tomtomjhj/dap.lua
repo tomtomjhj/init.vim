@@ -12,8 +12,11 @@ local dap_view = require('dap-view')
 local dap = require('dap')
 
 vim.keymap.set({ 'n', 'v' }, '<M->>', function()
-  require('dap.ui.widgets').hover()
+  require('dap.ui.widgets').hover(nil, { border = 'single' })
 end)
+vim.keymap.set('n', '<C-M-j>', '<Cmd>DapStepOver<CR>')
+vim.keymap.set('n', '<C-M-l>', '<Cmd>DapStepInto<CR>')
+vim.keymap.set('n', '<C-M-h>', '<Cmd>DapStepOut<CR>')
 
 vim.api.nvim_create_user_command('DapToggleBreakpoint', function(args)
   if #args.args > 0 then
@@ -228,6 +231,13 @@ dap.providers.configs['global_gdb'] = function()
         return require("dap.utils").splitstr(args_string)
       end,
       console = "integratedTerminal",
+      setupCommands = {
+        {
+          text = '-enable-pretty-printing',
+          description = 'enable pretty printing',
+          ignoreFailures = false,
+        },
+      },
     },
   }
 end

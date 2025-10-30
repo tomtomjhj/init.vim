@@ -576,6 +576,7 @@ endfunction
 for s:entrypoint in ['DapNew', 'DapContinue', 'DapToggleBreakpoint', 'DapViewOpen', 'DapViewToggle']
     exe printf('command -nargs=? %s call s:LoadDap() | %s <args>', s:entrypoint, s:entrypoint)
 endfor
+unlet s:entrypoint
 endif
 " }}}
 
@@ -1331,6 +1332,8 @@ for s:cmd in ["]", "\<C-]>", "f", "F", "g\<C-]>", "g]"]
     exe printf('nnoremap <silent> g<C-w>%s <Cmd>vert wincmd %s<CR>', s:cmd, s:cmd)
 endfor
 unlet! s:cmd
+nnoremap <silent> <C-w><C-LeftMouse> <LeftMouse><C-w>]
+nnoremap <silent> g<C-w><C-LeftMouse> <LeftMouse><Cmd>vert wincmd ]<CR>
 " }}}
 
 " pairs {{{

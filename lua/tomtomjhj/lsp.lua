@@ -276,6 +276,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(ev)
     local bufnr = ev.buf
     local client = assert(vim.lsp.get_client_by_id(ev.data.client_id))
+    if vim.tbl_contains({"GitHub Copilot"}, client.name) then
+      return
+    end
     vim.fn['SetupLSP']()
     vim.fn['SetupLSPPost']()
     register_breadcrumb(client, bufnr)
@@ -315,6 +318,10 @@ vim.lsp.enable('rust_analyzer')
 -- https://github.com/DetachHead/basedpyright/blob/aba927d9e09203ad37cb92054416e28e8dbd5a66/packages/pyright-internal/src/languageService/referencesProvider.ts#L152
 -- https://github.com/microsoft/pyright/blob/db368a1ace131372cb78d9c866ca3f5867495052/packages/pyright-internal/src/languageService/referencesProvider.ts#L152
 vim.lsp.config('basedpyright', {
+  on_init = function(client)
+    -- not really useful and kinda distracting
+    client.server_capabilities.semanticTokensProvider = nil
+  end,
   -- https://github.com/DetachHead/basedpyright/blob/main/packages/vscode-pyright/package.json
   settings = { basedpyright = {
     analysis = {
