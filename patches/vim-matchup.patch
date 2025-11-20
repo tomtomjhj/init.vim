@@ -1,0 +1,15 @@
+diff --git a/after/queries/markdown_inline/matchup.scm b/after/queries/markdown_inline/matchup.scm
+index 7973405..dda3a04 100644
+--- a/after/queries/markdown_inline/matchup.scm
++++ b/after/queries/markdown_inline/matchup.scm
+@@ -27,10 +27,3 @@
+ (strikethrough
+   (emphasis_delimiter) @open.strikethrough
+   (emphasis_delimiter) @close.strikethrough) @scope.strikethrough
+-
+-;; ===========================
+-;; LaTeX math ($...$ / $$...$$)
+-;; ===========================
+-(latex_block
+-  (latex_span_delimiter) @open.math
+-  (latex_span_delimiter) @close.math) @scope.math
