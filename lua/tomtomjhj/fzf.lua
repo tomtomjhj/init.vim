@@ -22,6 +22,8 @@ local fzf = require('fzf-lua')
 
 -- TODO: add selected items to quickfix. useful for collecting non-immediate references
 
+-- TODO: https://github.com/elanmed/fzf-lua-frecency.nvim
+
 fzf.setup {
   "fzf-native",
   winopts = {
@@ -88,3 +90,5 @@ fzf.setup {
 fzf.register_ui_select()
 
 vim.keymap.set("n", "<leader>b", function() fzf.buffers({ fzf_opts = { ["--layout"] = "default" } }) end)
+
+-- TODO: if fzf does lsp request time out, should cancel the request?

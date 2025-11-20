@@ -44,6 +44,10 @@
   <https://github.com/jceb/vim-editqf>
 * `lua package.loaded['module.path'] = nil` to un/re-load module ... doesn't work well because the user modules reference the old module?
 * `set redrawdebug=compositor writedelay=10` to debug redraw
+* how to make external program refer to a vim buffer that is not a file?
+    * `:w !program` for single buffer via stdin; but can't get output back (my `:WC` gets output)
+    * For general case, should use file. `` :f `=tempname()` ``
+    * `git diff --no-index` supports process substitution since late 2023 <https://stackoverflow.com/a/76714718>
 
 
 ## dictionary (`i_CTRL-X_CTRL-K`)
@@ -969,6 +973,8 @@ Alternative:
 It seems that the buffer is not added to viminfo if it doesn't have marks.
 Clear the marks when deleting nofile buffer?
 
+fixed: https://github.com/neovim/neovim/pull/34373
+
 ## flexible search
 `/` without moving cursor:
 If stuff to be found is not below the cursor, `/` will wrap, which is annoying.
@@ -1174,10 +1180,13 @@ fzf.fzf_exec("fre --sorted", { fzf_opts = { ['--no-sort'] = '' })
 ```
 
 ## full tui experience + quickfix
-* no color: `:cbuffer` https://vi.stackexchange.com/questions/24661/neovim-read-entries-from-the-terminal-into-quickfix-buffer
-    * ansi to extmark
+terminal, then `:cbuffer` https://vi.stackexchange.com/questions/24661/neovim-read-entries-from-the-terminal-into-quickfix-buffer
+* no color. do ansi to extmark?
+* the terminal hardwrap problem (reflow) → filename broken
 * false match: if the matched stuff doesn't exist (or BufReadCmd doesn't work), it shouldn't be recognized as quickfix entry
 
+quickfix-like commands in terminal window?
+* hardwrap problem
 
 # todo
 
@@ -1291,6 +1300,8 @@ TODO: `yy` → non-linewise paste that collapses indent. Something like `pkJ`
     * https://github.com/oflisback/obsidian-bridge.nvim
 * https://github.com/ColinKennedy/nvim-best-practices-plugin-template
 * https://github.com/chrisgrieser/nvim-rip-substitute
+* https://github.com/A7Lavinraj/fyler.nvim
+* https://github.com/inhesrom/remote-ssh.nvim
 
 ## new (n)vim stuff
 * (8.2.1978) `<cmd>` can simplify `<C-r>=` stuff e.g. sword jump.

@@ -202,7 +202,7 @@ if has('nvim-0.9') || has('patch-9.1.1072')
     set diffopt-=linematch:40 diffopt+=linematch:60
 endif
 if has('nvim-0.12') || has('patch-9.1.1252')
-    set diffopt-=inline:simple diffopt+=inline:char
+    set diffopt-=inline:simple diffopt-=inline:char diffopt+=inline:word
 endif
 endif
 

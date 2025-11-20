@@ -319,7 +319,7 @@ vim.lsp.enable('rust_analyzer')
 -- https://github.com/microsoft/pyright/blob/db368a1ace131372cb78d9c866ca3f5867495052/packages/pyright-internal/src/languageService/referencesProvider.ts#L152
 vim.lsp.config('basedpyright', {
   on_init = function(client)
-    -- not really useful and kinda distracting
+    -- not really useful and kinda distracting, though type highligting in str is nice
     client.server_capabilities.semanticTokensProvider = nil
   end,
   -- https://github.com/DetachHead/basedpyright/blob/main/packages/vscode-pyright/package.json

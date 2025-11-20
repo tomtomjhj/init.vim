@@ -7,6 +7,7 @@ local api = vim.api
 -- * highlights for breakpoint + cursorline?
 -- * dap-view: <C-w><CR> to split open breakpoint/...
 -- * dap-view: terminal closes on session end. https://github.com/mfussenegger/nvim-dap/discussions/1523
+-- * dap-view: run_last does not up terminal properly (set nonumber, etc) if previous session not terminated
 
 local dap_view = require('dap-view')
 local dap = require('dap')
@@ -162,7 +163,7 @@ dap_view.setup {
     negate = "¬ ",
     pause = "⏸︎",
     play = "⏵︎",
-    run_last = "↻",
+    run_last = "↻", -- TODO: remember file and args?
     step_back = "←",
     step_into = "↓",
     step_out = "↑",
@@ -183,6 +184,21 @@ require("dap.ext.vscode").json_decode = function(str)
 end
 
 -------------------------------------------------------------------------------
+
+local function prompt_program()
+  local ok, path = pcall(vim.fn.input, 'Path to program: ', vim.fn.getcwd() .. '/', 'file')
+  if not ok then
+    return dap.ABORT
+  end
+  return path
+end
+local function prompt_args()
+  local ok, args_string = pcall(vim.fn.input, 'Arguments: ', '', 'file')
+  if not ok then
+    return dap.ABORT
+  end
+  return require('dap.utils').splitstr(args_string)
+end
 
 -- Use the binary installed in mason's PATH
 require('dap-python').setup("debugpy-adapter")
@@ -216,20 +232,9 @@ dap.providers.configs['global_gdb'] = function()
       cwd = '${workspaceFolder}',
       -- NOTE: There is no evalution ordering guarantee.
       -- Also it's impossible to prompt a single command and split into program and args.
-      program = function()
-        local ok, path = pcall(vim.fn.input, 'Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-        if not ok then
-          return dap.ABORT
-        end
-        return path
-      end,
-      args = function()
-        local ok, args_string = pcall(vim.fn.input, 'Arguments: ', '', 'file')
-        if not ok then
-          return dap.ABORT
-        end
-        return require("dap.utils").splitstr(args_string)
-      end,
+      -- TODO: special field that takes a function and returns table of all other fields?
+      program = prompt_program,
+      args = prompt_args,
       console = "integratedTerminal",
       setupCommands = {
         {

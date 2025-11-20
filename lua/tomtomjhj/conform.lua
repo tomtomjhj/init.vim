@@ -25,7 +25,7 @@ conform.setup {
       })
       local pre_commit = root and read_file(vim.fs.joinpath(root, '.pre-commit-config.yaml'))
       if not pre_commit then
-        return { 'black' }
+        return { 'ruff_format' }
       end
       if pre_commit:find('id:%s*ruff%-format') then
         return { 'ruff_format' }
@@ -40,7 +40,7 @@ conform.setup {
       if pre_commit:find('id:%s*yapf') then
         table.insert(fmt, 'yapf')
       end
-      return #fmt > 0 and fmt or { 'black' }
+      return #fmt > 0 and fmt or { 'ruff_format' }
     end,
     tablegen = { 'clang-format' },
   },
