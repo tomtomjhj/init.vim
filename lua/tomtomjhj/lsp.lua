@@ -279,8 +279,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
     if vim.tbl_contains({"GitHub Copilot"}, client.name) then
       return
     end
-    vim.fn['SetupLSP']()
-    vim.fn['SetupLSPPost']()
+    -- NOTE: LspAttach doesn't guarantee curbuf == ev.buf
+    vim.api.nvim_buf_call(bufnr, function()
+      vim.fn['SetupLSP']()
+      vim.fn['SetupLSPPost']()
+    end)
     register_breadcrumb(client, bufnr)
     if client.server_capabilities.codeLensProvider then
       vim.lsp.codelens.refresh { bufnr = 0 }
@@ -293,7 +296,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
       })
     end
     if custom_on_attach[client.name] then
-      custom_on_attach[client.name](client, bufnr)
+      vim.api.nvim_buf_call(bufnr, function()
+        custom_on_attach[client.name](client, bufnr)
+      end)
     end
   end,
   desc = 'common lsp setup',
