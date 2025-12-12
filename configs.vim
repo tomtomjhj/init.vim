@@ -448,9 +448,7 @@ endfunction
 
 augroup Statusline | au!
     " this may be called during startup when plugin/ is still not loaded, e.g. viewing .exrc
-    au BufReadPost,BufWritePost * silent! call UpdateGitStatus(str2nr(expand('<abuf>')))
-    " unloaded buffers will be refreshed on BufReadPost
-    au User FugitiveChanged call map(getbufinfo({'bufloaded':1}), 'UpdateGitStatus(v:val.bufnr)')
+    au BufReadPost,FileChangedShellPost,BufWritePost * silent! call UpdateGitStatus(str2nr(expand('<abuf>')))
     au ColorScheme * call StatuslineHighlightInit()
 augroup END
 " }}}
