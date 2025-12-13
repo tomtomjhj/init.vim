@@ -939,6 +939,8 @@ let g:fzf_vim.listproc = function('tomtomjhj#qf#fzf_listproc_qf')
 " NOTE: fzf can't sidescroll https://github.com/junegunn/fzf/issues/577
 " But can toggle line wrapping with alt-/.
 let g:fzf_vim.grep_multi_line = 1
+let g:fzf_vim.statusline = 0
+let g:fzf_vim.nvim_statusline = 0
 
 nnoremap <C-g>      :<C-u>Grep<space>
 nnoremap <leader>g/ :<C-u>Grep! <C-r>=shellescape(RgInput(@/))<CR>
