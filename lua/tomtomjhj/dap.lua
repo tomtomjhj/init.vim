@@ -1,13 +1,12 @@
 local api = vim.api
 
 -- TODO
--- * dap-view: don't mask motion keymaps. currently not customizable
--- * dap-view: various invalid window/buffer errors after bufwipe? maybe state not cleared
+-- * dap-view: don't mask motion keymaps. currently not customizable ?
 -- * what to do with multiple signs? (e.g., breakpoint + diagnostics)
 -- * highlights for breakpoint + cursorline?
--- * dap-view: <C-w><CR> to split open breakpoint/...
--- * dap-view: terminal closes on session end. https://github.com/mfussenegger/nvim-dap/discussions/1523
 -- * dap-view: run_last does not up terminal properly (set nonumber, etc) if previous session not terminated
+-- * dap-view: breakpoints "d" → cursor moves to the last line
+-- * dap-view: scrolloff
 
 local dap_view = require('dap-view')
 local dap = require('dap')
@@ -213,6 +212,11 @@ for _, conf in ipairs(dap.configurations.python) do
   -- NOTE: dap-view hides "subtle" frames by default. toggle with `t`
   conf.justMyCode = false
 end
+-- env var config format
+-- "env": {
+--   "name": "value",
+-- },
+
 
 -- from cpptools
 -- https://codeberg.org/mfussenegger/nvim-dap/wiki/C-C---Rust-(gdb-via--vscode-cpptools)
@@ -222,6 +226,11 @@ dap.adapters.cppdbg = {
   command = 'OpenDebugAD7', -- in mason path
 }
 -- NOTE: OpenDebugAD7 does not have supportsTerminateRequest capability.
+-- NOTE: env var config format
+-- "environment": [
+--   {"name": "...", "value": "..."},
+-- ],
+
 
 dap.providers.configs['global_gdb'] = function()
   return {

@@ -195,14 +195,14 @@ set modeline " debian unsets this
 set exrc secure
 
 if has('nvim-0.3.2') || has("patch-8.1.0360")
-    set diffopt+=algorithm:histogram,indent-heuristic
+    set diffopt+=algorithm:histogram diffopt+=indent-heuristic
 endif
 if has('nvim-0.9') || has('patch-9.1.1072')
     " NOTE: this makes `dp` finer-grained than needed
     set diffopt-=linematch:40 diffopt+=linematch:60
 endif
 if has('nvim-0.12') || has('patch-9.1.1252')
-    set diffopt-=inline:simple diffopt-=inline:char diffopt+=inline:word
+    set diffopt-=inline:simple diffopt+=inline:char
 endif
 endif
 
@@ -1825,6 +1825,8 @@ augroup git-custom | au!
         \|silent! unmap <buffer> <2-LeftMouse>
     " TODO: diff mapping for gitcommit
 augroup END
+
+let g:diff_translations = 0
 
 cnoreabbrev <expr> gd <SID>cabbrev('gd', 'Gvdiffsplit')
 " NOTE: pass -C for moved line detection
