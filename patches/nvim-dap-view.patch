@@ -1,12 +1,32 @@
 diff --git a/lua/dap-view/breakpoints/view.lua b/lua/dap-view/breakpoints/view.lua
-index 7b78b10..9e99582 100644
+index cef28b8..8ea8221 100644
 --- a/lua/dap-view/breakpoints/view.lua
 +++ b/lua/dap-view/breakpoints/view.lua
-@@ -36,7 +36,6 @@ M.show = function()
-                 local col_offset = #relative_path + #tostring(entry.lnum) + 2
+@@ -65,7 +65,6 @@ M.show = function()
+                             hl.hl_range(p.hl, { line, hl_init }, { line, hl_end })
+                         else
+                             treesitter.copy_highlights(buf, entry.lnum - 1, line, hl_init)
+-                            extmarks.copy_extmarks(buf, entry.lnum - 1, line, hl_init)
+                         end
  
-                 treesitter.copy_highlights(buf, entry.lnum - 1, line, col_offset)
--                extmarks.copy_extmarks(buf, entry.lnum - 1, line, col_offset)
+                         hl.hl_range("Separator", { line, hl_end }, { line, hl_end + 1 })
+@@ -81,6 +80,7 @@ M.show = function()
+         -- Clear previous content
+         util.set_lines(state.bufnr, line, -1, true, {})
+     end
++    -- TODO: don't move cursor. save/retore view. Or just maintain cursor line.
+ end
  
-                 hl.highlight_file_name_and_line_number(line, #relative_path, #tostring(entry.lnum))
+ return M
+diff --git a/lua/dap-view/views/options.lua b/lua/dap-view/views/options.lua
+index 9e3c67d..fb3a9d3 100644
+--- a/lua/dap-view/views/options.lua
++++ b/lua/dap-view/views/options.lua
+@@ -5,7 +5,6 @@ local M = {}
  
+ M.set_options = function()
+     local win = vim.wo[state.winnr][0]
+-    win.scrolloff = 99
+     win.wrap = false
+     win.number = false
+     win.relativenumber = false

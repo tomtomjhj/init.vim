@@ -141,14 +141,15 @@ end
 dap_view.setup {
   switchbuf = dap_view_switchbuf,
   winbar = {
+    show_keymap_hints = false,
     base_sections = {
-      breakpoints = { label = "[B]reakpoints", short_label = "[B]" },
-      scopes = { label = "[S]copes", short_label = "[S]" },
-      exceptions = { label = "[E]xceptions", short_label = "[E]" },
-      watches = { label = "[W]atches", short_label = "[W]" },
-      threads = { label = "[T]hreads", short_label = "[T]" },
-      repl = { label = "[R]EPL", short_label = "[R]" },
-      console = { label = "[C]onsole", short_label = "[C]" },
+      breakpoints = { label = "[B]reakpoint" },
+      scopes = { label = "[S]cope" },
+      exceptions = { label = "[E]xception" },
+      watches = { label = "[W]atch" },
+      threads = { label = "[T]hread" },
+      repl = { label = "[R]EPL" },
+      console = { label = "[C]onsole" },
     },
     controls = {
       enabled = true,

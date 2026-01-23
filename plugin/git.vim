@@ -7,7 +7,9 @@
 " - when CTLR-C'ed, show the output so far?
 
 command! -nargs=? -complete=customlist,fugitive#LogComplete GL call GLStart(<q-mods>, empty(trim(<q-args>)) ? '--all' : <q-args>)
-command! -nargs=? -complete=customlist,fugitive#Complete TG exe <q-mods> 'T' FugitiveShellCommand(['-c', 'core.pager=delta'] + GLSplitExpandChain(<q-args>, FugitiveWorkTree())[0])
+command! -nargs=1 -complete=customlist,fugitive#Complete TG
+      \ exe <q-mods> 'T' FugitiveShellCommand(['-c', 'core.pager=delta'] + GLSplitExpandChain(<q-args>, FugitiveWorkTree())[0])
+      \|let b:stl_title = ':TG ' . <q-args>
 
 augroup GL | au!
   au User FugitiveChanged if exists('b:gl_args') | call GLRun() | endif
@@ -65,7 +67,7 @@ function! GLStart(mods, args) abort
   nnoremap <buffer><silent> y<C-G> :<C-U>call setreg(v:register, <SID>line_commit('.'))<CR>
 
   nnoremap <buffer><silent> u :call GLRun()<CR>
-  nnoremap <buffer><expr> U ':GL ' . join(b:gl_args) . ' '
+  nnoremap <buffer><expr> U join([':GL'] + b:gl_args) . ' '
   nnoremap <buffer><silent> a :call GLRun(<SID>toggle(b:gl_args, '--all'))<CR>
 
   command! -buffer -nargs=? -complete=customlist,fugitive#LogComplete GL call GLRun(GLSplitExpandChain(<q-args>, b:gl_tree)[0])

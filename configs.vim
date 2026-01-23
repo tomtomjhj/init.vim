@@ -375,6 +375,10 @@ endfunction
 function! STLTitle(...) abort
     let w = a:0 ? a:1 : win_getid()
     let b = winbufnr(w)
+    let title = getbufvar(b, 'stl_title')
+    if !empty(title)
+        return title
+    endif
     let bt = getbufvar(b, '&buftype')
     let ft = getbufvar(b, '&filetype')
     let bname = bufname(b)
@@ -1797,11 +1801,14 @@ function! BufDir(...) abort
     let ft = getbufvar(b, '&filetype')
     if ft is# 'fugitive'
         return fnamemodify(FugitiveGitDir(b), ':h')
-    elseif bname =~# '^fugitive://'
+    elseif bname =~# '^fugitive://' && b:fugitive_type is# 'blob'
         return fnamemodify(FugitiveReal(bname), ':h')
     elseif bname =~# '^fern://'
         return getbufvar(b, 'fern').root._path
+    elseif bname =~# '^\w\+://'
+        return getcwd()
     else
+        " NOTE: If `isdirectory(bname)`, `:p` appends a path separator. This is removed by `:h`.
         return fnamemodify(bname, ':p:h')
     endif
 endfunction
