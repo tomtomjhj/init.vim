@@ -396,8 +396,11 @@ function! STLTitle(...) abort
         return pathshorten(fnamemodify(getbufvar(b, 'fern').root._path, ":~")) . '/'
     elseif bname =~# '^fugitive://'
         let [obj, gitdir] = FugitiveParse(bname)
-        let matches = matchlist(obj, '\v(:\d?|\x+)(:\f*)?')
-        return pathshorten(fnamemodify(gitdir, ":~:h")) . ' ' . matches[1][:9] . matches[2]
+        let [_, repo, worktree; _] = matchlist(gitdir, '\v^(.+)/\.git%(/worktrees/(.+))?')
+        let [_, commit, file; _] = matchlist(obj, '\v(:\d?|\x+)(:\f*)?')
+        return pathshorten(fnamemodify(repo, ':~'))
+                    \ . (empty(worktree) ? ' ' : ' (' . worktree . ') ')
+                    \ . commit[:9] . file
     elseif getbufvar(b, 'fugitive_type', '') is# 'temp'
         return pathshorten(fnamemodify(bname, ":~:.")) . ' :Git ' . join(FugitiveResult(bname)['args'], ' ')
     elseif ft is# 'gl'
