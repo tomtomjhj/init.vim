@@ -180,6 +180,8 @@ dap.listeners.before.event_initialized['tomtomjhj'] = dap_view.open
 -- dap.listeners.before.event_exited["tomtomjhj"] = dap_view.close
 
 require("dap.ext.vscode").json_decode = function(str)
+  -- NOTE: use built in vim.json.decode added in 0.12?
+  -- https://github.com/neovim/neovim/commit/6b4ec2264e1d8ba027b85f3883d532c5068be92a
   return vim.json.decode(require("plenary.json").json_strip_comments(str))
 end
 

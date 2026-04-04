@@ -267,8 +267,6 @@ vim.lsp.config('*', {
   }),
 })
 
-local codelens_autocmds = vim.api.nvim_create_augroup("tomtomjhj/lsp-codelens", { clear = true })
-
 ---@type table<string, fun(client: vim.lsp.Client, bufnr: number)> name ↦ on_attach.
 ---Not using lsp.config('*', { on_attach = ... }) because it doesn't merge with server-specific on_attach.
 local custom_on_attach = {}
@@ -286,14 +284,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end)
     register_breadcrumb(client, bufnr)
     if client.server_capabilities.codeLensProvider then
-      vim.lsp.codelens.refresh { bufnr = 0 }
-      vim.api.nvim_create_autocmd({'BufReadPost', 'BufWritePost', 'CursorHold'}, {
-        group = codelens_autocmds, buffer = bufnr,
-        callback = function()
-          vim.lsp.codelens.refresh { bufnr = 0 }
-        end,
-        desc = 'refresh codelens',
-      })
+      vim.lsp.codelens.enable(true, { bufnr = bufnr })
     end
     if custom_on_attach[client.name] then
       vim.api.nvim_buf_call(bufnr, function()
@@ -309,15 +300,21 @@ vim.api.nvim_create_autocmd("LspAttach", {
 -- NOTE: `cargo metadata` in root_dir blocks when downing rust toolchain and it can't be interrrupted.
 -- NOTE: rust-analyzer behaves weirdly for multi-crate project. especially workspace_symbols.
 -- NOTE: see https://github.com/LazyVim/LazyVim/pull/2198 for more config
-vim.lsp.config('rust_analyzer', {
-  settings = { ['rust-analyzer'] = {
-    rustc = { source = 'discover' }
-  }},
-})
+-- NOTE: rustaceanvim doesn't use lspconfig's "rust_analyzer" configs and does an equivalent of lsp.enable itself.
+vim.g.rustaceanvim = {
+  server = {
+    default_settings = { -- "settings"
+      ['rust-analyzer'] = {
+        rustc = { source = 'discover' },
+      },
+    },
+  },
+  tools = {},
+  dap = {},
+}
 custom_on_attach['rust_analyzer'] = function(_, bufnr)
   vim.api.nvim_buf_create_user_command(bufnr, 'LspRestart', 'RustAnalyzer restart', {})
 end
-vim.lsp.enable('rust_analyzer')
 
 -- TODO: reference() seems to exclude the reference at the cursor... confusing
 -- https://github.com/DetachHead/basedpyright/blob/aba927d9e09203ad37cb92054416e28e8dbd5a66/packages/pyright-internal/src/languageService/referencesProvider.ts#L152

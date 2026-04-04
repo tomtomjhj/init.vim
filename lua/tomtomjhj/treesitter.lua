@@ -55,7 +55,7 @@ vim.api.nvim_create_autocmd(
       end
       if not vim.tbl_contains(disable_highlight, lang) and not vim.b.ts_highlight then
         vim.treesitter.start(ev.buf, lang)
-        vim.b.undo_ftplugin = (vim.b.undo_ftplugin and vim.b.undo_ftplugin .. '|' or '') .. [[exe 'lua vim.treesitter.stop()']]
+        vim.b.undo_ftplugin = (vim.b.undo_ftplugin or '') .. '\n call v:lua.vim.treesitter.stop()'
         if vim.tbl_contains(syn, lang) then
           vim.bo.syntax = 'on'
         end
@@ -67,7 +67,7 @@ vim.api.nvim_create_autocmd(
       if vim.treesitter.query.get(lang, 'folds') and vim.wo.foldmethod ~= 'diff' then
         vim.opt_local.foldmethod = 'expr'
         vim.opt_local.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-        vim.b.undo_ftplugin = (vim.b.undo_ftplugin and vim.b.undo_ftplugin .. '|' or '') .. [[setl foldexpr< foldmethod<]]
+        vim.b.undo_ftplugin = (vim.b.undo_ftplugin or '') .. '\n setl foldexpr< foldmethod<'
       end
     end
   }

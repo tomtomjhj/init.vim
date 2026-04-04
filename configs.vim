@@ -1,6 +1,6 @@
 " vim: set foldmethod=marker foldlevel=0:
 
-let g:nvim_latest_stable = has('nvim-0.11')
+let g:nvim_latest_stable = has('nvim-0.12')
 let g:ide_client = get(g:, 'ide_client', g:nvim_latest_stable ? 'nvim' : 'coc')
 
 if !has('nvim')
@@ -895,6 +895,7 @@ endfunction
 let g:lisp_rainbow = 1
 let g:is_posix = 1
 if has('nvim-0.10')
+    " disabled by default since https://github.com/neovim/neovim/commit/3bdebfb87f115cc067f9f6a950e7ff87ac24a056
     let g:query_lint_on = ['BufReadPost', 'BufWritePost'] " Default has BufEnter .. too much lag
 endif
 
