@@ -64,10 +64,13 @@ vim.api.nvim_create_autocmd(
       if false and not vim.tbl_contains(disable_indent, lang) and vim.treesitter.query.get(lang, 'indent') then
         vim.opt_local.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
       end
-      if vim.treesitter.query.get(lang, 'folds') and vim.wo.foldmethod ~= 'diff' then
-        vim.opt_local.foldmethod = 'expr'
+      if vim.treesitter.query.get(lang, 'folds') then
+        if not vim.wo.diff then
+          vim.opt_local.foldmethod = 'expr'
+          vim.b.undo_ftplugin = (vim.b.undo_ftplugin or '') .. '\n if !&l:diff | setl foldmethod< | endif'
+        end
         vim.opt_local.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-        vim.b.undo_ftplugin = (vim.b.undo_ftplugin or '') .. '\n setl foldexpr< foldmethod<'
+        vim.b.undo_ftplugin = (vim.b.undo_ftplugin or '') .. '\n setl foldexpr<'
       end
     end
   }
