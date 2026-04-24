@@ -217,7 +217,7 @@ augroup BasicSetup | au!
     au BufRead,BufNewFile *.h.inc,*.cpp.inc setlocal filetype=cpp
     au BufRead,BufNewFile */.vscode/launch.json setlocal filetype=jsonc
     if has('nvim-0.11')
-        au TextYankPost * silent! lua vim.hl.on_yank()
+        au TextYankPost * if v:event.operator ==# 'y' | exe 'silent! lua vim.hl.on_yank()' | endif
     endif
 augroup END
 

@@ -210,7 +210,7 @@ vim.diagnostic.config {
   underline = { severity = { min = vim.diagnostic.severity.WARN } },
   virtual_text = true,
   signs = { severity = { min = vim.diagnostic.severity.WARN } },
-  serverity_sort = true,
+  severity_sort = true,
 }
 
 local diagnostic_autocmds = vim.api.nvim_create_augroup("tomtomjhj/diagnostics", { clear = true })
