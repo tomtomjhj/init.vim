@@ -92,18 +92,18 @@ function! SetupLSP()
   " TODO adapt to 0.11 default lsp mappings
 
   " location_handler
-  nnoremap <buffer><leader>rf    <cmd>lua require('fzf-lua').lsp_references{jump1=true}<CR>
-  nnoremap <buffer>        <M-]> <cmd>lua require('fzf-lua').lsp_definitions{jump1=true}<CR>
-  nnoremap <buffer><leader>gd    <cmd>lua require('fzf-lua').lsp_declarations{jump1=true}<CR>
-  nnoremap <buffer><leader>gy    <cmd>lua require('fzf-lua').lsp_typedefs{jump1=true}<CR>
-  nnoremap <buffer><leader>gi    <cmd>lua require('fzf-lua').lsp_implementations{jump1=true}<CR>
+  nnoremap <buffer><leader>rf    <cmd>lua require('tomtomjhj.fzf').lsp_references{jump1=true}<CR>
+  nnoremap <buffer>        <M-]> <cmd>lua require('tomtomjhj.fzf').lsp_definitions{jump1=true}<CR>
+  nnoremap <buffer><leader>gd    <cmd>lua require('tomtomjhj.fzf').lsp_declarations{jump1=true}<CR>
+  nnoremap <buffer><leader>gy    <cmd>lua require('tomtomjhj.fzf').lsp_typedefs{jump1=true}<CR>
+  nnoremap <buffer><leader>gi    <cmd>lua require('tomtomjhj.fzf').lsp_implementations{jump1=true}<CR>
   " symbol_handler
-  nnoremap <buffer><leader>ds    <cmd>lua require('fzf-lua').lsp_document_symbols()<CR>
-  nnoremap <buffer><leader>sb    <cmd>lua require('fzf-lua').lsp_live_workspace_symbols()<CR>
+  nnoremap <buffer><leader>ds    <cmd>lua require('tomtomjhj.fzf').lsp_document_symbols()<CR>
+  nnoremap <buffer><leader>sb    <cmd>lua require('tomtomjhj.fzf').lsp_live_workspace_symbols()<CR>
   " call_hierarchy_handler
 
   " ...
-  Noremap <buffer><leader>ac    <cmd>lua require('fzf-lua').lsp_code_actions()<CR>
+  Noremap <buffer><leader>ac    <cmd>lua require('tomtomjhj.fzf').lsp_code_actions()<CR>
   nnoremap <buffer><leader>rn    <cmd>lua vim.lsp.buf.rename()<CR>
   nnoremap <buffer><localleader>*    <cmd>lua vim.lsp.buf.document_highlight()<CR>
   nnoremap <buffer><localleader><CR> <cmd>lua vim.lsp.buf.clear_references()<CR>
@@ -119,8 +119,8 @@ function! SetupLSP()
   nnoremap <buffer>        [D    <cmd>lua vim.diagnostic.jump{count=-1, float=false}<CR>
   nnoremap <buffer>        ]D    <cmd>lua vim.diagnostic.jump{count=1, float=false}<CR>
   nnoremap <buffer>        <M-,> <cmd>lua vim.diagnostic.open_float{scope="cursor",border={'','','',' ','','','',' '}}<CR>
-  nnoremap <buffer><leader>dl    <cmd>lua require('fzf-lua').diagnostics_workspace{severity_limit=3}<CR>
-  nnoremap <buffer><leader>DL    <cmd>lua require('fzf-lua').diagnostics_workspace()<CR>
+  nnoremap <buffer><leader>dl    <cmd>lua require('tomtomjhj.fzf').diagnostics_workspace{severity_limit=3}<CR>
+  nnoremap <buffer><leader>DL    <cmd>lua require('tomtomjhj.fzf').diagnostics_workspace()<CR>
 endfunction
 
 function! STLBreadCrumb()

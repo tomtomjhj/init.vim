@@ -12,7 +12,19 @@
 -- hi def link FzfLuaLiveSym    Special
 -- ]]
 
-local fzf = require('fzf-lua')
+local M = {}
+local ok, fzf = pcall(require, 'fzf-lua')
+if not ok then
+  local msg = 'fzf-lua unavailable: ' .. fzf
+  vim.notify(msg, vim.log.levels.WARN)
+  return setmetatable(M, {
+    __index = function()
+      return function()
+        vim.notify(msg, vim.log.levels.WARN)
+      end
+    end,
+  })
+end
 
 -- notes
 -- * Preview buffer's ftdetect uses `:filetype detect`, which is somewhat broken? `*.v` file doesn't get recognized as coq.
@@ -92,3 +104,5 @@ fzf.register_ui_select()
 vim.keymap.set("n", "<leader>b", function() fzf.buffers({ fzf_opts = { ["--layout"] = "default" } }) end)
 
 -- TODO: if fzf does lsp request time out, should cancel the request?
+
+return fzf
