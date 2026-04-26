@@ -136,4 +136,102 @@ endfunction
 
 " }}}
 
+" git statusline. maintains b:stl_git {{{
+
+augroup STLGit | au!
+  au BufReadPost,BufFilePost,FileChangedShellPost,BufWritePost * call <SID>STLGitBufUpdate(str2nr(expand('<abuf>')))
+  au User FugitiveChanged call <SID>STLGitFugitiveChanged()
+augroup END
+
+function! s:STLGitBufUpdate(buf) abort
+  call setbufvar(a:buf, 'stl_git', '')
+  if !exists('*FugitiveGitDir')
+    return
+  endif
+  let bname = fnamemodify(bufname(a:buf), ':p')
+  if !s:IsSTLGitBuffer(a:buf, bname) || empty(FugitiveGitDir(a:buf))
+    return
+  endif
+  let result = FugitiveExecute(['status', '--porcelain', '--', bname], a:buf)
+  if result.exit_status == 0
+    let line = get(result.stdout, 0, '')
+    call setbufvar(a:buf, 'stl_git', '[' . FugitiveHead(10, a:buf) . (empty(line) ? '' : ':' . line[:1]) . ']')
+  endif
+endfunction
+
+function! s:IsSTLGitBuffer(buf, path) abort
+  return !empty(a:path)
+        \ && empty(getbufvar(a:buf, '&buftype'))
+        \ && getbufvar(a:buf, 'fugitive_type', '') ==# ''
+        \ && bufname(a:buf) !~# '^fugitive://'
+        \ && !isdirectory(a:path)
+endfunction
+
+function! s:LoadedRepoBufferPaths(git_dir) abort
+  let buf2rel = {}
+  for info in getbufinfo({'bufloaded': 1})
+    let b = info.bufnr
+    let bname = bufname(b)
+    let path = fnamemodify(bname, ':p')
+    if !s:IsSTLGitBuffer(b, path) || FugitiveGitDir(b) !=# a:git_dir
+      continue
+    endif
+    let rel = FugitivePath(path, '', a:git_dir)
+    if empty(rel)
+      continue
+    endif
+    let buf2rel[b] = rel
+  endfor
+  return buf2rel
+endfunction
+
+" Turn FugitiveExecute() output for git -z commands into a list of status records.
+function! s:SplitStatusZ(stdout) abort
+  return empty(a:stdout) ? [] : split(tr(join(a:stdout, "\1"), "\1\n", "\n\1"), "\1", 1)[0:-2]
+endfunction
+
+function! s:ParseStatusPorcelainV1(stdout) abort
+  let codes = {}
+  let output = s:SplitStatusZ(a:stdout)
+  let i = 0
+  while i < len(output)
+    let line = output[i]
+    if len(line) < 3
+      let i += 1
+      continue
+    endif
+    let codes[line[3:]] = line[:1]
+    let i += 1
+    if line[:1] =~# '[RC]'
+      let i += 1
+    endif
+  endwhile
+  return codes
+endfunction
+
+function! s:STLGitFugitiveChanged() abort
+  let git_dir = get(g:, 'fugitive_event', '') " the changed repo's git_dir
+  if empty(git_dir)
+    return
+  endif
+  let buf2rel = s:LoadedRepoBufferPaths(git_dir)
+  if empty(buf2rel)
+    return
+  endif
+  let args = ['--literal-pathspecs', 'status', '-z', '--porcelain', '--'] + values(buf2rel)
+  let result = FugitiveExecute(args, git_dir)
+  if result.exit_status != 0
+    return
+  endif
+  let codes = s:ParseStatusPorcelainV1(result.stdout)
+  for [b, rel] in items(buf2rel)
+    let code = get(codes, rel, '')
+    let suffix = code ==# '' || code ==# '  ' ? '' : ':' . code
+    let b = str2nr(b)
+    call setbufvar(b, 'stl_git', '[' . FugitiveHead(10, b) . suffix . ']')
+  endfor
+  redrawstatus
+endfunction
+" }}}
+
 " vim: set fdm=marker et sw=2:

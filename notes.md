@@ -267,13 +267,6 @@ What to do with "global" things?
     * put global stuff in tabline and `showtabline=2`
     * when persistence is not needed, notification also works
 
-git
-* bulk update on `FugitiveChanged` (needed for e.g. git reset)? This requires some work.
-    1. Group buffers by FugitiveGitDir
-    2. git-status each group
-    3. Match the output. If no output for a buffer, then "no change".
-
-
 ## Snippet
 
 ### snippet conversion

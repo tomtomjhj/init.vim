@@ -441,21 +441,7 @@ function! SearchCount()
     return printf('[%d/%d]', result.current, result.total)
 endfunction
 
-" sets b:stl_git for real files that may be tracked by some git repo
-function! UpdateGitStatus(buf) abort
-    let bname = fnamemodify(bufname(a:buf), ':p')
-    if !empty(getbufvar(a:buf, '&buftype')) || !filereadable(bname) || empty(FugitiveGitDir(a:buf)) | return | endif
-    let status = ''
-    let result = FugitiveExecute(['status', '--porcelain', bname], a:buf)
-    if result.exit_status == 0
-        let status = '[' . FugitiveHead(10, a:buf) . (empty(result.stdout[0]) ? '' : ':' . result.stdout[0][:1]) . ']'
-    endif
-    call setbufvar(a:buf, 'stl_git', status)
-endfunction
-
 augroup Statusline | au!
-    " this may be called during startup when plugin/ is still not loaded, e.g. viewing .exrc
-    au BufReadPost,FileChangedShellPost,BufWritePost * silent! call UpdateGitStatus(str2nr(expand('<abuf>')))
     au ColorScheme * call StatuslineHighlightInit()
 augroup END
 " }}}
