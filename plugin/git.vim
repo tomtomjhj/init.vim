@@ -230,7 +230,6 @@ function! s:STLGitFugitiveChanged() abort
     let b = str2nr(b)
     call setbufvar(b, 'stl_git', '[' . FugitiveHead(10, b) . suffix . ']')
   endfor
-  redrawstatus
 endfunction
 " }}}
 
