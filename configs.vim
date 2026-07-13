@@ -1081,6 +1081,7 @@ let g:sneak#alias = {
             \ '<': '[<≼]',
             \ '>': '[>↦→⇒⇝]',
             \ '[': '[[⌜⎡⊑⊓]', ']': '[\]⌝⎤⊒⊔]',
+            \ '-': '[-—–]',
             \}
 
 if g:nvim_latest_stable
@@ -1317,6 +1318,8 @@ cnoreabbrev <expr> vsf <SID>cabbrev('vsf', "vert sf**/<Left><Left><Left>")
 cnoreabbrev <expr> tsb <SID>cabbrev('tsb', 'tab sb')
 cnoreabbrev <expr> tsf <SID>cabbrev('tsf', "tab sf**/<Left><Left><Left>")
 
+cnoreabbrev <expr> wdt <SID>cabbrev('wdt', "windo diffthis")
+
 nnoremap <leader>cx :<C-u>tabclose<CR>
 nnoremap <leader>td :<C-u>tab split<CR>
 nnoremap <leader>tt :<C-u>tabedit<CR>
@@ -1540,6 +1543,7 @@ nnoremap <leader>M :<C-u>Make<space>
 
 " window layout {{{
 command! -count Wfh setlocal winfixheight | if <count> | exe 'resize' <count> | endif
+command! -count Wfw setlocal winfixwidth | if <count> | exe 'vertical resize' <count> | endif
 nnoremap <silent> <C-w>g= :<C-u>call <SID>adjust_winfix_wins()<CR>
 
 function! s:adjust_winfix_wins() abort
@@ -1693,7 +1697,9 @@ endfunction
 " }}}
 
 " Explorers {{{
+let g:loaded_nvim_dir_plugin = 0
 let g:loaded_netrwPlugin = 1
+
 function! GXBrowse(url)
     if exists('g:netrw_browsex_viewer')
         let viewer = g:netrw_browsex_viewer
