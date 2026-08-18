@@ -319,6 +319,7 @@ end
 -- TODO: reference() seems to exclude the reference at the cursor... confusing
 -- https://github.com/DetachHead/basedpyright/blob/aba927d9e09203ad37cb92054416e28e8dbd5a66/packages/pyright-internal/src/languageService/referencesProvider.ts#L152
 -- https://github.com/microsoft/pyright/blob/db368a1ace131372cb78d9c866ca3f5867495052/packages/pyright-internal/src/languageService/referencesProvider.ts#L152
+--[[
 vim.lsp.config('basedpyright', {
   on_init = function(client)
     -- not really useful and kinda distracting, though type highligting in str is nice
@@ -340,11 +341,25 @@ vim.lsp.config('basedpyright', {
   end
 })
 vim.lsp.enable('basedpyright')
+--]]
 -- NOTE: For import resolution to work with an editable installation of a local package built with setuptools, it should use the compat or strict mode.
 -- pip install -e dir --config-settings editable_mode=compat
 -- https://docs.basedpyright.com/dev/usage/import-resolution/
 -- https://setuptools.pypa.io/en/latest/userguide/development_mode.html
 -- Note that with strict mode, goto-def on the package goes to the build dir (each file symlinks to the original file, which isn't ideal).
+
+vim.lsp.config('pyrefly', {
+  on_init = function(client)
+    -- no proper specialization for definition
+    client.server_capabilities.semanticTokensProvider = nil
+  end,
+  settings = { python = {
+    analysis = {
+      showHoverGoToLinks = false,
+    }
+  }},
+})
+vim.lsp.enable('pyrefly')
 
 vim.lsp.config('clangd', {
   --- https://github.com/clangd/clangd/issues/1394#issuecomment-1328676884

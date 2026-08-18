@@ -99,8 +99,6 @@ fzf.setup {
   },
 }
 
-fzf.register_ui_select()
-
 vim.keymap.set("n", "<leader>b", function() fzf.buffers({ fzf_opts = { ["--layout"] = "default" } }) end)
 
 -- TODO: if fzf does lsp request time out, should cancel the request?

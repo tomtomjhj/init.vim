@@ -768,7 +768,7 @@ function! s:markdown() abort
     xnoremap <buffer><expr> <localleader>~ tomtomjhj#surround#strike('')
     nmap     <buffer>          <MiddleMouse> <LeftMouse><localleader>biw
     xmap     <buffer>          <MiddleMouse> <localleader>b
-    " NOTE: `:[range]!pandoc -t commonmark_x` also works.
+    " NOTE: `:[range]!pandoc -t gfm` also works.
     nnoremap <buffer><silent>     <leader>tf :<C-u>TableFormat<CR>
     nnoremap <buffer>             gO          <Cmd>Toc<CR>
 endfunction
@@ -1554,14 +1554,17 @@ function! s:adjust_winfix_wins() abort
     endfor
 endfunction
 
-function! s:heights() abort
+function! s:update_layout_sizes() abort
     let &pumheight = min([&window/4, 20])
     let &previewheight = max([&window/4, 12])
+    if has('patch-9.1.1284') || has('nvim-0.12')
+        let &pummaxwidth = min([&columns/2, 80])
+    endif
 endfunction
-call s:heights()
+call s:update_layout_sizes()
 
 augroup layout-custom | au!
-    au VimResized * call s:heights()
+    au VimResized * call s:update_layout_sizes()
 augroup END
 " }}}
 
@@ -2132,7 +2135,7 @@ command! -range=% Unpdf
 " --wrap=auto|none|preserve
 command! -range=% -nargs=? Md
             \ let _view = winsaveview()
-            \|exe '<line1>,<line2>!pandoc --from=commonmark_x --to=commonmark_x' <q-args>
+            \|exe '<line1>,<line2>!pandoc --from=gfm --to=gfm' <q-args>
             \|call winrestview(_view)
             \|unlet _view
 
